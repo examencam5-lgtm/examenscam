@@ -32,3 +32,6 @@ def afficher_matieres(niveau,serie=None):
 afficher_matieres('BEPC')
 afficher_matieres('BAC', 'C')
 afficher_matieres('PROBATOIRE', 'D')
+afficher_matieres('BAC', 'D')
+afficher_matieres('PROBATOIRE', 'A4')
+afficher_matieres('BAC', 'A4')
