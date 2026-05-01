@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Examenscam - {% block title %}{% endblock %}</title>
+        <style>
+            body {font-family: Arial, sans-serif; margin:  0; background: #EBF5FB; color: #1C2833; }
+            header { background: #1A5276; color: white; padding: 15px 20px; }
+            header h1 {margin: 0; font-size: 1.5em; }
+            nav a { color: #D4AC0D; margin-right: 15px; text-decoration: none; font-weight: bold; }
+            main {padding: 20px; max-width: 800px; margin: auto; }
+            .btn {background: #1A5276; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin: 5px; }
+            footer { background: #1A5276; color: white; text-align: center; padding: 10px; margin-top: 40px; font-size: 0.9em; }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Examenscam</h1>
+            <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #D4AC0D;">Tes annales, organisees.</p>
+            <nav style="margin-top: 10px;">
+                <a href="/">Accueil</a>
+                <a href="/bepc">BEPC</a>
+                <a href="/bac">BAC</a>
+                <a href="/probatoire">Probatoire</a>
+            </nav>
+        </header>
+
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        <footer>
+            <p>Examenscam - Maroua, Cameroun</p>
+        </footer>
+    </body>
+</html>

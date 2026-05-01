@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Acceuil{% endblock %}
+
+{% block content %}
+<h2>Bienvenue sur examenscam</h2>
+<p>Tes annales officielles, organisees par niveau, par serie et matiere.</p>
+
+<div style="margin-top: 30px;">
+    <h3>Choisir un niveau :</h3>
+    <a href="/bepc" class="btn">BEPC</a>
+    <a href="/probatoire" class="btn">Probatoire</a>
+    <a href="/bac" class="btn">BAC</a>
+</div>
+
+<div style="margin-top: 30px;">
+    <p style="color: #5D6D7E;">{{ total }} annales disponibles</p>
+</div>
+{% endblock %}
