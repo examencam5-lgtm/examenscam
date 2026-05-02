@@ -6,6 +6,7 @@ from pathlib import Path
 def get_connection():
     Path('data').mkdir(exist_ok=True)
     conn = sqlite3.connect('data/annales.db')
+    conn.row_factory = sqlite3.Row
     return conn
 
 def create_table():

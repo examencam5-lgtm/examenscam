@@ -1,0 +1,24 @@
+ok
+{% extends 'base.html' %}
+{% block title %}{{niveau}} {% if serie %}serie {{ serie}}{% endif %}{% endblock %}
+
+{% block content %}
+<h2>{{ niveau }} {% if serie %} - Serie {{ serie }}{% endif %}</h2>
+
+{%  if matieres %}
+    <h3>Choisir une matiere :</h3>
+    {% for matiere in matieres %}
+        {% if serie %}
+             <a href="/annales/bac/{{ serie }}/{{ matiere }}" class="btn">{{ matiere }}</a>
+        {% else %}
+            <a href="/annales/{{ niveau }}/{{ matiere }}" class="btn">{{ matiere }}</a>
+        {% endif %}
+    {% endfor %}
+{% else %}
+   <p>Aucune annale disponibles pour ce niveau.</p>
+{% endif %}
+
+<br><br>
+<a href="/" style="color: #1A5276;">IJ Retour accueil</a>
+{% endblock %}
+            
