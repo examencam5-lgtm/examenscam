@@ -1,6 +1,6 @@
 # app.py
 # Application FLASK principale - examenscam
-from flask import Flask,render_template,redirect,url_for
+from flask import Flask,render_template,redirect,url_for,request
 from database import get_connection
 
 app = Flask(__name__)
@@ -51,6 +51,42 @@ def annales_bac(serie, matiere):
     annales = cursor.fetchall()
     conn.close()
     return render_template('annales.html' , annales=annales, niveau='BAC', serie=serie , matiere=matiere)
+@app.route('/probatoire')
+def probatoire():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT matiere FROM annales WHERE niveau='Probatoire' AND actif=1")
+    matieres = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return render_template('niveau.html', niveau='Probatoire', matieres=matieres)
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'post':
+        cursor.execute("""
+            INSERT INTO annales (niveau, serie, matiere, annee, lien_drive, corrige_dispo, source)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            request.form['niveau'],
+            request.form.get('service') or None,
+            request.form['matiere'],
+            int(request.form['annee']),
+            request.form['lien_drive'],
+            1 if request.form.get('corrige_dispo') else 0,
+            request.form.get('source', 'manuel')
+        ))
+        conn.commit()
+        message = "Annale ajoutee !"
+    else:
+        message = None
+    cursor.execute("SELECT * FROM annales ORDER BY id DESC LIMIT 20")
+    annales = cursor.fetchall()
+    conn.close()
+    return render_template('admin.html', message=message, annales=annales)    
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
