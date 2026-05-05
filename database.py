@@ -20,8 +20,7 @@ def create_table():
             serie TEXT,
             matiere TEXT NOT NULL,
             annee INTEGER NOT NULL,
-            lien_drive TEXT,
-            chemin_fichier TEXT,
+            chemin_fichier TEXT NOT NULL,
             corrige_dispo INTEGER DEFAULT 0,
             vues INTEGER DEFAULT 0,
             actif INTEGER DEFAULT 1

@@ -1,0 +1,63 @@
+ok
+{% extends 'base.html' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<h2>Pannel Admin - Ajouter une annale</h2>
+
+{% if message %}
+    <p style="color: green; font-weight: bold;">{{ message }}</p>
+{% endif %}
+
+<form method="POST" action="/admin" enctype="multipart/form-data">
+
+    <div style="margin: 10px 0;">
+        <select name="niveau" required style="padding: 8px; width:100%;">
+            <option value="">--Niveau --</option>
+            <option value="BEPC">BEPC</option>
+            <option value="Probatoire">Probatoire</option>
+            <option value="BAC">BAC</option>
+        </select>
+    </div>
+
+    <div style="margin: 10px 0;">
+        <select name="serie" style="padding: 8px; width:100%;">
+            <option value="">-- Serie (vide pour BEPC) --</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="TI">TI</option>
+            <option value="A4">A4</option>
+        </select>
+    </div>
+
+    <div style="margin: 10px 0;">
+        <input type="text" name="matiere" placeholder="Matiere (ex Mathematiques)" required style="padding:8px; width:100%;">
+    </div>
+
+    <div style="margin: 10px 0;">
+        <input type="number" name="annee" placeholder="Annee (ex: 2023)" required style="padding:8px; width:100%;">
+     </div>
+     <div style="margin: 10px 0;">
+        <label>Fichier PDF :</label><br>
+        <input type="file" name="pdf" accept=".pdf" required style="padding:8px;">
+     </div>
+
+     <div style="margin: 10px 0;">
+        <label>
+            <input type="checkbox" name="corrige_dispo"> Corrige disponible
+        </label>
+     </div>
+     <button type="submit" style="background:#1A5276; color:white; padding: 10px 30px; border:none; border-radius:5px; cursor:pointer;">
+        Ajouter l'annale
+     </button>
+</form>
+
+<hr style="margin: 30px 0;">
+
+<h3>Annalle dans la base :</h3>
+{% for annale in annales %}
+     <p>{{ annale[1] }} {{ annale[2] or '' }} - {{ annale[3] }} {{ annale[4] }}</p>
+{% endfor %}
+
+{% endblock %}

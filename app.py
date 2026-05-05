@@ -1,6 +1,7 @@
 # app.py
 # Application FLASK principale - examenscam
-from flask import Flask,render_template,redirect,url_for,request
+from flask import Flask,render_template,redirect,url_for, request, send_from_directory
+import os
 from database import get_connection
 
 app = Flask(__name__)
@@ -25,10 +26,10 @@ def bepc():
 @app.route('/bac')
 def bac():
     return render_template('bac_series.html')
-@app.route('/bac/<series>')
+@app.route('/bac/<serie>')
 def bac_serie(serie):
     conn = get_connection()
-    cursor = conn,cursor()
+    cursor = conn.cursor()
     cursor.execute("SELECT DISTINCT matiere FROM annales WHERE niveau='BAC' AND serie=? AND actif=1", (serie,))
     matieres = [row[0] for row in cursor.fetchall()]
     conn.close()
@@ -59,32 +60,52 @@ def probatoire():
     matieres = [row[0] for row in cursor.fetchall()]
     conn.close()
     return render_template('niveau.html', niveau='Probatoire', matieres=matieres)
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     conn = get_connection()
     cursor = conn.cursor()
+    message = None
 
-    if request.method == 'post':
-        cursor.execute("""
-            INSERT INTO annales (niveau, serie, matiere, annee, lien_drive, corrige_dispo, source)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            request.form['niveau'],
-            request.form.get('service') or None,
-            request.form['matiere'],
-            int(request.form['annee']),
-            request.form['lien_drive'],
-            1 if request.form.get('corrige_dispo') else 0,
-            request.form.get('source', 'manuel')
-        ))
-        conn.commit()
-        message = "Annale ajoutee !"
-    else:
-        message = None
+    if request.method == 'POST':
+        niveau = request.form['niveau']
+        serie = request.form.get('serie') or None
+        matiere = request.form['matiere']
+        annee = int(request.form['annee'])
+        corrige_dispo = 1 if request.form.get('corrige_dispo') else 0
+
+        fichier = request.files['pdf']
+        if fichier:
+            os.makedirs('data/pdfs', exist_ok=True)
+            nom_fichier = f"{niveau}_{serie or 'NA'}_{matiere}_{annee}.pdf"
+            fichier.save(f"data/pdfs/{nom_fichier}")
+
+            cursor.execute("""
+                INSERT INTO annales (niveau, serie, matiere, annee, chemin_fichier, corrige_dispo)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (niveau, serie, matiere, annee, nom_fichier, corrige_dispo))
+            conn.commit()
+            message = f"Annale ajoutee : {nom_fichier}"
+
     cursor.execute("SELECT * FROM annales ORDER BY id DESC LIMIT 20")
     annales = cursor.fetchall()
     conn.close()
-    return render_template('admin.html', message=message, annales=annales)    
+    return render_template('admin.html', message=message, annales=annales)
+
+@app.route('/pdf/<path:filename>')
+def serve_pdf(filename):
+    return send_from_directory('data/pdfs', filename)
+
+@app.route('/annales/<niveau>/<serie>/<matiere>')
+def annales_avec_serie(niveau, serie, matiere):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM annales WHERE niveau=? AND serie=? AND matiere=? AND actif=1 ORDER BY annee DESC", (niveau, serie, matiere))
+    annales = cursor.fetchall()
+    conn.close()
+    return render_template('annales.html', annales=annales, niveau=niveau, serie=serie, matiere=matiere)
+
+   
     
 
 

@@ -9,7 +9,7 @@ ok
     <h3>Choisir une matiere :</h3>
     {% for matiere in matieres %}
         {% if serie %}
-             <a href="/annales/bac/{{ serie }}/{{ matiere }}" class="btn">{{ matiere }}</a>
+            <a href="/annales/{{ niveau }}/{{ serie }}/{{ matiere }}" class="btn">{{ matiere }}</a> 
         {% else %}
             <a href="/annales/{{ niveau }}/{{ matiere }}" class="btn">{{ matiere }}</a>
         {% endif %}
