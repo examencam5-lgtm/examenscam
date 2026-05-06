@@ -35,7 +35,7 @@ def bac_serie(serie):
     conn.close()
     return render_template('niveau.html', niveau='BAC', serie=serie, matieres=matieres)
 
-@app.route('/annales/bac/<niveau>/<matiere>')
+@app.route('/annales/<niveau>/<matiere>')
 def annales(niveau,matiere):
     conn = get_connection()
     cursor = conn.cursor()
@@ -54,12 +54,7 @@ def annales_bac(serie, matiere):
     return render_template('annales.html' , annales=annales, niveau='BAC', serie=serie , matiere=matiere)
 @app.route('/probatoire')
 def probatoire():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT matiere FROM annales WHERE niveau='Probatoire' AND actif=1")
-    matieres = [row[0] for row in cursor.fetchall()]
-    conn.close()
-    return render_template('niveau.html', niveau='Probatoire', matieres=matieres)
+    return render_template('probatoire_series.html')
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
