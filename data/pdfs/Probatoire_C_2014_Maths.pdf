@@ -9,7 +9,7 @@ endobj
 <<
 /Type /Pages
 /Count 2
-/Kids [ 4 0 R 118 0 R ]
+/Kids [ 4 0 R 120 0 R ]
 >>
 endobj
 3 0 obj
@@ -27,17 +27,19 @@ endobj
 /F0 6 0 R
 /F1 80 0 R
 /F1-0 83 0 R
-/F2 84 0 R
-/F2-0 87 0 R
-/F3 88 0 R
-/F4 92 0 R
-/F5 96 0 R
-/F6 99 0 R
-/F7 102 0 R
-/F8 105 0 R
+/F1-1 84 0 R
+/F2 85 0 R
+/F2-0 88 0 R
+/F2-1 89 0 R
+/F3 90 0 R
+/F4 94 0 R
+/F5 98 0 R
+/F6 101 0 R
+/F7 104 0 R
+/F8 107 0 R
 >>
 /XObject <<
-/NxFm0 110 0 R
+/NxFm0 112 0 R
 >>
 /ProcSet [ /ImageB /ImageC /ImageI /PDF /Text ]
 >>
@@ -48,9 +50,10 @@ endobj
 endobj
 5 0 obj
 <<
-/Length 17890
+/Length 18381
 >>
 stream
+q
 q
  q 
  q 
@@ -1150,6 +1153,56 @@ ET
 Q
 
 
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-1 12 Tf
+14.4 TL
+ET
+0.101961 0.321569 0.462745 rg
+n
+0 0 595.2756 22 re
+f*
+0.831373 0.67451 0.05098 rg
+n
+0 22 595.2756 2 re
+f*
+1 1 1 rg
+BT
+/F2-1 8 Tf
+9.6 TL
+ET
+BT
+1 0 0 1 10 8 Tm
+(ExamensCam) Tj
+T*
+ET
+BT
+/F1-1 7 Tf
+8.4 TL
+ET
+BT
+1 0 0 1 212.3043 8 Tm
+(examenscam\056onrender\056com \174 Tes annales\054 organis\351es\056) Tj
+T*
+ET
+BT
+/F1-1 7 Tf
+8.4 TL
+ET
+BT
+1 0 0 1 469.7266 8 Tm
+(Probatoire C \227 Mathematiques 2014) Tj
+T*
+ET
+Q
+
+
 endstream
 endobj
 6 0 obj
@@ -2038,9 +2091,18 @@ endobj
 endobj
 84 0 obj
 <<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+85 0 obj
+<<
 /BaseFont /FZJPRY+CMSY10
 /FirstChar 33
-/FontDescriptor 85 0 R
+/FontDescriptor 86 0 R
 /LastChar 196
 /Name /F3
 /Subtype /Type1
@@ -2048,21 +2110,21 @@ endobj
 /Widths [ 1000 500 500 1000 1000 1000 777.8 1000 1000 611.1 611.1 1000 1000 1000 777.8 275 1000 666.7 666.7 888.9 888.9 0 0 555.6 555.6 666.7 500 722.2 722.2 777.8 777.8 611.1 798.5 656.8 526.5 771.4 527.8 718.7 594.9 844.5 544.5 677.8 762 689.7 1200.9 820.5 796.1 695.6 816.7 847.5 605.6 544.6 625.8 612.8 987.8 713.3 668.3 724.7 666.7 666.7 666.7 666.7 666.7 611.1 611.1 444.4 444.4 444.4 444.4 500 500 388.9 388.9 277.8 500 500 611.1 500 277.8 833.3 750 833.3 416.7 666.7 666.7 777.8 777.8 444.4 444.4 444.4 611.1 777.8 777.8 777.8 777.8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 777.8 277.8 777.8 500 777.8 500 777.8 777.8 777.8 777.8 0 0 777.8 777.8 777.8 1000 500 500 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 1000 1000 777.8 777.8 1000 777.8 ]
 >>
 endobj
-85 0 obj
+86 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 68
 /FontBBox [ -29 -960 1116 775 ]
-/FontFile 86 0 R
+/FontFile 87 0 R
 /FontName /FZJPRY+CMSY10
 /ItalicAngle -14.035
 /StemV 85
 /Type /FontDescriptor
 >>
 endobj
-86 0 obj
+87 0 obj
 <<
 /Length1 931
 /Length2 1486
@@ -2077,7 +2139,7 @@ fäæ¶ÇP\@¯ÑOM@∏dÚy	`¢,2≈âOTC	/ˇ±≠„Í{q[á„Ñp'‰'ıó<¬≈8í/>7@$Dq‡»g¢8Ô{™':eŒe
 t∏-k}CIÆ˙œ≠&OdªÛïßÂBÛæß«œº∑"≥,i∂Í·∫¢˚≠^±§{+ì.Ïm+…c˜\öU\b#£Êñ{Ω±y@jÁ˚√AS∑^E•Ë„Í,«∫˝*Ccˆ√Fmâ÷˙s8ZëFÔ¿42£J¸8‚û›2í^Iì≠å$’æ|ü∫≥ß¢Â∆	Mˇz˜E£©≤ìÌ∆É%Êµäæ¶}iÓëˆÄ6˜ù‘jSFS‘Äœ4y:o"uCvœvuÜÎå≈+ùj*_ˆée,X†∞Á*\˙f9)yoGEQ=L˘–ˆ¡îÏE˜í€P!©7˛ˆ´º÷Ñ£ô	Úª˜æ{Ê5LÕJTê‰∂E˛®ˇCcLss†á≈·4Û≈[^0.*¡r‚c‰÷ﬁ«ïo´Üü¶∫òì¥Ç˝N∫ñ©<Ú6,ü}ﬂ≤h(©Õ·t∑èµ´Ôvœ°–ï§çÕH“íYI∏$tïÌÛP÷¢∂˛Ë„◊ßœ¥8˙≠Î√k±¯à5™f~±Ò≥Œ:Mz8ì~´’Ü¶êX≈|Ë£ÎùtWÕ≠«∆∞ˇ-k¡É‚JÛk¢ìeÈ™–`“æRôízﬂÜ‘g©I•HV‘“π%√Û¯^€c÷VÙôÕxû¶gQ†ßIæQdlôV®∂.moŸÑl¿∫º+È=	Ok∑ÕÑ÷/-åo˛IZïâ›9öo˜â%âM;w^Fo”[Ÿ<⁄NFX¡PVò|È'˘éÌs˜CˇÂG˛ø¿ˇÑ ÉÉ"∏êœE]dÚﬂÔª}k
 endstream
 endobj
-87 0 obj
+88 0 obj
 <<
 /BaseFont /Helvetica-Bold
 /Encoding /WinAnsiEncoding
@@ -2086,12 +2148,21 @@ endobj
 /Type /Font
 >>
 endobj
-88 0 obj
+89 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+90 0 obj
 <<
 /BaseFont /BWTWXC+CMR10
-/Encoding 89 0 R
+/Encoding 91 0 R
 /FirstChar 33
-/FontDescriptor 90 0 R
+/FontDescriptor 92 0 R
 /LastChar 196
 /Name /F4
 /Subtype /Type1
@@ -2099,27 +2170,27 @@ endobj
 /Widths [ 277.8 500 833.3 500 833.3 777.8 277.8 388.9 388.9 500 777.8 277.8 333.3 277.8 500 500 500 500 500 500 500 500 500 500 500 277.8 277.8 277.8 777.8 472.2 472.2 777.8 750 708.3 722.2 763.9 680.6 652.8 784.7 750 361.1 513.9 777.8 625 916.7 750 777.8 680.6 777.8 736.1 555.6 722.2 750 750 1027.8 750 750 611.1 277.8 500 277.8 500 277.8 277.8 500 555.6 444.4 555.6 444.4 305.6 500 555.6 277.8 305.6 527.8 277.8 833.3 555.6 500 555.6 527.8 391.7 394.4 388.9 555.6 527.8 722.2 527.8 527.8 444.4 500 1000 500 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 625 833.3 777.8 694.4 666.7 750 722.2 777.8 722.2 777.8 0 0 722.2 583.3 555.6 555.6 833.3 833.3 277.8 305.6 500 500 500 500 500 750 444.4 500 722.2 777.8 500 902.8 1013.9 777.8 277.8 500 ]
 >>
 endobj
-89 0 obj
+91 0 obj
 <<
 /Differences [ 33 /exclam /quotedblright /numbersign /dollar /percent /ampersand /quoteright /parenleft /parenright /asterisk /plus /comma /hyphen /period /slash /zero /one /two /three /four /five /six /seven /eight /nine /colon /semicolon /exclamdown /equal /questiondown /question /at /A /B /C /D /E /F /G /H /I /J /K /L /M /N /O /P /Q /R /S /T /U /V /W /X /Y /Z /bracketleft /quotedblleft /bracketright /circumflex /dotaccent /quoteleft /a /b /c /d /e /f /g /h /i /j /k /l /m /n /o /p /q /r /s /t /u /v /w /x /y /z /endash /emdash /hungarumlaut /tilde /dieresis /Gamma /Delta /Theta /Lambda /Xi /Pi /Sigma /Upsilon /Phi /Psi /Omega /ff /fi /fl /ffi /ffl /dotlessi /dotlessj /grave /acute /caron /breve /macron /ring /cedilla /germandbls /ae /oe /oslash /AE /OE /Oslash /suppress /Gamma /Delta /Theta /Lambda /Xi /Pi /Sigma /Upsilon /Phi /Psi 173 /Omega /ff /fi /fl /ffi /ffl /dotlessi /dotlessj /grave /acute /caron /breve /macron /ring /cedilla /germandbls /ae /oe /oslash /AE /OE /Oslash /suppress /dieresis 255 /dieresis ]
 /Type /Encoding
 >>
 endobj
-90 0 obj
+92 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 4
 /FontBBox [ -251 -250 1009 969 ]
-/FontFile 91 0 R
+/FontFile 93 0 R
 /FontName /BWTWXC+CMR10
 /ItalicAngle 0
 /StemV 69
 /Type /FontDescriptor
 >>
 endobj
-91 0 obj
+93 0 obj
 <<
 /Length1 720
 /Length2 5427
@@ -2148,12 +2219,12 @@ xm≥‚⁄¶v¢_˝»Êå:™ı)g4ÙÔWÏz»ÇsµwÖOÜ^P( Í‹YmÕ5≤ïk›V∞Ê6ﬂùQüX≥r ùøËeUñÒ†˜^›®™+
 Á≥‹ΩGC-,•EøÓ^≤™^giã^v4ÕÜ.ÄRî*gk/~§‹#-z◊U ÁA<vòL&Óö+y(-	/˘0~”Î·∂ÑE¯ˆú&âêÀîﬂN∞üa\Ú;Œ˜ÛïDY,â™°ìz0uâΩ∞µø_≈ÆÑÎ{%$œ>ﬂJ0Â≤A‹é¢æ˘œí¶Ìox}™%1LÛrîà◊ñ≠˝ÏÁS*ì¥ê¿b}úÜgµÛ´‚≠Ç§”j√ö§ÅÄ.kﬂó'˚4Ê Æ*u®q˜¿2ﬂ	:GÑÉp	÷<¿lÑ*CÚç%¯\≥—Õn,lÜ`-9ã’<™ª‘”˙Xê®ÑƒCN9sZÙ£öÒQ)ÆÏΩÎ´Õƒ”<LΩ¸—™KU”o∫ki=√®ï.ÊJ≤V˘_^Äˇ7¯?a sÜC›—(®ª «€P
 endstream
 endobj
-92 0 obj
+94 0 obj
 <<
 /BaseFont /TGMUFS+CMR8
-/Encoding 93 0 R
+/Encoding 95 0 R
 /FirstChar 33
-/FontDescriptor 94 0 R
+/FontDescriptor 96 0 R
 /LastChar 196
 /Name /F5
 /Subtype /Type1
@@ -2161,27 +2232,27 @@ endobj
 /Widths [ 295.1 531.3 885.4 531.3 885.4 826.4 295.1 413.2 413.2 531.3 826.4 295.1 354.2 295.1 531.3 531.3 531.3 531.3 531.3 531.3 531.3 531.3 531.3 531.3 531.3 295.1 295.1 295.1 826.4 501.7 501.7 826.4 795.8 752.1 767.4 811.1 722.6 693.1 833.5 795.8 382.6 545.5 825.4 663.6 972.9 795.8 826.4 722.6 826.4 781.6 590.3 767.4 795.8 795.8 1091 795.8 795.8 649.3 295.1 531.3 295.1 531.3 295.1 295.1 531.3 590.3 472.2 590.3 472.2 324.7 531.3 590.3 295.1 324.7 560.8 295.1 885.4 590.3 531.3 590.3 560.8 414.1 419.1 413.2 590.3 560.8 767.4 560.8 560.8 472.2 531.3 1062.5 531.3 531.3 531.3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 663.6 885.4 826.4 736.8 708.3 795.8 767.4 826.4 767.4 826.4 0 0 767.4 619.8 590.3 590.3 885.4 885.4 295.1 324.7 531.3 531.3 531.3 531.3 531.3 795.8 472.2 531.3 767.4 826.4 531.3 958.7 1076.8 826.4 295.1 531.3 ]
 >>
 endobj
-93 0 obj
+95 0 obj
 <<
 /Differences [ 33 /exclam /quotedblright /numbersign /dollar /percent /ampersand /quoteright /parenleft /parenright /asterisk /plus /comma /hyphen /period /slash /zero /one /two /three /four /five /six /seven /eight /nine /colon /semicolon /exclamdown /equal /questiondown /question /at /A /B /C /D /E /F /G /H /I /J /K /L /M /N /O /P /Q /R /S /T /U /V /W /X /Y /Z /bracketleft /quotedblleft /bracketright /circumflex /dotaccent /quoteleft /a /b /c /d /e /f /g /h /i /j /k /l /m /n /o /p /q /r /s /t /u /v /w /x /y /z /endash /emdash /hungarumlaut /tilde /dieresis /Gamma /Delta /Theta /Lambda /Xi /Pi /Sigma /Upsilon /Phi /Psi /Omega /ff /fi /fl /ffi /ffl /dotlessi /dotlessj /grave /acute /caron /breve /macron /ring /cedilla /germandbls /ae /oe /oslash /AE /OE /Oslash /suppress /Gamma /Delta /Theta /Lambda /Xi /Pi /Sigma /Upsilon /Phi /Psi 173 /Omega /ff /fi /fl /ffi /ffl /dotlessi /dotlessj /grave /acute /caron /breve /macron /ring /cedilla /germandbls /ae /oe /oslash /AE /OE /Oslash /suppress /dieresis 255 /dieresis ]
 /Type /Encoding
 >>
 endobj
-94 0 obj
+96 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 4
 /FontBBox [ -36 -250 1070 750 ]
-/FontFile 95 0 R
+/FontFile 97 0 R
 /FontName /TGMUFS+CMR8
 /ItalicAngle 0
 /StemV 76
 /Type /FontDescriptor
 >>
 endobj
-95 0 obj
+97 0 obj
 <<
 /Length1 712
 /Length2 1316
@@ -2203,11 +2274,11 @@ eDΩ¢¸^IÒ◊ÿ¸sﬂJÚ˚6’∫%˛y˙g¸ë´EıZ˜+Ä>â¡BüÅ“ç“⁄;±ﬂﬂ|µnrMØûO—§Ímxﬁ‰8À(P˙´ˇó?
 7+ª¥.∞püªv«9~◊Êﬁ(ËÙ?qÀ∞Á`Õ4Ò ¡ˆHLÈCí}xº◊fY1!LN}ÎyπPÑu».7~é˛ç‚ˇøã $2Ÿ:ëÉ@¸–Û
 endstream
 endobj
-96 0 obj
+98 0 obj
 <<
 /BaseFont /LBSJFP+MSBM10
 /FirstChar 0
-/FontDescriptor 97 0 R
+/FontDescriptor 99 0 R
 /LastChar 127
 /Name /F6
 /Subtype /Type1
@@ -2215,21 +2286,21 @@ endobj
 /Widths [ 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 888.9 888.9 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 777.8 500 277.8 222.2 388.9 611.1 722.2 611.1 722.2 777.8 777.8 777.8 777.8 1000 1000 1000 1000 1000 1000 777.8 777.8 555.6 722.2 666.7 722.2 722.2 666.7 611.1 777.8 777.8 388.9 500 777.8 666.7 944.4 722.2 777.8 611.1 777.8 722.2 555.6 666.7 722.2 722.2 1000 722.2 722.2 666.7 1888.9 2333.3 1888.9 2333.3 0 555.6 638.9 0 0 0 0 722.2 555.6 777.8 666.7 444.4 666.7 777.8 777.8 777.8 777.8 222.2 388.9 777.8 777.8 777.8 777.8 777.8 777.8 1000 1000 777.8 666.7 555.6 540.3 540.3 429.2 ]
 >>
 endobj
-97 0 obj
+99 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 4
 /FontBBox [ -55 -420 2343 920 ]
-/FontFile 98 0 R
+/FontFile 100 0 R
 /FontName /LBSJFP+MSBM10
 /ItalicAngle 0
 /StemV 40
 /Type /FontDescriptor
 >>
 endobj
-98 0 obj
+100 0 obj
 <<
 /Length1 827
 /Length2 1887
@@ -2250,11 +2321,11 @@ b⁄Aë ô ±H! ÖHeÇüÚ L˛r4]üÎ‚≠›Ìö;âœUÇYÓú–øÛn√?≈Ëƒ¸µ0†H¿•ÉB°˘@˛˚˚óˇ”laù
 ¿ûæóJHaúöÈÊÈÆ_ì}Õ¨U]À8Ÿg≠¢í‹sªø†£ñÁ+,Îúw©e∑ºXz*aÑ2Y™≤ïÒÇK‹Î’ﬁ‰ˆÓ˝ìÂõ·-nç¯ã◊jZ'Ø“h7J[I)w'Ω˚7ÙW⁄ãÔÆ¨rÁû=÷*ßºπ=ÒÕló,∑wÅ^q5üCò^¥Ô|zpÔàˆ…•ùI£ÚÚB_Â.&E…ÉÌ¯Œ˙}C.·ÊâÁÿIql£Ï∫®r[¥˝·d˜\`˙πpMûab⁄Àl∑Ëµ·§BßQ	6“Û¶¶qy÷ü∑é5œÇEZ¿FèIÿ˘∆…\Ø.≈æ’ÚYÍ_n[§cõR˜ºΩ≠ƒ]≥ß^à8‘¨‘ˆxZn∆}Ãß‚Né&“˘ËUÖ§®låZS‘…o,£∑Íy«ÑÜ;\Õ_Á€˙w◊&ﬁﬁTÆÕ8Óü9¿;ﬁ¨~‚¢ÔÃÕÄÍry{≥”ÛÚ;*r›K´xóÆº»ıs¨|h#ñÄj;‚µˇXÔö„S¥˝Lñ»û£≠)ÇîÜïë´göwr„TtÉªÌ]h=≈À~ñ∫˘·õ.oœ¨’6Êô‹LK"∫:§ªÀKXJ0µm‚]ewJ›¡Í]–qõ∂@˝ó‚ˇˇ$*Hd∞Ë4"„$ÒWÉ(
 endstream
 endobj
-99 0 obj
+101 0 obj
 <<
 /BaseFont /OGXQAH+CMMI10
 /FirstChar 33
-/FontDescriptor 100 0 R
+/FontDescriptor 102 0 R
 /LastChar 196
 /Name /F7
 /Subtype /Type1
@@ -2262,21 +2333,21 @@ endobj
 /Widths [ 622.5 466.3 591.4 828.1 517 362.8 654.2 1000 1000 1000 1000 277.8 277.8 500 500 500 500 500 500 500 500 500 500 500 500 277.8 277.8 777.8 500 777.8 500 530.9 750 758.5 714.7 827.9 738.2 643.1 786.2 831.3 439.6 554.5 849.3 680.6 970.1 803.5 762.8 642 790.6 759.3 613.2 584.4 682.8 583.3 944.4 828.5 580.6 682.6 388.9 388.9 388.9 1000 1000 416.7 528.6 429.2 432.8 520.5 465.6 489.6 477 576.2 344.5 411.8 520.6 298.4 878 600.2 484.7 503.1 446.4 451.2 468.8 361.1 572.5 484.7 715.9 571.5 490.3 465 322.5 384 636.5 500 277.8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 615.3 833.3 762.8 694.4 742.4 831.3 779.9 583.3 666.7 612.2 0 0 772.4 639.7 565.6 517.7 444.4 405.9 437.5 496.5 469.4 353.9 576.2 583.3 602.5 494 437.5 570 517 571.4 437.2 540.3 595.8 625.7 651.4 277.8 ]
 >>
 endobj
-100 0 obj
+102 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 68
 /FontBBox [ -32 -250 1048 750 ]
-/FontFile 101 0 R
+/FontFile 103 0 R
 /FontName /OGXQAH+CMMI10
 /ItalicAngle -14.04
 /StemV 72
 /Type /FontDescriptor
 >>
 endobj
-101 0 obj
+103 0 obj
 <<
 /Length1 1143
 /Length2 6277
@@ -2307,11 +2378,11 @@ hM)_È?Ωr‹–1?ä∫X9xSÔﬁ*/¨ﬁÕPÛ9uö®Ì‚Ó≥lÙ\ˆ~øÒ∞2KZwJ”õæ„‘óÄÍh„ÎE˝N“v‹’3…pZÍÉë3
 ypﬁ…lÜ8µΩ®÷ãÇ°ßzÂßU©{1Œ…ío¢!Éæ?≈,t£9BSª#Ìp¨?‡˘ˆõÌπ‚\≈z,∆yﬁ∆jál∞òx:ﬁUª^“˚VwXü*‡ß#Zfsz5¯•’vIaS≥4∆KWëPçî∫Öd€∑ªß3{¯YîÍä‘—r!ûº^BªÌöäÊP«û¢‹ÀÚ+nIwì–¶Úˆ·e˙gúÂ˚¶Úª“‚e≈o‘PﬁjmC‰≠w†ù|hux•5÷ô•JÚÆ»Ù{j§jÇgÔÉ◊m&Ÿ@}wT…Ô:é≥∏Õq™ZHkôÈówXÖÍƒ,˛ò∑6„Å7¡4"º˚Wh%ª˛gq>Dé>ÑOáã∂Ù#U rZ«;=HR(ù–j∑*ähmA·πÂÔŒUäUóÙ2_ÿc˝ÕœÿªK˛»üTï—JÚ1•Ob√XﬁêòvØÈX—ﬁnÓí≠ÈØ<%OíÚ‡x∫∏Ãı˘Ä˛ø¿ˇ¶6p®#“ŒÍh˝Øb®
 endstream
 endobj
-102 0 obj
+104 0 obj
 <<
 /BaseFont /FRUHRO+CMSY8
 /FirstChar 33
-/FontDescriptor 103 0 R
+/FontDescriptor 105 0 R
 /LastChar 196
 /Name /F8
 /Subtype /Type1
@@ -2319,21 +2390,21 @@ endobj
 /Widths [ 1062.5 531.3 531.3 1062.5 1062.5 1062.5 826.4 1062.5 1062.5 649.3 649.3 1062.5 1062.5 1062.5 826.4 288.2 1062.5 708.3 708.3 944.5 944.5 0 0 590.3 590.3 708.3 531.3 767.4 767.4 826.4 826.4 649.3 849.5 694.7 562.6 821.7 560.8 758.3 631 904.2 585.5 720.1 807.4 730.7 1264.5 869.1 841.6 743.3 867.7 906.9 643.4 586.3 662.8 656.2 1054.6 756.4 705.8 763.6 708.3 708.3 708.3 708.3 708.3 649.3 649.3 472.2 472.2 472.2 472.2 531.3 531.3 413.2 413.2 295.1 531.3 531.3 649.3 531.3 295.1 885.4 795.8 885.4 443.6 708.3 708.3 826.4 826.4 472.2 472.2 472.2 649.3 826.4 826.4 826.4 826.4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 826.4 295.1 826.4 531.3 826.4 531.3 826.4 826.4 826.4 826.4 0 0 826.4 826.4 826.4 1062.5 531.3 531.3 826.4 826.4 826.4 826.4 826.4 826.4 826.4 826.4 826.4 826.4 826.4 826.4 1062.5 1062.5 826.4 826.4 1062.5 826.4 ]
 >>
 endobj
-103 0 obj
+105 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 68
 /FontBBox [ -30 -955 1185 779 ]
-/FontFile 104 0 R
+/FontFile 106 0 R
 /FontName /FRUHRO+CMSY8
 /ItalicAngle -14.035
 /StemV 89
 /Type /FontDescriptor
 >>
 endobj
-104 0 obj
+106 0 obj
 <<
 /Length1 791
 /Length2 690
@@ -2349,17 +2420,17 @@ i˘E\†X543T–œÕÃ+-âÉÖL,Ùä2ÅÓâ`zÕ…)ø¢Z◊ÿ@A◊hâ°°Ö©Çππe-™¬–ºÃ¬“TOSC∞hriQQ
 ]S>1◊jÅË¸Ìã-22I0ÿe@!‡5`XêúìöXTíüõXîÕ≈ ”|±Û
 endstream
 endobj
-105 0 obj
+107 0 obj
 <<
 /BaseFont /ArialMT
-/DescendantFonts [ 106 0 R ]
+/DescendantFonts [ 108 0 R ]
 /Encoding /Identity-H
 /Subtype /Type0
-/ToUnicode 109 0 R
+/ToUnicode 111 0 R
 /Type /Font
 >>
 endobj
-106 0 obj
+108 0 obj
 <<
 /BaseFont /ArialMT
 /CIDSystemInfo <<
@@ -2367,13 +2438,13 @@ endobj
 /Registry (Adobe)
 /Supplement 0
 >>
-/FontDescriptor 107 0 R
+/FontDescriptor 109 0 R
 /Subtype /CIDFontType2
 /Type /Font
 /W [ 3 [ 277 ] ]
 >>
 endobj
-107 0 obj
+109 0 obj
 <<
 /Ascent 905
 /AvgWidth 904
@@ -2381,7 +2452,7 @@ endobj
 /Descent -211
 /Flags 32
 /FontBBox [ -664 -324 2000 1039 ]
-/FontFile2 108 0 R
+/FontFile2 110 0 R
 /FontName /ArialMT
 /ItalicAngle 0
 /Leading 0
@@ -2393,7 +2464,7 @@ endobj
 /XHeight 0
 >>
 endobj
-108 0 obj
+110 0 obj
 <<
 /Filter /FlateDecode
 /Length1 259440
@@ -2633,7 +2704,7 @@ cö^®öj™‰≈XØ]#‘Éh|
 çíqçg [tΩ«Åµå¶•qÎ‹∑ÕÔhÜîÍ•∂:¢.∑AÃ≥€â>ØgàÀÒ≠øfÏ€WΩ;∆…ãW√uﬂ»˘¬DBõ%;M\(¬◊4˜À.Öò|œm=ïZ«Z⁄Uœm‹£„îµS*óg„çs}Q;2máúng≤aUî+}Ø#^*«≤DÅW∆˝m£Äü?ëò·ìnËúô.I¯˛dáΩ˘t	ï4yóç™M’•Èj”ùˇ¡#-4HW£Ç›ÌÇáN5˙fReı~–kÆØ$áAw/Ú∑È‰§XSìª˘b,∫nt´*ä?ã(m=:»N=m°J`™ﬁ^∂sV≠eö¥ãJ ÜÆëRÒÛÙDŸïˆ)„≥Û\ûπ'ˆ®û.s5ŒmSL¢d:˝ [d∂ﬂSvµæ5æ¥˘•ç√K·ÀÌ¸ﬁW•‰Kkáƒ>)UB•o{∂"ï≤qç⁄ÒJëΩ÷∂vQ_~ﬂ[ô{ﬂºù1?∂ı8[‘,gî©ˆµﬁ§-Éµnß¡]ÉéΩî˜ùYØï√ˆ¥<Y;:1ã©Ÿ-Ì^ùæ öP¿Ûp.nq√ENÌ∞Ü3œ\Î:°wKléıªØ§ç¯˜◊∏<.Ÿ¢8ÿï·ø‡}ÀHã'?Ù_úE_
 endstream
 endobj
-109 0 obj
+111 0 obj
 <<
 /Filter /FlateDecode
 /Length 197
@@ -2643,12 +2714,12 @@ xúMOªÉ0‹#Â<∂S]]˙Pi? C#ï$2a‡ÔõÜuÒŸgﬂŸU}¨≠	 Æ‰TÉzc5·‰fR∆rñÂ†ç
 ø2Å[œôà˙fôéµÌg ‚¶@ÏŒ&ê€'ÚB…ÿvè™…WÆôΩ·à6Ä‰¨,Acˇ1=µ˛‹é"Èˇÿ˚‚Úï»÷{∫^=[‚¨êRJàêÀí3¥˙◊âÈzÌÊ´f¢∏4=ï|?é∆‚ˆ∏w>Èæ·¥Z∆
 endstream
 endobj
-110 0 obj
+112 0 obj
 <<
 /BBox [ 0 0 612 792 ]
 /Matrix [ 1 0 0 1 0 0 ]
-/PieceInfo 111 0 R
-/Resources 115 0 R
+/PieceInfo 113 0 R
+/Resources 117 0 R
 /Subtype /Form
 /Type /XObject
 /Filter /FlateDecode
@@ -2659,25 +2730,25 @@ xús
 ·2T0 ¬¢t.0#»»(Á“w6PH/Ê“w3P04UIÉ™3T0≤∞P04“31äÊriòò[jÜdqπÜp ^—
 endstream
 endobj
-111 0 obj
+113 0 obj
 <<
 /ADBE_CompoundType <<
 >>
-/NitroPDFProfessional_data 112 0 R
->>
-endobj
-112 0 obj
-<<
-/LastModified (D\07220180207201740\05301\04700\047)
-/Private 113 0 R
->>
-endobj
-113 0 obj
-<<
-/ProfileData 114 0 R
+/NitroPDFProfessional_data 114 0 R
 >>
 endobj
 114 0 obj
+<<
+/LastModified (D\07220180207201740\05301\04700\047)
+/Private 115 0 R
+>>
+endobj
+115 0 obj
+<<
+/ProfileData 116 0 R
+>>
+endobj
+116 0 obj
 <<
 /Filter /FlateDecode
 /Length 0
@@ -2686,17 +2757,17 @@ stream
 
 endstream
 endobj
-115 0 obj
+117 0 obj
 <<
 /ExtGState <<
-/GS0 116 0 R
+/GS0 118 0 R
 >>
 /Font <<
-/F0 117 0 R
+/F0 119 0 R
 >>
 >>
 endobj
-116 0 obj
+118 0 obj
 <<
 /CA 1
 /TR2 /Default
@@ -2704,7 +2775,7 @@ endobj
 /ca 1
 >>
 endobj
-117 0 obj
+119 0 obj
 <<
 /BaseFont /Courier
 /Encoding /WinAnsiEncoding
@@ -2712,27 +2783,29 @@ endobj
 /Type /Font
 >>
 endobj
-118 0 obj
+120 0 obj
 <<
-/Contents 119 0 R
+/Contents 121 0 R
 /MediaBox [ 0 0 612 792 ]
 /Resources <<
 /Font <<
 /F0 6 0 R
-/F1 99 0 R
+/F1 101 0 R
 /F1-0 83 0 R
-/F2 88 0 R
-/F2-0 87 0 R
-/F3 84 0 R
-/F4 92 0 R
-/F5 102 0 R
-/F6 120 0 R
-/F7 96 0 R
+/F1-1 84 0 R
+/F2 90 0 R
+/F2-0 88 0 R
+/F2-1 89 0 R
+/F3 85 0 R
+/F4 94 0 R
+/F5 104 0 R
+/F6 122 0 R
+/F7 98 0 R
 /F8 80 0 R
-/F9 105 0 R
+/F9 107 0 R
 >>
 /XObject <<
-/NxFm0 123 0 R
+/NxFm0 125 0 R
 >>
 /ProcSet [ /ImageB /ImageC /ImageI /PDF /Text ]
 >>
@@ -2741,11 +2814,12 @@ endobj
 /Parent 2 0 R
 >>
 endobj
-119 0 obj
+121 0 obj
 <<
-/Length 19816
+/Length 20307
 >>
 stream
+q
 q
  q 
  q 
@@ -3967,13 +4041,63 @@ ET
 Q
 
 
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-1 12 Tf
+14.4 TL
+ET
+0.101961 0.321569 0.462745 rg
+n
+0 0 595.2756 22 re
+f*
+0.831373 0.67451 0.05098 rg
+n
+0 22 595.2756 2 re
+f*
+1 1 1 rg
+BT
+/F2-1 8 Tf
+9.6 TL
+ET
+BT
+1 0 0 1 10 8 Tm
+(ExamensCam) Tj
+T*
+ET
+BT
+/F1-1 7 Tf
+8.4 TL
+ET
+BT
+1 0 0 1 212.3043 8 Tm
+(examenscam\056onrender\056com \174 Tes annales\054 organis\351es\056) Tj
+T*
+ET
+BT
+/F1-1 7 Tf
+8.4 TL
+ET
+BT
+1 0 0 1 469.7266 8 Tm
+(Probatoire C \227 Mathematiques 2014) Tj
+T*
+ET
+Q
+
+
 endstream
 endobj
-120 0 obj
+122 0 obj
 <<
 /BaseFont /YABKOW+rsfs10
 /FirstChar 65
-/FontDescriptor 121 0 R
+/FontDescriptor 123 0 R
 /LastChar 127
 /Name /F9
 /Subtype /Type1
@@ -3981,21 +4105,21 @@ endobj
 /Widths [ 802.5 907.6 666.2 774.4 561.6 895.4 609.6 969.2 809.1 1051.6 913.6 873.7 1080.3 901.5 737.9 1012.6 882.8 850 867.7 747 800 622 805.3 944.4 709.6 821.2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 277.8 ]
 >>
 endobj
-121 0 obj
+123 0 obj
 <<
 /Ascent 850
 /CapHeight 850
 /Descent -200
 /Flags 68
 /FontBBox [ -2 -300 1240 728 ]
-/FontFile 122 0 R
+/FontFile 124 0 R
 /FontName /YABKOW+rsfs10
 /ItalicAngle -12
 /StemV 22
 /Type /FontDescriptor
 >>
 endobj
-122 0 obj
+124 0 obj
 <<
 /Length1 827
 /Length2 2834
@@ -4017,12 +4141,12 @@ d∏zmê·AﬁEÀÆ√Fµ>Z˝mgîgÇ|íHHsY˛ÊVÔÑò^åÏîoÅö ä§-{ÿ	{˚êuKkZ≤¿^L+˛é≤œâŸ
 5±ø]π…WÜ¿c2™QÜ ∂◊Ë€≠ó€Í’W%]	Zãˇ÷eÓ6“˘.&‘Ÿ˜F¿£AGXßÔd<N\©¢ÚàÂ.uUIo#ˇ∑πéÃ∂Ã:æå†K‡e)¡∫‘%ØôM‰WK—Û,ã4ht€¸˚≥¸˙êél?pÃ–ë◊†öü µÚÀR€ô‹˝Lûs![\-∏«âˇsº±‰√π7;ÚkÉÈ)a ≥Ù0÷€gAÎ9˘[ÑŒ€¡^Y>÷H]àsß’π¡gÀƒƒÿ¿®œB’¯2#±6uésˇ“>74ÒrŸ˚\G‰ñÕ>ç©víV£º˘»‚$PsÊπkπ˛Ó¡Å‚úÅBÀöq|q§bCCJ¬Â¸{wœO∫˜åó˚¢9•‰é≥Y‡[YW\.[ôGñˇ¢1"4‘‚ëí˛ﬁKfY{ö¿U{%°E÷A”&RWãÜm_¥+≥ŒlÃM5Aÿ_mõ—é£E$˙d;oÙ{)!Snµ!òKœ<ÛË0v}@•«≤'∏g*ïµüx\°î”ö§{˛ö92“Pm=˝⁄=ÕÉ}jœS∏È√á"NÿB‡÷	w¶ßk∂ó¢ŒÑÎ^åprËá"ÃwG&5‰d«-ó®]æc[;ª'˘Brtÿ‰ÊÒxù¡’Ô¬G⁄Á~{8\€*e=ØõÓ>*\`™eiî¿Û:¬ùK‰øÈÕ’˚˙¶a=ˆt⁄≠¨xW[8áæZrœn¯M|`ËIàW…gæX⁄Èˆä⁄˘çÂáŒaìW-zó_‹]dÒÊ IÏ']{Ì=ñR®kYEŸÚ|q·3øéı5ó‚%;Ñéi´)z˙õè:ßô–:Sa…mp’πdCø˚Y+ÂıUÊdo^ø“ÿ V?&ó"i˚Ãπæòq˜“I=^„CËΩ+c¸eYxÚø|Dˇü‡ˇéB¿“ô‹[%›GÙ‚‘Ë0
 endstream
 endobj
-123 0 obj
+125 0 obj
 <<
 /BBox [ 0 0 612 792 ]
 /Matrix [ 1 0 0 1 0 0 ]
-/PieceInfo 124 0 R
-/Resources 128 0 R
+/PieceInfo 126 0 R
+/Resources 130 0 R
 /Subtype /Form
 /Type /XObject
 /Filter /FlateDecode
@@ -4033,25 +4157,25 @@ xús
 ·2T0 ¬¢t.0#»»(Á“w6PH/Ê“w3P04UIÉ™3T0≤∞P04“31äÊriòXhÜdqπÜp ]÷…
 endstream
 endobj
-124 0 obj
+126 0 obj
 <<
 /ADBE_CompoundType <<
 >>
-/NitroPDFProfessional_data 125 0 R
->>
-endobj
-125 0 obj
-<<
-/LastModified (D\07220180207201740\05301\04700\047)
-/Private 126 0 R
->>
-endobj
-126 0 obj
-<<
-/ProfileData 127 0 R
+/NitroPDFProfessional_data 127 0 R
 >>
 endobj
 127 0 obj
+<<
+/LastModified (D\07220180207201740\05301\04700\047)
+/Private 128 0 R
+>>
+endobj
+128 0 obj
+<<
+/ProfileData 129 0 R
+>>
+endobj
+129 0 obj
 <<
 /Filter /FlateDecode
 /Length 0
@@ -4060,17 +4184,17 @@ stream
 
 endstream
 endobj
-128 0 obj
+130 0 obj
 <<
 /ExtGState <<
-/GS0 129 0 R
+/GS0 131 0 R
 >>
 /Font <<
-/F0 117 0 R
+/F0 119 0 R
 >>
 >>
 endobj
-129 0 obj
+131 0 obj
 <<
 /CA 1
 /TR2 /Default
@@ -4079,143 +4203,145 @@ endobj
 >>
 endobj
 xref
-0 130
+0 132
 0000000000 65535 f 
 0000000015 00000 n 
 0000000054 00000 n 
 0000000121 00000 n 
 0000000170 00000 n 
-0000000504 00000 n 
-0000018447 00000 n 
-0000020441 00000 n 
-0000021312 00000 n 
-0000021532 00000 n 
-0000021820 00000 n 
-0000022101 00000 n 
-0000022320 00000 n 
-0000022496 00000 n 
-0000022674 00000 n 
-0000022979 00000 n 
-0000023283 00000 n 
-0000023507 00000 n 
-0000023829 00000 n 
-0000024152 00000 n 
-0000024427 00000 n 
-0000024724 00000 n 
-0000025065 00000 n 
-0000025337 00000 n 
-0000025654 00000 n 
-0000025845 00000 n 
-0000026082 00000 n 
-0000026364 00000 n 
-0000026634 00000 n 
-0000026911 00000 n 
-0000027224 00000 n 
-0000027501 00000 n 
-0000027730 00000 n 
-0000027937 00000 n 
-0000028126 00000 n 
-0000028373 00000 n 
-0000028581 00000 n 
-0000028860 00000 n 
-0000029142 00000 n 
-0000029408 00000 n 
-0000029672 00000 n 
-0000029974 00000 n 
-0000030307 00000 n 
-0000030513 00000 n 
-0000030769 00000 n 
-0000031042 00000 n 
-0000031363 00000 n 
-0000031643 00000 n 
-0000031940 00000 n 
-0000032228 00000 n 
-0000032509 00000 n 
-0000032809 00000 n 
-0000033105 00000 n 
-0000033351 00000 n 
-0000033704 00000 n 
-0000033952 00000 n 
-0000034170 00000 n 
-0000034419 00000 n 
-0000034618 00000 n 
-0000034862 00000 n 
-0000035102 00000 n 
-0000035383 00000 n 
-0000035683 00000 n 
-0000035995 00000 n 
-0000036243 00000 n 
-0000036544 00000 n 
-0000036785 00000 n 
-0000037019 00000 n 
-0000037273 00000 n 
-0000037548 00000 n 
-0000037835 00000 n 
-0000038145 00000 n 
-0000038421 00000 n 
-0000038746 00000 n 
-0000039066 00000 n 
-0000039389 00000 n 
-0000039714 00000 n 
-0000040050 00000 n 
-0000040375 00000 n 
-0000040647 00000 n 
-0000041968 00000 n 
-0000042951 00000 n 
-0000043145 00000 n 
-0000046976 00000 n 
-0000047084 00000 n 
-0000048025 00000 n 
-0000048225 00000 n 
-0000050485 00000 n 
-0000050598 00000 n 
-0000051523 00000 n 
-0000052590 00000 n 
-0000052783 00000 n 
-0000058881 00000 n 
-0000059889 00000 n 
-0000060956 00000 n 
-0000061147 00000 n 
-0000063105 00000 n 
-0000063991 00000 n 
-0000064184 00000 n 
-0000066790 00000 n 
-0000067727 00000 n 
-0000067928 00000 n 
-0000075076 00000 n 
-0000076075 00000 n 
-0000076276 00000 n 
-0000077657 00000 n 
-0000077797 00000 n 
-0000077989 00000 n 
-0000078255 00000 n 
-0000144993 00000 n 
-0000145264 00000 n 
-0000145524 00000 n 
-0000145607 00000 n 
-0000145699 00000 n 
-0000145743 00000 n 
-0000145815 00000 n 
-0000145892 00000 n 
-0000145958 00000 n 
-0000146055 00000 n 
-0000146405 00000 n 
-0000166276 00000 n 
-0000166655 00000 n 
-0000166852 00000 n 
-0000170444 00000 n 
-0000170704 00000 n 
-0000170787 00000 n 
-0000170879 00000 n 
-0000170923 00000 n 
-0000170995 00000 n 
-0000171072 00000 n 
+0000000531 00000 n 
+0000018965 00000 n 
+0000020959 00000 n 
+0000021830 00000 n 
+0000022050 00000 n 
+0000022338 00000 n 
+0000022619 00000 n 
+0000022838 00000 n 
+0000023014 00000 n 
+0000023192 00000 n 
+0000023497 00000 n 
+0000023801 00000 n 
+0000024025 00000 n 
+0000024347 00000 n 
+0000024670 00000 n 
+0000024945 00000 n 
+0000025242 00000 n 
+0000025583 00000 n 
+0000025855 00000 n 
+0000026172 00000 n 
+0000026363 00000 n 
+0000026600 00000 n 
+0000026882 00000 n 
+0000027152 00000 n 
+0000027429 00000 n 
+0000027742 00000 n 
+0000028019 00000 n 
+0000028248 00000 n 
+0000028455 00000 n 
+0000028644 00000 n 
+0000028891 00000 n 
+0000029099 00000 n 
+0000029378 00000 n 
+0000029660 00000 n 
+0000029926 00000 n 
+0000030190 00000 n 
+0000030492 00000 n 
+0000030825 00000 n 
+0000031031 00000 n 
+0000031287 00000 n 
+0000031560 00000 n 
+0000031881 00000 n 
+0000032161 00000 n 
+0000032458 00000 n 
+0000032746 00000 n 
+0000033027 00000 n 
+0000033327 00000 n 
+0000033623 00000 n 
+0000033869 00000 n 
+0000034222 00000 n 
+0000034470 00000 n 
+0000034688 00000 n 
+0000034937 00000 n 
+0000035136 00000 n 
+0000035380 00000 n 
+0000035620 00000 n 
+0000035901 00000 n 
+0000036201 00000 n 
+0000036513 00000 n 
+0000036761 00000 n 
+0000037062 00000 n 
+0000037303 00000 n 
+0000037537 00000 n 
+0000037791 00000 n 
+0000038066 00000 n 
+0000038353 00000 n 
+0000038663 00000 n 
+0000038939 00000 n 
+0000039264 00000 n 
+0000039584 00000 n 
+0000039907 00000 n 
+0000040232 00000 n 
+0000040568 00000 n 
+0000040893 00000 n 
+0000041165 00000 n 
+0000042486 00000 n 
+0000043469 00000 n 
+0000043663 00000 n 
+0000047494 00000 n 
+0000047602 00000 n 
+0000047710 00000 n 
+0000048651 00000 n 
+0000048851 00000 n 
+0000051111 00000 n 
+0000051224 00000 n 
+0000051337 00000 n 
+0000052262 00000 n 
+0000053329 00000 n 
+0000053522 00000 n 
+0000059620 00000 n 
+0000060628 00000 n 
+0000061695 00000 n 
+0000061886 00000 n 
+0000063844 00000 n 
+0000064730 00000 n 
+0000064924 00000 n 
+0000067531 00000 n 
+0000068469 00000 n 
+0000068670 00000 n 
+0000075818 00000 n 
+0000076817 00000 n 
+0000077018 00000 n 
+0000078399 00000 n 
+0000078539 00000 n 
+0000078731 00000 n 
+0000078997 00000 n 
+0000145735 00000 n 
+0000146006 00000 n 
+0000146266 00000 n 
+0000146349 00000 n 
+0000146441 00000 n 
+0000146485 00000 n 
+0000146557 00000 n 
+0000146634 00000 n 
+0000146700 00000 n 
+0000146797 00000 n 
+0000147174 00000 n 
+0000167536 00000 n 
+0000167915 00000 n 
+0000168112 00000 n 
+0000171704 00000 n 
+0000171964 00000 n 
+0000172047 00000 n 
+0000172139 00000 n 
+0000172183 00000 n 
+0000172255 00000 n 
+0000172332 00000 n 
 trailer
 <<
-/Size 130
+/Size 132
 /Root 3 0 R
 /Info 1 0 R
 >>
 startxref
-171138
+172398
 %%EOF
