@@ -1,0 +1,561 @@
+{% extends 'base.html' %}
+{% block title %}Paiement · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --blue: #1A5276;
+    --gold: #D4AC0D;
+    --gold2: #B8860B;
+    --green: #145A32;
+    --white: #FFFFFF;
+    --bg: #F4F6F8;
+    --text: #1C2833;
+    --muted: #5D6D7E;
+    --border: #E0E7EF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* ── HEADER ──────────────────────────────── */
+  .page-header {
+    background: var(--navy);
+    padding: 36px 24px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(212,172,13,0.04) 40px,
+      rgba(212,172,13,0.04) 41px
+    );
+    pointer-events: none;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 6vw, 40px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    position: relative;
+  }
+
+  .gold-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  /* ── LAYOUT ──────────────────────────────── */
+  .paiement-layout {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  /* ── RÉCAPITULATIF ────────────────────────── */
+  .recap-card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(13,27,42,0.07);
+    margin-bottom: 20px;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .recap-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .recap-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .recap-body { padding: 20px; }
+
+  .recap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .recap-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .recap-label { color: var(--muted); }
+
+  .recap-value {
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .recap-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(20,90,50,0.05);
+    border-top: 2px solid var(--green);
+  }
+
+  .total-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .total-montant {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  /* ── CHAMPS TÉLÉPHONE ─────────────────────── */
+  .form-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(13,27,42,0.07);
+    overflow: hidden;
+    margin-bottom: 20px;
+    animation: fadeUp 0.35s ease 0.08s both;
+  }
+
+  .form-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .form-body { padding: 20px; }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  .form-label .req { color: #922B21; margin-left: 3px; }
+
+  .form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(20,90,50,0.08);
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* ── MÉTHODES DE PAIEMENT ─────────────────── */
+  .methodes-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(13,27,42,0.07);
+    overflow: hidden;
+    margin-bottom: 20px;
+    animation: fadeUp 0.35s ease 0.16s both;
+  }
+
+  .methodes-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .methodes-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .methodes-body { padding: 16px; }
+
+  .methode-option {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .methode-option:last-child { margin-bottom: 0; }
+
+  .methode-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+  }
+
+  .methode-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .methode-option input:checked + .methode-label {
+    border-color: var(--green);
+    background: rgba(20,90,50,0.04);
+  }
+
+  .methode-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .logo-mtn { background: #FFC107; }
+  .logo-orange { background: #FF6600; }
+  .logo-carte { background: rgba(26,82,118,0.1); }
+
+  .methode-info .methode-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+    display: block;
+  }
+
+  .methode-info .methode-desc {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .methode-check {
+    margin-left: auto;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .methode-option input:checked + .methode-label .methode-check {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  /* ── BOUTON PAYER ─────────────────────────── */
+  .btn-payer {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--green), #1E8449);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(20,90,50,0.35);
+    animation: fadeUp 0.35s ease 0.24s both;
+  }
+
+  .btn-payer:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  /* ── SÉCURITÉ ─────────────────────────────── */
+  .securite-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── BIENTÔT ─────────────────────────────── */
+  .coming-soon {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(13,27,42,0.07);
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .coming-icon { font-size: 48px; margin-bottom: 16px; }
+
+  .coming-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .coming-sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .coming-prix {
+    display: inline-block;
+    background: rgba(20,90,50,0.08);
+    border: 1px solid rgba(20,90,50,0.2);
+    color: var(--green);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+
+  .coming-notif {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .coming-notif:hover { opacity: 0.85; color: var(--white); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<div class="page-header">
+  <a href="/corriges" class="back-link">← Retour</a>
+  <p class="header-eyebrow">Paiement sécurisé</p>
+  <h1 class="header-title">Accéder au corrigé</h1>
+</div>
+<div class="gold-bar"></div>
+
+<div class="paiement-layout">
+
+  {% if paiement_actif %}
+
+  <!-- ── MODE PAIEMENT ACTIF ─────────────────── -->
+  <form method="POST" action="/paiement/{{ annale.id }}">
+
+    <!-- Récapitulatif -->
+    <div class="recap-card">
+      <div class="recap-header">
+        <h2>Récapitulatif</h2>
+      </div>
+      <div class="recap-body">
+        <div class="recap-row">
+          <span class="recap-label">Matière</span>
+          <span class="recap-value">{{ annale.matiere }}</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Niveau</span>
+          <span class="recap-value">
+            {{ annale.niveau }}{% if annale.serie %} Série {{ annale.serie }}{% endif %}
+          </span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Année</span>
+          <span class="recap-value">{{ annale.annee }}</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Type</span>
+          <span class="recap-value">Corrigé détaillé complet</span>
+        </div>
+      </div>
+      <div class="recap-total">
+        <span class="total-label">Total à payer</span>
+        <span class="total-montant">1 000 FCFA</span>
+      </div>
+    </div>
+
+    <!-- Téléphone -->
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Ton numéro Mobile Money</h2>
+      </div>
+      <div class="form-body">
+        <div class="form-group">
+          <label class="form-label">
+            Numéro <span class="req">*</span>
+          </label>
+          <input type="tel" name="telephone" class="form-control"
+                 placeholder="6XXXXXXXX" required
+                 pattern="[0-9]{9}"
+                 maxlength="9">
+          <span class="form-hint">
+            9 chiffres sans indicatif — ex : 677001122
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Méthodes -->
+    <div class="methodes-card">
+      <div class="methodes-header">
+        <h2>Méthode de paiement</h2>
+      </div>
+      <div class="methodes-body">
+
+        <div class="methode-option">
+          <input type="radio" name="methode" id="mtn"
+                 value="mtn" checked>
+          <label class="methode-label" for="mtn">
+            <div class="methode-logo logo-mtn">📱</div>
+            <div class="methode-info">
+              <span class="methode-name">MTN Mobile Money</span>
+              <span class="methode-desc">Cameroun · Paiement instantané</span>
+            </div>
+            <div class="methode-check"></div>
+          </label>
+        </div>
+
+        <div class="methode-option">
+          <input type="radio" name="methode" id="orange"
+                 value="orange">
+          <label class="methode-label" for="orange">
+            <div class="methode-logo logo-orange">📱</div>
+            <div class="methode-info">
+              <span class="methode-name">Orange Money</span>
+              <span class="methode-desc">Cameroun · Paiement instantané</span>
+            </div>
+            <div class="methode-check"></div>
+          </label>
+        </div>
+
+        <div class="methode-option">
+          <input type="radio" name="methode" id="carte"
+                 value="carte">
+          <label class="methode-label" for="carte">
+            <div class="methode-logo logo-carte">💳</div>
+            <div class="methode-info">
+              <span class="methode-name">Carte bancaire</span>
+              <span class="methode-desc">Visa · Mastercard</span>
+            </div>
+            <div class="methode-check"></div>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bouton -->
+    <button type="submit" class="btn-payer">
+      Payer 1 000 FCFA →
+    </button>
+
+    <div class="securite-note">
+      <span>🔒</span>
+      <span>Paiement sécurisé via CinetPay</span>
+    </div>
+
+  </form>
+
+  {% else %}
+
+  <!-- ── MODE BIENTÔT DISPONIBLE ──────────────── -->
+  <div class="coming-soon">
+    <div class="coming-icon">🔒</div>
+    <h2 class="coming-title">Paiement bientôt disponible</h2>
+    <p class="coming-sub">
+      Ce corrigé est en cours de rédaction.<br>
+      Le paiement sera activé dès qu'il sera disponible.
+    </p>
+    <div class="coming-prix">1 000 FCFA</div>
+    <br>
+    <a href="/corriges" class="coming-notif">
+      ← Voir tous les corrigés
+    </a>
+  </div>
+
+  {% endif %}
+
+</div>
+{% endblock %}

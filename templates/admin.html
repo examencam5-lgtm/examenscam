@@ -1,63 +1,705 @@
-ok
 {% extends 'base.html' %}
-
-{% block title %}Admin{% endblock %}
+{% block title %}Administration · ExamensCam{% endblock %}
 
 {% block content %}
-<h2>Pannel Admin - Ajouter une annale</h2>
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --blue: #1A5276;
+    --gold: #D4AC0D;
+    --gold2: #B8860B;
+    --green: #145A32;
+    --red: #922B21;
+    --white: #FFFFFF;
+    --bg: #F0F2F5;
+    --text: #1C2833;
+    --muted: #5D6D7E;
+    --border: #D5DBE1;
+  }
 
-{% if message %}
-    <p style="color: green; font-weight: bold;">{{ message }}</p>
-{% endif %}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
 
-<form method="POST" action="/admin" enctype="multipart/form-data">
+  /* ── HEADER ADMIN ────────────────────────── */
+  .admin-header {
+    background: var(--navy);
+    padding: 28px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 
-    <div style="margin: 10px 0;">
-        <select name="niveau" required style="padding: 8px; width:100%;">
-            <option value="">--Niveau --</option>
-            <option value="BEPC">BEPC</option>
-            <option value="Probatoire">Probatoire</option>
-            <option value="BAC">BAC</option>
+  .admin-title-block .eyebrow {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .admin-title-block h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .admin-badge {
+    background: rgba(212,172,13,0.15);
+    border: 1px solid rgba(212,172,13,0.3);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 100px;
+    letter-spacing: 1px;
+  }
+
+  .gold-bar { height: 2px; background: linear-gradient(90deg, var(--gold), transparent); }
+
+  /* ── LAYOUT PRINCIPAL ────────────────────── */
+  .admin-layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @media (min-width: 900px) {
+    .admin-layout { grid-template-columns: 420px 1fr; align-items: start; }
+  }
+
+  /* ── CARTES ──────────────────────────────── */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(13,27,42,0.07);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 18px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .card-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .card-body { padding: 24px; }
+
+  /* ── STATS ───────────────────────────────── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-box {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(13,27,42,0.06);
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--blue);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── FLASH ───────────────────────────────── */
+  .flash {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+
+  .flash-success {
+    background: rgba(20,90,50,0.08);
+    border: 1px solid rgba(20,90,50,0.2);
+    color: var(--green);
+  }
+
+  .flash-error {
+    background: rgba(146,43,33,0.08);
+    border: 1px solid rgba(146,43,33,0.2);
+    color: var(--red);
+  }
+
+  /* ── FORMULAIRE ──────────────────────────── */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  .form-label .required {
+    color: var(--red);
+    margin-left: 3px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    appearance: none;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(26,82,118,0.1);
+  }
+
+  /* Ligne de deux champs côte à côte */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Champ série — masqué par défaut, affiché si BAC ou Probatoire */
+  #groupe-serie { display: none; }
+
+  /* Checkbox corrigé */
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .checkbox-group:hover {
+    border-color: var(--gold);
+    background: rgba(212,172,13,0.04);
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .checkbox-group .check-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .checkbox-group .check-sub {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Champ lien corrigé — masqué si checkbox non coché */
+  #groupe-lien-corrige { display: none; }
+
+  /* Bouton soumettre */
+  .btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--blue), #2471A3);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 14px rgba(26,82,118,0.35);
+    margin-top: 8px;
+  }
+
+  .btn-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+
+  /* Séparateur section */
+  .section-sep {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 16px;
+  }
+
+  .section-sep span {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .section-sep::before,
+  .section-sep::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── LISTE ANNALES ───────────────────────── */
+  .list-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 180px;
+    padding: 9px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Lato', sans-serif;
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .filter-select {
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Lato', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    cursor: pointer;
+  }
+
+  .total-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Lignes du tableau */
+  .annale-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+    transition: background 0.12s;
+  }
+
+  .annale-row:last-child { border-bottom: none; }
+  .annale-row:hover { background: rgba(26,82,118,0.03); }
+
+  .annale-info { flex: 1; min-width: 0; }
+
+  .annale-titre {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .annale-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+    display: block;
+  }
+
+  .annale-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Badge niveau */
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge-bepc { background: rgba(26,82,118,0.1); color: var(--blue); }
+  .badge-bac { background: rgba(20,90,50,0.1); color: var(--green); }
+  .badge-prob { background: rgba(120,66,18,0.1); color: #784212; }
+  .badge-gold { background: rgba(212,172,13,0.12); color: var(--gold2); }
+
+  /* Bouton supprimer */
+  .btn-delete {
+    padding: 6px 12px;
+    background: rgba(146,43,33,0.07);
+    border: 1px solid rgba(146,43,33,0.15);
+    border-radius: 7px;
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .btn-delete:hover { background: rgba(146,43,33,0.14); }
+
+  /* Lien Drive */
+  .btn-drive {
+    padding: 6px 12px;
+    background: rgba(26,82,118,0.07);
+    border: 1px solid rgba(26,82,118,0.15);
+    border-radius: 7px;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .btn-drive:hover { background: rgba(26,82,118,0.14); }
+
+  /* État vide */
+  .empty-list {
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .empty-list .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+</style>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<div class="admin-header">
+  <div class="admin-title-block">
+    <span class="eyebrow">Panneau de contrôle</span>
+    <h1>Administration</h1>
+  </div>
+  <span class="admin-badge">⚙ Accès restreint</span>
+</div>
+<div class="gold-bar"></div>
+
+<!-- ── STATS RAPIDES ──────────────────────── -->
+<div style="max-width:1100px; margin:0 auto; padding:24px 20px 0;">
+  <div class="stats-row">
+    <div class="stat-box">
+      <span class="stat-num">{{ stats.total or 0 }}</span>
+      <span class="stat-label">Total annales</span>
+    </div>
+    {% for item in stats.par_niveau %}
+    <div class="stat-box">
+      <span class="stat-num">{{ item.n }}</span>
+      <span class="stat-label">{{ item.niveau }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ── LAYOUT PRINCIPAL ───────────────────── -->
+<div class="admin-layout">
+
+  <!-- ══ COLONNE GAUCHE — FORMULAIRE ══ -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2>Ajouter une annale</h2>
+      </div>
+      <div class="card-body">
+
+        {% if message %}
+        <div class="flash flash-{{ 'success' if 'ajoutée' in message or 'succès' in message else 'error' }}">
+          <span>{{ '✓' if 'ajoutée' in message or 'succès' in message else '✕' }}</span>
+          {{ message }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/admin/{{ token }}">
+
+          <!-- Niveau -->
+          <div class="form-group">
+            <label class="form-label">Niveau <span class="required">*</span></label>
+            <select name="niveau" class="form-control" id="select-niveau" required onchange="updateSerie()">
+              <option value="">— Choisir le niveau —</option>
+              <option value="BEPC">BEPC</option>
+              <option value="Probatoire">Probatoire</option>
+              <option value="BAC">BAC</option>
+            </select>
+          </div>
+
+          <!-- Série — apparaît seulement si BAC ou Probatoire -->
+          <div class="form-group" id="groupe-serie">
+            <label class="form-label">Série <span class="required">*</span></label>
+            <select name="serie" class="form-control" id="select-serie">
+              <option value="">— Choisir la série —</option>
+              <option value="C">C — Scientifique (Maths-Physique)</option>
+              <option value="D">D — Sciences naturelles (SVT)</option>
+              <option value="TI">TI — Technique Industrielle</option>
+              <option value="A4">A4 — Littéraire</option>
+            </select>
+          </div>
+
+          <!-- Matière + Année -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Matière <span class="required">*</span></label>
+              <input type="text" name="matiere" class="form-control"
+                     placeholder="ex: Mathematiques" required
+                     list="matieres-list">
+              <datalist id="matieres-list">
+                <option value="Mathematiques">
+                <option value="PCT">
+                <option value="SVT">
+                <option value="Philosophie">
+                <option value="Français">
+                <option value="Anglais">
+                <option value="Informatique">
+                <option value="Histoire-Géo">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Année <span class="required">*</span></label>
+              <input type="number" name="annee" class="form-control"
+                     placeholder="ex: 2023"
+                     min="1990" max="2030" required>
+            </div>
+          </div>
+
+          <!-- Lien Google Drive -->
+          <div class="form-group">
+            <label class="form-label">Lien Google Drive <span class="required">*</span></label>
+            <input type="url" name="lien_drive" class="form-control"
+                   placeholder="https://drive.google.com/file/d/.../preview"
+                   required>
+          </div>
+
+          <!-- Source -->
+          <div class="form-group">
+            <label class="form-label">Source</label>
+            <select name="source" class="form-control">
+              <option value="inconnu">— Source —</option>
+              <option value="mongosukulu">mongosukulu.com</option>
+              <option value="sujetexa">sujetexa.com</option>
+              <option value="orniformation">orniformation.com</option>
+              <option value="camscanner">CamScanner (WhatsApp)</option>
+              <option value="muhammad">Muhammad (production propre)</option>
+            </select>
+          </div>
+
+          <div class="section-sep"><span>Corrigé</span></div>
+
+          <!-- Checkbox corrigé -->
+          <div class="form-group">
+            <label class="checkbox-group">
+              <input type="checkbox" name="corrige_dispo" id="cb-corrige"
+                     onchange="toggleCorrige()">
+              <div>
+                <span class="check-label">Corrigé disponible</span>
+                <span class="check-sub">Active le badge et le CTA WhatsApp sur la page</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Lien corrigé — visible si checkbox coché -->
+          <div class="form-group" id="groupe-lien-corrige">
+            <label class="form-label">Lien du corrigé (Drive)</label>
+            <input type="url" name="lien_corrige" class="form-control"
+                   placeholder="https://drive.google.com/file/d/.../preview">
+          </div>
+
+          <button type="submit" class="btn-submit">
+            ＋ Ajouter l'annale
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ COLONNE DROITE — LISTE ══ -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2>Annales en base</h2>
+        <span class="total-badge">{{ annales|length }} entrée{{ 's' if annales|length > 1 else '' }}</span>
+      </div>
+
+      <!-- Barre de recherche + filtre -->
+      <div class="list-toolbar">
+        <input type="text" class="search-input" id="search-input"
+               placeholder="🔍 Rechercher..."
+               oninput="filtrerAnnales()">
+        <select class="filter-select" id="filter-niveau" onchange="filtrerAnnales()">
+          <option value="">Tous niveaux</option>
+          <option value="BEPC">BEPC</option>
+          <option value="Probatoire">Probatoire</option>
+          <option value="BAC">BAC</option>
         </select>
+      </div>
+
+      <!-- Liste -->
+      <div id="annales-list">
+        {% if annales %}
+          {% for annale in annales %}
+          <div class="annale-row"
+               data-niveau="{{ annale.niveau }}"
+               data-search="{{ annale.niveau }} {{ annale.serie or '' }} {{ annale.matiere }} {{ annale.annee }}">
+
+            <div class="annale-info">
+              <span class="annale-titre">
+                {{ annale.matiere }} — {{ annale.annee }}
+              </span>
+              <span class="annale-meta">
+                {{ annale.niveau }}{% if annale.serie %} · Série {{ annale.serie }}{% endif %}
+                {% if annale.source %} · {{ annale.source }}{% endif %}
+              </span>
+            </div>
+
+            <div class="annale-actions">
+              {% if annale.corrige_dispo %}
+              <span class="badge badge-gold">✓ Corrigé</span>
+              {% endif %}
+
+              <span class="badge {{ 'badge-bepc' if annale.niveau == 'BEPC' else 'badge-bac' if annale.niveau == 'BAC' else 'badge-prob' }}">
+                {{ annale.niveau }}
+              </span>
+
+              {% if annale.lien_drive %}
+              <a href="{{ annale.lien_drive }}" target="_blank" class="btn-drive">
+                ↗ Drive
+              </a>
+              {% endif %}
+
+              <a href="/admin/{{ token }}/supprimer/{{ annale.id }}"
+                 class="btn-delete"
+                 onclick="return confirm('Supprimer {{ annale.matiere }} {{ annale.annee }} ?')">
+                ✕
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+
+        {% else %}
+        <div class="empty-list">
+          <div class="empty-icon">📭</div>
+          <p>Aucune annale en base. Ajoute la première ci-contre.</p>
+        </div>
+        {% endif %}
+      </div>
+
     </div>
+  </div>
 
-    <div style="margin: 10px 0;">
-        <select name="serie" style="padding: 8px; width:100%;">
-            <option value="">-- Serie (vide pour BEPC) --</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-            <option value="TI">TI</option>
-            <option value="A4">A4</option>
-        </select>
-    </div>
+</div>
 
-    <div style="margin: 10px 0;">
-        <input type="text" name="matiere" placeholder="Matiere (ex Mathematiques)" required style="padding:8px; width:100%;">
-    </div>
+<script>
+  /* Afficher/masquer le champ Série selon le niveau */
+  function updateSerie() {
+    var niveau = document.getElementById('select-niveau').value;
+    var groupe = document.getElementById('groupe-serie');
+    var select = document.getElementById('select-serie');
 
-    <div style="margin: 10px 0;">
-        <input type="number" name="annee" placeholder="Annee (ex: 2023)" required style="padding:8px; width:100%;">
-     </div>
-     <div style="margin: 10px 0;">
-        <label>Fichier PDF :</label><br>
-        <input type="file" name="pdf" accept=".pdf" required style="padding:8px;">
-     </div>
+    if (niveau === 'BAC' || niveau === 'Probatoire') {
+      groupe.style.display = 'block';
+      select.required = true;
+    } else {
+      groupe.style.display = 'none';
+      select.required = false;
+      select.value = '';
+    }
+  }
 
-     <div style="margin: 10px 0;">
-        <label>
-            <input type="checkbox" name="corrige_dispo"> Corrige disponible
-        </label>
-     </div>
-     <button type="submit" style="background:#1A5276; color:white; padding: 10px 30px; border:none; border-radius:5px; cursor:pointer;">
-        Ajouter l'annale
-     </button>
-</form>
+  /* Afficher/masquer le champ lien corrigé */
+  function toggleCorrige() {
+    var cb = document.getElementById('cb-corrige');
+    var groupe = document.getElementById('groupe-lien-corrige');
+    groupe.style.display = cb.checked ? 'block' : 'none';
+  }
 
-<hr style="margin: 30px 0;">
+  /* Recherche + filtre en temps réel */
+  function filtrerAnnales() {
+    var query = document.getElementById('search-input').value.toLowerCase();
+    var niveau = document.getElementById('filter-niveau').value;
+    var rows = document.querySelectorAll('.annale-row');
 
-<h3>Annalle dans la base :</h3>
-{% for annale in annales %}
-     <p>{{ annale[1] }} {{ annale[2] or '' }} - {{ annale[3] }} {{ annale[4] }}</p>
-{% endfor %}
+    rows.forEach(function(row) {
+      var search = row.getAttribute('data-search').toLowerCase();
+      var rowNiveau = row.getAttribute('data-niveau');
+
+      var matchSearch = query === '' || search.includes(query);
+      var matchNiveau = niveau === '' || rowNiveau === niveau;
+
+      row.style.display = (matchSearch && matchNiveau) ? 'flex' : 'none';
+    });
+  }
+</script>
 
 {% endblock %}
+

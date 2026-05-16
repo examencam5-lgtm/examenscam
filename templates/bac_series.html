@@ -1,18 +1,316 @@
-ok
 {% extends 'base.html' %}
-
-{% block title %}BAC - Choisir une serie{% endblock %}
+{% block title %}BAC — Choisir une série · ExamensCam{% endblock %}
 
 {% block content %}
-<h2>BAC - Choisir votre serie</h2>
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --blue: #1A5276;
+    --gold: #D4AC0D;
+    --gold2: #B8860B;
+    --white: #FFFFFF;
+    --bg: #F4F6F8;
+    --text: #1C2833;
+    --muted: #5D6D7E;
+    --border: #E0E7EF;
+  }
 
-<div style="margin-top: 20px;">
-    <a href="/bac/C" class="btn">Serie C - Maths-Physique</a>
-    <a href="/bac/D" class="btn">Serie D - Bio-Chimie</a>
-    <a href="/bac/TI" class="btn">Serie TI - Technique Industrielle</a>
-    <a href="/bac/A4" class="btn">Serie A4 - Litterature</a>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* ── HEADER ──────────────────────────────── */
+  .page-header {
+    background: var(--navy);
+    padding: 40px 24px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(212,172,13,0.04) 40px,
+      rgba(212,172,13,0.04) 41px
+    );
+    pointer-events: none;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 7vw, 52px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .header-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+  }
+
+  .gold-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  /* ── GRILLE SÉRIES ───────────────────────── */
+  .section-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* Carte série */
+  .serie-card {
+    display: block;
+    text-decoration: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(13,27,42,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .serie-card:nth-child(2) { animation-delay: 0.08s; }
+  .serie-card:nth-child(3) { animation-delay: 0.16s; }
+  .serie-card:nth-child(4) { animation-delay: 0.24s; }
+
+  .serie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(13,27,42,0.18);
+  }
+
+  /* Partie colorée */
+  .serie-top {
+    padding: 28px 24px 20px;
+    position: relative;
+  }
+
+  .serie-top-c { background: #154360; }
+  .serie-top-d { background: #145A32; }
+  .serie-top-ti { background: #4A235A; }
+  .serie-top-a4 { background: #784212; }
+
+  /* Lettre de série */
+  .serie-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.15);
+    position: absolute;
+    bottom: -8px;
+    right: 16px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .serie-tag {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .serie-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+    line-height: 1.1;
+  }
+
+  /* Partie blanche */
+  .serie-bottom {
+    background: var(--white);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .serie-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .serie-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    transition: transform 0.2s, color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .serie-card:hover .serie-arrow {
+    transform: translateX(3px);
+    color: var(--blue);
+  }
+
+  /* Accent doré discret sur la carte */
+  .serie-card::before {
+    content: '';
+    display: block;
+    height: 2px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+
+  /* ── RETOUR ───────────────────────────────── */
+  .bottom-nav {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .btn-back:hover {
+    border-color: var(--blue);
+    background: rgba(26,82,118,0.04);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<div class="page-header">
+  <a href="/" class="back-link">← Accueil</a>
+  <p class="header-eyebrow">Baccalauréat · Cameroun</p>
+  <h1 class="header-title">BAC</h1>
+  <p class="header-sub">Choisis ta série pour accéder aux annales</p>
+</div>
+<div class="gold-bar"></div>
+
+<!-- ── SÉRIES ─────────────────────────────── -->
+<div class="section-wrapper">
+  <p class="section-label">Séries disponibles</p>
+
+  <div class="series-grid">
+
+    <!-- Série C -->
+    <a href="/bac/C" class="serie-card">
+      <div class="serie-top serie-top-c">
+        <span class="serie-tag">Sciences</span>
+        <span class="serie-name">Série C</span>
+        <span class="serie-letter">C</span>
+      </div>
+      <div class="serie-bottom">
+        <span class="serie-desc">Maths · Physique<br>Terminale scientifique</span>
+        <span class="serie-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Série D -->
+    <a href="/bac/D" class="serie-card">
+      <div class="serie-top serie-top-d">
+        <span class="serie-tag">Sciences naturelles</span>
+        <span class="serie-name">Série D</span>
+        <span class="serie-letter">D</span>
+      </div>
+      <div class="serie-bottom">
+        <span class="serie-desc">SVT · Chimie<br>Terminale biologie</span>
+        <span class="serie-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Série TI -->
+    <a href="/bac/TI" class="serie-card">
+      <div class="serie-top serie-top-ti">
+        <span class="serie-tag">Technique</span>
+        <span class="serie-name">Série TI</span>
+        <span class="serie-letter">TI</span>
+      </div>
+      <div class="serie-bottom">
+        <span class="serie-desc">Informatique · Maths<br>Technique industrielle</span>
+        <span class="serie-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Série A4 -->
+    <a href="/bac/A4" class="serie-card">
+      <div class="serie-top serie-top-a4">
+        <span class="serie-tag">Littéraire</span>
+        <span class="serie-name">Série A4</span>
+        <span class="serie-letter">A4</span>
+      </div>
+      <div class="serie-bottom">
+        <span class="serie-desc">Philosophie · Lettres<br>Terminale littéraire</span>
+        <span class="serie-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
 </div>
 
-<br><br>
-<a href="/" style="color: #1A5276;">Retour accueil</a>
+<!-- ── RETOUR ─────────────────────────────── -->
+<div class="bottom-nav">
+  <a href="/" class="btn-back">← Retour à l'accueil</a>
+</div>
+
 {% endblock %}
+

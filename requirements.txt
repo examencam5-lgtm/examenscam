@@ -1,2 +1,6 @@
 flask
 gunicorn
+pypdf
+reportlab
+pillow
+

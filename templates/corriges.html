@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% block title %}Corrigés détaillés · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --blue: #1A5276;
+    --gold: #D4AC0D;
+    --gold2: #B8860B;
+    --green: #145A32;
+    --white: #FFFFFF;
+    --bg: #F4F6F8;
+    --text: #1C2833;
+    --muted: #5D6D7E;
+    --border: #E0E7EF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* ── HEADER ──────────────────────────────── */
+  .page-header {
+    background: var(--navy);
+    padding: 40px 24px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(212,172,13,0.04) 40px,
+      rgba(212,172,13,0.04) 41px
+    );
+    pointer-events: none;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 7vw, 48px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .header-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+  }
+
+  .green-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), transparent);
+  }
+
+  /* ── INFO PRIX ───────────────────────────── */
+  .prix-strip {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .prix-item {
+    text-align: center;
+  }
+
+  .prix-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--green);
+    display: block;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .prix-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .prix-sep {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+  }
+
+  /* ── FILTRE ──────────────────────────────── */
+  .filter-bar {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn.active,
+  .filter-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(20,90,50,0.05);
+  }
+
+  /* ── LISTE CORRIGÉS ──────────────────────── */
+  .corriges-list {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  /* Carte corrigé */
+  .corrige-card {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 14px rgba(13,27,42,0.07);
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .corrige-card:nth-child(2) { animation-delay: 0.06s; }
+  .corrige-card:nth-child(3) { animation-delay: 0.12s; }
+  .corrige-card:nth-child(4) { animation-delay: 0.18s; }
+
+  .corrige-card-inner {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px;
+    gap: 16px;
+  }
+
+  /* Pastille niveau */
+  .corrige-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .badge-c { background: rgba(21,67,96,0.1); color: #154360; }
+  .badge-d { background: rgba(20,90,50,0.1); color: var(--green); }
+  .badge-ti { background: rgba(74,35,90,0.1); color: #4A235A; }
+  .badge-b { background: rgba(26,82,118,0.1); color: var(--blue); }
+
+  .corrige-info { flex: 1; min-width: 0; }
+
+  .corrige-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .corrige-meta {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .meta-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  /* Bouton acheter */
+  .btn-acheter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--green);
+    color: var(--white);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .btn-acheter:hover { opacity: 0.88; color: var(--white); }
+
+  .btn-prix {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    display: block;
+  }
+
+  .btn-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-top: 2px;
+    display: block;
+  }
+
+  /* Badge "bientôt" pour corrigés pas encore dispo */
+  .btn-bientot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--border);
+    color: var(--muted);
+    border-radius: 10px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .btn-bientot span:first-child {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* ── ÉTAT VIDE ────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 2px 14px rgba(13,27,42,0.06);
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+
+  .empty-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .empty-sub { font-size: 14px; color: var(--muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<div class="page-header">
+  <a href="/" class="back-link">← Accueil</a>
+  <p class="header-eyebrow">Solutions officielles · MINESEC</p>
+  <h1 class="header-title">Corrigés Détaillés</h1>
+  <p class="header-sub">Solutions pas à pas · Points de barème · Méthode examinateur</p>
+</div>
+<div class="green-bar"></div>
+
+<!-- ── PRIX ───────────────────────────────── -->
+<div class="prix-strip">
+  <div class="prix-item">
+    <span class="prix-num"> 500 FCFA</span>
+    <span class="prix-label">Corrigé à l'unité</span>
+  </div>
+  <div class="prix-sep"></div>
+  <div class="prix-item">
+    <span class="prix-num">3 000 FCFA</span>
+    <span class="prix-label">Pack thème (tous les corrigés)</span>
+  </div>
+  <div class="prix-sep"></div>
+  <div class="prix-item">
+    <span class="prix-num">5 000 FCFA</span>
+    <span class="prix-label">Accès mensuel illimité</span>
+  </div>
+</div>
+
+<!-- ── FILTRES ─────────────────────────────── -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filtrer('tous', this)">Tous</button>
+  <button class="filter-btn" onclick="filtrer('BAC C', this)">BAC C</button>
+  <button class="filter-btn" onclick="filtrer('BAC D', this)">BAC D</button>
+  <button class="filter-btn" onclick="filtrer('Probatoire', this)">Probatoire</button>
+  <button class="filter-btn" onclick="filtrer('BEPC', this)">BEPC</button>
+</div>
+
+<!-- ── LISTE ──────────────────────────────── -->
+<div class="corriges-list">
+  <p class="section-label">Corrigés disponibles</p>
+
+  {% if corriges %}
+    {% for c in corriges %}
+    <div class="corrige-card" data-niveau="{{ c.niveau }} {{ c.serie or '' }}">
+      <div class="corrige-card-inner">
+
+        <!-- Badge niveau -->
+        <div class="corrige-badge
+          {% if c.serie == 'C' %}badge-c
+          {% elif c.serie == 'D' %}badge-d
+          {% elif c.serie == 'TI' %}badge-ti
+          {% else %}badge-b{% endif %}">
+          {% if c.serie %}{{ c.serie }}{% else %}{{ c.niveau[:1] }}{% endif %}
+        </div>
+
+        <!-- Infos -->
+        <div class="corrige-info">
+          <span class="corrige-title">{{ c.matiere }} — {{ c.annee }}</span>
+          <div class="corrige-meta">
+            <span>{{ c.niveau }}{% if c.serie %} Série {{ c.serie }}{% endif %}</span>
+            <span class="meta-dot"></span>
+            <span>Corrigé complet</span>
+            <span class="meta-dot"></span>
+            <span>{{ c.pages or '—' }} pages</span>
+          </div>
+        </div>
+
+        <!-- Bouton achat -->
+        {% if c.lien_corrige %}
+        <a href="/paiement/{{ c.id }}" class="btn-acheter">
+          <span class="btn-prix">1 000</span>
+          <span class="btn-label">FCFA</span>
+        </a>
+        {% else %}
+        <div class="btn-bientot">
+          <span>Bientôt</span>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📝</div>
+    <h2 class="empty-title">Corrigés en préparation</h2>
+    <p class="empty-sub">Les premiers corrigés arrivent bientôt.<br>BAC D Mathématiques en priorité.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+function filtrer(niveau, btn) {
+  // Mettre à jour les boutons actifs
+  document.querySelectorAll('.filter-btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
+  btn.classList.add('active');
+
+  // Filtrer les cartes
+  document.querySelectorAll('.corrige-card').forEach(function(card) {
+    var n = card.getAttribute('data-niveau');
+    if (niveau === 'tous' || n.includes(niveau)) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+</script>
+
+{% endblock %}
+
