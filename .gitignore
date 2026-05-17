@@ -5,3 +5,6 @@ __pycache__/
 data/en_traitement/
 data/raw/
 data/titres/
+data/screenchots/
+data/exercices_pdf/
+data/epreuves_completes

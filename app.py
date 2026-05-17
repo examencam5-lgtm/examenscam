@@ -46,13 +46,6 @@ SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
 # HELPERS
 # ══════════════════════════════════════════
 
-def whatsapp_link(message: str = None) -> str:
-    """Génère un lien WhatsApp avec message pré-rempli."""
-    numero = app.config['WHATSAPP_NUMERO']
-    msg = message or "Bonjour, je cherche un répétiteur pour mes examens."
-    encoded = urllib.parse.quote(msg)
-    return f"https://wa.me/{numero}?text={encoded}"
-
 
 def verifier_token(token: str):
     """Bloque l'accès si le token admin est invalide."""
@@ -64,7 +57,6 @@ def verifier_token(token: str):
 def inject_globals():
     """Injecte les variables disponibles dans tous les templates."""
     return {
-        'whatsapp_link': whatsapp_link(),
         'site_nom': 'ExamensCam',
     }
 
@@ -88,18 +80,6 @@ def bepc():
         matieres = get_matieres_catalogue('BEPC')
     return render_template('niveau.html',
                            niveau='BEPC', serie=None, matieres=matieres)
-
-
-@app.route('/annales/BEPC/<matiere>')
-def annales_bepc(matiere):
-    annales = get_annales('BEPC', matiere=matiere)
-    wa = whatsapp_link(f"Bonjour, je cherche un répétiteur pour le BEPC {matiere}")
-    return render_template('annales.html',
-                           annales=annales, niveau='BEPC',
-                           serie=None, matiere=matiere,
-                           whatsapp_specifique=wa)
-
-
 # ── PROBATOIRE ───────────────────────────
 
 @app.route('/probatoire')
@@ -118,20 +98,6 @@ def probatoire_serie(serie):
                            niveau='Probatoire', serie=serie, matieres=matieres)
 
 
-@app.route('/annales/Probatoire/<serie>/<matiere>')
-def annales_probatoire(serie, matiere):
-    if serie not in SERIES_VALIDES:
-        abort(404)
-    annales = get_annales('Probatoire', serie=serie, matiere=matiere)
-    wa = whatsapp_link(
-        f"Bonjour, je cherche un répétiteur pour le Probatoire {serie} {matiere}"
-    )
-    return render_template('annales.html',
-                           annales=annales, niveau='Probatoire',
-                           serie=serie, matiere=matiere,
-                           whatsapp_specifique=wa)
-
-
 # ── BAC ──────────────────────────────────
 
 @app.route('/bac')
@@ -148,20 +114,26 @@ def bac_serie(serie):
         matieres = matieres_par_coefficient('BAC', serie)
     return render_template('niveau.html',
                            niveau='BAC', serie=serie, matieres=matieres)
-
-
-@app.route('/annales/BAC/<serie>/<matiere>')
-def annales_bac(serie, matiere):
-    if serie not in SERIES_VALIDES:
-        abort(404)
-    annales = get_annales('BAC', serie=serie, matiere=matiere)
-    wa = whatsapp_link(
-        f"Bonjour, je cherche un répétiteur pour le BAC {serie} {matiere}"
-    )
+# ── ROUTE GÉNÉRIQUE SANS SÉRIE (BEPC) ────────────
+@app.route('/annales/<niveau>/<matiere>')
+def annales_sans_serie(niveau, matiere):
+    annales = get_annales(niveau, matiere=matiere)
     return render_template('annales.html',
-                           annales=annales, niveau='BAC',
-                           serie=serie, matiere=matiere,
-                           whatsapp_specifique=wa)
+                           annales=annales,
+                           niveau=niveau,
+                           serie=None,
+                           matiere=matiere,)
+
+
+# ── ROUTE GÉNÉRIQUE AVEC SÉRIE (BAC + PROBATOIRE) ─
+@app.route('/annales/<niveau>/<serie>/<matiere>')
+def annales_avec_serie(niveau, serie, matiere):
+    annales = get_annales(niveau, serie=serie, matiere=matiere)
+    return render_template('annales.html',
+                           annales=annales,
+                           niveau=niveau,
+                           serie=serie,
+                           matiere=matiere,)
 
 
 # ── TRACKING VUES ────────────────────────

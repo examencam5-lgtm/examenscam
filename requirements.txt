@@ -3,4 +3,10 @@ gunicorn
 pypdf
 reportlab
 pillow
-
+opencv-python-headless
+pillow
+easyocr
+numpy
+scikit-image
+python-Levenshtein
+regex

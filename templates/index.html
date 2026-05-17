@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}ExamensCam — Tes ressources d'examens · Cameroun{% endblock %}
+{% block title %}ExamensCam — Tes ressources d'examens{% endblock %}
 
 {% block content %}
 <style>
@@ -9,79 +9,91 @@
     --navy: #0D1B2A;
     --blue: #1A5276;
     --gold: #D4AC0D;
-    --gold2: #B8860B;
+    --gold-light: #F0CC4A;
     --green: #145A32;
+    --red: #922B21;
     --white: #FFFFFF;
     --bg: #F4F6F8;
     --text: #1C2833;
     --muted: #5D6D7E;
-    --border:#E0E7EF;
+    --border: #E0E7EF;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
 
-  /* ── HERO ─────────────────────────────── */
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* ── HERO ─────────────────────────────────── */
   .hero {
     background: var(--navy);
-    padding: 52px 24px 44px;
+    padding: 56px 24px 48px;
     text-align: center;
     position: relative;
     overflow: hidden;
   }
 
+  /* Motif géométrique discret en fond */
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: repeating-linear-gradient(
-      45deg, transparent, transparent 40px,
-      rgba(212,172,13,0.04) 40px,
-      rgba(212,172,13,0.04) 41px
-    );
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(212, 172, 13, 0.04) 40px,
+        rgba(212, 172, 13, 0.04) 41px
+      );
     pointer-events: none;
   }
 
   .hero-eyebrow {
-    font-size: 10px;
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 14px;
-    position: relative;
+    margin-bottom: 16px;
   }
 
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(38px, 9vw, 60px);
+    font-size: clamp(36px, 8vw, 56px);
     font-weight: 700;
     color: var(--white);
-    line-height: 1.05;
-    margin-bottom: 10px;
+    line-height: 1.1;
+    margin-bottom: 8px;
     position: relative;
   }
 
-  .hero-title span { color: var(--gold); }
+  .hero-title span {
+    color: var(--gold);
+  }
 
   .hero-sub {
+    font-family: 'Lato', sans-serif;
     font-size: 15px;
     font-weight: 300;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.65);
     margin-bottom: 28px;
     line-height: 1.6;
-    position: relative;
   }
 
+  /* Compteur annales */
   .hero-stat {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(212,172,13,0.1);
-    border: 1px solid rgba(212,172,13,0.25);
+    background: rgba(212, 172, 13, 0.12);
+    border: 1px solid rgba(212, 172, 13, 0.3);
     border-radius: 100px;
     padding: 8px 20px;
-    position: relative;
   }
 
   .hero-stat-num {
@@ -93,37 +105,207 @@
 
   .hero-stat-label {
     font-size: 12px;
-    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.5px;
   }
 
-  .gold-bar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), transparent);
+  /* Ligne dorée séparatrice */
+  .gold-line {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin: 32px auto 0;
+    opacity: 0.6;
   }
 
-  /* ── STATS STRIP ──────────────────────── */
-  .stats-strip {
+  /* ── SECTION CHOIX ────────────────────────── */
+  .section-label {
+    text-align: center;
+    padding: 40px 24px 8px;
+  }
+
+  .section-label p {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── CARTES PRINCIPALES ───────────────────── */
+  .paths {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px 20px 40px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .path-card {
     background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(13,27,42,0.08);
+    text-decoration: none;
+    color: var(--text);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: block;
+    position: relative;
+  }
+
+  .path-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(13,27,42,0.14);
+  }
+
+  /* Bande couleur en haut de chaque carte */
+  .card-stripe {
+    height: 5px;
+    width: 100%;
+  }
+
+  .stripe-blue { background: linear-gradient(90deg, var(--blue), #2471A3); }
+  .stripe-gold { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+
+  .card-body {
+    padding: 28px 24px;
+  }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .icon-blue { background: rgba(26, 82, 118, 0.1); }
+  .icon-gold { background: rgba(212, 172, 13, 0.12); }
+
+  .card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .tag-blue { color: var(--blue); }
+  .tag-gold { color: #B8860B; }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    color: var(--navy);
+  }
+
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* Boutons de niveaux (carte annales) */
+  .level-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .level-btn {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .level-btn-blue {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  .level-btn-blue:hover { background: #154360; color: var(--white); }
+
+  .level-btn-outline {
+    background: transparent;
+    color: var(--blue);
+    border: 1.5px solid var(--blue);
+  }
+
+  .level-btn-outline:hover {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  /* Bouton générateur */
+  .gen-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #B8860B, var(--gold));
+    border-radius: 10px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+
+  .gen-btn:hover { opacity: 0.9; color: var(--white); }
+
+  .gen-btn-arrow {
+    font-size: 18px;
+    opacity: 0.85;
+  }
+
+  /* Badge "Nouveau" */
+  .badge-new {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  /* ── SÉPARATEUR INFO ─────────────────────── */
+  .info-strip {
+    background: var(--white);
+    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
     display: flex;
     justify-content: center;
-    gap: 0;
-    overflow-x: auto;
+    gap: 32px;
+    flex-wrap: wrap;
   }
 
-  .stat-item {
-    padding: 16px 24px;
+  .info-item {
     text-align: center;
-    border-right: 1px solid var(--border);
-    flex: 1;
-    min-width: 80px;
   }
 
-  .stat-item:last-child { border-right: none; }
-
-  .stat-num {
+  .info-num {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--blue);
     display: block;
@@ -131,392 +313,111 @@
     margin-bottom: 4px;
   }
 
-  .stat-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+  .info-label {
+    font-size: 11px;
     color: var(--muted);
+    letter-spacing: 0.5px;
   }
 
-  /* ── SECTION TITRE ────────────────────── */
-  .section-header {
-    text-align: center;
-    padding: 36px 24px 4px;
-  }
-
-  .section-header p {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .section-header h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--navy);
-  }
-
-  /* ── 3 PILIERS ────────────────────────── */
-  .pillars {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 20px 20px 0;
-    max-width: 740px;
-    margin: 0 auto;
-  }
-
+  /* ── RESPONSIVE ────────────────────────────── */
   @media (min-width: 600px) {
-    .pillars { grid-template-columns: repeat(3, 1fr); }
+    .paths {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
-  .pillar-card {
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 3px 18px rgba(13,27,42,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
+  /* ── ANIMATIONS ──────────────────────────── */
+  .path-card {
     animation: fadeUp 0.4s ease both;
   }
 
-  .pillar-card:nth-child(2) { animation-delay: 0.08s; }
-  .pillar-card:nth-child(3) { animation-delay: 0.16s; }
-
-  .pillar-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(13,27,42,0.12);
+  .path-card:nth-child(2) {
+    animation-delay: 0.1s;
   }
-
-  .pillar-stripe { height: 4px; width: 100%; }
-  .stripe-blue { background: linear-gradient(90deg, var(--blue), #2471A3); }
-  .stripe-gold { background: linear-gradient(90deg, var(--gold), #F0CC4A); }
-  .stripe-green { background: linear-gradient(90deg, var(--green), #1E8449); }
-
-  .pillar-body { padding: 22px 20px; }
-
-  .pillar-icon {
-    font-size: 28px;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  .pillar-tag {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .tag-blue { color: var(--blue); }
-  .tag-gold { color: var(--gold2); }
-  .tag-green { color: var(--green); }
-
-  .pillar-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-
-  .pillar-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 18px;
-  }
-
-  /* Boutons dans les cartes */
-  .pillar-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .btn-level {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
-
-  .btn-level-blue {
-    background: var(--blue);
-    color: var(--white);
-  }
-
-  .btn-level-blue:hover { background: #154360; color: var(--white); }
-
-  .btn-level-outline {
-    background: transparent;
-    color: var(--blue);
-    border: 1.5px solid var(--border);
-  }
-
-  .btn-level-outline:hover { border-color: var(--blue); background: rgba(26,82,118,0.04); }
-
-  .btn-level-gold {
-    background: linear-gradient(135deg, var(--gold2), var(--gold));
-    color: var(--white);
-  }
-
-  .btn-level-gold:hover { opacity: 0.9; color: var(--white); }
-
-  .btn-level-green {
-    background: var(--green);
-    color: var(--white);
-  }
-
-  .btn-level-green:hover { background: #0E3D22; color: var(--white); }
-
-  .btn-level-green-outline {
-    background: transparent;
-    color: var(--green);
-    border: 1.5px solid rgba(20,90,50,0.3);
-  }
-
-  .btn-level-green-outline:hover { background: rgba(20,90,50,0.05); }
-
-  .btn-arrow { opacity: 0.7; font-size: 14px; }
-
-  /* Badge nouveau */
-  .badge-new {
-    display: inline-block;
-    background: var(--gold);
-    color: var(--navy);
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 100px;
-    margin-left: 8px;
-    vertical-align: middle;
-  }
-
-  /* ── ANNALES PAR NIVEAU (BEPC section) ── */
-  .quick-access {
-    max-width: 740px;
-    margin: 24px auto 0;
-    padding: 0 20px;
-  }
-
-  .quick-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .quick-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  @media (min-width: 480px) {
-    .quick-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  .quick-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 16px 10px;
-    background: var(--white);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text);
-    box-shadow: 0 2px 10px rgba(13,27,42,0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
-    gap: 6px;
-  }
-
-  .quick-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(13,27,42,0.1);
-  }
-
-  .quick-btn-icon { font-size: 24px; }
-
-  .quick-btn-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--navy);
-  }
-
-  .quick-btn-sub {
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  /* ── SPACER ──────────────────────────── */
-  .spacer { height: 40px; }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
 </style>
 
 <!-- ── HERO ───────────────────────────────── -->
 <div class="hero">
-  <p class="hero-eyebrow">Plateforme officielle · Maroua, Cameroun</p>
-  <h1 class="hero-title">Examens<span>Cam</span></h1>
-  <p class="hero-sub">Annales · Examens sur mesure · Corrigés<br>Tout ce qu'il te faut pour réussir.</p>
+  <p class="hero-eyebrow">Plateforme Officielle · Cameroun</p>
+  <h1 class="hero-title">Examen<span>s</span>Cam</h1>
+  <p class="hero-sub">Tes ressources d'examens BEPC, Probatoire et BAC —<br>organisées, gratuites, disponibles partout.</p>
+
   <div class="hero-stat">
     <span class="hero-stat-num">{{ total }}</span>
     <span class="hero-stat-label">annales disponibles</span>
   </div>
+
+  <div class="gold-line"></div>
 </div>
-<div class="gold-bar"></div>
 
 <!-- ── STATS ──────────────────────────────── -->
-<div class="stats-strip">
-  <div class="stat-item">
-    <span class="stat-num">BEPC</span>
-    <span class="stat-label">Brevet</span>
+<div class="info-strip">
+  <div class="info-item">
+    <span class="info-num">BEPC</span>
+    <span class="info-label">Brevet</span>
   </div>
-  <div class="stat-item">
-    <span class="stat-num">Proba</span>
-    <span class="stat-label">Probatoire</span>
+  <div class="info-item">
+    <span class="info-num">Proba</span>
+    <span class="info-label">Probatoire</span>
   </div>
-  <div class="stat-item">
-    <span class="stat-num">C·D</span>
-    <span class="stat-label">BAC Sci.</span>
+  <div class="info-item">
+    <span class="info-num">BAC</span>
+    <span class="info-label">C · D · TI · A4</span>
   </div>
-  <div class="stat-item">
-    <span class="stat-num">TI·A4</span>
-    <span class="stat-label">BAC Tech.</span>
+  <div class="info-item">
+    <span class="info-num">100%</span>
+    <span class="info-label">Gratuit</span>
   </div>
 </div>
 
-<!-- ── TITRE SECTION ──────────────────────── -->
-<div class="section-header">
-  <p>Que veux-tu faire ?</p>
-  <h2>Choisis ton outil</h2>
+<!-- ── LABEL SECTION ──────────────────────── -->
+<div class="section-label">
+  <p>Que veux-tu faire aujourd'hui ?</p>
 </div>
 
-<!-- ── 3 PILIERS ──────────────────────────── -->
-<div class="pillars">
+<!-- ── CARTES ─────────────────────────────── -->
+<div class="paths">
 
-  <!-- PILIER 1 — ANNALES -->
-  <div class="pillar-card">
-    <div class="pillar-stripe stripe-blue"></div>
-    <div class="pillar-body">
-      <span class="pillar-icon">📚</span>
-      <span class="pillar-tag tag-blue">Accès libre · Gratuit</span>
-      <h2 class="pillar-title">Annales Officielles</h2>
-      <p class="pillar-desc">Toutes les épreuves nationales classées par niveau, série et matière.</p>
-      <div class="pillar-btns">
-        <a href="/bepc" class="btn-level btn-level-blue">
-          <span>BEPC</span>
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="/probatoire" class="btn-level btn-level-outline">
-          <span>Probatoire</span>
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="/bac" class="btn-level btn-level-outline">
-          <span>BAC — C · D · TI · A4</span>
-          <span class="btn-arrow">→</span>
-        </a>
+  <!-- Carte 1 — Annales officielles -->
+  <div class="path-card">
+    <div class="card-stripe stripe-blue"></div>
+    <div class="card-body">
+      <div class="card-icon icon-blue">📚</div>
+      <p class="card-tag tag-blue">Accès libre</p>
+      <h2 class="card-title">Annales Officielles</h2>
+      <p class="card-desc">Toutes les épreuves nationales classées par niveau, série et matière. Télécharge et consulte librement.</p>
+
+      <div class="level-btns">
+        <a href="/bepc" class="level-btn level-btn-blue">BEPC</a>
+        <a href="/probatoire" class="level-btn level-btn-outline">Probatoire</a>
+        <a href="/bac" class="level-btn level-btn-outline">BAC</a>
       </div>
     </div>
   </div>
 
-  <!-- PILIER 2 — GÉNÉRATEUR -->
-  <div class="pillar-card">
-    <div class="pillar-stripe stripe-gold"></div>
-    <div class="pillar-body">
-      <span class="pillar-icon">🎯</span>
-      <span class="pillar-tag tag-gold">Personnalisé <span class="badge-new">Nouveau</span></span>
-      <h2 class="pillar-title">Examen Sur Mesure</h2>
-      <p class="pillar-desc">Choisis ton thème et le nombre d'exercices. PDF généré instantanément.</p>
-      <div class="pillar-btns">
-        <a href="/generateur" class="btn-level btn-level-gold">
-          <span>Générer mon examen</span>
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="/generateur" class="btn-level btn-level-outline">
-          <span>Voir les thèmes</span>
-          <span class="btn-arrow">→</span>
-        </a>
-      </div>
-    </div>
-  </div>
+  <!-- Carte 2 — Générateur personnalisé -->
+  <div class="path-card">
+    <div class="card-stripe stripe-gold"></div>
+    <span class="badge-new">Nouveau</span>
+    <div class="card-body">
+      <div class="card-icon icon-gold">🎯</div>
+      <p class="card-tag tag-gold">Personnalisé</p>
+      <h2 class="card-title">Examen Sur Mesure</h2>
+      <p class="card-desc">Choisis ton thème et le nombre d'exercices. On génère ton examen d'entraînement instantanément.</p>
 
-  <!-- PILIER 3 — CORRIGÉS -->
-  <div class="pillar-card">
-    <div class="pillar-stripe stripe-green"></div>
-    <div class="pillar-body">
-      <span class="pillar-icon">✅</span>
-      <span class="pillar-tag tag-green">Accès WhatsApp</span>
-      <h2 class="pillar-title">Corrigés Détaillés</h2>
-      <p class="pillar-desc">Solutions pas à pas, méthode de correction MINESEC, points de barème.</p>
-      <div class="pillar-btns">
-        <a href="/corriges" class="btn-level btn-level-green">
-          <span>Voir les corrigés</span>
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="{{ whatsapp_link }}" target="_blank" class="btn-level btn-level-green-outline">
-          <span>Demander via WhatsApp</span>
-          <span class="btn-arrow">→</span>
-        </a>
-      </div>
+      <a href="/generateur" class="gen-btn">
+        <span>Générer mon examen</span>
+        <span class="gen-btn-arrow">→</span>
+      </a>
     </div>
   </div>
 
 </div>
 
-<!-- ── ACCÈS RAPIDE PAR NIVEAU ─────────────── -->
-<div class="quick-access">
-  <p class="quick-label">Accès rapide par niveau</p>
-  <div class="quick-grid">
-
-    <a href="/bepc" class="quick-btn">
-      <span class="quick-btn-icon">📗</span>
-      <span class="quick-btn-label">BEPC</span>
-      <span class="quick-btn-sub">3ème</span>
-    </a>
-
-    <a href="/probatoire" class="quick-btn">
-      <span class="quick-btn-icon">📘</span>
-      <span class="quick-btn-label">Probatoire</span>
-      <span class="quick-btn-sub">1ère</span>
-    </a>
-
-    <a href="/bac/C" class="quick-btn">
-      <span class="quick-btn-icon">📕</span>
-      <span class="quick-btn-label">BAC C</span>
-      <span class="quick-btn-sub">Terminale</span>
-    </a>
-
-    <a href="/bac/D" class="quick-btn">
-      <span class="quick-btn-icon">📙</span>
-      <span class="quick-btn-label">BAC D</span>
-      <span class="quick-btn-sub">Terminale</span>
-    </a>
-
-  </div>
-</div>
-
-<div class="spacer"></div>
 {% endblock %}
 
