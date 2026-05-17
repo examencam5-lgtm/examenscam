@@ -7,6 +7,8 @@ import urllib.parse
 from pathlib import Path
 from io import BytesIO
 from datetime import datetime
+import csv
+import io
 
 from flask import (
     Flask, render_template, redirect,
@@ -69,18 +71,41 @@ def inject_globals():
 def index():
     stats = get_stats()
     return render_template('index.html', stats=stats, total=stats['total'])
+# Catalogue de secours — affiché si la base est vide
+CATALOGUE = {
+    'BEPC': ['Mathematiques', 'PCT', 'SVT', 
+             'Français', 'Anglais', 'Histoire-Géo'],
+    'Probatoire': {
+        'C': ['Mathematiques', 'PCT', 'Philosophie', 
+                'Français', 'Anglais'],
+        'D': ['Mathematiques', 'PCT', 'SVT', 
+                'Philosophie', 'Français', 'Anglais'],
+        'TI': ['Mathematiques', 'PCT', 'Informatique',
+                'Français', 'Anglais'],
+        'A4': ['Philosophie', 'Français', 
+                'Anglais', 'Histoire-Géo'],
+    },
+    'BAC': {
+        'C': ['Mathematiques', 'PCT', 'SVT',
+                'Philosophie', 'Français', 'Anglais'],
+        'D': ['Mathematiques', 'PCT', 'SVT',
+                'Philosophie', 'Français', 'Anglais'],
+        'TI': ['Mathematiques', 'PCT', 'Informatique',
+                'Philosophie', 'Français', 'Anglais'],
+        'A4': ['Philosophie', 'Français',
+                'Anglais', 'Histoire-Géo'],
+    },
+}
 
-
-# ── BEPC ─────────────────────────────────
 
 @app.route('/bepc')
 def bepc():
-    matieres = get_matieres('BEPC')
-    if not matieres:
-        matieres = get_matieres_catalogue('BEPC')
+    matieres = get_matieres('BEPC') or CATALOGUE['BEPC']
     return render_template('niveau.html',
-                           niveau='BEPC', serie=None, matieres=matieres)
-# ── PROBATOIRE ───────────────────────────
+                           niveau='BEPC',
+                           serie=None,
+                           matieres=matieres)
+
 
 @app.route('/probatoire')
 def probatoire():
@@ -91,14 +116,13 @@ def probatoire():
 def probatoire_serie(serie):
     if serie not in SERIES_VALIDES:
         abort(404)
-    matieres = get_matieres('Probatoire', serie)
-    if not matieres:
-        matieres = matieres_par_coefficient('Probatoire', serie)
+    matieres = get_matieres('Probatoire', serie) or \
+               CATALOGUE['Probatoire'].get(serie, [])
     return render_template('niveau.html',
-                           niveau='Probatoire', serie=serie, matieres=matieres)
+                           niveau='Probatoire',
+                           serie=serie,
+                           matieres=matieres)
 
-
-# ── BAC ──────────────────────────────────
 
 @app.route('/bac')
 def bac():
@@ -109,11 +133,14 @@ def bac():
 def bac_serie(serie):
     if serie not in SERIES_VALIDES:
         abort(404)
-    matieres = get_matieres('BAC', serie)
-    if not matieres:
-        matieres = matieres_par_coefficient('BAC', serie)
+    matieres = get_matieres('BAC', serie) or \
+               CATALOGUE['BAC'].get(serie, [])
     return render_template('niveau.html',
-                           niveau='BAC', serie=serie, matieres=matieres)
+                           niveau='BAC',
+                           serie=serie,
+                           matieres=matieres)
+
+
 # ── ROUTE GÉNÉRIQUE SANS SÉRIE (BEPC) ────────────
 @app.route('/annales/<niveau>/<matiere>')
 def annales_sans_serie(niveau, matiere):
@@ -276,10 +303,44 @@ def generateur():
 # ROUTES ADMIN
 # ══════════════════════════════════════════
 
+import csv
+import io
+from flask import send_file as flask_send_file
+
+
+# ── HELPER DRIVE ─────────────────────────────────────
+
+def convertir_lien_drive(url: str) -> str:
+    """
+    Convertit n'importe quel lien Drive en lien embed (preview).
+    Fonctionne avec tous les formats Drive courants.
+    """
+    import re
+    if not url:
+        return url
+
+    patterns = [
+        r'/file/d/([a-zA-Z0-9_-]+)',
+        r'id=([a-zA-Z0-9_-]+)',
+        r'/d/([a-zA-Z0-9_-]+)/',
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, url)
+        if match:
+            file_id = match.group(1)
+            return f"https://drive.google.com/file/d/{file_id}/preview"
+
+    return url # Retourner tel quel si pas reconnu
+
+
+# ── DASHBOARD ADMIN ──────────────────────────────────
+
 @app.route('/admin/<token>', methods=['GET', 'POST'])
 def admin(token):
     verifier_token(token)
     message = None
+    csv_message = None
 
     if request.method == 'POST':
         try:
@@ -287,9 +348,11 @@ def admin(token):
             serie = request.form.get('serie', '').strip() or None
             matiere = request.form.get('matiere', '').strip()
             annee = int(request.form.get('annee', 0))
-            lien_drive = request.form.get('lien_drive', '').strip()
+            lien_drive = convertir_lien_drive(
+                            request.form.get('lien_drive', '').strip())
             corrige_dispo = 'corrige_dispo' in request.form
-            lien_corrige = request.form.get('lien_corrige', '').strip() or None
+            lien_corrige = convertir_lien_drive(
+                            request.form.get('lien_corrige', '').strip()) or None
             source = request.form.get('source', 'inconnu')
 
             if not niveau:
@@ -320,15 +383,143 @@ def admin(token):
     stats = get_stats()
 
     return render_template('admin.html',
-                           token=token, message=message,
-                           annales=annales, stats=stats)
+                           token=token,
+                           message=message,
+                           csv_message=csv_message,
+                           annales=annales,
+                           stats=stats)
 
+
+# ── SUPPRESSION UNITAIRE ─────────────────────────────
 
 @app.route('/admin/<token>/supprimer/<int:annale_id>')
 def admin_supprimer(token, annale_id):
     verifier_token(token)
     delete_annale(annale_id)
     return redirect(url_for('admin', token=token))
+
+
+# ── SUPPRESSION MULTIPLE ─────────────────────────────
+
+@app.route('/admin/<token>/supprimer-multiple', methods=['POST'])
+def admin_supprimer_multiple(token):
+    verifier_token(token)
+
+    ids = request.form.getlist('ids')
+    count = 0
+
+    for annale_id in ids:
+        try:
+            delete_annale(int(annale_id))
+            count += 1
+        except Exception as e:
+            print(f"❌ Erreur suppression {annale_id} : {e}")
+
+    print(f"✅ {count} annales supprimées")
+    return redirect(url_for('admin', token=token))
+
+
+# ── IMPORT CSV ───────────────────────────────────────
+
+@app.route('/admin/<token>/import-csv', methods=['POST'])
+def admin_import_csv(token):
+    verifier_token(token)
+
+    fichier = request.files.get('csv_file')
+
+    if not fichier or fichier.filename == '':
+        return render_template('admin.html',
+                               token=token,
+                               csv_message="❌ Aucun fichier sélectionné.",
+                               annales=get_all_annales(),
+                               stats=get_stats())
+
+    try:
+        content = fichier.read().decode('utf-8-sig') # utf-8-sig gère le BOM Excel
+        reader = csv.DictReader(io.StringIO(content))
+
+        count_ok = 0
+        count_err = 0
+        erreurs = []
+
+        for i, row in enumerate(reader, start=2):
+            try:
+                niveau = row.get('niveau', '').strip()
+                serie = row.get('serie', '').strip() or None
+                matiere = row.get('matiere', '').strip()
+                annee_str = row.get('annee', '').strip()
+                lien_drive = convertir_lien_drive(row.get('lien_drive', '').strip())
+                corrige = row.get('corrige_dispo', '0').strip() in ('1', 'oui', 'yes', 'true')
+                source = row.get('source', 'inconnu').strip()
+
+                if not all([niveau, matiere, annee_str, lien_drive]):
+                    erreurs.append(f"Ligne {i} : champs obligatoires manquants")
+                    count_err += 1
+                    continue
+
+                annee = int(annee_str)
+
+                new_id = add_annale(
+                    niveau=niveau, serie=serie, matiere=matiere,
+                    annee=annee, lien_drive=lien_drive,
+                    corrige_dispo=corrige, source=source
+                )
+
+                if new_id > 0:
+                    count_ok += 1
+                else:
+                    count_err += 1
+
+            except ValueError:
+                erreurs.append(f"Ligne {i} : année invalide ({row.get('annee')})")
+                count_err += 1
+            except Exception as e:
+                erreurs.append(f"Ligne {i} : {str(e)}")
+                count_err += 1
+
+        if erreurs:
+            msg = f"✅ {count_ok} importées · ❌ {count_err} erreurs : {' | '.join(erreurs[:3])}"
+        else:
+            msg = f"✅ {count_ok} annales importées avec succès !"
+
+    except Exception as e:
+        msg = f"❌ Erreur lecture fichier : {str(e)}"
+
+    return render_template('admin.html',
+                           token=token,
+                           csv_message=msg,
+                           message=None,
+                           annales=get_all_annales(),
+                           stats=get_stats())
+
+
+# ── TEMPLATE CSV À TÉLÉCHARGER ───────────────────────
+
+@app.route('/admin/<token>/template-csv')
+def admin_template_csv(token):
+    verifier_token(token)
+
+    contenu = """niveau,serie,matiere,annee,lien_drive,corrige_dispo,source
+BEPC,,Mathematiques,2023,https://drive.google.com/file/d/TON_ID/preview,0,sujetexa
+BEPC,,PCT,2022,https://drive.google.com/file/d/TON_ID/preview,0,mongosukulu
+BAC,C,Mathematiques,2023,https://drive.google.com/file/d/TON_ID/preview,0,sujetexa
+BAC,C,PCT,2022,https://drive.google.com/file/d/TON_ID/preview,1,muhammad
+BAC,D,Mathematiques,2023,https://drive.google.com/file/d/TON_ID/preview,0,sujetexa
+BAC,D,SVT,2021,https://drive.google.com/file/d/TON_ID/preview,0,orniformation
+Probatoire,C,Mathematiques,2022,https://drive.google.com/file/d/TON_ID/preview,0,sujetexa
+Probatoire,D,SVT,2023,https://drive.google.com/file/d/TON_ID/preview,0,mongosukulu
+"""
+
+    buffer = io.BytesIO(contenu.encode('utf-8'))
+    buffer.seek(0)
+
+    return flask_send_file(
+        buffer,
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name='modele_import_examenscam.csv'
+    )
+
 
 
 # ══════════════════════════════════════════
