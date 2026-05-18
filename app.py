@@ -31,15 +31,18 @@ from matieres import (
 # ══════════════════════════════════════════
 # CONFIGURATION
 # ══════════════════════════════════════════
-
 app = Flask(__name__)
 
 app.config.update(
     SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_SUPPRIME_DE_LHISTORIQUE'),
     DEBUG = os.environ.get('DEBUG', 'True') == 'True',
-    WHATSAPP_NUMERO = os.environ.get('WHATSAPP_NUMERO', '237 659929291'),
     ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN', 'TOKEN_SUPPRIME_DE_LHISTORIQUE'),
 )
+
+# Initialiser la base au démarrage Render
+with app.app_context():
+    create_table()
+
 
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
 
