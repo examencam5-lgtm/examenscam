@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% block title %}Ajout en masse · Admin ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --navy: #0D1B2A; --blue: #1A5276; --gold: #D4AC0D; --gold2: #B8860B;
+    --green: #145A32; --red: #922B21; --white: #FFFFFF;
+    --bg: #F0F2F5; --text: #1C2833; --muted: #5D6D7E; --border: #D5DBE1;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
+
+  .page-header {
+    background: var(--navy); padding: 32px 24px;
+    position: relative; overflow: hidden;
+  }
+
+  .page-header::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 40px,
+      rgba(212,172,13,0.04) 40px, rgba(212,172,13,0.04) 41px);
+  }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.45); text-decoration: none;
+    font-size: 13px; margin-bottom: 16px; transition: color 0.2s; position: relative;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  .header-eyebrow {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 8px; position: relative;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 700; color: var(--white); position: relative;
+  }
+
+  .gold-bar { height: 3px; background: linear-gradient(90deg, var(--gold), transparent); }
+
+  .wrapper { max-width: 680px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* ── FLASH ───────────────────────────────── */
+  .flash {
+    padding: 14px 18px; border-radius: 10px; font-size: 14px;
+    margin-bottom: 20px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .flash-success { background: rgba(20,90,50,0.08); border: 1px solid rgba(20,90,50,0.2); color: var(--green); }
+  .flash-error { background: rgba(146,43,33,0.08); border: 1px solid rgba(146,43,33,0.2); color: var(--red); }
+
+  /* ── CARD ────────────────────────────────── */
+  .card {
+    background: var(--white); border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(13,27,42,0.07); overflow: hidden;
+  }
+
+  .card-header {
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+  }
+
+  .card-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 700; color: var(--navy);
+  }
+
+  .card-header p {
+    font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.5;
+  }
+
+  .card-body { padding: 24px; }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-label {
+    display: block; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 7px;
+  }
+
+  .form-label .req { color: var(--red); margin-left: 3px; }
+
+  .form-control {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Lato', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--white); transition: border-color 0.15s, box-shadow 0.15s;
+    appearance: none;
+  }
+
+  .form-control:focus {
+    outline: none; border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(26,82,118,0.1);
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  #groupe-serie { display: none; }
+
+  /* Zone de texte liens */
+  .liens-zone {
+    width: 100%; min-height: 200px; padding: 14px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Lato', sans-serif; font-size: 13px;
+    color: var(--text); resize: vertical; line-height: 1.7;
+    transition: border-color 0.15s;
+  }
+
+  .liens-zone:focus {
+    outline: none; border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(26,82,118,0.1);
+  }
+
+  .liens-hint {
+    font-size: 11px; color: var(--muted); margin-top: 6px;
+    line-height: 1.6; display: block;
+  }
+
+  /* Compteur de liens */
+  .liens-counter {
+    font-size: 12px; font-weight: 700; color: var(--blue);
+    margin-top: 6px; display: block;
+  }
+
+  /* Preview assignation années */
+  .preview-box {
+    background: rgba(26,82,118,0.04); border: 1px solid rgba(26,82,118,0.15);
+    border-radius: 10px; padding: 14px; margin-top: 14px; display: none;
+  }
+
+  .preview-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 10px;
+  }
+
+  .preview-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 3px 0; color: var(--text);
+    border-bottom: 1px solid rgba(26,82,118,0.08);
+  }
+
+  .preview-row:last-child { border-bottom: none; }
+  .preview-annee { font-weight: 700; color: var(--navy); }
+  .preview-lien { color: var(--muted); font-size: 11px; max-width: 300px;
+                   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Checkbox */
+  .checkbox-group {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 13px; border: 1.5px solid var(--border);
+    border-radius: 10px; cursor: pointer;
+  }
+
+  .checkbox-group input { width: 17px; height: 17px; accent-color: var(--gold); }
+  .check-label { font-size: 14px; font-weight: 700; }
+
+  /* Bouton */
+  .btn-submit {
+    width: 100%; padding: 15px; margin-top: 8px;
+    background: linear-gradient(135deg, var(--green), #1E8449);
+    color: var(--white); border: none; border-radius: 12px;
+    font-family: 'Lato', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+    box-shadow: 0 4px 14px rgba(20,90,50,0.3);
+  }
+
+  .btn-submit:hover { opacity: 0.9; }
+
+  /* Info box */
+  .info-box {
+    background: rgba(212,172,13,0.07); border: 1px solid rgba(212,172,13,0.25);
+    border-radius: 12px; padding: 16px; margin-bottom: 20px;
+  }
+
+  .info-box p { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .info-box strong { color: var(--navy); }
+</style>
+
+<!-- HEADER -->
+<div class="page-header">
+  <a href="/admin/{{ token }}" class="back-link">← Admin</a>
+  <p class="header-eyebrow">Administration · Ajout rapide</p>
+  <h1 class="header-title">Ajout en masse</h1>
+</div>
+<div class="gold-bar"></div>
+
+<div class="wrapper">
+
+  {% if message %}
+  <div class="flash flash-{{ 'success' if '✅' in message else 'error' }}">
+    {{ message }}
+  </div>
+  {% endif %}
+
+  <!-- INFO -->
+  <div class="info-box">
+    <p>
+      Colle tous tes liens Drive d'un coup — <strong>un lien par ligne</strong>.<br>
+      Tu précises la matière et l'année de départ.<br>
+      Le système assigne les années automatiquement en décroissant.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Paramètres de l'annale</h2>
+      <p>Ces informations s'appliquent à TOUS les liens collés</p>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="/admin/{{ token }}/masse">
+
+        <!-- Niveau + Série -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Niveau <span class="req">*</span></label>
+            <select name="niveau" class="form-control" required onchange="updateSerie()">
+              <option value="">— Niveau —</option>
+              <option value="BEPC">BEPC</option>
+              <option value="Probatoire">Probatoire</option>
+              <option value="Probatoire Blanc">Probatoire Blanc</option>
+              <option value="BAC">BAC</option>
+              <option value="BAC Blanc">BAC Blanc</option>
+            </select>
+          </div>
+          <div class="form-group" id="groupe-serie">
+            <label class="form-label">Série <span class="req">*</span></label>
+            <select name="serie" class="form-control">
+              <option value="">— Série —</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="TI">TI</option>
+              <option value="A4">A4</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Matière + Année début -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Matière <span class="req">*</span></label>
+            <input type="text" name="matiere" class="form-control"
+                   placeholder="ex: Mathematiques" required list="matieres-list">
+            <datalist id="matieres-list">
+              <option value="Mathematiques">
+              <option value="Physique">
+              <option value="Chimie">
+              <option value="SVT">
+              <option value="Philosophie">
+              <option value="Français">
+              <option value="Anglais">
+              <option value="Informatique">
+              <option value="Histoire-Géo">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Année de départ <span class="req">*</span></label>
+            <input type="number" name="annee_debut" class="form-control"
+                   value="2024" min="1990" max="2030" required
+                   oninput="updatePreview()">
+          </div>
+        </div>
+
+        <!-- Source -->
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <select name="source" class="form-control">
+            <option value="sujetexa">sujetexa.com</option>
+            <option value="mongosukulu">mongosukulu.com</option>
+            <option value="orniformation">orniformation.com</option>
+            <option value="camscanner">CamScanner (scan)</option>
+            <option value="muhammad">Muhammad (production propre)</option>
+            <option value="inconnu">Inconnu</option>
+          </select>
+        </div>
+
+        <!-- Corrigé -->
+        <div class="form-group">
+          <label class="checkbox-group">
+            <input type="checkbox" name="corrige_dispo">
+            <span class="check-label">Ces liens sont des corrigés</span>
+          </label>
+        </div>
+
+        <!-- Zone liens Drive -->
+        <div class="form-group">
+          <label class="form-label">
+            Liens Google Drive <span class="req">*</span>
+          </label>
+          <textarea name="liens_drive" class="liens-zone"
+                    id="liens-zone"
+                    placeholder="Colle tes liens ici — un lien par ligne :
+
+https://drive.google.com/file/d/ABC123/view
+https://drive.google.com/file/d/DEF456/view
+https://drive.google.com/file/d/GHI789/view
+..."
+                    oninput="updatePreview()"></textarea>
+          <span class="liens-counter" id="liens-counter">0 lien détecté</span>
+          <span class="liens-hint">
+            N'importe quel format Drive fonctionne — conversion automatique.<br>
+            Le 1er lien = année de départ · Le 2ème = année -1 · etc.
+          </span>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-box" id="preview-box">
+          <div class="preview-title">Aperçu de l'assignation des années</div>
+          <div id="preview-rows"></div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          ＋ Importer tous les liens
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function updateSerie() {
+  var niveau = document.querySelector('[name="niveau"]').value;
+  var groupe = document.getElementById('groupe-serie');
+  if (['BAC','BAC Blanc','Probatoire','Probatoire Blanc'].includes(niveau)) {
+    groupe.style.display = 'block';
+  } else {
+    groupe.style.display = 'none';
+  }
+}
+
+function getLiens() {
+  var texte = document.getElementById('liens-zone').value;
+  return texte.split('\n').map(l => l.trim()).filter(l => l.length > 10);
+}
+
+function updatePreview() {
+  var liens = getLiens();
+  var annee = parseInt(document.querySelector('[name="annee_debut"]').value) || 2024;
+  var counter = document.getElementById('liens-counter');
+  var box = document.getElementById('preview-box');
+  var rows = document.getElementById('preview-rows');
+
+  // Mettre à jour le compteur
+  counter.textContent = liens.length + ' lien' + (liens.length > 1 ? 's' : '') + ' détecté' + (liens.length > 1 ? 's' : '');
+
+  if (liens.length === 0) { box.style.display = 'none'; return; }
+
+  // Générer l'aperçu (max 8 lignes)
+  var html = '';
+  var afficher = Math.min(liens.length, 8);
+  for (var i = 0; i < afficher; i++) {
+    var a = annee - i;
+    var lien = liens[i];
+    var court = lien.length > 50 ? lien.substring(0, 50) + '...' : lien;
+    html += '<div class="preview-row">'
+          + '<span class="preview-annee">' + a + '</span>'
+          + '<span class="preview-lien">' + court + '</span>'
+          + '</div>';
+  }
+
+  if (liens.length > 8) {
+    html += '<div class="preview-row" style="color:var(--muted); font-style:italic;">'
+          + '<span>... et ' + (liens.length - 8) + ' autres</span>'
+          + '</div>';
+  }
+
+  rows.innerHTML = html;
+  box.style.display = 'block';
+}
+</script>
+
+{% endblock %}
+

@@ -71,6 +71,8 @@ def inject_globals():
 def index():
     stats = get_stats()
     return render_template('index.html', stats=stats, total=stats['total'])
+
+
 # Catalogue de secours — affiché si la base est vide
 CATALOGUE = {
     'BEPC': ['Mathematiques', 'PCT', 'SVT', 
@@ -140,35 +142,31 @@ def bac_serie(serie):
                            serie=serie,
                            matieres=matieres)
 
-
-# ── ROUTE GÉNÉRIQUE SANS SÉRIE (BEPC) ────────────
 @app.route('/annales/<niveau>/<matiere>')
 def annales_sans_serie(niveau, matiere):
+    niveau = niveau.title() # probatoire → Probatoire, bepc → Bepc
+    niveau = niveau.replace('Bepc', 'BEPC').replace('Bac', 'BAC')
     annales = get_annales(niveau, matiere=matiere)
     return render_template('annales.html',
-                           annales=annales,
-                           niveau=niveau,
-                           serie=None,
-                           matiere=matiere,)
+                           annales=annales, niveau=niveau,
+                           serie=None, matiere=matiere)
 
 
-# ── ROUTE GÉNÉRIQUE AVEC SÉRIE (BAC + PROBATOIRE) ─
 @app.route('/annales/<niveau>/<serie>/<matiere>')
 def annales_avec_serie(niveau, serie, matiere):
+    niveau = niveau.title()
+    niveau = niveau.replace('Bepc', 'BEPC').replace('Bac', 'BAC')
     annales = get_annales(niveau, serie=serie, matiere=matiere)
     return render_template('annales.html',
-                           annales=annales,
-                           niveau=niveau,
-                           serie=serie,
-                           matiere=matiere,)
-
+                           annales=annales, niveau=niveau,
+                           serie=serie, matiere=matiere)
 
 # ── TRACKING VUES ────────────────────────
 
 @app.route('/voir/<int:annale_id>')
 def voir_annale(annale_id):
     increment_vues(annale_id)
-    return '', 204 # Réponse vide — appelé en AJAX depuis le template
+    return '', 204  # Réponse vide — appelé en AJAX depuis le template
 
 
 # ══════════════════════════════════════════
@@ -331,7 +329,7 @@ def convertir_lien_drive(url: str) -> str:
             file_id = match.group(1)
             return f"https://drive.google.com/file/d/{file_id}/preview"
 
-    return url # Retourner tel quel si pas reconnu
+    return url  # Retourner tel quel si pas reconnu
 
 
 # ── DASHBOARD ADMIN ──────────────────────────────────
@@ -435,11 +433,12 @@ def admin_import_csv(token):
                                stats=get_stats())
 
     try:
-        content = fichier.read().decode('utf-8-sig') # utf-8-sig gère le BOM Excel
+        content = fichier.read().decode('utf-8-sig')  # utf-8-sig gère le BOM Excel
         reader = csv.DictReader(io.StringIO(content))
 
         count_ok = 0
         count_err = 0
+        count_skip = 0
         erreurs = []
 
         for i, row in enumerate(reader, start=2):
@@ -467,6 +466,8 @@ def admin_import_csv(token):
 
                 if new_id > 0:
                     count_ok += 1
+                elif new_id == 0:
+                    count_skip += 1  # Doublon ignoré (ON CONFLICT IGNORE)
                 else:
                     count_err += 1
 
@@ -477,10 +478,19 @@ def admin_import_csv(token):
                 erreurs.append(f"Ligne {i} : {str(e)}")
                 count_err += 1
 
-        if erreurs:
-            msg = f"✅ {count_ok} importées · ❌ {count_err} erreurs : {' | '.join(erreurs[:3])}"
+        # Message détaillé
+        parts = []
+        if count_ok:
+            parts.append(f"✅ {count_ok} importées")
+        if count_skip:
+            parts.append(f"⚠️ {count_skip} doublons ignorés")
+        if count_err:
+            parts.append(f"❌ {count_err} erreurs : {' | '.join(erreurs[:3])}")
+
+        if not parts:
+            msg = "ℹ️ Aucune annale à importer (fichier vide ?)"
         else:
-            msg = f"✅ {count_ok} annales importées avec succès !"
+            msg = " · ".join(parts)
 
     except Exception as e:
         msg = f"❌ Erreur lecture fichier : {str(e)}"
@@ -521,7 +531,6 @@ Probatoire,D,SVT,2023,https://drive.google.com/file/d/TON_ID/preview,0,mongosuku
     )
 
 
-
 # ══════════════════════════════════════════
 # ERREURS
 # ══════════════════════════════════════════
@@ -533,7 +542,6 @@ def page_non_trouvee(e):
 @app.errorhandler(403)
 def acces_interdit(e):
     return render_template('403.html'), 403
-
 
 
 # ═══════════════════════════════════════════════════════
@@ -623,26 +631,115 @@ def paiement_confirmation(transaction_id):
     return render_template('paiement_confirmation.html',
                            transaction=transaction)
 
+# ═══════════════════════════════════════════════════════
+# ROUTE AJOUT EN MASSE — À ajouter dans app.py
+# L'élève colle tous ses liens Drive d'un coup
+# ═══════════════════════════════════════════════════════
+
+@app.route('/admin/<token>/masse', methods=['GET', 'POST'])
+def admin_masse(token):
+    verifier_token(token)
+
+    message = None
+    count = 0
+
+    if request.method == 'POST':
+        niveau = request.form.get('niveau', '').strip()
+        serie = request.form.get('serie', '').strip() or None
+        matiere = request.form.get('matiere', '').strip()
+        source = request.form.get('source', 'inconnu')
+        corrige_dispo = 'corrige_dispo' in request.form
+        annee_debut = int(request.form.get('annee_debut', 2023))
+        liens_bruts = request.form.get('liens_drive', '')
+
+        # Extraire les liens — un par ligne, ignorer lignes vides
+        liens = [l.strip() for l in liens_bruts.strip().splitlines()
+                 if l.strip()]
+
+        if not liens:
+            message = "❌ Aucun lien détecté."
+        elif not niveau or not matiere:
+            message = "❌ Niveau et matière obligatoires."
+        else:
+            # Assigner les années en décroissant depuis annee_debut
+            annee_courante = annee_debut
+            erreurs = []
+
+            for lien in liens:
+                lien_converti = convertir_lien_drive(lien)
+                try:
+                    new_id = add_annale(
+                        niveau=niveau,
+                        serie=serie,
+                        matiere=matiere,
+                        annee=annee_courante,
+                        lien_drive=lien_converti,
+                        corrige_dispo=corrige_dispo,
+                        source=source
+                    )
+                    if new_id > 0:
+                        count += 1
+                    annee_courante -= 1 # Année suivante
+                except Exception as e:
+                    erreurs.append(str(e))
+
+            if erreurs:
+                message = f"✅ {count} ajoutées · ❌ {len(erreurs)} erreurs"
+            else:
+                message = f"✅ {count} annales ajoutées ({annee_debut} → {annee_courante + 1})"
+
+    return render_template('admin_masse.html',
+                           token=token,
+                           message=message,
+                           count=count)
+
+
+
 
 # ── WEBHOOK CINETPAY (Phase 2) ────────────────────────
 # Décommente quand CinetPay est configuré
 
 # @app.route('/webhook/cinetpay', methods=['POST'])
 # def webhook_cinetpay():
-# data = request.json
-# if data.get('status') == 'ACCEPTED':
-# transaction_id = data.get('metadata', {}).get('transaction_id')
-# if transaction_id:
-# conn = get_connection()
-# conn.execute("""
-# UPDATE transactions SET statut = 'confirme'
-# WHERE id = ?
-# """, (transaction_id,))
-# conn.commit()
-# conn.close()
-# return '', 200
+#     data = request.json
+#     if data.get('status') == 'ACCEPTED':
+#         transaction_id = data.get('metadata', {}).get('transaction_id')
+#         if transaction_id:
+#             conn = get_connection()
+#             conn.execute("""
+#                 UPDATE transactions SET statut = 'confirme'
+#                 WHERE id = ?
+#             """, (transaction_id,))
+#             conn.commit()
+#             conn.close()
+#     return '', 200
+@app.route('/api/admin/ajouter', methods=['POST'])
+def api_admin_ajouter():
+    token = request.form.get('token', '')
+    if token != app.config['ADMIN_TOKEN']:
+        return 'Unauthorized', 403
+    try:
+        niveau = request.form.get('niveau', '').strip()
+        serie = request.form.get('serie', '').strip() or None
+        matiere = request.form.get('matiere', '').strip()
+        annee = int(request.form.get('annee', 0))
+        lien_drive = convertir_lien_drive(
+                        request.form.get('lien_drive', '').strip())
+        corrige_dispo = request.form.get('corrige_dispo', '0') == '1'
+        source = request.form.get('source', 'inconnu')
 
+        if not all([niveau, matiere, lien_drive]) or not (1990 <= annee <= 2030):
+            return 'Bad Request', 400
 
+        new_id = add_annale(
+            niveau=niveau, serie=serie, matiere=matiere,
+            annee=annee, lien_drive=lien_drive,
+            corrige_dispo=corrige_dispo, source=source
+        )
+        return 'OK' if new_id > 0 else 'Error', 200 if new_id > 0 else 500
+
+    except Exception as e:
+        return str(e), 500
 
 
 # ══════════════════════════════════════════
@@ -650,6 +747,5 @@ def paiement_confirmation(transaction_id):
 # ══════════════════════════════════════════
 
 if __name__ == '__main__':
-    create_table() # Crée la BDD si elle n'existe pas
+    create_table()  # Crée la BDD si elle n'existe pas
     app.run(debug=app.config['DEBUG'])
-

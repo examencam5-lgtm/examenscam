@@ -15,7 +15,7 @@ def get_connection():
     """Connexion à la base. Crée le dossier data/ si besoin."""
     Path('data').mkdir(exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row # Accès par nom de colonne
+    conn.row_factory = sqlite3.Row  # Accès par nom de colonne
     return conn
 
 
@@ -40,7 +40,8 @@ def create_table():
             qualite TEXT DEFAULT 'bonne',
             vues INTEGER DEFAULT 0,
             date_ajout TEXT DEFAULT (datetime('now')),
-            actif INTEGER DEFAULT 1
+            actif INTEGER DEFAULT 1,
+            UNIQUE(niveau, serie, matiere, annee) ON CONFLICT IGNORE
         );
         CREATE TABLE IF NOT EXISTS transactions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -264,8 +265,11 @@ def add_annale(niveau: str,
         print(f"✅ Annale ajoutée : ID {new_id} — {niveau} {serie or ''} {matiere} {annee}")
         return new_id
 
+    except sqlite3.IntegrityError as e:
+        print(f"⚠️ DOUBLON ignoré : {niveau} {serie or ''} {matiere} {annee} — {e}")
+        return 0
     except Exception as e:
-        print(f"❌ add_annale : {e}")
+        print(f"❌ ERREUR SQL add_annale : {type(e).__name__}: {e}")
         return -1
     finally:
         conn.close()
@@ -333,4 +337,3 @@ def check_table():
 if __name__ == "__main__":
     create_table()
     check_table()
-
