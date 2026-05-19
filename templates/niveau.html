@@ -292,7 +292,7 @@
 
     {# Lien selon présence de série #}
     {% if serie %}
-      {% set lien = '/annales/' ~ niveau|lower ~ '/' ~ serie ~ '/' ~ matiere %}
+      {% set lien = '/annales/' ~ niveau ~ '/' ~ serie ~ '/' ~ matiere %}
     {% else %}
       {% set lien = '/annales/' ~ niveau ~ '/' ~ matiere %}
     {% endif %}
