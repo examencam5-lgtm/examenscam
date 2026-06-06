@@ -81,7 +81,7 @@ def get_annales(niveau: str, serie: Optional[str] = None,
             query += " AND niveau = ?"
             params.append(niveau)
         if serie:
-            query += " AND serie = ?"
+            query += " AND (serie = ? OR serie IS NULL)"
             params.append(serie)
         if matiere:
             query += " AND matiere = ?"

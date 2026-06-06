@@ -306,7 +306,7 @@ def admin_masse(token):
         matiere = request.form.get('matiere', '').strip()
         source = request.form.get('source', 'inconnu')
         corrige_dispo = 'corrige_dispo' in request.form
-        annee_debut = int(request.form.get('annee_debut', 2024))
+        annee_debut = int(request.form.get('annee_debut', 2025))
         liens = [l.strip() for l in
                  request.form.get('liens_drive', '').strip().splitlines()
                  if l.strip()]
