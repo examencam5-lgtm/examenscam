@@ -150,7 +150,7 @@ def add_annale(niveau: str, serie: Optional[str], matiere: str,
     conn = get_connection()
     try:
         cursor = conn.execute("""
-            INSERT INTO annales
+            INSERT OR IGNORE INTO annales
                 (niveau, serie, matiere, annee, lien_drive,
                  corrige_dispo, lien_corrige, source)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
