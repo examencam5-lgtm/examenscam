@@ -120,37 +120,72 @@ def bac_serie(serie):
 
 @app.route('/bepc/<matiere>')
 def bepc_choix(matiere):
-    toutes = get_annales('BEPC', matiere=matiere)
+    officiels = get_annales('BEPC', matiere=matiere, type_sujet='officiel')
+    blancs = get_annales('BEPC', matiere=matiere, type_sujet='blanc')
     return render_template('choix_type.html',
         niveau='BEPC', serie=None, matiere=matiere,
-        nb_enonces=len(toutes),
-        nb_corriges=len([a for a in toutes if a.get('corrige_dispo')]),
-        url_enonces=f'/annales/BEPC/{matiere}/enonces',
-        url_corriges=f'/annales/BEPC/{matiere}/corriges')
+        nb_officiels=len(officiels),
+        nb_blancs=len(blancs),
+        nb_corriges=len([a for a in officiels + blancs if a.get('corrige_dispo')]),
+        url_off_enonces=f'/annales/BEPC/{matiere}/officiel/enonces',
+        url_off_corriges=f'/annales/BEPC/{matiere}/officiel/corriges',
+        url_blanc_enonces=f'/annales/BEPC/{matiere}/blanc/enonces',
+        url_blanc_corriges=f'/annales/BEPC/{matiere}/blanc/corriges')
 
 @app.route('/probatoire/<serie>/<matiere>')
 def probatoire_choix(serie, matiere):
     if serie not in SERIES_VALIDES:
         abort(404)
-    toutes = get_annales('Probatoire', serie=serie, matiere=matiere)
+    officiels = get_annales('Probatoire', serie=serie, matiere=matiere, type_sujet='officiel')
+    blancs = get_annales('Probatoire', serie=serie, matiere=matiere, type_sujet='blanc')
     return render_template('choix_type.html',
         niveau='Probatoire', serie=serie, matiere=matiere,
-        nb_enonces=len(toutes),
-        nb_corriges=len([a for a in toutes if a.get('corrige_dispo')]),
-        url_enonces=f'/annales/Probatoire/{serie}/{matiere}/enonces',
-        url_corriges=f'/annales/Probatoire/{serie}/{matiere}/corriges')
+        nb_officiels=len(officiels),
+        nb_blancs=len(blancs),
+        nb_corriges=len([a for a in officiels + blancs if a.get('corrige_dispo')]),
+        url_off_enonces=f'/annales/Probatoire/{serie}/{matiere}/officiel/enonces',
+        url_off_corriges=f'/annales/Probatoire/{serie}/{matiere}/officiel/corriges',
+        url_blanc_enonces=f'/annales/Probatoire/{serie}/{matiere}/blanc/enonces',
+        url_blanc_corriges=f'/annales/Probatoire/{serie}/{matiere}/blanc/corriges')
+
 
 @app.route('/bac/<serie>/<matiere>')
 def bac_choix(serie, matiere):
     if serie not in SERIES_VALIDES:
         abort(404)
-    toutes = get_annales('BAC', serie=serie, matiere=matiere)
+    officiels = get_annales('BAC', serie=serie, matiere=matiere, type_sujet='officiel')
+    blancs = get_annales('BAC', serie=serie, matiere=matiere, type_sujet='blanc')
     return render_template('choix_type.html',
         niveau='BAC', serie=serie, matiere=matiere,
-        nb_enonces=len(toutes),
-        nb_corriges=len([a for a in toutes if a.get('corrige_dispo')]),
-        url_enonces=f'/annales/BAC/{serie}/{matiere}/enonces',
-        url_corriges=f'/annales/BAC/{serie}/{matiere}/corriges')
+        nb_officiels=len(officiels),
+        nb_blancs=len(blancs),
+        nb_corriges=len([a for a in officiels + blancs if a.get('corrige_dispo')]),
+        url_off_enonces=f'/annales/BAC/{serie}/{matiere}/officiel/enonces',
+        url_off_corriges=f'/annales/BAC/{serie}/{matiere}/officiel/corriges',
+        url_blanc_enonces=f'/annales/BAC/{serie}/{matiere}/blanc/enonces',
+        url_blanc_corriges=f'/annales/BAC/{serie}/{matiere}/blanc/corriges')
+
+@app.route('/annales/<niveau>/<matiere>/<type_sujet>/<type_doc>')
+def annales_bepc(niveau, matiere, type_sujet, type_doc):
+    corrige = (type_doc == 'corriges')
+    annales = get_annales(niveau, matiere=matiere, type_sujet=type_sujet)
+    if corrige:
+        annales = [a for a in annales if a.get('corrige_dispo')]
+    return render_template('annales.html',
+        niveau=niveau, serie=None, matiere=matiere,
+        type_sujet=type_sujet, type_doc=type_doc,
+        annales=annales)
+
+@app.route('/annales/<niveau>/<serie>/<matiere>/<type_sujet>/<type_doc>')
+def annales_serie(niveau, serie, matiere, type_sujet, type_doc):
+    corrige = (type_doc == 'corriges')
+    annales = get_annales(niveau, serie=serie, matiere=matiere, type_sujet=type_sujet)
+    if corrige:
+        annales = [a for a in annales if a.get('corrige_dispo')]
+    return render_template('annales.html',
+        niveau=niveau, serie=serie, matiere=matiere,
+        type_sujet=type_sujet, type_doc=type_doc,
+        annales=annales)
 
 # ══════════════════════════════════════════
 # ROUTES ANNALES

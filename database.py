@@ -72,7 +72,7 @@ def get_matieres(niveau: str, serie: Optional[str] = None) -> list:
         conn.close()
 
 def get_annales(niveau: str, serie: Optional[str] = None,
-                matiere: Optional[str] = None) -> list:
+                matiere: Optional[str] = None, type_sujet: Optional[str] = None) -> list:
     conn = get_connection()
     try:
         query = "SELECT * FROM annales WHERE actif = 1"
@@ -86,6 +86,9 @@ def get_annales(niveau: str, serie: Optional[str] = None,
         if matiere:
             query += " AND matiere = ?"
             params.append(matiere)
+        if type_sujet:
+            query += " AND type_sujet = ?"
+            params.append(type_sujet)
         query += " ORDER BY annee DESC"
         rows = conn.execute(query, params).fetchall()
         return [dict(row) for row in rows]

@@ -4,232 +4,116 @@
 {% block content %}
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
-
   :root {
-    --navy: #0D1B2A;
-    --blue: #1A5276;
-    --gold: #D4AC0D;
-    --gold2: #B8860B;
-    --green: #145A32;
-    --white: #FFFFFF;
-    --bg: #F4F6F8;
-    --text: #1C2833;
-    --muted: #5D6D7E;
-    --border: #E0E7EF;
+    --navy: #0D1B2A; --blue: #1A5276; --gold: #D4AC0D;
+    --green: #145A32; --white: #FFFFFF; --bg: #F4F6F8;
+    --text: #1C2833; --muted: #5D6D7E; --border: #E0E7EF;
+    --orange: #784212;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
 
-  /* ── HEADER ──────────────────────────────── */
   .page-header {
-    background: var(--navy);
-    padding: 40px 24px 36px;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
+    background: var(--navy); padding: 40px 24px 36px;
+    position: relative; overflow: hidden; text-align: center;
   }
-
   .page-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-      45deg, transparent, transparent 40px,
-      rgba(212,172,13,0.04) 40px,
-      rgba(212,172,13,0.04) 41px
-    );
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(212,172,13,0.04) 40px, rgba(212,172,13,0.04) 41px);
     pointer-events: none;
   }
-
   .back-link {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: rgba(255,255,255,0.45);
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.2s;
+    position: absolute; top: 20px; left: 20px;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.45); text-decoration: none;
+    font-size: 13px; transition: color 0.2s;
   }
-
   .back-link:hover { color: var(--gold); }
-
   .header-eyebrow {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 10px;
-    position: relative;
+    font-size: 10px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 10px; position: relative;
   }
-
   .header-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(28px, 6vw, 44px);
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.1;
-    position: relative;
+    font-size: clamp(28px, 6vw, 44px); font-weight: 700;
+    color: var(--white); line-height: 1.1; position: relative;
   }
+  .gold-bar { height: 3px; background: linear-gradient(90deg, var(--gold), transparent); }
 
-  .gold-bar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-  }
-
-  /* ── QUESTION ─────────────────────────────── */
   .question-section {
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 40px 20px 60px;
-    text-align: center;
+    max-width: 600px; margin: 0 auto; padding: 36px 20px 60px; text-align: center;
   }
-
   .question-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
   }
-
   .question-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 32px;
-    line-height: 1.3;
+    font-family: 'Cormorant Garamond', serif; font-size: 26px;
+    font-weight: 700; color: var(--navy); margin-bottom: 32px; line-height: 1.3;
   }
 
-  /* ── CARTES CHOIX ─────────────────────────── */
+  /* Sections */
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px;
+    display: inline-block; margin-bottom: 14px;
+  }
+  .label-officiel { background: rgba(26,82,118,0.1); color: var(--blue); }
+  .label-blanc { background: rgba(120,66,18,0.1); color: var(--orange); }
+
+  .type-section { margin-bottom: 28px; }
+
   .choix-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 32px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; margin-bottom: 14px;
   }
 
   .choix-card {
-    display: block;
-    text-decoration: none;
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
+    display: block; text-decoration: none; background: var(--white);
+    border-radius: 16px; overflow: hidden;
     box-shadow: 0 3px 20px rgba(13,27,42,0.08);
     transition: transform 0.2s, box-shadow 0.2s;
-    animation: fadeUp 0.35s ease both;
   }
-
-  .choix-card:nth-child(2) { animation-delay: 0.1s; }
-
-  .choix-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 32px rgba(13,27,42,0.15);
-  }
+  .choix-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(13,27,42,0.15); }
 
   .card-stripe { height: 5px; width: 100%; }
   .stripe-blue { background: linear-gradient(90deg, var(--blue), #2471A3); }
   .stripe-green { background: linear-gradient(90deg, var(--green), #1E8449); }
+  .stripe-orange { background: linear-gradient(90deg, var(--orange), #A04000); }
+  .stripe-teal { background: linear-gradient(90deg, #117A65, #148F77); }
 
-  .card-body {
-    padding: 28px 20px 24px;
-  }
-
-  .card-icon {
-    font-size: 36px;
-    margin-bottom: 14px;
-    display: block;
-  }
-
+  .card-body { padding: 22px 16px 18px; }
+  .card-icon { font-size: 30px; margin-bottom: 10px; display: block; }
   .card-tag {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
+    font-size: 9px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 4px; display: block;
   }
-
   .tag-blue { color: var(--blue); }
   .tag-green { color: var(--green); }
+  .tag-orange { color: var(--orange); }
+  .tag-teal { color: #117A65; }
 
   .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 8px;
-    display: block;
+    font-family: 'Cormorant Garamond', serif; font-size: 20px;
+    font-weight: 700; color: var(--navy); margin-bottom: 6px; display: block;
   }
-
-  .card-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    display: block;
-    margin-bottom: 16px;
+  .card-count {
+    font-size: 11px; color: var(--muted); display: block; margin-bottom: 14px;
   }
-
   .card-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 9px; border-radius: 8px;
+    font-size: 12px; font-weight: 700;
   }
-
   .btn-blue { background: var(--blue); color: var(--white); }
   .btn-green { background: var(--green); color: var(--white); }
+  .btn-orange { background: var(--orange); color: var(--white); }
+  .btn-teal { background: #117A65; color: var(--white); }
 
-  /* Disponibilité */
-  .dispo-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-
-  .badge-dispo {
-    background: rgba(20,90,50,0.1);
-    color: var(--green);
-  }
-
-  .badge-bientot {
-    background: rgba(93,109,126,0.1);
-    color: var(--muted);
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-
-  .dot-green { background: var(--green); }
-  .dot-muted { background: var(--muted); }
-
-  /* Note bas de page */
   .note {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    padding: 16px;
-    background: var(--white);
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    font-size: 12px; color: var(--muted); line-height: 1.6;
+    padding: 16px; background: var(--white); border-radius: 12px;
+    border: 1px solid var(--border); margin-top: 8px;
   }
 
   @keyframes fadeUp {
@@ -238,70 +122,69 @@
   }
 </style>
 
-<!-- HEADER -->
 <div class="page-header">
   <a href="javascript:history.back()" class="back-link">← Retour</a>
-  <p class="header-eyebrow">
-    {{ niveau }}{% if serie %} · Série {{ serie }}{% endif %}
-  </p>
+  <p class="header-eyebrow">{{ niveau }}{% if serie %} · Série {{ serie }}{% endif %}</p>
   <h1 class="header-title">{{ matiere }}</h1>
 </div>
 <div class="gold-bar"></div>
 
-<!-- CHOIX -->
 <div class="question-section">
   <p class="question-label">Que cherches-tu ?</p>
-  <h2 class="question-title">Énoncés officiels<br>ou corrigés détaillés ?</h2>
+  <h2 class="question-title">Choisis ton type de ressource</h2>
 
-  <div class="choix-grid">
-
-    <!-- ÉNONCÉS -->
-    <a href="{{ url_enonces }}" class="choix-card">
-      <div class="card-stripe stripe-blue"></div>
-      <div class="card-body">
-        <span class="card-icon">📄</span>
-        <span class="dispo-badge badge-dispo">
-          <span class="dot dot-green"></span>
-          {{ nb_enonces }} disponible{{ 's' if nb_enonces > 1 else '' }}
-        </span>
-        <span class="card-tag tag-blue">Accès libre</span>
-        <span class="card-title">Énoncés</span>
-        <span class="card-desc">
-          Épreuves officielles classées par année. Gratuit.
-        </span>
-        <div class="card-btn btn-blue">
-          Voir les énoncés →
+  <!-- OFFICIELS -->
+  <div class="type-section">
+    <span class="section-label label-officiel">🏛 Officiels MINESEC</span>
+    <div class="choix-grid">
+      <a href="{{ url_off_enonces }}" class="choix-card">
+        <div class="card-stripe stripe-blue"></div>
+        <div class="card-body">
+          <span class="card-icon">📄</span>
+          <span class="card-tag tag-blue">Accès libre</span>
+          <span class="card-title">Énoncés</span>
+          <span class="card-count">{{ nb_officiels }} disponible{{ 's' if nb_officiels > 1 else '' }}</span>
+          <div class="card-btn btn-blue">Consulter →</div>
         </div>
-      </div>
-    </a>
-
-    <!-- CORRIGÉS -->
-    <a href="{{ url_corriges }}" class="choix-card">
-      <div class="card-stripe stripe-green"></div>
-      <div class="card-body">
-        <span class="card-icon">✅</span>
-        {% if nb_corriges > 0 %}
-        <span class="dispo-badge badge-dispo">
-          <span class="dot dot-green"></span>
-          {{ nb_corriges }} disponible{{ 's' if nb_corriges > 1 else '' }}
-        </span>
-        {% else %}
-        <span class="dispo-badge badge-bientot">
-          <span class="dot dot-muted"></span>
-          Bientôt disponible
-        </span>
-        {% endif %}
-        <span class="card-tag tag-green">Accès payant</span>
-        <span class="card-title">Corrigés</span>
-        <span class="card-desc">
-          Solutions détaillées. Méthode examinateur MINESEC.
-        </span>
-        <div class="card-btn btn-green">
-          Voir les corrigés →
+      </a>
+      <a href="{{ url_off_corriges }}" class="choix-card">
+        <div class="card-stripe stripe-green"></div>
+        <div class="card-body">
+          <span class="card-icon">✅</span>
+          <span class="card-tag tag-green">Accès payant</span>
+          <span class="card-title">Corrigés</span>
+          <span class="card-count">{{ nb_corriges }} disponible{{ 's' if nb_corriges > 1 else '' }}</span>
+          <div class="card-btn btn-green">Consulter →</div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
+  </div>
 
+  <!-- BLANCS -->
+  <div class="type-section">
+    <span class="section-label label-blanc">📝 Examens Blancs</span>
+    <div class="choix-grid">
+      <a href="{{ url_blanc_enonces }}" class="choix-card">
+        <div class="card-stripe stripe-orange"></div>
+        <div class="card-body">
+          <span class="card-icon">📋</span>
+          <span class="card-tag tag-orange">Accès libre</span>
+          <span class="card-title">Énoncés</span>
+          <span class="card-count">{{ nb_blancs }} disponible{{ 's' if nb_blancs > 1 else '' }}</span>
+          <div class="card-btn btn-orange">Consulter →</div>
+        </div>
+      </a>
+      <a href="{{ url_blanc_corriges }}" class="choix-card">
+        <div class="card-stripe stripe-teal"></div>
+        <div class="card-body">
+          <span class="card-icon">📗</span>
+          <span class="card-tag tag-teal">Accès payant</span>
+          <span class="card-title">Corrigés</span>
+          <span class="card-count">Bientôt disponible</span>
+          <div class="card-btn btn-teal">Consulter →</div>
+        </div>
+      </a>
+    </div>
   </div>
 
   <div class="note">
@@ -311,4 +194,3 @@
 </div>
 
 {% endblock %}
-

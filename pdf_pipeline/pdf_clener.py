@@ -176,11 +176,11 @@ def couche_xobjects(src: Path, dst: Path) -> bool:
                         subtype = str(xobj.get('/Subtype', ''))
 
                         if subtype == '/Form':
-                            content = xobj.read_raw_bytes().decode('latin-1', errors='ignore')
-                            for kw in WATERMARK_KEYWORDS:
-                                if kw.lower() in content.lower():
-                                    a_supprimer.append(key)
-                                    break
+                            # Dans les annales, les Form XObjects sont systématiquement
+                            # des filigranes — jamais du contenu légitime.
+                            # Le vrai contenu est dans les Image XObjects (/Im0) ou le flux direct.
+                            a_supprimer.append(key)
+
 
                         elif subtype == '/Image':
                             # Image pleine page avec masque = overlay watermark
@@ -271,38 +271,26 @@ def nettoyer_visuellement(img: np.ndarray) -> np.ndarray:
         return img
 
     gris = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) if len(img.shape) == 3 else img.copy()
-    h, w = gris.shape
 
-    seuil = cv2.adaptiveThreshold(
-        gris, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-        cv2.THRESH_BINARY_INV, 15, 3
-    )
+    # Filigranes semi-transparents = pixels gris entre 140 et 240
+    # Ni noir (texte légitime <100) ni blanc pur (fond >245)
+    masque = cv2.inRange(gris, 140, 240)
 
-    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(seuil)
-    masque = np.zeros(gris.shape, dtype=np.uint8)
+    # Éroder pour ne pas toucher les bords du texte légitime
+    kernel = np.ones((2, 2), np.uint8)
+    masque = cv2.erode(masque, kernel, iterations=1)
+    masque = cv2.dilate(masque, kernel, iterations=3)
 
-    for i in range(1, num_labels):
-        x, y, cw, ch, area = stats[i]
-        if area < 50 or area > (w * h * 0.3):
-            continue
-        zone = gris[y:y+ch, x:x+cw]
-        lum_moy = np.mean(zone)
-        if 170 < lum_moy < 245:
-            ratio = cw / ch if ch > 0 else 0
-            if ratio > 3 or ratio < 0.3:
-                masque[y:y+ch, x:x+cw] = 255
+    if np.sum(masque) == 0:
+        return img
 
-    if np.sum(masque) > 0:
-        kernel = np.ones((3, 3), np.uint8)
-        masque_dilat = cv2.dilate(masque, kernel, iterations=2)
-        if len(img.shape) == 3:
-            bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-            result = cv2.inpaint(bgr, masque_dilat, 3, cv2.INPAINT_TELEA)
-            return cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-        else:
-            return cv2.inpaint(img, masque_dilat, 3, cv2.INPAINT_TELEA)
+    if len(img.shape) == 3:
+        bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        result = cv2.inpaint(bgr, masque, 5, cv2.INPAINT_TELEA)
+        return cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+    else:
+        return cv2.inpaint(img, masque, 5, cv2.INPAINT_TELEA)
 
-    return img
 
 
 def couche_image(src: Path, dst: Path) -> bool:
