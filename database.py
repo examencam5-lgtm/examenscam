@@ -171,7 +171,7 @@ def delete_annale(annale_id: int) -> bool:
     conn = get_connection()
     try:
         conn.execute(
-            "UPDATE annales SET actif = 0 WHERE id = ?", (annale_id,)
+            "DELETE FROM annales WHERE id = ?", (annale_id,)
         )
         conn.commit()
         return True
