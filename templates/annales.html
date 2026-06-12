@@ -252,23 +252,10 @@
   }
 
   /* Masque la barre Drive (PC) */
-  .drive-mask-top {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 52px;
-    background: var(--white);
-    z-index: 10;
-  }
+ 
 
   /* Masque bouton Drive (mobile) */
-  .drive-mask-corner {
-    position: absolute;
-    top: 0; right: 0;
-    width: 80px;
-    height: 80px;
-    background: var(--white);
-    z-index: 11;
-  }
+ 
 
   /* Bandeau corrigé disponible */
   .corrige-banner {
@@ -434,9 +421,7 @@
             loading="lazy"
             allowfullscreen>
           </iframe>
-          <div class="drive-mask-top"></div>
-          <div class="drive-mask-corner"></div>
-        </div>
+         
         {% endif %}
 
         {% if annale.corrige_dispo %}
