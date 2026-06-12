@@ -1,9 +1,5 @@
 import sqlite3
-c = sqlite3.connect('data/annales.db')
-
-result = c.execute('''
-    DELETE FROM annales 
-    WHERE niveau='BAC' AND serie='D' AND matiere='Mathematiques'
-''')
-c.commit()
-print(f'Supprimées : {result.rowcount}')
+conn = sqlite3.connect('data/annales.db')
+rows = conn.execute("SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name='annales'").fetchall()
+for r in rows:
+    print(r[0])

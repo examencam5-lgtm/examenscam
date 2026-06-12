@@ -292,9 +292,9 @@
 
     {# Lien selon présence de série #}
     {% if serie %}
-      {% set lien = '/annales/' ~ niveau ~ '/' ~ serie ~ '/' ~ matiere %}
+      {% set lien = '/annales/' ~ niveau ~ '/' ~ serie ~ '/' ~ matiere ~ '/enonces' %}
     {% else %}
-      {% set lien = '/annales/' ~ niveau ~ '/' ~ matiere %}
+      {% set lien = '/annales/' ~ niveau ~ '/' ~ matiere ~ '/enonces' %}
     {% endif %}
 
     <a href="{{ lien }}" class="matiere-card">
