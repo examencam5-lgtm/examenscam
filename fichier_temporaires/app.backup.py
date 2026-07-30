@@ -4,15 +4,6 @@ from pathlib import Path
 from io import BytesIO
 from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, request, abort, send_file
-from database_carrefour import get_carrefour
-from database_blanches import get_epreuves_blanches, get_regions_disponibles
-from database_corriges import get_pack_detail, get_packs_catalogue
-from database_externes import (
-    get_matieres_externes, get_annales_externes,
-    get_annale_externe_by_id, increment_vue_externe,
-    get_regions_disponibles_externes, get_sequences_disponibles,
-    CORRESPONDANCE_NIVEAU_SERIE
-)
 from database import (get_annales, get_matieres, get_all_annales, add_annale,
                       delete_annale, increment_vues, get_stats, get_connection,
                       get_annale_by_id, create_table)
@@ -231,7 +222,15 @@ def voir_annale(annale_id):
     increment_vues(annale_id)
     return '', 204
 
-
+@app.route('/corriges')
+def corriges():
+    conn = get_connection()
+    rows = conn.execute("""
+        SELECT * FROM annales WHERE corrige_dispo=1 AND actif=1
+        ORDER BY niveau, serie, matiere, annee DESC
+    """).fetchall()
+    conn.close()
+    return render_template('corriges.html', corriges=[dict(r) for r in rows])
 
 @app.route('/generateur', methods=['GET', 'POST'])
 def generateur():
@@ -450,105 +449,6 @@ def page_non_trouvee(e):
 @app.errorhandler(403)
 def acces_interdit(e):
     return render_template('403.html'), 403
-# ═══════════════════════════════════════
-# CARREFOUR (5 branches)
-# ═══════════════════════════════════════
-@app.route('/carrefour/<niveau>/<matiere>')
-def carrefour_niveau(niveau, matiere):
-    serie = request.args.get('serie')
-    data = get_carrefour(niveau, matiere, serie=serie)
-    return render_template('carrefour.html', niveau=niveau, serie=serie, matiere=matiere, data=data)
-
-
-# ═══════════════════════════════════════
-# EXAMENS BLANCS
-# ═══════════════════════════════════════
-
-@app.route('/blancs/<niveau>/<serie>/<matiere>')
-def blancs_liste(niveau, serie, matiere):
-    serie_reelle = None if serie == 'na' else serie
-    region = request.args.get('region')
-    epreuves = get_epreuves_blanches(niveau, matiere, serie=serie_reelle, region=region)
-    regions = get_regions_disponibles(niveau, matiere, serie=serie_reelle)
-    return render_template('blancs_liste.html', niveau=niveau, serie=serie_reelle,
-                            matiere=matiere, epreuves=epreuves,
-                            regions_disponibles=regions, region_active=region)
-
-
-@app.route('/voir-blanc/<int:epreuve_id>')
-def voir_blanche(epreuve_id):
-    # Réutilise ton viewer existant si tu en as un générique,
-    # sinon simple redirection vers le lien Drive pour l'instant
-    return render_template('viewer.html', annale_id=epreuve_id)
-
-
-# ═══════════════════════════════════════
-# CORRIGÉS (officiel + blanc)
-# ═══════════════════════════════════════
-
-@app.route('/corriges')
-def corriges_catalogue():
-    packs = get_packs_catalogue()
-    return render_template('corriges_catalogue.html', packs=packs)
-
-
-@app.route('/corriges/<niveau>/<serie>/<matiere>')
-def corriges_fiche(niveau, serie, matiere):
-    # TODO : remplacer par une vraie recherche de pack par niveau/serie/matiere
-    # (get_pack_par_matiere existe déjà dans database_corriges.py)
-    from database_corriges import get_pack_par_matiere
-    serie_reelle = None if serie == 'na' else serie
-    pack_resume = get_pack_par_matiere(niveau, serie_reelle, matiere)
-    if not pack_resume:
-        return "Pack introuvable", 404
-    pack = get_pack_detail(pack_resume['id'])
-    return render_template('corriges_fiche.html', pack=pack)
-
-
-@app.route('/corriges-blancs/<niveau>/<serie>/<matiere>')
-def corriges_fiche_blanc(niveau, serie, matiere):
-    return "Page en construction", 200
-
-
-# ═══════════════════════════════════════
-# ÉTABLISSEMENTS
-# ═══════════════════════════════════════
-
-@app.route('/etablissements')
-def etablissements_index():
-    niveaux = [(slug, slug.replace('-', ' ').title()) for slug in CORRESPONDANCE_NIVEAU_SERIE.keys()]
-    return render_template('etablissements_index.html', niveaux=niveaux)
-
-
-@app.route('/etablissements/<niveau_serie>')
-def etablissements_niveau(niveau_serie):
-    matieres = get_matieres_externes(niveau_serie)
-    return render_template('etablissements_niveau.html', niveau_serie=niveau_serie,
-                            label_niveau=niveau_serie.replace('-', ' ').title(),
-                            matieres=matieres)
-
-
-@app.route('/etablissements/<niveau_serie>/<matiere>')
-def etablissements_matiere(niveau_serie, matiere):
-    region = request.args.get('region')
-    sequence = request.args.get('sequence', type=int)
-    epreuves = get_annales_externes(niveau_serie, matiere, region=region, sequence=sequence)
-    regions = get_regions_disponibles_externes(niveau_serie, matiere)
-    sequences = get_sequences_disponibles(niveau_serie, matiere)
-    return render_template('etablissements_matiere.html',
-                           niveau_serie=niveau_serie, matiere=matiere,
-                           epreuves=epreuves,
-                           regions_disponibles=regions, region_active=region,
-                           sequences_disponibles=sequences, sequence_active=sequence)
-
-@app.route('/redirection/<int:annale_id>')
-def redirection_externe(annale_id):
-    entree = get_annale_externe_by_id(annale_id)
-    if not entree:
-        return "Épreuve introuvable", 404
-    increment_vue_externe(annale_id)
-    return redirect(entree['lien_externe'])
-
 
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

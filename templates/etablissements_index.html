@@ -1,0 +1,25 @@
+{# templates/etablissements_index.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ec-header">
+  <div class="ec-fil-ariane"><a href="{{ url_for('index') }}">Accueil</a> › Établissements</div>
+  <div class="ec-eyebrow">Devoirs indexés, sources tierces</div>
+  <div class="ec-titre-page">Épreuves par établissement</div>
+</header>
+
+<div class="ec-avertissement">
+  Ces épreuves proviennent de sites tiers. ExamensCam ne les héberge pas — tu seras redirigé vers la source d'origine pour les consulter.
+</div>
+
+<div class="ec-liste">
+  {% for slug, label in niveaux %}
+  <a href="{{ url_for('etablissements_niveau', niveau_serie=slug) }}" style="text-decoration:none; color:inherit;">
+    <div class="ec-item" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="ec-item-titre">{{ label }}</div>
+      <span style="color:#5D6D7E; font-size:18px;">›</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

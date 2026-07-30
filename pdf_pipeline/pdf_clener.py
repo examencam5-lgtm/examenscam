@@ -261,6 +261,55 @@ def couche_annotations(src: Path, dst: Path) -> bool:
         return False
 
 
+
+# ══════════════════════════════════════════
+# COUCHE 3.5 — MASQUAGE BANDES MONGOSUKULU
+# Les filigranes sont cuits dans les images
+# → on blanchit les bandes haut et bas
+# ══════════════════════════════════════════
+
+def couche_masque_bandes(src: Path, dst: Path,
+                          bande_haut: float = 0.07,
+                          bande_bas: float = 0.05) -> bool:
+    """
+    Blanchit les bandes haut et bas de chaque page.
+    Efficace sur les PDFs image (mongosukulu, CamScanner)
+    où le filigrane est systématiquement dans ces zones.
+    bande_haut / bande_bas : fraction de la hauteur de page (0.07 = 7%)
+    """
+    if not PDFIUM_OK:
+        shutil.copy(str(src), str(dst))
+        return False
+    try:
+        from PIL import ImageDraw
+        doc    = pdfium.PdfDocument(str(src))
+        writer = PdfWriter()
+
+        for page in doc:
+            bitmap = page.render(scale=2.0)
+            img    = bitmap.to_pil()
+            w, h   = img.size
+
+            draw = ImageDraw.Draw(img)
+            # Bande haute (filigrane en-tête)
+            draw.rectangle([0, 0, w, int(h * bande_haut)], fill='white')
+            # Bande basse (filigrane pied de page)
+            draw.rectangle([0, int(h * (1 - bande_bas)), w, h], fill='white')
+
+            buf = BytesIO()
+            img.save(buf, format='PDF', resolution=200)
+            buf.seek(0)
+            writer.add_page(PdfReader(buf).pages[0])
+
+        with open(str(dst), 'wb') as f:
+            writer.write(f)
+        return True
+
+    except Exception as e:
+        print(f" Erreur masque bandes: {e}")
+        shutil.copy(str(src), str(dst))
+        return False
+
 # ══════════════════════════════════════════
 # COUCHE 4 — NETTOYAGE VISUEL PAR IMAGE
 # Détecte visuellement + inpainting OpenCV
@@ -411,7 +460,7 @@ def traiter_pdf(input_path: Path, output_path: Path = None,
     tmp = Path(f".tmp_{input_path.stem}")
     tmp.mkdir(exist_ok=True)
 
-    t = [tmp / f"{i}.pdf" for i in range(7)]
+    t = [tmp / f"{i}.pdf" for i in range(8)]
 
     print(f"\n{'─'*54}")
     print(f" {input_path.name}")
@@ -432,15 +481,20 @@ def traiter_pdf(input_path: Path, output_path: Path = None,
     s = t[3] if t[3].exists() else s
     print(f" {'✅ Modifié' if r3 else '⬜ Rien détecté'}")
 
-    print(" [4/5] Métadonnées...")
-    couche_metadonnees(s, t[4])
+    print(" [3.5/5] Masquage bandes image (mongosukulu/CamScanner)...")
+    r35 = couche_masque_bandes(s, t[4])
     s = t[4] if t[4].exists() else s
+    print(f" {'✅ Bandes blanchies' if r35 else '⬜ Non disponible'}")
+
+    print(" [4/5] Métadonnées...")
+    couche_metadonnees(s, t[5])
+    s = t[5] if t[5].exists() else s
     print(f" ✅ → ExamensCam")
 
     if forcer_image:
         print(" [5/5] Nettoyage visuel (rendu image + OpenCV)...")
-        r5 = couche_image(s, t[5])
-        s = t[5] if t[5].exists() else s
+        r5 = couche_image(s, t[6])
+        s = t[6] if t[6].exists() else s
         print(f" {'✅ Effectué' if r5 else '⬜ Non disponible'}")
     else:
         print(" [5/5] Nettoyage visuel : désactivé (ajoute --image pour activer)")
@@ -510,4 +564,3 @@ if __name__ == '__main__':
                 traiter_pdf(pdf, forcer_image=forcer_image)
         else:
             traiter_pdf(cible, forcer_image=forcer_image)
-

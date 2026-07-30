@@ -1,0 +1,28 @@
+{# templates/etablissements_niveau.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ec-header">
+  <div class="ec-fil-ariane">
+    <a href="{{ url_for('index') }}">Accueil</a> › <a href="{{ url_for('etablissements_index') }}">Établissements</a>
+  </div>
+  <div class="ec-eyebrow">{{ label_niveau }}</div>
+  <div class="ec-titre-page">Choisis une matière</div>
+</header>
+
+<div class="ec-liste">
+  {% for m in matieres %}
+  <a href="{{ url_for('etablissements_matiere', niveau_serie=niveau_serie, matiere=m.matiere) }}" style="text-decoration:none; color:inherit;">
+    <div class="ec-item" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div class="ec-item-titre">{{ m.matiere }}</div>
+        <div class="ec-item-sub">{{ m.nombre }} épreuve(s) indexée(s)</div>
+      </div>
+      <span style="color:#5D6D7E; font-size:18px;">›</span>
+    </div>
+  </a>
+  {% else %}
+  <div class="ec-vide">Pas encore de matière indexée pour ce niveau.</div>
+  {% endfor %}
+</div>
+{% endblock %}

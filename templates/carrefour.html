@@ -1,0 +1,100 @@
+{# templates/carrefour.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ec-header">
+  <div class="ec-fil-ariane">
+    <a href="{{ url_for('index') }}">Accueil</a>
+    › {{ niveau }}{% if serie %} › {{ serie }}{% endif %}
+  </div>
+  <div class="ec-eyebrow">{{ niveau }}{% if serie %} — Série {{ serie }}{% endif %}</div>
+  <div class="ec-titre-page">{{ matiere }}</div>
+</header>
+
+<div class="ec-branches">
+
+  {% if serie %}
+    {% set url_officiel = url_for('annales_avec_serie_enonces', niveau=niveau, serie=serie, matiere=matiere) %}
+  {% else %}
+    {% set url_officiel = url_for('annales_sans_serie_enonces', niveau=niveau, matiere=matiere) %}
+  {% endif %}
+  <a href="{{ url_officiel }}" class="ec-branche">
+    <div class="ec-branche-carte ec-branche-officiel">
+      <div class="ec-sceau sur-blanc">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><polyline points="8.5 13.5 7 22 12 19 17 22 15.5 13.5"></polyline></svg>
+      </div>
+      <div>
+        <div class="ec-branche-titre">Énoncés — Officiel</div>
+        <div class="ec-branche-sub">{{ data.officiel_enonces.nombre }} année(s) disponible(s)</div>
+      </div>
+      <span class="ec-branche-chevron">›</span>
+    </div>
+  </a>
+
+  {% if data.officiel_corriges %}
+  <a href="{{ url_for('corriges_fiche', niveau=niveau, serie=serie or 'na', matiere=matiere) }}" class="ec-branche">
+    <div class="ec-branche-carte ec-branche-corriges-off">
+      <div class="ec-sceau">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+      </div>
+      <div>
+        <div class="ec-branche-titre" style="color:white;">Corrigés — Officiel</div>
+        <div class="ec-branche-sub-clair">{{ data.officiel_corriges.prets }}/{{ data.officiel_corriges.total }} rédigés</div>
+      </div>
+      <span class="ec-branche-prix">{{ data.officiel_corriges.prix }} F</span>
+    </div>
+  </a>
+  {% endif %}
+
+  {% if data.blancs_enonces.nombre > 0 %}
+  <a href="{{ url_for('blancs_liste', niveau=niveau, serie=serie or 'na', matiere=matiere) }}" class="ec-branche">
+    <div class="ec-branche-carte ec-branche-blanc">
+      <div class="ec-sceau sur-blanc" style="border-color:rgba(146,43,33,0.35);">
+        <svg class="icon" style="stroke:#922B21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <div>
+        <div class="ec-branche-titre">Énoncés — Blancs</div>
+        <div class="ec-branche-sub">{{ data.blancs_enonces.nombre }} épreuve(s) — harmonisés, olympiades</div>
+      </div>
+      <span class="ec-branche-chevron">›</span>
+    </div>
+  </a>
+  {% endif %}
+
+  {% if data.blancs_corriges %}
+  <a href="{{ url_for('corriges_fiche_blanc', niveau=niveau, serie=serie or 'na', matiere=matiere) }}" class="ec-branche">
+    <div class="ec-branche-carte ec-branche-corriges-blanc">
+      <div class="ec-sceau">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+      </div>
+      <div>
+        <div class="ec-branche-titre" style="color:white;">Corrigés — Blancs</div>
+        <div class="ec-branche-sub-clair">{{ data.blancs_corriges.prets }}/{{ data.blancs_corriges.total }} rédigés</div>
+      </div>
+      <span class="ec-branche-prix">{{ data.blancs_corriges.prix }} F</span>
+    </div>
+  </a>
+  {% endif %}
+
+  {% if data.slug_etablissements and data.etablissements_enonces.nombre > 0 %}
+  <a href="{{ url_for('etablissements_matiere', niveau_serie=data.slug_etablissements, matiere=matiere) }}" class="ec-branche">
+    <div class="ec-branche-carte ec-branche-etablissement">
+      <div class="ec-fiche-tab">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect></svg>
+      </div>
+      <div>
+        <div class="ec-branche-titre">Établissements</div>
+        <div class="ec-branche-sub">{{ data.etablissements_enonces.nombre }} épreuve(s) indexée(s) — redirige vers la source</div>
+      </div>
+      <span class="ec-branche-chevron">›</span>
+    </div>
+  </a>
+  {% endif %}
+
+</div>
+
+{% if data.officiel_enonces.nombre == 0 and data.blancs_enonces.nombre == 0 and data.etablissements_enonces.nombre == 0 %}
+<div class="ec-vide">Pas encore de contenu pour {{ matiere }}. Reviens bientôt !</div>
+{% endif %}
+
+{% endblock %}

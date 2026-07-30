@@ -1,0 +1,35 @@
+{# templates/corriges_fiche.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="ec-fiche-hero">
+  <div class="ec-fil-ariane" style="color:#D6EAF8;">
+    <a href="{{ url_for('corriges_catalogue') }}" style="color:white;">Corrigés</a> › {{ pack.matiere }}
+  </div>
+  <h2>{{ pack.titre }}</h2>
+  <div class="ec-sous-titre">{{ pack.annee_debut }} – {{ pack.annee_fin }} · {{ pack.corriges|length }} année(s) couverte(s)</div>
+  <div class="ec-prix-gros">{{ pack.prix }} FCFA</div>
+</div>
+
+<div class="ec-eyebrow" style="padding:18px 18px 6px; color:#5D6D7E;">Contenu du pack</div>
+<div style="padding:0 16px 16px;">
+  {% for corrige in pack.corriges %}
+  <div class="ec-annee-ligne">
+    <span>{{ corrige.annee }}</span>
+    {% if corrige.statut == 'pret' %}
+      <span class="ec-statut-pret">✓ Prêt</span>
+    {% else %}
+      <span class="ec-statut-brouillon">En cours de rédaction</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<div style="padding:0 16px 16px;">
+  <button class="ec-bouton-desactive" disabled>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    Paiement automatique bientôt disponible
+  </button>
+  <div class="ec-bouton-note">Le paiement Mobile Money arrive prochainement. Reviens vérifier bientôt.</div>
+</div>
+{% endblock %}

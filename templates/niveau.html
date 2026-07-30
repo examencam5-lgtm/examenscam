@@ -290,13 +290,13 @@
       {% set hint = 'Annales officielles' %}
     {% endif %}
 
-    {# Lien selon présence de série #}
+    
+{# Lien vers le carrefour (5 branches) au lieu d'aller direct aux annales #}
     {% if serie %}
-      {% set lien = '/annales/' ~ niveau ~ '/' ~ serie ~ '/' ~ matiere ~ '/enonces' %}
+      {% set lien = url_for('carrefour_niveau', niveau=niveau, matiere=matiere, serie=serie) %}
     {% else %}
-      {% set lien = '/annales/' ~ niveau ~ '/' ~ matiere ~ '/enonces' %}
+      {% set lien = url_for('carrefour_niveau', niveau=niveau, matiere=matiere) %}
     {% endif %}
-
     <a href="{{ lien }}" class="matiere-card">
       <div class="card-left">
         <div class="matiere-icon">{{ icone }}</div>
