@@ -3,27 +3,67 @@
 
 {% block content %}
 <style>
-  .intro {
+  /* Encre brune, utilisee seulement ici pour tester avant
+     de l'appliquer (ou non) au reste du site. */
+  :root {
+    --brown: #5A3A22;
+    --brown-soft: #E4D5BF;
+  }
+
+  /* En-tete facon masthead de document */
+  .masthead {
     max-width: 640px;
     margin: 0 auto;
     padding: 48px 24px 32px;
     text-align: center;
   }
 
-  .intro-title {
-    font-size: clamp(26px, 5vw, 34px);
-    color: var(--ink);
-    line-height: 1.25;
-    margin-bottom: 10px;
+  .masthead-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
 
-  .intro-sub {
-    font-size: 14px;
+  .masthead-rule {
+    width: 100%;
+    max-width: 220px;
+    margin: 12px auto;
+    border: none;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+
+  .masthead-rule::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -3px;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--brown);
+    border-radius: 50%;
+  }
+
+  .masthead-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(30px, 7vw, 42px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    margin: 14px 0 10px;
+  }
+
+  .masthead-sub {
+    font-size: 13.5px;
     color: var(--ink-soft);
     line-height: 1.6;
   }
 
-  /* ── COMPTEURS ────────────────────────────── */
+  /* Compteurs */
   .counters {
     max-width: 640px;
     margin: 0 auto;
@@ -34,9 +74,7 @@
     flex-wrap: wrap;
   }
 
-  .counter {
-    text-align: center;
-  }
+  .counter { text-align: center; }
 
   .counter-num {
     font-family: 'Source Serif 4', serif;
@@ -60,7 +98,7 @@
     align-self: stretch;
   }
 
-  /* ── NIVEAUX - liste verticale ────────────── */
+  /* Niveaux, boutons delimites */
   .levels {
     max-width: 640px;
     margin: 0 auto;
@@ -74,33 +112,61 @@
     text-transform: uppercase;
     color: var(--ink-soft);
     padding: 0 4px 12px;
-    border-bottom: 1px solid var(--line);
     margin-bottom: 4px;
   }
 
-  .level-row {
+  .level-btn {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 22px 4px;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    padding: 12px 20px;
     text-decoration: none;
     color: var(--ink);
-    border-bottom: 1px solid var(--line-soft);
-    transition: background 0.12s;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, background 0.15s;
   }
 
-  .level-row:hover { background: var(--accent-soft); }
-  .level-row:last-child { border-bottom: none; }
+  .level-btn:hover {
+    border-color: var(--brown);
+    background: var(--brown-soft);
+  }
+
+  .level-num {
+    font-family: 'Inter', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brown);
+    border: 1px solid var(--brown);
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
 
   .level-main {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .level-num,
+  .level-sub,
+  .level-arrow {
+    display: none;
   }
 
   .level-name {
     font-family: 'Source Serif 4', serif;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 600;
   }
 
@@ -111,16 +177,18 @@
 
   .level-arrow {
     font-family: 'Inter', sans-serif;
-    font-size: 18px;
+    font-size: 17px;
     color: var(--ink-soft);
   }
 
-  .level-row:hover .level-arrow { color: var(--ink); }
+  .level-btn:hover .level-arrow { color: var(--brown); }
 </style>
 
-<div class="intro">
-  <h1 class="intro-title">Les annales officielles, classées et accessibles</h1>
-  <p class="intro-sub">BEPC, Probatoire et BAC. Sujets nationaux, organisés par niveau, série et matière.</p>
+<div class="masthead">
+  <p class="masthead-label">Cameroun, examens nationaux</p>
+  <hr class="masthead-rule">
+  <h1 class="masthead-title">ExamensCam</h1>
+  <p class="masthead-sub">Les annales officielles, classées et accessibles. BEPC, Probatoire et BAC, sujets nationaux organisés par niveau, série et matière.</p>
 </div>
 
 <div class="counters">
@@ -138,28 +206,31 @@
 <div class="levels">
   <p class="levels-label">Choisir un niveau</p>
 
-  <a href="/bepc" class="level-row">
+  <a href="/bepc" class="level-btn">
+    <span class="level-num">01</span>
     <span class="level-main">
       <span class="level-name">BEPC</span>
       <span class="level-sub">Troisième</span>
     </span>
-    <span class="level-arrow">→</span>
+    <span class="level-arrow">&rarr;</span>
   </a>
 
-  <a href="/probatoire" class="level-row">
+  <a href="/probatoire" class="level-btn">
+    <span class="level-num">02</span>
     <span class="level-main">
       <span class="level-name">Probatoire</span>
-      <span class="level-sub">Première. Séries A4, C, D, TI</span>
+      <span class="level-sub">Première, séries A4, C, D, TI</span>
     </span>
-    <span class="level-arrow">→</span>
+    <span class="level-arrow">&rarr;</span>
   </a>
 
-  <a href="/bac" class="level-row">
+  <a href="/bac" class="level-btn">
+    <span class="level-num">03</span>
     <span class="level-main">
       <span class="level-name">BAC</span>
-      <span class="level-sub">Terminale. Séries A4, C, D, TI</span>
+      <span class="level-sub">Terminale, series A4, C, D, TI</span>
     </span>
-    <span class="level-arrow">→</span>
+    <span class="level-arrow">&rarr;</span>
   </a>
 </div>
 {% endblock %}
