@@ -1,334 +1,177 @@
 {% extends 'base.html' %}
-{% block title %}Probatoire — Choisir une série · ExamensCam{% endblock %}
+{% block title %}Probatoire · Choisir une série · ExamensCam{% endblock %}
 
 {% block content %}
 <style>
-  :root {
-    --navy: #0D1B2A;
-    --blue: #1A5276;
-    --gold: #D4AC0D;
-    --gold2: #B8860B;
-    --white: #FFFFFF;
-    --bg: #F4F6F8;
-    --text: #1C2833;
-    --muted: #5D6D7E;
-    --border: #E0E7EF;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
-
-  /* ── HEADER ──────────────────────────────── */
   .page-header {
-    background: var(--navy);
-    padding: 40px 24px 36px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .page-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-      45deg, transparent, transparent 40px,
-      rgba(212,172,13,0.04) 40px,
-      rgba(212,172,13,0.04) 41px
-    );
-    pointer-events: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 32px 24px 28px;
   }
 
   .back-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: rgba(255,255,255,0.45);
+    color: var(--ink-soft);
     text-decoration: none;
     font-size: 13px;
-    margin-bottom: 20px;
-    transition: color 0.2s;
-    position: relative;
+    margin-bottom: 18px;
   }
 
-  .back-link:hover { color: var(--gold); }
+  .back-link:hover { color: var(--ink); }
 
   .header-eyebrow {
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 10px;
-    position: relative;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
   }
 
   .header-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(32px, 7vw, 52px);
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 8px;
-    position: relative;
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 6px;
   }
 
-  .header-sub {
-    font-size: 14px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.5);
-    position: relative;
-  }
+  .header-sub { font-size: 13px; color: var(--ink-soft); }
 
-  .gold-bar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-  }
-
-  /* ── INFO STRIP ──────────────────────────── */
   .info-strip {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--muted);
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 24px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
   }
 
-  .info-strip strong { color: var(--blue); }
+  .info-strip strong { color: var(--ink); font-weight: 600; }
 
-  /* ── GRILLE SÉRIES ───────────────────────── */
   .section-wrapper {
     max-width: 680px;
     margin: 0 auto;
-    padding: 32px 20px 60px;
+    padding: 28px 20px 56px;
   }
 
   .section-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 20px;
+    color: var(--ink-soft);
+    padding: 0 4px 12px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
   }
 
-  .series-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-
-  /* Carte série */
-  .serie-card {
-    display: block;
-    text-decoration: none;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(13,27,42,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    animation: fadeUp 0.35s ease both;
-  }
-
-  .serie-card:nth-child(2) { animation-delay: 0.08s; }
-  .serie-card:nth-child(3) { animation-delay: 0.16s; }
-  .serie-card:nth-child(4) { animation-delay: 0.24s; }
-
-  .serie-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(13,27,42,0.18);
-  }
-
-  .serie-card::before {
-    content: '';
-    display: block;
-    height: 2px;
-    background: var(--gold);
-    opacity: 0.6;
-  }
-
-  /* Parties colorées */
-  .serie-top {
-    padding: 28px 24px 20px;
-    position: relative;
-  }
-
-  .serie-top-c { background: #1A5276; }
-  .serie-top-d { background: #145A32; }
-  .serie-top-ti { background: #4A235A; }
-  .serie-top-a4 { background: #784212; }
-
-  .serie-letter {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 52px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.12);
-    position: absolute;
-    bottom: -8px;
-    right: 16px;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .serie-tag {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .serie-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--white);
-    display: block;
-    line-height: 1.1;
-  }
-
-  .serie-bottom {
-    background: var(--white);
-    padding: 16px 20px;
+  .serie-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 4px;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line-soft);
+    transition: background 0.12s;
   }
 
-  .serie-desc {
+  .serie-row:hover { background: var(--accent-soft); }
+  .serie-row:last-child { border-bottom: none; }
+
+  .serie-letter {
+    font-family: 'Inter', monospace;
     font-size: 12px;
-    color: var(--muted);
-    line-height: 1.4;
-  }
-
-  .serie-arrow {
-    font-size: 16px;
-    color: var(--muted);
-    transition: transform 0.2s, color 0.2s;
+    font-weight: 700;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 4px 9px;
     flex-shrink: 0;
   }
 
-  .serie-card:hover .serie-arrow {
-    transform: translateX(3px);
-    color: var(--blue);
+  .serie-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
-  /* ── RETOUR ───────────────────────────────── */
+  .serie-name {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .serie-desc { font-size: 12px; color: var(--ink-soft); }
+
+  .serie-arrow { font-size: 16px; color: var(--ink-soft); }
+  .serie-row:hover .serie-arrow { color: var(--ink); }
+
   .bottom-nav {
     max-width: 680px;
     margin: 0 auto;
     padding: 0 20px 40px;
   }
-
-  .btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    color: var(--blue);
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: border-color 0.15s, background 0.15s;
-  }
-
-  .btn-back:hover {
-    border-color: var(--blue);
-    background: rgba(26,82,118,0.04);
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
 </style>
 
-<!-- ── HEADER ─────────────────────────────── -->
 <div class="page-header">
-  <a href="/" class="back-link">← Accueil</a>
+  <a href="/" class="back-link">&larr; Accueil</a>
   <p class="header-eyebrow">Examen intermédiaire · Première</p>
   <h1 class="header-title">Probatoire</h1>
   <p class="header-sub">Choisis ta série pour accéder aux annales</p>
 </div>
-<div class="gold-bar"></div>
 
-<!-- ── INFO ───────────────────────────────── -->
 <div class="info-strip">
-  <span>📌</span>
-  <span>Examen de <strong>classe de Première</strong> — requis pour accéder en Terminale</span>
+  Examen de <strong>classe de Première</strong>, requis pour accéder en Terminale.
 </div>
 
-<!-- ── SÉRIES ─────────────────────────────── -->
 <div class="section-wrapper">
   <p class="section-label">Séries disponibles</p>
 
-  <div class="series-grid">
+  <a href="/probatoire/C" class="serie-row">
+    <span class="serie-letter">C</span>
+    <span class="serie-main">
+      <span class="serie-name">Série C</span>
+      <span class="serie-desc">Maths, Physique. Première scientifique</span>
+    </span>
+    <span class="serie-arrow">&rarr;</span>
+  </a>
 
-    <!-- Série C -->
-    <a href="/probatoire/C" class="serie-card">
-      <div class="serie-top serie-top-c">
-        <span class="serie-tag">Sciences</span>
-        <span class="serie-name">Série C</span>
-        <span class="serie-letter">C</span>
-      </div>
-      <div class="serie-bottom">
-        <span class="serie-desc">Maths · Physique<br>Première scientifique</span>
-        <span class="serie-arrow">→</span>
-      </div>
-    </a>
+  <a href="/probatoire/D" class="serie-row">
+    <span class="serie-letter">D</span>
+    <span class="serie-main">
+      <span class="serie-name">Série D</span>
+      <span class="serie-desc">SVT, Chimie. Première biologie</span>
+    </span>
+    <span class="serie-arrow">&rarr;</span>
+  </a>
 
-    <!-- Série D -->
-    <a href="/probatoire/D" class="serie-card">
-      <div class="serie-top serie-top-d">
-        <span class="serie-tag">Sciences naturelles</span>
-        <span class="serie-name">Série D</span>
-        <span class="serie-letter">D</span>
-      </div>
-      <div class="serie-bottom">
-        <span class="serie-desc">SVT · Chimie<br>Première biologie</span>
-        <span class="serie-arrow">→</span>
-      </div>
-    </a>
+  <a href="/probatoire/TI" class="serie-row">
+    <span class="serie-letter">TI</span>
+    <span class="serie-main">
+      <span class="serie-name">Série TI</span>
+      <span class="serie-desc">Informatique, Maths. Première technique</span>
+    </span>
+    <span class="serie-arrow">&rarr;</span>
+  </a>
 
-    <!-- Série TI -->
-    <a href="/probatoire/TI" class="serie-card">
-      <div class="serie-top serie-top-ti">
-        <span class="serie-tag">Technique</span>
-        <span class="serie-name">Série TI</span>
-        <span class="serie-letter">TI</span>
-      </div>
-      <div class="serie-bottom">
-        <span class="serie-desc">Informatique · Maths<br>Première technique</span>
-        <span class="serie-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Série A4 -->
-    <a href="/probatoire/A4" class="serie-card">
-      <div class="serie-top serie-top-a4">
-        <span class="serie-tag">Littéraire</span>
-        <span class="serie-name">Série A4</span>
-        <span class="serie-letter">A4</span>
-      </div>
-      <div class="serie-bottom">
-        <span class="serie-desc">Philosophie · Lettres<br>Première littéraire</span>
-        <span class="serie-arrow">→</span>
-      </div>
-    </a>
-
-  </div>
+  <a href="/probatoire/A4" class="serie-row">
+    <span class="serie-letter">A4</span>
+    <span class="serie-main">
+      <span class="serie-name">Série A4</span>
+      <span class="serie-desc">Philosophie, Lettres. Première littéraire</span>
+    </span>
+    <span class="serie-arrow">&rarr;</span>
+  </a>
 </div>
 
-<!-- ── RETOUR ─────────────────────────────── -->
 <div class="bottom-nav">
-  <a href="/" class="btn-back">← Retour à l'accueil</a>
+  <a href="/" class="btn btn-outline">&larr; Retour à l'accueil</a>
 </div>
 
 {% endblock %}
-
-

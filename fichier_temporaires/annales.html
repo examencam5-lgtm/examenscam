@@ -1,0 +1,476 @@
+{% extends 'base.html' %}
+{% block title %}{{ niveau }}{% if serie %} {{ serie }}{% endif %} — {{ matiere }} · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --navy: #0D1B2A;
+    --blue: #1A5276;
+    --gold: #D4AC0D;
+    --gold2: #B8860B;
+    --white: #FFFFFF;
+    --bg: #F4F6F8;
+    --text: #1C2833;
+    --muted: #5D6D7E;
+    --border: #E0E7EF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* ── HEADER ──────────────────────────────── */
+  .page-header {
+    background: var(--navy);
+    padding: 40px 24px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(212,172,13,0.04) 40px,
+      rgba(212,172,13,0.04) 41px
+    );
+    pointer-events: none;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 6vw, 44px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    position: relative;
+  }
+
+  /* Barre gold sous le header */
+  .gold-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  /* ── COMPTEUR ─────────────────────────────── */
+  .count-strip {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .count-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .count-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  /* ── LISTE ANNALES ────────────────────────── */
+  .annales-list {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  /* Carte annale */
+  .annale-card {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 14px rgba(13,27,42,0.07);
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .annale-card:nth-child(2) { animation-delay: 0.05s; }
+  .annale-card:nth-child(3) { animation-delay: 0.10s; }
+  .annale-card:nth-child(4) { animation-delay: 0.15s; }
+  .annale-card:nth-child(5) { animation-delay: 0.20s; }
+
+  /* Bouton accordéon */
+  .annale-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 18px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: background 0.15s;
+  }
+
+  .annale-toggle:hover {
+    background: rgba(26, 82, 118, 0.04);
+  }
+
+  .toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* Pastille année */
+  .year-badge {
+    background: var(--blue);
+    color: var(--white);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .toggle-label {
+    text-align: left;
+  }
+
+  .toggle-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    display: block;
+  }
+
+  .toggle-hint {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Badge corrigé */
+  .badge-corrige {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(212,172,13,0.12);
+    border: 1px solid rgba(212,172,13,0.3);
+    color: var(--gold2);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* Flèche accordéon */
+  .toggle-arrow {
+    font-size: 13px;
+    color: var(--muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .annale-card.open .toggle-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* Séparateur */
+  .card-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 20px;
+    display: none;
+  }
+
+  .annale-card.open .card-divider {
+    display: block;
+  }
+
+  /* Contenu accordéon */
+  .annale-content {
+    display: none;
+  }
+
+  .annale-card.open .annale-content {
+    display: block;
+  }
+
+  /* Viewer PDF iframe */
+  .pdf-wrapper {
+    position: relative;
+    width: 100%;
+    height: 680px;
+    background: #f0f0f0;
+  }
+
+  .pdf-wrapper iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Masque la barre Drive (PC) */
+ 
+
+  /* Masque bouton Drive (mobile) */
+ 
+
+  /* Bandeau corrigé disponible */
+  .corrige-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: rgba(212,172,13,0.07);
+    border-top: 1px solid rgba(212,172,13,0.2);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .corrige-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold2);
+  }
+
+  .corrige-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .corrige-cta {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .corrige-cta:hover { opacity: 0.85; }
+
+  /* ── ÉTAT VIDE ────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+  }
+
+  .empty-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .empty-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .empty-sub {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ── BOUTON RETOUR BAS ────────────────────── */
+  .bottom-nav {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .btn-back:hover {
+    border-color: var(--blue);
+    background: rgba(26,82,118,0.04);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<div class="page-header">
+  <a href="/" class="back-link">← Accueil</a>
+
+  <p class="header-eyebrow">
+    {{ niveau }}{% if serie %} · Série {{ serie }}{% endif %}
+  </p>
+
+  <h1 class="header-title">{{ matiere }}</h1>
+
+  <p class="header-sub">
+    Épreuves officielles — classées par année
+  </p>
+</div>
+<div class="gold-bar"></div>
+
+<!-- ── COMPTEUR ──────────────────────────── -->
+{% if annales %}
+<div class="count-strip">
+  <span class="count-label">Épreuves disponibles</span>
+  <span class="count-num">{{ annales|length }}</span>
+</div>
+{% endif %}
+
+<!-- ── LISTE ──────────────────────────────── -->
+<div class="annales-list">
+
+  {% if annales %}
+    {% for annale in annales %}
+    <div class="annale-card" id="card-{{ annale.annee }}">
+
+      <!-- Bouton accordéon -->
+      <button class="annale-toggle" onclick="toggleAnnale({{ annale.annee }})">
+        <div class="toggle-left">
+          <span class="year-badge">{{ annale.annee }}</span>
+          <div class="toggle-label">
+            <span class="toggle-title">Épreuve officielle</span>
+            <span class="toggle-hint">
+              {% if annale.corrige_dispo %}Corrigé disponible{% else %}Énoncé uniquement{% endif %}
+            </span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          {% if annale.corrige_dispo %}
+          <span class="badge-corrige">★ Corrigé</span>
+          {% endif %}
+          <span class="toggle-arrow" id="arrow-{{ annale.annee }}">▼</span>
+        </div>
+      </button>
+
+      <!-- Séparateur -->
+      <div class="card-divider"></div>
+
+      <!-- Contenu -->
+      <div class="annale-content" id="annale-{{ annale.annee }}">
+
+        {% if annale.lien_drive %}
+        <div class="pdf-wrapper">
+          <iframe
+            src="{{ annale.lien_drive }}"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+         
+        {% endif %}
+
+        {% if annale.corrige_dispo %}
+        <div class="corrige-banner">
+          <div class="corrige-text">
+            <span class="corrige-dot"></span>
+            Corrigé détaillé disponible
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📂</div>
+    <h2 class="empty-title">Aucune annale disponible</h2>
+    <p class="empty-sub">Les épreuves pour cette matière arrivent bientôt.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ── RETOUR ─────────────────────────────── -->
+<div class="bottom-nav">
+  <a href="/" class="btn-back">← Retour à l'accueil</a>
+</div>
+
+<script>
+function toggleAnnale(annee) {
+  var card = document.getElementById('card-' + annee);
+  var contenu = document.getElementById('annale-' + annee);
+  var arrow = document.getElementById('arrow-' + annee);
+
+  var isOpen = card.classList.contains('open');
+
+  // Fermer tous les autres
+  document.querySelectorAll('.annale-card.open').forEach(function(c) {
+    c.classList.remove('open');
+  });
+
+  // Ouvrir celui-ci si il était fermé
+  if (!isOpen) {
+    card.classList.add('open');
+  }
+}
+</script>
+
+{% endblock %}
+

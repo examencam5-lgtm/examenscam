@@ -1,423 +1,165 @@
 {% extends 'base.html' %}
-{% block title %}ExamensCam — Tes ressources d'examens{% endblock %}
+{% block title %}ExamensCam · Annales officielles BEPC, Probatoire, BAC{% endblock %}
 
 {% block content %}
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
-
-  :root {
-    --navy: #0D1B2A;
-    --blue: #1A5276;
-    --gold: #D4AC0D;
-    --gold-light: #F0CC4A;
-    --green: #145A32;
-    --red: #922B21;
-    --white: #FFFFFF;
-    --bg: #F4F6F8;
-    --text: #1C2833;
-    --muted: #5D6D7E;
-    --border: #E0E7EF;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Lato', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-  }
-
-  /* ── HERO ─────────────────────────────────── */
-  .hero {
-    background: var(--navy);
-    padding: 56px 24px 48px;
+  .intro {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 24px 32px;
     text-align: center;
-    position: relative;
-    overflow: hidden;
   }
 
-  /* Motif géométrique discret en fond */
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 40px,
-        rgba(212, 172, 13, 0.04) 40px,
-        rgba(212, 172, 13, 0.04) 41px
-      );
-    pointer-events: none;
+  .intro-title {
+    font-size: clamp(26px, 5vw, 34px);
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 10px;
   }
 
-  .hero-eyebrow {
-    font-family: 'Lato', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(36px, 8vw, 56px);
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 8px;
-    position: relative;
-  }
-
-  .hero-title span {
-    color: var(--gold);
-  }
-
-  .hero-sub {
-    font-family: 'Lato', sans-serif;
-    font-size: 15px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.65);
-    margin-bottom: 28px;
+  .intro-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
     line-height: 1.6;
   }
 
-  /* Compteur annales */
-  .hero-stat {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(212, 172, 13, 0.12);
-    border: 1px solid rgba(212, 172, 13, 0.3);
-    border-radius: 100px;
-    padding: 8px 20px;
-  }
-
-  .hero-stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--gold);
-  }
-
-  .hero-stat-label {
-    font-size: 12px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.6);
-    letter-spacing: 0.5px;
-  }
-
-  /* Ligne dorée séparatrice */
-  .gold-line {
-    width: 48px;
-    height: 2px;
-    background: var(--gold);
-    margin: 32px auto 0;
-    opacity: 0.6;
-  }
-
-  /* ── SECTION CHOIX ────────────────────────── */
-  .section-label {
-    text-align: center;
-    padding: 40px 24px 8px;
-  }
-
-  .section-label p {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  /* ── CARTES PRINCIPALES ───────────────────── */
-  .paths {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 16px 20px 40px;
-    max-width: 680px;
+  /* ── COMPTEURS ────────────────────────────── */
+  .counters {
+    max-width: 640px;
     margin: 0 auto;
-  }
-
-  .path-card {
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(13,27,42,0.08);
-    text-decoration: none;
-    color: var(--text);
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: block;
-    position: relative;
-  }
-
-  .path-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 32px rgba(13,27,42,0.14);
-  }
-
-  /* Bande couleur en haut de chaque carte */
-  .card-stripe {
-    height: 5px;
-    width: 100%;
-  }
-
-  .stripe-blue { background: linear-gradient(90deg, var(--blue), #2471A3); }
-  .stripe-gold { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
-
-  .card-body {
-    padding: 28px 24px;
-  }
-
-  .card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    padding: 0 24px 40px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 22px;
-    margin-bottom: 16px;
-  }
-
-  .icon-blue { background: rgba(26, 82, 118, 0.1); }
-  .icon-gold { background: rgba(212, 172, 13, 0.12); }
-
-  .card-tag {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .tag-blue { color: var(--blue); }
-  .tag-gold { color: #B8860B; }
-
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 10px;
-    color: var(--navy);
-  }
-
-  .card-desc {
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  /* Boutons de niveaux (carte annales) */
-  .level-btns {
-    display: flex;
-    gap: 8px;
+    gap: 48px;
     flex-wrap: wrap;
-    margin-bottom: 16px;
   }
 
-  .level-btn {
-    display: inline-block;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background 0.15s, color 0.15s;
+  .counter {
+    text-align: center;
   }
 
-  .level-btn-blue {
-    background: var(--blue);
-    color: var(--white);
+  .counter-num {
+    font-family: 'Source Serif 4', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
   }
 
-  .level-btn-blue:hover { background: #154360; color: var(--white); }
-
-  .level-btn-outline {
-    background: transparent;
-    color: var(--blue);
-    border: 1.5px solid var(--blue);
+  .counter-label {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.4px;
   }
 
-  .level-btn-outline:hover {
-    background: var(--blue);
-    color: var(--white);
+  .counter-divider {
+    width: 1px;
+    background: var(--line);
+    align-self: stretch;
   }
 
-  /* Bouton générateur */
-  .gen-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    background: linear-gradient(135deg, #B8860B, var(--gold));
-    border-radius: 10px;
-    color: var(--white);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 700;
-    transition: opacity 0.2s;
+  /* ── NIVEAUX - liste verticale ────────────── */
+  .levels {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 20px 56px;
   }
 
-  .gen-btn:hover { opacity: 0.9; color: var(--white); }
-
-  .gen-btn-arrow {
-    font-size: 18px;
-    opacity: 0.85;
-  }
-
-  /* Badge "Nouveau" */
-  .badge-new {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--gold);
-    color: var(--navy);
-    font-size: 9px;
-    font-weight: 700;
+  .levels-label {
+    font-size: 11px;
+    font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 100px;
-  }
-
-  /* ── SÉPARATEUR INFO ─────────────────────── */
-  .info-strip {
-    background: var(--white);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 24px;
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-
-  .info-item {
-    text-align: center;
-  }
-
-  .info-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--blue);
-    display: block;
-    line-height: 1;
+    color: var(--ink-soft);
+    padding: 0 4px 12px;
+    border-bottom: 1px solid var(--line);
     margin-bottom: 4px;
   }
 
-  .info-label {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.5px;
+  .level-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 4px;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line-soft);
+    transition: background 0.12s;
   }
 
-  /* ── RESPONSIVE ────────────────────────────── */
-  @media (min-width: 600px) {
-    .paths {
-      grid-template-columns: 1fr 1fr;
-    }
+  .level-row:hover { background: var(--accent-soft); }
+  .level-row:last-child { border-bottom: none; }
+
+  .level-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
   }
 
-  /* ── ANIMATIONS ──────────────────────────── */
-  .path-card {
-    animation: fadeUp 0.4s ease both;
+  .level-name {
+    font-family: 'Source Serif 4', serif;
+    font-size: 20px;
+    font-weight: 600;
   }
 
-  .path-card:nth-child(2) {
-    animation-delay: 0.1s;
+  .level-sub {
+    font-size: 12px;
+    color: var(--ink-soft);
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
+  .level-arrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    color: var(--ink-soft);
   }
+
+  .level-row:hover .level-arrow { color: var(--ink); }
 </style>
 
-<!-- ── HERO ───────────────────────────────── -->
-<div class="hero">
-  <p class="hero-eyebrow">Plateforme Officielle · Cameroun</p>
-  <h1 class="hero-title">Examen<span>s</span>Cam</h1>
-  <p class="hero-sub">Tes ressources d'examens BEPC, Probatoire et BAC —<br>organisées, gratuites, disponibles partout.</p>
-
-  <div class="hero-stat">
-    <span class="hero-stat-num">{{ total }}</span>
-    <span class="hero-stat-label">annales officielles disponibles</span>
-  </div>
-
-  <div class="gold-line"></div>
+<div class="intro">
+  <h1 class="intro-title">Les annales officielles, classées et accessibles</h1>
+  <p class="intro-sub">BEPC, Probatoire et BAC. Sujets nationaux, organisés par niveau, série et matière.</p>
 </div>
 
-<!-- ── STATS ──────────────────────────────── -->
-<div class="info-strip">
-  <div class="info-item">
-    <span class="info-num">BEPC</span>
-    <span class="info-label">Brevet</span>
+<div class="counters">
+  <div class="counter">
+    <span class="counter-num">{{ total }}</span>
+    <span class="counter-label">Épreuves officielles</span>
   </div>
-  <div class="info-item">
-    <span class="info-num">Proba</span>
-    <span class="info-label">Probatoire</span>
-  </div>
-  <div class="info-item">
-    <span class="info-num">BAC</span>
-    <span class="info-label">C · D · TI · A4</span>
-  </div>
-  <div class="info-item">
-    <span class="info-num">100%</span>
-    <span class="info-label">Gratuit</span>
+  <div class="counter-divider"></div>
+  <div class="counter">
+    <span class="counter-num">{{ total_blancs|default(0) }}</span>
+    <span class="counter-label">Annales blanches</span>
   </div>
 </div>
 
-<!-- ── LABEL SECTION ──────────────────────── -->
-<div class="section-label">
-  <p>Que veux-tu faire aujourd'hui ?</p>
+<div class="levels">
+  <p class="levels-label">Choisir un niveau</p>
+
+  <a href="/bepc" class="level-row">
+    <span class="level-main">
+      <span class="level-name">BEPC</span>
+      <span class="level-sub">Troisième</span>
+    </span>
+    <span class="level-arrow">→</span>
+  </a>
+
+  <a href="/probatoire" class="level-row">
+    <span class="level-main">
+      <span class="level-name">Probatoire</span>
+      <span class="level-sub">Première. Séries A4, C, D, TI</span>
+    </span>
+    <span class="level-arrow">→</span>
+  </a>
+
+  <a href="/bac" class="level-row">
+    <span class="level-main">
+      <span class="level-name">BAC</span>
+      <span class="level-sub">Terminale. Séries A4, C, D, TI</span>
+    </span>
+    <span class="level-arrow">→</span>
+  </a>
 </div>
-
-<!-- ── CARTES ─────────────────────────────── -->
-<div class="paths">
-
-  <!-- Carte 1 — Annales officielles -->
-  <div class="path-card">
-    <div class="card-stripe stripe-blue"></div>
-    <div class="card-body">
-      <div class="card-icon icon-blue">📚</div>
-      <p class="card-tag tag-blue">Accès libre</p>
-      <h2 class="card-title">Annales Officielles</h2>
-      <p class="card-desc">Toutes les épreuves nationales classées par niveau, série et matière. Télécharge et consulte librement.</p>
-
-      <div class="level-btns">
-        <a href="/bepc" class="level-btn level-btn-blue">BEPC</a>
-        <a href="/probatoire" class="level-btn level-btn-outline">Probatoire</a>
-        <a href="/bac" class="level-btn level-btn-outline">BAC</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Carte 2 — Générateur personnalisé -->
-  <div class="path-card">
-    <div class="card-stripe stripe-gold"></div>
-    <span class="badge-new">Nouveau</span>
-    <div class="card-body">
-      <div class="card-icon icon-gold">🎯</div>
-      <p class="card-tag tag-gold">Personnalisé</p>
-      <h2 class="card-title">Examen Sur Mesure</h2>
-      <p class="card-desc">Choisis ton thème et le nombre d'exercices. On génère ton examen d'entraînement instantanément.</p>
-
-      <a href="/generateur" class="gen-btn">
-        <span>Générer mon examen</span>
-        <span class="gen-btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-</div>
-
 {% endblock %}
-

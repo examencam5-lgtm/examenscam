@@ -3,60 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ExamensCam — Annales officielles BEPC, Probatoire et BAC du Cameroun. Organisées, gratuites, accessibles partout.">
+  <meta name="description" content="ExamensCam. Annales officielles BEPC, Probatoire et BAC du Cameroun.">
   <title>{% block title %}ExamensCam{% endblock %}</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- CSS des nouvelles pages (carrefour, blancs, corrigés, établissements) -->
+  <!-- Classes .ec-* utilisées par carrefour, blancs, corrigés, établissements -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/nouvelles_pages.css') }}">
 
   <style>
-    /* ── VARIABLES GLOBALES ──────────────────── */
+    /* ────────────────────────────────────────
+       TOKENS - palette quasi-monochrome
+       Un seul accent, utilisé avec parcimonie.
+    ──────────────────────────────────────── */
     :root {
-      --navy: #0D1B2A;
-      --blue: #1A5276;
-      --gold: #D4AC0D;
-      --gold2: #B8860B;
-      --white: #FFFFFF;
-      --bg: #F4F6F8;
-      --text: #1C2833;
-      --muted: #5D6D7E;
-      --border: #E0E7EF;
+      --paper:   #FAFAF8;
+      --ink:     #1A1A1A;
+      --ink-soft:#5C5C5C;
+      --line:    #DEDCD5;
+      --line-soft: #EDEBE5;
+      --surface: #FFFFFF;
+      /* Pas d'accent coloré pour ce premier passage. Tout reste
+         encre/gris/papier ; une couleur sera ajoutée plus tard,
+         volontairement, pas par défaut. */
+      --accent:  #1A1A1A;
+      --accent-soft: #F0EFEA;
+      --radius: 3px;
     }
 
-    /* ── RESET ───────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Lato', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      -webkit-font-smoothing: antialiased;
     }
 
     main { flex: 1; }
-
     a { color: inherit; }
+
+    h1, h2, h3, .serif {
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+    }
 
     /* ── NAVBAR ──────────────────────────────── */
     .navbar {
-      background: var(--navy);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.25);
     }
 
     .navbar-inner {
-      max-width: 900px;
+      max-width: 880px;
       margin: 0 auto;
       padding: 0 20px;
       height: 60px;
@@ -65,33 +73,28 @@
       justify-content: space-between;
     }
 
-    /* Logo */
     .navbar-brand {
       text-decoration: none;
       display: flex;
-      flex-direction: column;
-      line-height: 1.1;
+      align-items: baseline;
+      gap: 6px;
     }
 
     .brand-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.3px;
+      font-family: 'Source Serif 4', serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.1px;
     }
 
-    .brand-name span { color: var(--gold); }
-
-    .brand-tagline {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
+    .brand-mark {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      display: inline-block;
     }
 
-    /* Nav desktop */
     .nav-links {
       display: none;
       align-items: center;
@@ -102,73 +105,39 @@
     .nav-links a {
       display: block;
       padding: 8px 14px;
-      border-radius: 8px;
       font-size: 13px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      color: var(--ink-soft);
       text-decoration: none;
-      transition: color 0.15s, background 0.15s;
-      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
     }
 
-    .nav-links a:hover {
-      color: var(--white);
-      background: rgba(255,255,255,0.08);
-    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--ink); border-bottom-color: var(--accent); }
 
-    .nav-links a.active {
-      color: var(--gold);
-    }
-
-    /* Lien générateur — mis en valeur */
-    .nav-links .nav-gen a {
-      background: rgba(212,172,13,0.15);
-      color: var(--gold);
-      border: 1px solid rgba(212,172,13,0.25);
-    }
-
-    .nav-links .nav-gen a:hover {
-      background: rgba(212,172,13,0.25);
-      color: var(--gold);
-    }
-
-    /* Hamburger mobile */
     .hamburger {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 36px;
-      height: 36px;
-      padding: 6px;
+      align-items: center;
+      gap: 8px;
       background: none;
-      border: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 7px 12px;
       cursor: pointer;
-      border-radius: 8px;
-      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
     }
 
-    .hamburger:hover { background: rgba(255,255,255,0.08); }
+    .hamburger:hover { border-color: var(--ink-soft); }
 
-    .hamburger span {
-      display: block;
-      height: 2px;
-      background: var(--white);
-      border-radius: 2px;
-      transition: transform 0.25s, opacity 0.25s;
-    }
-
-    /* Hamburger → X quand ouvert */
-    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* Menu mobile déroulant */
     .mobile-menu {
       display: none;
-      background: var(--navy);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 20px 16px;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      padding: 8px 20px 12px;
     }
 
     .mobile-menu.open { display: block; }
@@ -177,28 +146,15 @@
       display: block;
       padding: 12px 4px;
       font-size: 15px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      color: var(--ink-soft);
       text-decoration: none;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      transition: color 0.15s;
+      border-bottom: 1px solid var(--line-soft);
     }
 
     .mobile-menu a:last-child { border-bottom: none; }
-    .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu a:hover { color: var(--ink); }
 
-    .mobile-menu .menu-gen {
-      color: var(--gold);
-      margin-top: 8px;
-    }
-
-    /* ── BARRE OR SOUS NAV ───────────────────── */
-    .nav-gold-line {
-      height: 2px;
-      background: linear-gradient(90deg, var(--gold) 0%, transparent 70%);
-    }
-
-    /* ── DESKTOP : afficher nav ──────────────── */
     @media (min-width: 640px) {
       .nav-links { display: flex; }
       .hamburger { display: none; }
@@ -207,29 +163,28 @@
 
     /* ── FOOTER ──────────────────────────────── */
     footer {
-      background: var(--navy);
+      background: var(--surface);
+      border-top: 1px solid var(--line);
       padding: 28px 24px;
       margin-top: auto;
     }
 
     .footer-inner {
-      max-width: 900px;
+      max-width: 880px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       text-align: center;
     }
 
     .footer-brand {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--white);
+      font-family: 'Source Serif 4', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
     }
-
-    .footer-brand span { color: var(--gold); }
 
     .footer-links {
       display: flex;
@@ -239,45 +194,42 @@
     }
 
     .footer-links a {
-      font-size: 13px;
-      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      color: var(--ink-soft);
       text-decoration: none;
-      transition: color 0.15s;
     }
 
-    .footer-links a:hover { color: var(--gold); }
+    .footer-links a:hover { color: var(--ink); }
 
     .footer-copy {
       font-size: 11px;
-      color: rgba(255,255,255,0.25);
-      letter-spacing: 0.5px;
+      color: #9A9890;
+      letter-spacing: 0.3px;
     }
 
-    .footer-line {
-      width: 40px;
-      height: 1px;
-      background: rgba(212,172,13,0.3);
-    }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.8) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    /* ── CLASSE BTN GLOBALE ──────────────────── */
+    /* ── COMPOSANT BOUTON GLOBAL ─────────────── */
     .btn {
       display: inline-block;
-      padding: 10px 22px;
-      background: var(--blue);
-      color: var(--white);
-      border-radius: 8px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: var(--surface);
+      border-radius: var(--radius);
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 500;
       font-size: 14px;
-      transition: background 0.15s;
+      border: 1px solid var(--accent);
+      transition: opacity 0.15s;
     }
 
-    .btn:hover { background: #154360; color: var(--white); }
+    .btn:hover { opacity: 0.85; color: var(--surface); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .btn-outline:hover { border-color: var(--ink-soft); opacity: 1; color: var(--ink); }
   </style>
 
   {% block extra_head %}{% endblock %}
@@ -285,82 +237,63 @@
 
 <body>
 
-  <!-- ── NAVBAR ──────────────────────────────── -->
   <nav class="navbar">
     <div class="navbar-inner">
-
-      <!-- Logo -->
       <a href="/" class="navbar-brand">
-        <span class="brand-name">Examens<span>Cam</span></span>
-        <span class="brand-tagline">Cameroun</span>
+        <span class="brand-mark"></span>
+        <span class="brand-name">ExamensCam</span>
       </a>
 
-      <!-- Liens desktop -->
       <ul class="nav-links">
         <li><a href="/">Accueil</a></li>
         <li><a href="/bepc">BEPC</a></li>
         <li><a href="/probatoire">Probatoire</a></li>
         <li><a href="/bac">BAC</a></li>
-        <li class="nav-gen"><a href="/generateur">✦ Générateur</a></li>
       </ul>
 
-      <!-- Hamburger mobile -->
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        Menu
       </button>
-
     </div>
 
-    <!-- Menu mobile -->
     <div class="mobile-menu" id="mobile-menu">
       <a href="/">Accueil</a>
       <a href="/bepc">BEPC</a>
       <a href="/probatoire">Probatoire</a>
       <a href="/bac">BAC</a>
-      <a href="/generateur" class="menu-gen">✦ Générateur d'examens</a>
     </div>
   </nav>
 
-  <div class="nav-gold-line"></div>
-
-  <!-- ── CONTENU ─────────────────────────────── -->
   <main>
     {% block content %}{% endblock %}
   </main>
 
-  <!-- ── FOOTER ─────────────────────────────── -->
   <footer>
     <div class="footer-inner">
-      <div class="footer-brand">Examens<span>Cam</span></div>
-      <div class="footer-line"></div>
+      <div class="footer-brand">ExamensCam</div>
       <div class="footer-links">
         <a href="/">Accueil</a>
         <a href="/bepc">BEPC</a>
         <a href="/probatoire">Probatoire</a>
         <a href="/bac">BAC</a>
-        <a href="/generateur">Générateur</a>
       </div>
-      <p class="footer-copy">ExamensCam·Cameroun</p>
+      <p class="footer-copy">ExamensCam · Cameroun</p>
     </div>
   </footer>
 
-  <!-- ── SCRIPT HAMBURGER ────────────────────── -->
   <script>
     var btn = document.getElementById('hamburger');
     var menu = document.getElementById('mobile-menu');
 
     btn.addEventListener('click', function() {
-      btn.classList.toggle('open');
-      menu.classList.toggle('open');
+      var isOpen = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen);
     });
 
-    // Fermer le menu si on clique sur un lien
     menu.querySelectorAll('a').forEach(function(link) {
       link.addEventListener('click', function() {
-        btn.classList.remove('open');
         menu.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
       });
     });
   </script>

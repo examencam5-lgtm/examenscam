@@ -1,160 +1,189 @@
-/* static/css/nouvelles_pages.css — v2, identité visuelle renforcée */
+/* static/css/nouvelles_pages.css — v3, sobre, aligné sur base.html */
 
 :root {
-  --ec-bleu: #1A5276;
-  --ec-bleu-fonce: #154360;
-  --ec-or: #D4AC0D;
-  --ec-rouge: #922B21;
-  --ec-vert: #145A32;
-  --ec-fond-clair: #EBF5FB;
-  --ec-papier: #FFFDF8; /* blanc légèrement chaud, évoque le papier officiel sans virer cream-IA */
-  --ec-gris: #5D6D7E;
-  --ec-serif: Georgia, "Times New Roman", serif;
-  --ec-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --ec-mono: "Courier New", monospace;
+  /* Mêmes tokens que base.html — une seule source de vérité visuelle */
+  --ec-paper:   #FAFAF8;
+  --ec-ink:     #1A1A1A;
+  --ec-ink-soft:#5C5C5C;
+  --ec-line:    #DEDCD5;
+  --ec-line-soft: #EDEBE5;
+  --ec-surface: #FFFFFF;
+  --ec-accent:  #1A1A1A;
+  --ec-accent-soft: #F0EFEA;
+
+  --ec-serif: 'Source Serif 4', Georgia, serif;
+  --ec-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --ec-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Courier New", monospace;
 }
 
-/* ── En-tête façon en-tête administratif ── */
+/* ── En-tête de page (fil d'ariane + titre) ──────────────
+   Avant : bandeau bleu plein avec filet doré pointillé.
+   Maintenant : papier, une seule ligne fine, la hiérarchie
+   vient de la typo, pas de la couleur. */
 .ec-header {
-  background: var(--ec-bleu);
-  color: white;
-  padding: 22px 18px 18px;
+  background: var(--ec-surface);
+  color: var(--ec-ink);
+  border-bottom: 1px solid var(--ec-line);
+  padding: 20px 18px 16px;
   position: relative;
 }
-.ec-header::after {
-  /* Double filet fin, comme un en-tête de document officiel */
-  content: "";
-  position: absolute; left: 18px; right: 18px; bottom: 10px;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, var(--ec-or) 0 6px, transparent 6px 10px);
-  opacity: 0.6;
+.ec-fil-ariane {
+  font-family: var(--ec-mono);
+  font-size: 10.5px;
+  color: var(--ec-ink-soft);
+  letter-spacing: 0.2px;
 }
-.ec-fil-ariane { font-family: var(--ec-mono); font-size: 10.5px; color: #AED6F1; letter-spacing: 0.3px; }
-.ec-fil-ariane a { color: white; text-decoration: none; }
+.ec-fil-ariane a { color: var(--ec-ink-soft); text-decoration: none; }
+.ec-fil-ariane a:hover { color: var(--ec-ink); }
 .ec-eyebrow {
   font-family: var(--ec-mono); font-size: 10px; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase; color: var(--ec-or);
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--ec-ink-soft);
   margin-top: 10px;
 }
 .ec-titre-page {
-  font-family: var(--ec-serif); font-size: 21px; font-weight: 700;
-  margin-top: 3px; line-height: 1.25;
+  font-family: var(--ec-serif); font-size: 21px; font-weight: 600;
+  margin-top: 3px; line-height: 1.25; color: var(--ec-ink);
 }
-.ec-sous-titre { font-size: 12px; color: #D6EAF8; margin-top: 3px; }
+.ec-sous-titre { font-size: 12px; color: var(--ec-ink-soft); margin-top: 3px; }
 
-/* ── Le sceau : signature visuelle du contenu vérifié (officiel/blanc) ── */
+/* ── Le sceau — marque de contenu vérifié (officiel/blanc) ──
+   Un seul tracé, un seul ton (l'encre), plus de distinction
+   or/bleu par statut : la distinction se fait par le texte. */
 .ec-sceau {
-  width: 46px; height: 46px; border-radius: 50%;
-  border: 1.5px solid rgba(212,172,13,0.55);
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1.5px solid var(--ec-line);
   display: flex; align-items: center; justify-content: center;
   position: relative; flex-shrink: 0;
 }
 .ec-sceau::before {
   content: ""; position: absolute; inset: 4px;
-  border: 1px dashed rgba(212,172,13,0.4); border-radius: 50%;
+  border: 1px dashed var(--ec-line);
+  border-radius: 50%;
 }
-.ec-sceau .icon { width: 20px; height: 20px; stroke: var(--ec-or); stroke-width: 1.8; }
-.ec-sceau.sur-blanc { border-color: rgba(26,82,118,0.3); }
-.ec-sceau.sur-blanc::before { border-color: rgba(26,82,118,0.25); }
-.ec-sceau.sur-blanc .icon { stroke: var(--ec-bleu); }
+.ec-sceau .icon { width: 18px; height: 18px; stroke: var(--ec-ink-soft); stroke-width: 1.8; }
+.ec-sceau.sur-blanc { border-color: var(--ec-line); }
+.ec-sceau.sur-blanc::before { border-color: var(--ec-line); }
+.ec-sceau.sur-blanc .icon { stroke: var(--ec-ink-soft); }
 
-/* ── La fiche d'archive : signature du contenu indexé (établissements) ── */
+/* ── Fiche d'archive — établissements ── */
 .ec-fiche-tab {
-  width: 46px; height: 38px; background: var(--ec-fond-clair);
-  border-radius: 3px 8px 8px 3px; border-left: 3px solid var(--ec-gris);
+  width: 44px; height: 36px; background: var(--ec-accent-soft);
+  border-radius: 2px 6px 6px 2px; border-left: 3px solid var(--ec-ink-soft);
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.ec-fiche-tab .icon { width: 18px; height: 18px; stroke: var(--ec-gris); stroke-width: 2; }
+.ec-fiche-tab .icon { width: 17px; height: 17px; stroke: var(--ec-ink-soft); stroke-width: 2; }
 
-/* ── Cartes de branches (carrefour) ── */
-.ec-branches { padding: 16px; display: flex; flex-direction: column; gap: 11px; }
+/* ── Cartes de branches (carrefour) ──────────────────────
+   Avant : fonds distincts par branche (papier/rouge/dashed/
+   gradients bleu et rouge). Maintenant : même carte pour
+   toutes, bordure pleine ou pointillée selon qu'il y a du
+   contenu ou non — la couleur ne porte plus l'information. */
+.ec-branches { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .ec-branche { text-decoration: none; color: inherit; display: block; }
 .ec-branche-carte {
-  border-radius: 10px; padding: 14px;
+  border-radius: var(--radius, 3px); padding: 14px;
   display: flex; align-items: center; gap: 13px;
-  transition: transform 0.15s ease;
+  background: var(--ec-surface);
+  border: 1px solid var(--ec-line);
+  transition: border-color 0.15s;
 }
-.ec-branche:active .ec-branche-carte { transform: scale(0.98); }
-.ec-branche-officiel { background: var(--ec-papier); border: 1px solid #E5E0D0; box-shadow: 0 1px 3px rgba(26,82,118,0.06); }
-.ec-branche-blanc { background: var(--ec-papier); border: 1px solid #E8DCD8; box-shadow: 0 1px 3px rgba(146,43,33,0.06); }
-.ec-branche-etablissement { background: white; border: 1.5px dashed #C7CFD6; }
-.ec-branche-corriges-off { background: linear-gradient(135deg, var(--ec-bleu-fonce), var(--ec-bleu)); color: white; }
-.ec-branche-corriges-blanc { background: linear-gradient(135deg, #5C1A12, var(--ec-rouge)); color: white; }
-.ec-branche-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 700; }
-.ec-branche-sub { font-size: 11px; color: var(--ec-gris); margin-top: 2px; }
-.ec-branche-sub-clair { font-size: 10.5px; color: #D6EAF8; margin-top: 2px; }
+.ec-branche:hover .ec-branche-carte { border-color: var(--ec-ink-soft); }
+.ec-branche:active .ec-branche-carte { background: var(--ec-accent-soft); }
+
+.ec-branche-officiel { border-color: var(--ec-line); }
+.ec-branche-blanc { border-color: var(--ec-line); }
+.ec-branche-etablissement { border: 1px dashed var(--ec-line); }
+
+/* Branche "corrigés" (accès payant) — seule variante qui
+   utilise l'accent, en aplat sombre, réservée à l'action
+   qui a une valeur monétaire distincte du reste. */
+.ec-branche-corriges-off,
+.ec-branche-corriges-blanc {
+  background: var(--ec-accent); color: var(--ec-surface); border-color: var(--ec-accent);
+}
+.ec-branche-corriges-off .ec-branche-sub-clair,
+.ec-branche-corriges-blanc .ec-branche-sub-clair { color: rgba(255,255,255,0.65); }
+
+.ec-branche-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; }
+.ec-branche-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 2px; }
+.ec-branche-sub-clair { font-size: 10.5px; color: var(--ec-ink-soft); margin-top: 2px; }
 .ec-branche-prix {
-  background: var(--ec-or); color: var(--ec-bleu-fonce);
+  background: var(--ec-accent-soft); color: var(--ec-ink);
   font-family: var(--ec-mono); font-size: 12px; font-weight: 700;
-  padding: 5px 10px; border-radius: 6px; white-space: nowrap; margin-left: auto;
+  padding: 5px 10px; border-radius: 3px; white-space: nowrap; margin-left: auto;
 }
-.ec-branche-chevron { color: var(--ec-gris); font-size: 18px; margin-left: auto; }
+.ec-branche-chevron { color: var(--ec-ink-soft); font-size: 16px; margin-left: auto; }
 .ec-vide {
-  margin: 16px; padding: 20px 16px; background: var(--ec-fond-clair);
-  border-radius: 10px; font-size: 12.5px; color: var(--ec-bleu-fonce);
+  margin: 16px; padding: 20px 16px; background: var(--ec-accent-soft);
+  border-radius: var(--radius, 3px); font-size: 12.5px; color: var(--ec-ink-soft);
   text-align: center; font-family: var(--ec-serif); font-style: italic;
 }
 
 /* ── Listes (blancs, établissements) ── */
 .ec-liste { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
-.ec-item { background: var(--ec-papier); border: 1px solid #ECE7DA; border-radius: 9px; padding: 14px; }
-.ec-item-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 700; line-height: 1.3; }
-.ec-item-sub { font-size: 11px; color: var(--ec-gris); margin-top: 3px; }
+.ec-item { background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: var(--radius, 3px); padding: 14px; }
+.ec-item-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; line-height: 1.3; color: var(--ec-ink); }
+.ec-item-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 3px; }
 
 .ec-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.ec-pill { font-family: var(--ec-mono); font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 3px; }
-.ec-pill-region { background: var(--ec-fond-clair); color: var(--ec-bleu); border: 1px solid #C5DDF0; }
-.ec-pill-sequence { background: #FDF6E3; color: #8A7315; border: 1px solid #EFDFA0; }
+.ec-pill {
+  font-family: var(--ec-mono); font-size: 9.5px; font-weight: 700;
+  padding: 3px 8px; border-radius: 2px;
+  background: var(--ec-accent-soft); color: var(--ec-ink-soft);
+  border: 1px solid var(--ec-line);
+}
+/* pill-region et pill-sequence gardées distinctes par bordure
+   plutôt que par couleur, pour rester lisibles sans être criardes */
+.ec-pill-region { border-style: solid; }
+.ec-pill-sequence { border-style: dashed; }
 
 .ec-filtre-onglets { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; }
 .ec-onglet {
   font-family: var(--ec-mono); font-size: 11px; font-weight: 700;
-  padding: 7px 13px; border-radius: 3px; background: var(--ec-fond-clair);
-  color: var(--ec-bleu); text-decoration: none; white-space: nowrap;
-  border: 1px solid transparent;
+  padding: 7px 13px; border-radius: 2px; background: var(--ec-surface);
+  color: var(--ec-ink-soft); text-decoration: none; white-space: nowrap;
+  border: 1px solid var(--ec-line);
 }
-.ec-onglet.actif { background: var(--ec-bleu); color: white; }
+.ec-onglet.actif { background: var(--ec-accent); color: var(--ec-surface); border-color: var(--ec-accent); }
 
 .ec-avertissement {
-  margin: 0 16px 14px; background: #FFFBF0; border: 1px solid #F0DFA0;
-  border-left: 3px solid var(--ec-or); border-radius: 4px;
-  padding: 12px 14px; font-size: 11px; color: #7D6608; line-height: 1.5;
+  margin: 0 16px 14px; background: var(--ec-accent-soft); border: 1px solid var(--ec-line);
+  border-left: 3px solid var(--ec-ink-soft); border-radius: 2px;
+  padding: 12px 14px; font-size: 11px; color: var(--ec-ink-soft); line-height: 1.5;
 }
 
 /* ── Catalogue de packs corrigés ── */
 .ec-carte-pack {
-  background: var(--ec-papier); border: 1px solid #E5E0D0; border-radius: 10px;
-  padding: 15px; box-shadow: 0 1px 3px rgba(26,82,118,0.06);
+  background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: var(--radius, 3px);
+  padding: 15px;
 }
 .ec-carte-pack-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; gap: 8px; }
-.ec-carte-pack-titre { font-family: var(--ec-serif); font-size: 14px; font-weight: 700; line-height: 1.35; }
-.ec-barre-progression { height: 5px; background: #ECE7DA; border-radius: 3px; overflow: hidden; margin: 9px 0 5px; }
-.ec-barre-progression-remplie { height: 100%; background: linear-gradient(90deg, var(--ec-or), #E8C547); }
-.ec-progression-texte { font-family: var(--ec-mono); font-size: 10px; color: var(--ec-gris); }
+.ec-carte-pack-titre { font-family: var(--ec-serif); font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--ec-ink); }
+.ec-barre-progression { height: 4px; background: var(--ec-line-soft); border-radius: 2px; overflow: hidden; margin: 9px 0 5px; }
+.ec-barre-progression-remplie { height: 100%; background: var(--ec-ink-soft); }
+.ec-progression-texte { font-family: var(--ec-mono); font-size: 10px; color: var(--ec-ink-soft); }
 
-/* ── Fiche pack détail ── */
+/* ── Fiche pack détail ──────────────────────────────────
+   Avant : hero dégradé bleu + filigrane circulaire doré.
+   Maintenant : bloc encre pleine, sobre, sans motif décoratif —
+   la valeur du pack se dit par le texte, pas par l'habillage. */
 .ec-fiche-hero {
-  background: linear-gradient(160deg, var(--ec-bleu) 0%, var(--ec-bleu-fonce) 100%);
-  color: white; padding: 24px 18px; position: relative; overflow: hidden;
+  background: var(--ec-accent);
+  color: var(--ec-surface); padding: 24px 18px;
 }
-.ec-fiche-hero::before {
-  /* Filigrane circulaire discret, écho du sceau officiel */
-  content: ""; position: absolute; right: -30px; top: -30px;
-  width: 140px; height: 140px; border-radius: 50%;
-  border: 16px solid rgba(212,172,13,0.08);
-}
-.ec-fiche-hero h2 { font-family: var(--ec-serif); font-size: 19px; line-height: 1.3; position: relative; }
-.ec-prix-gros { font-family: var(--ec-mono); font-size: 27px; font-weight: 700; color: var(--ec-or); margin-top: 10px; position: relative; }
+.ec-fiche-hero h2 { font-family: var(--ec-serif); font-size: 19px; font-weight: 600; line-height: 1.3; }
+.ec-prix-gros { font-family: var(--ec-mono); font-size: 26px; font-weight: 700; color: var(--ec-surface); margin-top: 10px; }
 .ec-annee-ligne {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 12px; background: var(--ec-papier); border: 1px solid #ECE7DA;
-  border-radius: 6px; font-family: var(--ec-mono); font-size: 13px; margin-bottom: 7px;
+  padding: 10px 12px; background: var(--ec-surface); border: 1px solid var(--ec-line);
+  border-radius: var(--radius, 3px); font-family: var(--ec-mono); font-size: 13px; margin-bottom: 7px;
+  color: var(--ec-ink);
 }
-.ec-statut-pret { color: var(--ec-vert); font-weight: 700; font-size: 11px; }
-.ec-statut-brouillon { color: var(--ec-gris); font-size: 11px; font-style: italic; }
+.ec-statut-pret { color: var(--ec-ink); font-weight: 700; font-size: 11px; }
+.ec-statut-brouillon { color: var(--ec-ink-soft); font-size: 11px; font-style: italic; }
 .ec-bouton-desactive {
-  width: 100%; background: #ECE7DA; color: var(--ec-gris); border: none;
-  border-radius: 8px; padding: 15px; font-size: 13.5px; font-weight: 700;
+  width: 100%; background: var(--ec-line-soft); color: var(--ec-ink-soft); border: none;
+  border-radius: var(--radius, 3px); padding: 15px; font-size: 13.5px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; gap: 7px;
 }
-.ec-bouton-note { text-align: center; font-size: 11px; color: var(--ec-gris); margin-top: 9px; line-height: 1.5; }
+.ec-bouton-note { text-align: center; font-size: 11px; color: var(--ec-ink-soft); margin-top: 9px; line-height: 1.5; }
