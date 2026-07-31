@@ -69,15 +69,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 4px;
+    padding: 14px 22px;
     text-decoration: none;
     color: var(--ink);
-    border-bottom: 1px solid var(--line-soft);
-    transition: background 0.12s;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, background 0.15s;
   }
 
-  .matiere-row:hover { background: var(--accent-soft); }
-  .matiere-row:last-child { border-bottom: none; }
+  .matiere-row:hover { border-color: var(--ink-soft); background: var(--accent-soft); }
 
   .matiere-main {
     display: flex;

@@ -94,15 +94,14 @@
 .ec-branche-blanc { border-color: var(--ec-line); }
 .ec-branche-etablissement { border: 1px dashed var(--ec-line); }
 
-/* Branche "corrigés" (accès payant) — seule variante qui
-   utilise l'accent, en aplat sombre, réservée à l'action
-   qui a une valeur monétaire distincte du reste. */
+/* Corrigés et énoncés identiques pour l'instant, en attendant
+   qu'on choisisse ensemble comment les différencier. */
 .ec-branche-corriges-off,
 .ec-branche-corriges-blanc {
-  background: var(--ec-accent); color: var(--ec-surface); border-color: var(--ec-accent);
+  background: var(--ec-surface); color: var(--ec-ink); border-color: var(--ec-line);
 }
 .ec-branche-corriges-off .ec-branche-sub-clair,
-.ec-branche-corriges-blanc .ec-branche-sub-clair { color: rgba(255,255,255,0.65); }
+.ec-branche-corriges-blanc .ec-branche-sub-clair { color: var(--ec-ink-soft); }
 
 .ec-branche-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; }
 .ec-branche-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 2px; }

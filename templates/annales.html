@@ -71,9 +71,14 @@
   .annale-card {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: 999px;
     overflow: hidden;
     margin-bottom: 10px;
+    transition: border-radius 0.15s;
+  }
+
+  .annale-card.open {
+    border-radius: var(--radius);
   }
 
   .annale-toggle {
