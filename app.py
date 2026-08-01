@@ -15,7 +15,8 @@ from database_externes import (
 )
 from database import (get_annales, get_matieres, get_all_annales, add_annale,
                       delete_annale, increment_vues, get_stats, get_connection,
-                      get_annale_by_id, create_table)
+                      get_annale_by_id, create_table, get_total_blancs,
+                      get_derniere_maj)
 
 app = Flask(__name__)
 app.config.update(
@@ -94,8 +95,17 @@ def inject_globals():
 @app.route('/')
 def index():
     stats = get_stats()
-    return render_template('index.html', stats=stats, total=stats['total'])
+    total_blancs = get_total_blancs()
+    derniere_maj = get_derniere_maj()
+    return render_template('index.html', stats=stats, total=stats['total'], total_blancs=total_blancs, derniere_maj=derniere_maj)
 
+# A ajouter dans app.py, avec tes autres routes.
+# Zero dependance backend : le texte est directement dans le
+# template, cette route se contente de le rendre.
+
+@app.route('/conditions')
+def conditions():
+    return render_template('conditions.html')
 @app.route('/bepc')
 def bepc():
     return render_template('niveau.html', niveau='BEPC', serie=None,

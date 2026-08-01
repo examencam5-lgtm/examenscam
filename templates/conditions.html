@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% block title %}Conditions d'utilisation · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 32px 24px 28px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .back-link:hover { color: var(--ink); }
+
+  .header-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(26px, 6vw, 34px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+
+  .header-sub { font-size: 13px; color: var(--ink-soft); }
+
+  .wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px 20px 56px;
+  }
+
+  /* ── RÉSUMÉ MIS EN AVANT ──────────────────── */
+  .resume-box {
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+    padding: 22px 22px 20px;
+    margin-bottom: 32px;
+  }
+
+  .resume-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .resume-text {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  .resume-points {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .resume-point {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .resume-point-mark {
+    font-family: 'Source Serif 4', serif;
+    color: var(--brown, var(--ink-soft));
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  /* ── TEXTE COMPLET, REPLIABLE ─────────────── */
+  .full-toggle {
+    width: 100%;
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .full-toggle-arrow {
+    font-size: 13px;
+    color: var(--ink-soft);
+    transition: transform 0.2s;
+  }
+
+  .full-toggle.open .full-toggle-arrow { transform: rotate(180deg); }
+
+  .full-text {
+    display: none;
+    margin-top: 16px;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .full-text.open { display: block; }
+
+  .full-text .article-num {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--ink);
+    display: block;
+    margin: 22px 0 8px;
+  }
+
+  .full-text .article-num:first-child { margin-top: 0; }
+
+  .bottom-nav {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+</style>
+
+<div class="page-header">
+  <a href="/" class="back-link">&larr; Accueil</a>
+  <h1 class="header-title">Conditions d'utilisation</h1>
+  <p class="header-sub">Dernière mise à jour : {{ derniere_maj_cgu|default("à compléter") }}</p>
+</div>
+
+<div class="wrapper">
+
+  <div class="resume-box">
+    <p class="resume-label">En résumé</p>
+    <p class="resume-text">
+      ExamensCam propose trois choses distinctes : des annales officielles
+      et blanches qu'on héberge et qu'on a nettoyées nous-mêmes, des
+      corrigés originaux qu'on vend, et un annuaire d'épreuves
+      d'établissements qui redirige vers d'autres sites (on n'y héberge
+      rien).
+    </p>
+    <div class="resume-points">
+      <div class="resume-point">
+        <span class="resume-point-mark">&middot;</span>
+        <span>Les annales restent la propriété du MINESEC et des établissements, pas la nôtre.</span>
+      </div>
+      <div class="resume-point">
+        <span class="resume-point-mark">&middot;</span>
+        <span>Avant d'acheter un corrigé, tu vois toujours son aperçu et son prix exact. Aucun achat à l'aveugle.</span>
+      </div>
+      <div class="resume-point">
+        <span class="resume-point-mark">&middot;</span>
+        <span>Un corrigé acheté est pour ton usage personnel, il ne se partage pas.</span>
+      </div>
+      <div class="resume-point">
+        <span class="resume-point-mark">&middot;</span>
+        <span>Le paiement passe par CinetPay ou Mobile Money, on ne touche jamais tes informations bancaires.</span>
+      </div>
+      <div class="resume-point">
+        <span class="resume-point-mark">&middot;</span>
+        <span>Un contenu te pose problème : écris-nous, on l'examine.</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="full-toggle" id="full-toggle">
+    <span>Lire le texte complet</span>
+    <span class="full-toggle-arrow">&#9660;</span>
+  </button>
+
+  <div class="full-text" id="full-text">
+    <span class="article-num">1. Objet du service</span>
+    ExamensCam est une plateforme pédagogique camerounaise qui propose trois types de contenus distincts, décrits précisément à l'article 2, afin que chaque utilisateur comprenne la nature exacte de ce qu'il consulte.
+    <br><br>
+    Le service a pour objet de faciliter la recherche de documents éducatifs par niveau (BEPC, Probatoire, BAC), série, matière, année et établissement.
+
+    <span class="article-num">2. Nature des contenus</span>
+    <strong>2.1 Annales officielles et blanches hébergées par ExamensCam</strong><br>
+    ExamensCam héberge lui-même une sélection d'annales officielles et d'annales blanches, retraitées pour améliorer leur lisibilité (suppression de filigranes, vérification de la conformité au programme officiel).
+    <br><br>
+    Ces documents proviennent à l'origine de sources publiques et de contributions d'enseignants. ExamensCam s'efforce de ne diffuser que des contenus à caractère pédagogique et de vérifier leur exactitude, sans garantir une exhaustivité ou une absence totale d'erreur.
+    <br><br>
+    Si un ayant droit estime qu'un document hébergé par ExamensCam porte atteinte à ses droits, il peut en demander le retrait selon la procédure décrite à l'article 10.
+    <br><br>
+    <strong>2.2 Établissements (indexation et redirection)</strong><br>
+    La section Établissements du site fonctionne différemment : ExamensCam n'y héberge aucun fichier. Le service indexe des métadonnées publiques (établissement, région, séquence, matière) et redirige l'utilisateur vers le site tiers d'origine pour la consultation du document.
+    <br><br>
+    ExamensCam ne stocke pas, ne reproduit pas et n'héberge pas ces documents sous sa propre responsabilité. L'article 3 s'applique intégralement à cette section.
+    <br><br>
+    <strong>2.3 Corrigés</strong><br>
+    Les corrigés proposés sur ExamensCam sont des contenus originaux, rédigés et validés par l'équipe pédagogique d'ExamensCam. Ils sont protégés par le droit d'auteur et leur usage est réservé à un usage personnel et non commercial de l'utilisateur qui y a accès, conformément à l'article 6bis.
+
+    <span class="article-num">3. Liens vers des sites tiers (section Établissements)</span>
+    Le service peut contenir des liens hypertextes ou des redirections vers des sites, pages ou fichiers exploités par des tiers.
+    <br><br>
+    Ces sites tiers ne sont ni détenus, ni contrôlés, ni administrés par ExamensCam. ExamensCam ne garantit ni l'exactitude, ni la disponibilité, ni la mise à jour, ni la sécurité, ni la licéité des contenus accessibles via ces liens.
+    <br><br>
+    L'inclusion d'un lien ne constitue en aucun cas une approbation, une validation ou une recommandation du contenu du site tiers.
+
+    <span class="article-num">4. Responsabilité des sites tiers</span>
+    Les documents accessibles via la section Établissements demeurent sous la responsabilité exclusive de leurs auteurs, éditeurs, ayants droit ou exploitants respectifs.
+    <br><br>
+    L'utilisateur reconnaît que l'accès et l'utilisation de ces contenus sont soumis aux conditions d'utilisation, aux politiques de confidentialité et aux règles propres à chaque site source.
+
+    <span class="article-num">5. Obligations de l'utilisateur</span>
+    L'utilisateur s'engage à utiliser le service de manière licite et conforme aux présentes conditions, à respecter les droits de propriété intellectuelle attachés aux contenus consultés (qu'ils soient hébergés par ExamensCam ou par un site tiers), à vérifier et respecter les conditions d'utilisation des sites tiers avant toute consultation, téléchargement ou réutilisation de contenu accédé via la section Établissements, et à ne pas tenter de contourner des mesures techniques de protection, d'accès ou de limitation mises en place par ExamensCam ou par des sites tiers.
+
+    <span class="article-num">6. Interdictions</span>
+    Il est strictement interdit d'utiliser ExamensCam pour copier, reproduire, republier, distribuer ou exploiter des contenus protégés sans autorisation, pour extraire ou réutiliser de manière substantielle des contenus d'ExamensCam ou de sites tiers en violation des droits applicables, ou pour utiliser le service à des fins frauduleuses, illicites ou portant atteinte aux droits de propriété intellectuelle.
+
+    <span class="article-num">6bis. Conditions spécifiques aux corrigés payants</span>
+    L'accès à un corrigé payant est accordé à titre personnel, pour un usage individuel d'étude. Il est interdit de partager, revendre, publier ou distribuer un corrigé acheté à des tiers, sous quelque forme que ce soit.
+    <br><br>
+    Avant tout achat, l'utilisateur peut consulter un aperçu du corrigé (sommaire, nombre d'exercices traités, extrait) ainsi que son prix exact. Aucun achat n'est proposé sans que la nature du contenu et son prix soient clairement visibles au préalable.
+    <br><br>
+    Le paiement s'effectue via un prestataire de paiement mobile tiers (CinetPay, MTN Mobile Money, Orange Money). ExamensCam ne collecte ni ne stocke aucune donnée bancaire ou de paiement ; ces informations sont traitées exclusivement par le prestataire de paiement.
+
+    <span class="article-num">7. Propriété intellectuelle</span>
+    Sauf mention contraire, la structure du site, le nom ExamensCam, l'interface, les éléments graphiques, les textes originaux, la logique d'organisation, ainsi que les corrigés visés à l'article 2.3, sont protégés par les droits de propriété intellectuelle applicables.
+    <br><br>
+    Les annales officielles et blanches restent la propriété de leurs auteurs et éditeurs d'origine (MINESEC et établissements concernés). Aucune disposition des présentes conditions ne saurait être interprétée comme accordant à ExamensCam ou à l'utilisateur un droit de propriété sur ces documents.
+
+    <span class="article-num">8. Limitation de responsabilité</span>
+    ExamensCam est fourni « en l'état » et « selon disponibilité ». Dans toute la mesure permise par la loi applicable, ExamensCam ne saurait être tenu responsable des dommages directs ou indirects résultant de l'accès à un site tiers via la section Établissements, de l'indisponibilité d'un lien ou d'un document, d'une modification ou suppression d'un document source, d'une erreur, omission ou inexactitude dans les documents ou métadonnées affichés, ou d'une utilisation faite par l'utilisateur d'un contenu obtenu via ExamensCam ou un site tiers.
+
+    <span class="article-num">9. Retrait ou modification des contenus</span>
+    ExamensCam se réserve le droit, à tout moment et sans préavis, de modifier, suspendre ou supprimer un document, une référence, une métadonnée ou un lien, notamment en cas de réclamation, d'inexactitude signalée, d'obligation légale ou de nécessité technique.
+
+    <span class="article-num">10. Signalement</span>
+    Toute personne estimant qu'un document hébergé, un lien, une métadonnée ou une référence porte atteinte à ses droits peut contacter ExamensCam afin de demander l'examen, la rectification ou le retrait du contenu concerné, à l'adresse suivante : examenscam5@gmail.com. Ce contact sera remplacé par un numéro WhatsApp Business dès sa mise en place.
+
+    <span class="article-num">11. Protection des données</span>
+    Si le service collecte des données personnelles (création de compte, paiement, contact), celles-ci sont traitées conformément à la politique de confidentialité d'ExamensCam et aux lois applicables. L'utilisateur est invité à consulter cette politique pour connaître la nature des données collectées, leur finalité et ses droits éventuels.
+
+    <span class="article-num">12. Modification des conditions</span>
+    ExamensCam se réserve le droit de modifier les présentes conditions à tout moment. La version en vigueur est celle publiée sur le site à la date de consultation.
+
+    <span class="article-num">13. Droit applicable</span>
+    Les présentes conditions sont régies par le droit camerounais, sous réserve des règles impératives contraires éventuellement applicables.
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <a href="/" class="btn btn-outline">&larr; Retour à l'accueil</a>
+</div>
+
+<script>
+  var toggle = document.getElementById('full-toggle');
+  var text = document.getElementById('full-text');
+
+  toggle.addEventListener('click', function() {
+    toggle.classList.toggle('open');
+    text.classList.toggle('open');
+  });
+</script>
+
+{% endblock %}

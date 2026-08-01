@@ -2,6 +2,7 @@
 import sqlite3
 from pathlib import Path
 from typing import Optional
+from datetime import datetime
 
 DB_PATH = Path('data') / 'annales.db'
 
@@ -193,7 +194,51 @@ def increment_vues(annale_id: int):
     finally:
         conn.close()
 
-if __name__ == '__main__':
-    create_table()
-    print("Base de donnees prete :", DB_PATH)
+# À ajouter dans database.py
 
+def get_derniere_maj():
+    """
+    Renvoie la date de la derniere annale ajoutee en base,
+    formatee en francais (ex: '28 juillet 2026').
+    Renvoie None si la table est vide.
+    """
+    conn = get_connection()
+    try:
+        row = conn.execute(
+            "SELECT MAX(date_ajout) as derniere FROM annales WHERE actif = 1"
+        ).fetchone()
+
+        if not row or not row['derniere']:
+            return None
+
+        # date_ajout stocke via datetime('now'), ex: '2026-07-28 14:32:10'
+        # split sur '.' au cas ou SQLite ajoute des microsecondes
+        valeur = row['derniere'].split('.')[0]
+        dt = datetime.strptime(valeur, "%Y-%m-%d %H:%M:%S")
+
+        mois_fr = [
+            "janvier", "février", "mars", "avril", "mai", "juin",
+            "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+        ]
+
+        return f"{dt.day} {mois_fr[dt.month - 1]} {dt.year}"
+    except Exception as e:
+        print(f"get_derniere_maj error: {e}")
+        return None
+    finally:
+        conn.close()
+
+
+def get_total_blancs() -> int:
+    """Nombre d'annales blanches actives en base."""
+    conn = get_connection()
+    try:
+        row = conn.execute(
+            "SELECT COUNT(*) as n FROM annales WHERE actif = 1 AND type_sujet = 'blanc'"
+        ).fetchone()
+        return row['n'] if row else 0
+    except Exception as e:
+        print(f"get_total_blancs error: {e}")
+        return 0
+    finally:
+        conn.close()

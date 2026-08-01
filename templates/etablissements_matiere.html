@@ -11,7 +11,7 @@
 </header>
 
 <div class="ec-avertissement">
-  Ces épreuves sont hébergées par leurs sites d'origine. ExamensCam indexe uniquement - le clic te redirige vers la source.
+  Ces épreuves sont hébergées par leurs sites d'origine. ExamensCam indexe uniquement, le clic te redirige vers la source.
 </div>
 
 <div class="ec-filtre-onglets">
@@ -19,7 +19,7 @@
      class="ec-onglet {% if not region_active %}actif{% endif %}">Toutes régions</a>
   {% for r in regions_disponibles %}
   <a href="{{ url_for('etablissements_matiere', niveau_serie=niveau_serie, matiere=matiere, region=r.nom, sequence=sequence_active) }}"
-     class="ec-onglet {% if region_active == r.nom %}actif{% endif %}" {% if not r.disponible %}style="opacity:0.5;"{% endif %}>{{ r.nom }}</a>
+     class="ec-onglet {% if region_active == r.nom %}actif{% endif %}{% if not r.disponible %} ec-onglet-indispo{% endif %}">{{ r.nom }}</a>
   {% endfor %}
 </div>
 
@@ -28,26 +28,26 @@
      class="ec-onglet {% if not sequence_active %}actif{% endif %}">Toutes séquences</a>
   {% for s in sequences_disponibles %}
   <a href="{{ url_for('etablissements_matiere', niveau_serie=niveau_serie, matiere=matiere, region=region_active, sequence=s.num) }}"
-     class="ec-onglet {% if sequence_active == s.num %}actif{% endif %}" {% if not s.disponible %}style="opacity:0.5;"{% endif %}>Séquence {{ s.num }}</a>
+     class="ec-onglet {% if sequence_active == s.num %}actif{% endif %}{% if not s.disponible %} ec-onglet-indispo{% endif %}">Séquence {{ s.num }}</a>
   {% endfor %}
 </div>
 
 <div class="ec-liste">
   {% for e in epreuves %}
-  <a href="{{ url_for('redirection_externe', annale_id=e.id) }}" style="text-decoration:none; color:inherit;">
+  <a href="{{ url_for('redirection_externe', annale_id=e.id) }}" class="ec-item-link">
     <div class="ec-item">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+      <div class="ec-item-header">
         <div class="ec-item-titre">
           {% if e.etablissement %}{{ e.etablissement }}{% else %}Examen harmonisé{% endif %}
-          {% if e.sequence and e.sequence > 0 %} — Séquence {{ e.sequence }}{% endif %}
+          {% if e.sequence and e.sequence > 0 %}, Séquence {{ e.sequence }}{% endif %}
         </div>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A5276" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:3px;"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        <svg class="ec-item-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
       </div>
       <div class="ec-tags">
         {% if e.region %}<span class="ec-pill ec-pill-region">Région {{ e.region }}</span>{% endif %}
         {% if e.sequence and e.sequence > 0 %}<span class="ec-pill ec-pill-sequence">Séquence {{ e.sequence }}</span>{% endif %}
       </div>
-      <div style="font-family:'Courier New',monospace; font-size:9.5px; color:#5D6D7E; background:#EEF1F3; padding:2px 6px; border-radius:3px; display:inline-block; margin-top:7px;">{{ e.source_site }}.com</div>
+      <span class="ec-item-source">{{ e.source_site }}.com</span>
     </div>
   </a>
   {% else %}

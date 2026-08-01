@@ -63,6 +63,14 @@
     line-height: 1.6;
   }
 
+  .masthead-trust {
+    font-family: 'Inter', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    letter-spacing: 0.2px;
+  }
+
   /* Compteurs */
   .counters {
     max-width: 640px;
@@ -189,6 +197,9 @@
   <hr class="masthead-rule">
   <h1 class="masthead-title">ExamensCam</h1>
   <p class="masthead-sub">Les annales officielles, classées et accessibles. BEPC, Probatoire et BAC, sujets nationaux organisés par niveau, série et matière.</p>
+  {% if derniere_maj %}
+  <p class="masthead-trust">Source MINESEC · Dernière mise à jour le {{ derniere_maj }}</p>
+  {% endif %}
 </div>
 
 <div class="counters">
