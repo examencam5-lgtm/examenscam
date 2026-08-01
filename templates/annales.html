@@ -335,5 +335,12 @@ function toggleAnnale(annee) {
   }
 }
 </script>
+// À ajouter à la fin du <script> existant dans annales.html
+window.addEventListener('DOMContentLoaded', function() {
+  if (window.location.hash) {
+    var annee = window.location.hash.replace('#card-', '');
+    if (annee) toggleAnnale(annee);
+  }
+});
 
 {% endblock %}

@@ -3,7 +3,7 @@ import os, csv, io, re, sqlite3
 from pathlib import Path
 from io import BytesIO
 from datetime import datetime
-from flask import Flask, render_template, redirect, url_for, request, abort, send_file
+from flask import Flask, render_template, redirect, url_for, request, abort, send_file, jsonify
 from database_carrefour import get_carrefour
 from database_blanches import get_epreuves_blanches, get_regions_disponibles
 from database_corriges import get_pack_detail, get_packs_catalogue
@@ -17,7 +17,7 @@ from database import (get_annales, get_matieres, get_all_annales, add_annale,
                       delete_annale, increment_vues, get_stats, get_connection,
                       get_annale_by_id, create_table, get_total_blancs,
                       get_derniere_maj)
-
+from database_search import rechercher, enregistrer_recherche_infructueuse
 app = Flask(__name__)
 app.config.update(
     SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_SUPPRIME_DE_LHISTORIQUE'),
@@ -562,7 +562,22 @@ def redirection_externe(annale_id):
     if not entree:
         return "Épreuve introuvable", 404
     increment_vue_externe(annale_id)
-    return redirect(entree['lien_externe'])
+    # Decision strategique (doc section 4.1) : on redirige vers la page
+    # article, jamais vers le PDF direct — neutralite envers la source
+    # tierce + coherence avec la CGU (indexation de metadonnees, pas
+    # d'hebergement). lien_page_source contient la page article ;
+    # lien_externe contient le PDF direct et ne doit jamais etre expose.
+    return redirect(entree['lien_page_source'])
+
+@app.route('/api/search')
+def api_search():
+    q = request.args.get('q', '').strip()
+    if len(q) < 2:
+        return jsonify([])
+    resultats = rechercher(q, limite=8)
+    if not resultats and len(q) >= 3:
+        enregistrer_recherche_infructueuse(q)
+    return jsonify(resultats)
 
 
 if __name__ == '__main__':

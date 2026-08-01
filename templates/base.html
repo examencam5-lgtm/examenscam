@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Classes .ec-* utilisées par carrefour, blancs, corrigés, établissements -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/nouvelles_pages.css') }}">
@@ -17,17 +17,21 @@
     /* ────────────────────────────────────────
        TOKENS - palette quasi-monochrome
        Un seul accent, utilisé avec parcimonie.
+       Fond #DFD3B8 : valeur validée (doc strategique section 6.2),
+       choisie apres comparaison de 10 variantes -- ne pas remplacer
+       par une autre valeur beige sans revalidation explicite.
     ──────────────────────────────────────── */
     :root {
-      --paper:   #EDE3D3;
+      --paper:   #DFD3B8;
       --ink:     #1A1A1A;
       --ink-soft:#5C5C5C;
       --line:    #DEDCD5;
       --line-soft: #EDEBE5;
       --surface: #FFFFFF;
-      /* Pas d'accent coloré pour ce premier passage. Tout reste
-         encre/gris/papier ; une couleur sera ajoutée plus tard,
-         volontairement, pas par défaut. */
+      /* Pas d'accent colore (doc section 6.3) : aucune couleur
+         fonctionnelle sur les elements interactifs. Teste puis
+         explicitement rejete par decision du porteur de projet --
+         a ne pas reintroduire sans validation explicite. */
       --accent:  #1A1A1A;
       --accent-soft: #F0EFEA;
       --radius: 3px;
@@ -49,9 +53,12 @@
     main { flex: 1; }
     a { color: inherit; }
 
+    /* Titres : Fraunces (doc section 6.1) -- distinct du corps de
+       texte en Source Serif 4. Georgia abandonnee (trop generique). */
     h1, h2, h3, .serif {
-      font-family: 'Source Serif 4', serif;
+      font-family: 'Fraunces', serif;
       font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
     /* ── NAVBAR ──────────────────────────────── */
@@ -81,11 +88,11 @@
     }
 
     .brand-name {
-      font-family: 'Source Serif 4', serif;
+      font-family: 'Fraunces', serif;
       font-size: 19px;
       font-weight: 600;
       color: var(--ink);
-      letter-spacing: 0.1px;
+      letter-spacing: -0.01em;
     }
 
     .brand-mark {
@@ -180,7 +187,7 @@
     }
 
     .footer-brand {
-      font-family: 'Source Serif 4', serif;
+      font-family: 'Fraunces', serif;
       font-size: 16px;
       font-weight: 600;
       color: var(--ink);
