@@ -106,6 +106,11 @@ def index():
 @app.route('/conditions')
 def conditions():
     return render_template('conditions.html')
+# A ajouter dans app.py, avec tes autres routes.
+
+@app.route('/a-propos')
+def a_propos():
+    return render_template('a_propos.html')
 @app.route('/bepc')
 def bepc():
     return render_template('niveau.html', niveau='BEPC', serie=None,

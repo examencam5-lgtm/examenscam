@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% block title %}À propos · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 32px 24px 28px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .back-link:hover { color: var(--ink); }
+
+  .header-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(26px, 6vw, 34px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+
+  .wrapper {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 32px 20px 56px;
+  }
+
+  .section {
+    margin-bottom: 32px;
+  }
+
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .section-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .section-text + .section-text { margin-top: 12px; }
+
+  .credentials {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .credential {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .credential-mark {
+    font-family: 'Source Serif 4', serif;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+
+  .contact-box {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .contact-box a {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .contact-box a:hover { text-decoration: underline; }
+
+  .contact-note {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+  }
+
+  .bottom-nav {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+</style>
+
+<div class="page-header">
+  <a href="/" class="back-link">&larr; Accueil</a>
+  <h1 class="header-title">À propos</h1>
+</div>
+
+<div class="wrapper">
+
+  <div class="section">
+    <p class="section-label">Qui suis-je</p>
+    <p class="section-title">Mohamadou</p>
+    <p class="section-text">
+      Étudiant en Licence de Mathématiques à l'Université de Maroua, et
+      répétiteur privé depuis plusieurs années pour le BEPC, le
+      Probatoire et le BAC, séries C, D, TI et A4.
+    </p>
+    <p class="section-text">
+      J'ai obtenu mon BAC C en autodidacte, sans tuteur, sans internet,
+      sans bibliothèque. C'est cette expérience qui m'a poussé à
+      construire ExamensCam : donner à un élève loin d'une grande ville
+      l'accès structuré que je n'avais pas eu à l'époque.
+    </p>
+
+    <div class="credentials">
+      <div class="credential">
+        <span class="credential-mark">&middot;</span>
+        <span>Licence de Mathématiques, Université de Maroua</span>
+      </div>
+      <div class="credential">
+        <span class="credential-mark">&middot;</span>
+        <span>Répétiteur privé BEPC, Probatoire, BAC C, D, TI, A4</span>
+      </div>
+      <div class="credential">
+        <span class="credential-mark">&middot;</span>
+        <span>Conception, organisation et vérification du contenu par mes soins</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Pourquoi ExamensCam</p>
+    <p class="section-text">
+      La plupart des annales circulent de façon éparpillée, mal
+      classées, parfois illisibles à cause de filigranes ou de scans de
+      mauvaise qualité. ExamensCam les organise par niveau, série,
+      matière et année, et vérifie chaque document avant publication.
+    </p>
+    <p class="section-text">
+      L'objectif n'est pas seulement de stocker des PDF, mais de
+      construire une bibliothèque fiable, que ce soit un élève à Maroua
+      ou à Douala qui la consulte.
+    </p>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Contact</p>
+    <div class="contact-box">
+      <a href="mailto:examenscam5@gmail.com">examenscam5@gmail.com</a>
+      <p class="contact-note">Pour toute question, suggestion ou signalement.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <a href="/" class="btn btn-outline">&larr; Retour à l'accueil</a>
+</div>
+
+{% endblock %}
