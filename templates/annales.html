@@ -334,13 +334,29 @@ function toggleAnnale(annee) {
     card.classList.add('open');
   }
 }
-</script>
-// À ajouter à la fin du <script> existant dans annales.html
+
+// Ouvre automatiquement l'accordeon correspondant si on arrive sur
+// la page via un lien avec ancre (#card-2023), typiquement depuis
+// un clic sur un resultat de recherche.
 window.addEventListener('DOMContentLoaded', function() {
   if (window.location.hash) {
     var annee = window.location.hash.replace('#card-', '');
-    if (annee) toggleAnnale(annee);
+    if (annee) {
+      toggleAnnale(annee);
+      // Scroll jusqu'a la carte ouverte -- sinon elle peut etre
+      // hors ecran si la page a beaucoup d'annales
+      var card = document.getElementById('card-' + annee);
+      if (card) {
+        setTimeout(function() {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    }
   }
+});
+</script>
+
+}
 });
 
 {% endblock %}
