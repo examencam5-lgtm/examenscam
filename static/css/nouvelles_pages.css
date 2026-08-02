@@ -1,8 +1,12 @@
-/* static/css/nouvelles_pages.css, v3, sobre, aligné sur base.html */
+/* static/css/nouvelles_pages.css, v4, aligné sur la doc stratégique
+   (section 6) et sur base.html — même palette, même hiérarchie
+   typographique partout sur le site. */
 
 :root {
-  /* Mêmes tokens que base.html, une seule source de vérité visuelle */
-  --ec-paper:   #FAFAF8;
+  /* Mêmes tokens que base.html, une seule source de vérité visuelle.
+     --ec-paper aligné sur --paper de base.html (#DFD3B8, doc 6.2) :
+     avant #FAFAF8 (quasi blanc), incohérent avec le reste du site. */
+  --ec-paper:   #DFD3B8;
   --ec-ink:     #1A1A1A;
   --ec-ink-soft:#5C5C5C;
   --ec-line:    #DEDCD5;
@@ -11,7 +15,14 @@
   --ec-accent:  #1A1A1A;
   --ec-accent-soft: #F0EFEA;
 
-  --ec-serif: 'Source Serif 4', Georgia, serif;
+  /* Deux polices serif distinctes (doc 6.1) :
+     --ec-serif-titre  = Fraunces, pour les titres
+     --ec-serif-corps  = Source Serif 4, pour le corps de texte
+     --ec-serif est gardé comme alias de corps pour compatibilité
+     avec d'anciennes classes non encore auditées. */
+  --ec-serif-titre: 'Fraunces', Georgia, serif;
+  --ec-serif-corps: 'Source Serif 4', Georgia, serif;
+  --ec-serif: var(--ec-serif-corps);
   --ec-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --ec-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Courier New", monospace;
 }
@@ -41,7 +52,8 @@
   margin-top: 10px;
 }
 .ec-titre-page {
-  font-family: var(--ec-serif); font-size: 21px; font-weight: 600;
+  font-family: var(--ec-serif-titre); font-size: 21px; font-weight: 600;
+  letter-spacing: -0.01em;
   margin-top: 3px; line-height: 1.25; color: var(--ec-ink);
 }
 .ec-sous-titre { font-size: 12px; color: var(--ec-ink-soft); margin-top: 3px; }
@@ -103,7 +115,7 @@
 .ec-branche-corriges-off .ec-branche-sub-clair,
 .ec-branche-corriges-blanc .ec-branche-sub-clair { color: var(--ec-ink-soft); }
 
-.ec-branche-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; }
+.ec-branche-titre { font-family: var(--ec-serif-titre); font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
 .ec-branche-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 2px; }
 .ec-branche-sub-clair { font-size: 10.5px; color: var(--ec-ink-soft); margin-top: 2px; }
 .ec-branche-prix {
@@ -115,14 +127,14 @@
 .ec-vide {
   margin: 16px; padding: 20px 16px; background: var(--ec-accent-soft);
   border-radius: var(--radius, 3px); font-size: 12.5px; color: var(--ec-ink-soft);
-  text-align: center; font-family: var(--ec-serif); font-style: italic;
+  text-align: center; font-family: var(--ec-serif-corps); font-style: italic;
 }
 
 /* ── Listes (blancs, établissements) ── */
 .ec-liste { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 .ec-item-link { text-decoration: none; color: inherit; display: block; }
 .ec-item { background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: 20px; padding: 16px 20px; }
-.ec-item-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; line-height: 1.3; color: var(--ec-ink); }
+.ec-item-titre { font-family: var(--ec-serif-titre); font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; color: var(--ec-ink); }
 .ec-item-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 3px; }
 .ec-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .ec-item-icon { flex-shrink: 0; margin-top: 3px; color: var(--ec-ink-soft); }
@@ -140,7 +152,8 @@
   border: 1px solid var(--ec-line);
 }
 /* pill-region et pill-sequence gardées distinctes par bordure
-   plutôt que par couleur, pour rester lisibles sans être criardes */
+   plutôt que par couleur, pour rester lisibles sans être criardes
+   (doc 6.3 : aucune couleur fonctionnelle) */
 .ec-pill-region { border-style: solid; }
 .ec-pill-sequence { border-style: dashed; }
 
@@ -166,7 +179,7 @@
   padding: 15px;
 }
 .ec-carte-pack-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; gap: 8px; }
-.ec-carte-pack-titre { font-family: var(--ec-serif); font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--ec-ink); }
+.ec-carte-pack-titre { font-family: var(--ec-serif-titre); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; color: var(--ec-ink); }
 .ec-barre-progression { height: 4px; background: var(--ec-line-soft); border-radius: 2px; overflow: hidden; margin: 9px 0 5px; }
 .ec-barre-progression-remplie { height: 100%; background: var(--ec-ink-soft); }
 .ec-progression-texte { font-family: var(--ec-mono); font-size: 10px; color: var(--ec-ink-soft); }
@@ -179,7 +192,7 @@
   background: var(--ec-accent);
   color: var(--ec-surface); padding: 24px 18px;
 }
-.ec-fiche-hero h2 { font-family: var(--ec-serif); font-size: 19px; font-weight: 600; line-height: 1.3; }
+.ec-fiche-hero h2 { font-family: var(--ec-serif-titre); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
 .ec-prix-gros { font-family: var(--ec-mono); font-size: 26px; font-weight: 700; color: var(--ec-surface); margin-top: 10px; }
 .ec-annee-ligne {
   display: flex; justify-content: space-between; align-items: center;

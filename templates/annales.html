@@ -31,10 +31,12 @@
     margin-bottom: 8px;
   }
 
+  /* Titre en Fraunces (doc section 6.1) -- coherent avec base.html */
   .header-title {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Fraunces', serif;
     font-size: clamp(26px, 6vw, 36px);
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ink);
     line-height: 1.15;
     margin-bottom: 6px;
@@ -55,9 +57,10 @@
   .count-label { font-size: 12.5px; color: var(--ink-soft); }
 
   .count-num {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Fraunces', serif;
     font-size: 17px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ink);
   }
 
@@ -220,9 +223,10 @@
   }
 
   .empty-title {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Fraunces', serif;
     font-size: 19px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ink);
     margin-bottom: 6px;
   }
@@ -355,8 +359,5 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-
-}
-});
 
 {% endblock %}
