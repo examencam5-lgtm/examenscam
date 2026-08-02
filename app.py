@@ -492,10 +492,15 @@ def blancs_liste(niveau, serie, matiere):
 
 @app.route('/voir-blanc/<int:epreuve_id>')
 def voir_blanche(epreuve_id):
-    # Réutilise ton viewer existant si tu en as un générique,
-    # sinon simple redirection vers le lien Drive pour l'instant
-    return render_template('viewer.html', annale_id=epreuve_id)
-
+    from database_blanches import get_connection
+    conn = get_connection()
+    epreuve = conn.execute(
+        "SELECT * FROM annales_blanches WHERE id=? AND actif=1", (epreuve_id,)
+    ).fetchone()
+    conn.close()
+    if not epreuve:
+        return "Épreuve introuvable", 404
+    return render_template('voir_blanche.html', epreuve=epreuve)
 
 # ═══════════════════════════════════════
 # CORRIGÉS (officiel + blanc)
