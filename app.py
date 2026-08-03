@@ -589,17 +589,41 @@ def redirection_externe(annale_id):
     # lien_externe contient le PDF direct et ne doit jamais etre expose.
     return redirect(entree['lien_page_source'])
 
+
+# À AJOUTER dans app.py
+# ═══════════════════════════════════════
+# RECHERCHE UNIFIEE — autocompletion "mini Google" (doc section 3)
+# ═══════════════════════════════════════
+#
+# Ajoute cet import en haut de app.py :
+#   from database_search import rechercher, enregistrer_recherche_infructueuse
+#
+# Puis colle la route ci-dessous avec tes autres routes.
+
+
 @app.route('/api/search')
 def api_search():
     q = request.args.get('q', '').strip()
+    niveau = request.args.get('niveau') or None
+    matiere = request.args.get('matiere') or None
+
     if len(q) < 2:
-        return jsonify([])
-    resultats = rechercher(q, limite=8)
+        return jsonify({'resultats': [], 'suggestions': []})
+
+    from database_search import rechercher_avec_scoring
+    reponse = rechercher_avec_scoring(q, limite=8, niveau=niveau, matiere=matiere)
+    
+    resultats = reponse['resultats']
+    suggestions = reponse['suggestions']
+
     if not resultats and len(q) >= 3:
         enregistrer_recherche_infructueuse(q)
-    return jsonify(resultats)
 
-
+    return jsonify({
+        'resultats': resultats,
+        'suggestions': suggestions
+    })
+    
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
 

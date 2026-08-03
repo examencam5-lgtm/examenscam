@@ -41,6 +41,11 @@ def get_matieres_externes(niveau_serie: str) -> list[dict]:
     query = "SELECT matiere, COUNT(*) as nombre FROM annales_externes WHERE niveau=? AND actif=1"
     params = [niveau]
     if serie:
+        # Meme regle que database_matieres.py : serie IS NULL ne
+        # "compte pour toutes les series" que pour BEPC. Ici serie
+        # est toujours non-None dans CORRESPONDANCE_NIVEAU_SERIE sauf
+        # pour 'troisieme' -> (BEPC, None), donc ce cas ne se presente
+        # jamais pour BAC/Probatoire -- comparaison stricte suffit.
         query += " AND serie=?"
         params.append(serie)
     query += " GROUP BY matiere ORDER BY matiere"
