@@ -1,31 +1,28 @@
 """
-consolider_matieres_v2.py — ExamensCam
-Nettoyage definitif des matieres hors-programme par niveau/serie.
-Idempotent : relancer ce script ne pose aucun probleme, les lignes
-deja supprimees ne matchent simplement plus rien la fois suivante.
+consolider_matieres_v3.py — ExamensCam
+Corrige le vrai probleme : les lignes non-pertinentes avaient
+serie=None, qui "fuit" sur TOUTES les series (C, D, TI, A4) a
+cause du OR serie IS NULL dans les requetes d'affichage. Les
+scripts precedents cherchaient serie IN ('C','D','TI') exact,
+qui ne matchait jamais ces lignes -> 0 supprime a chaque fois.
 
-Regles :
-  BEPC                    : retire Allemand, Espagnol
-  Probatoire/BAC C, D, TI : retire Allemand, Espagnol, Culture Generale,
-                             Travail Manuel, Sciences Economiques (et Juridiques/de Gestion)
-  Probatoire/BAC A4       : retire Chimie, Physique, Culture Generale,
-                             Travail Manuel, Sciences Economiques (et Juridiques/de Gestion)
+Regle : on supprime CES matieres precises partout au BAC/Probatoire
+SAUF quand elles sont explicitement rattachees a une serie A ou A4
+(litteraire, ou elles sont legitimes).
 
-Usage : python consolider_matieres_v2.py
+Usage : python consolider_matieres_v3.py
 """
 import sqlite3
 
 conn = sqlite3.connect('data/annales.db')
 TABLES = ("annales", "annales_blanches", "annales_externes")
 
-# Toutes les variantes de libelle possibles pour "sciences eco" --
-# scrapees sous des noms legerement differents selon la source
 SCIENCES_ECO = ["Sciences Économiques et Juridiques", "Sciences Économiques et de Gestion",
                 "Sciences Economiques et Juridiques", "Sciences Economiques et de Gestion"]
 
+# Matieres jamais pertinentes en serie scientifique -- supprimees
+# partout SAUF si explicitement serie='A' ou 'A4' (litteraire)
 NON_PERTINENT_SCIENTIFIQUE = ["Allemand", "Espagnol", "Culture Generale", "Travail Manuel"] + SCIENCES_ECO
-NON_PERTINENT_A4 = ["Chimie", "Physique", "Culture Generale", "Travail Manuel"] + SCIENCES_ECO
-NON_PERTINENT_BEPC = ["Allemand", "Espagnol"]
 
 total_supprime = 0
 
@@ -37,20 +34,32 @@ def supprimer(table, condition_sql, params, label):
         print(f"  {table} : {label} -> {n} lignes supprimees")
         total_supprime += n
 
-print("=== BEPC : Allemand, Espagnol ===")
+print("=== BEPC : Allemand, Espagnol (tous, pas de serie) ===")
 for table in TABLES:
-    for m in NON_PERTINENT_BEPC:
+    for m in ["Allemand", "Espagnol"]:
         supprimer(table, "niveau = 'BEPC' AND matiere = ?", (m,), m)
 
-print("\n=== Probatoire/BAC series C, D, TI : LV2, Culture Generale, TM, Sciences Eco ===")
+print("\n=== BAC/Probatoire : LV2/Culture Generale/TM/Sciences Eco -- partout SAUF serie A/A4 ===")
 for table in TABLES:
     for m in NON_PERTINENT_SCIENTIFIQUE:
-        supprimer(table, "niveau IN ('BAC','Probatoire') AND serie IN ('C','D','TI') AND matiere = ?", (m,), m)
+        supprimer(
+            table,
+            "niveau IN ('BAC','Probatoire') AND matiere = ? AND (serie IS NULL OR serie NOT IN ('A','A4'))",
+            (m,), m
+        )
 
-print("\n=== Probatoire/BAC serie A4 : Physique, Chimie, Culture Generale, TM, Sciences Eco ===")
+print("\n=== BAC/Probatoire serie A/A4 : pas de Physique/Chimie (litteraire) ===")
 for table in TABLES:
-    for m in NON_PERTINENT_A4:
-        supprimer(table, "niveau IN ('BAC','Probatoire') AND serie = 'A4' AND matiere = ?", (m,), m)
+    for m in ("Physique", "Chimie"):
+        supprimer(
+            table,
+            "niveau IN ('BAC','Probatoire') AND serie IN ('A','A4') AND matiere = ?",
+            (m,), m
+        )
+
+print("\n=== PCT interdit au BAC/Probatoire (deja separe en Physique+Chimie) ===")
+for table in TABLES:
+    supprimer(table, "niveau IN ('BAC','Probatoire') AND matiere = 'PCT'", (), "PCT")
 
 conn.commit()
 conn.close()
