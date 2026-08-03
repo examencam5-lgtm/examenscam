@@ -1,8 +1,12 @@
-# database_externes.py
 """
 Fonctions de LECTURE pour la table 'annales_externes' (Ã©tablissements).
-import_liens_externes.py gÃ¨re l'Ã©criture (scraping) ; ce fichier gÃ¨re
+import_liens_externes.py gere l'ecriture (scraping) ; ce fichier gere
 la lecture pour affichage sur le site.
+
+Filtre change : annee + sequence (au lieu de region + sequence) --
+la region est moins utile pour l'eleve qui cherche un devoir precis
+que l'annee, elle reste en donnee affichee mais plus en filtre
+prioritaire.
 """
 
 import sqlite3
@@ -11,12 +15,11 @@ from typing import Optional
 
 DB_PATH = Path('data') / 'annales.db'
 
-# MÃªme correspondance que import_liens_externes.py, dans les deux sens
 CORRESPONDANCE_NIVEAU_SERIE = {
     "troisieme": ("BEPC", None),
-    "premiere-a": ("Premiere", "A"),
-    "premiere-c": ("Premiere", "C"),
-    "premiere-d": ("Premiere", "D"),
+    "premiere-a": ("Probatoire", "A"),
+    "premiere-c": ("Probatoire", "C"),
+    "premiere-d": ("Probatoire", "D"),
     "terminale-a": ("BAC", "A"),
     "terminale-c": ("BAC", "C"),
     "terminale-d": ("BAC", "D"),
@@ -30,8 +33,6 @@ def get_connection():
 
 
 def get_matieres_externes(niveau_serie: str) -> list[dict]:
-    """Liste les matiÃ¨res disponibles pour un niveau_serie, avec le
-    nombre d'Ã©preuves indexÃ©es par matiÃ¨re (pour les badges du menu)."""
     if niveau_serie not in CORRESPONDANCE_NIVEAU_SERIE:
         return []
     niveau, serie = CORRESPONDANCE_NIVEAU_SERIE[niveau_serie]
@@ -49,9 +50,9 @@ def get_matieres_externes(niveau_serie: str) -> list[dict]:
     return [dict(r) for r in rows]
 
 
-
-def get_annales_externes(niveau_serie: str, matiere: str, region: Optional[str] = None,
+def get_annales_externes(niveau_serie: str, matiere: str, annee: Optional[int] = None,
                           sequence: Optional[int] = None) -> list[dict]:
+    """Filtre par annee + sequence (remplace le filtre region + sequence)."""
     if niveau_serie not in CORRESPONDANCE_NIVEAU_SERIE:
         return []
     niveau, serie = CORRESPONDANCE_NIVEAU_SERIE[niveau_serie]
@@ -61,19 +62,19 @@ def get_annales_externes(niveau_serie: str, matiere: str, region: Optional[str] 
     if serie:
         query += " AND serie=?"
         params.append(serie)
-    if region:
-        query += " AND region=?"
-        params.append(region)
+    if annee:
+        query += " AND annee=?"
+        params.append(annee)
     if sequence:
         query += " AND sequence=?"
         params.append(sequence)
-    query += " ORDER BY date_ajout DESC"
+    query += " ORDER BY annee DESC, date_ajout DESC"
     rows = conn.execute(query, params).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 
+
 def get_annale_externe_by_id(annale_id: int) -> Optional[dict]:
-    """RÃ©cupÃ¨re une Ã©preuve prÃ©cise -- utilisÃ© par la route de redirection."""
     conn = get_connection()
     row = conn.execute("SELECT * FROM annales_externes WHERE id=?", (annale_id,)).fetchone()
     conn.close()
@@ -81,43 +82,35 @@ def get_annale_externe_by_id(annale_id: int) -> Optional[dict]:
 
 
 def increment_vue_externe(annale_id: int):
-    """IncrÃ©mente le compteur de vues avant la redirection -- garde
-    tes stats de trafic mÃªme sans hÃ©berger le contenu."""
     conn = get_connection()
     conn.execute("UPDATE annales_externes SET vues = vues + 1 WHERE id=?", (annale_id,))
     conn.commit()
     conn.close()
 
 
-REGIONS_CAMEROUN = [
-    "Adamaoua", "Centre", "Est", "Extreme-Nord", "Littoral",
-    "Nord", "Nord-Ouest", "Ouest", "Sud", "Sud-Ouest",
-]
-
-def get_regions_disponibles_externes(niveau_serie: str, matiere: str) -> list[dict]:
+def get_annees_disponibles(niveau_serie: str, matiere: str) -> list[dict]:
     """
-    Retourne TOUJOURS les 10 régions du Cameroun, avec un flag
-    'disponible' selon qu'il y a au moins une épreuve ou non.
-    Permet d'afficher la couverture nationale complète même si
-    incomplète -- utile pour suivre visuellement la progression
-    de la collecte.
+    Retourne les annees reellement presentes pour ce niveau/matiere,
+    triees decroissant -- remplace get_regions_disponibles_externes
+    comme filtre principal (doc : annee plus utile que region pour
+    l'eleve qui cherche un devoir precis).
     """
     if niveau_serie not in CORRESPONDANCE_NIVEAU_SERIE:
-        return [{"nom": r, "disponible": False} for r in REGIONS_CAMEROUN]
+        return []
     niveau, serie = CORRESPONDANCE_NIVEAU_SERIE[niveau_serie]
     conn = get_connection()
     query = """
-        SELECT DISTINCT region FROM annales_externes
-        WHERE niveau=? AND matiere=? AND actif=1 AND region IS NOT NULL AND region != ''
+        SELECT DISTINCT annee FROM annales_externes
+        WHERE niveau=? AND matiere=? AND actif=1
     """
     params = [niveau, matiere]
     if serie:
         query += " AND serie=?"
         params.append(serie)
+    query += " ORDER BY annee DESC"
     rows = conn.execute(query, params).fetchall()
     conn.close()
-    regions_avec_donnees = {r[0] for r in rows}
-    return [{"nom": r, "disponible": r in regions_avec_donnees} for r in REGIONS_CAMEROUN]
+    return [r[0] for r in rows]
 
 
 def get_sequences_disponibles(niveau_serie: str, matiere: str) -> list[dict]:
@@ -141,5 +134,5 @@ def get_sequences_disponibles(niveau_serie: str, matiere: str) -> list[dict]:
 
 
 if __name__ == "__main__":
-    print("MatiÃ¨res terminale-c :", get_matieres_externes("terminale-c"))
-    print("Ã‰preuves Maths :", get_annales_externes("terminale-c", "Mathematiques"))
+    print("Matieres terminale-c :", get_matieres_externes("terminale-c"))
+    print("Annees disponibles :", get_annees_disponibles("terminale-c", "Mathematiques"))

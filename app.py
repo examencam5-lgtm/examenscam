@@ -6,17 +6,16 @@ from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, request, abort, send_file, jsonify
 from database_carrefour import get_carrefour
 from database_blanches import get_epreuves_blanches, get_regions_disponibles
+from database_matieres import get_toutes_matieres
 from database_corriges import get_pack_detail, get_packs_catalogue
 from database_externes import (
-    get_matieres_externes, get_annales_externes,
-    get_annale_externe_by_id, increment_vue_externe,
-    get_regions_disponibles_externes, get_sequences_disponibles,
-    CORRESPONDANCE_NIVEAU_SERIE
+    get_matieres_externes, get_annales_externes, get_annale_externe_by_id,
+    increment_vue_externe, get_annees_disponibles, get_sequences_disponibles
 )
 from database import (get_annales, get_matieres, get_all_annales, add_annale,
                       delete_annale, increment_vues, get_stats, get_connection,
                       get_annale_by_id, create_table, get_total_blancs,
-                      get_derniere_maj)
+                      get_derniere_maj)  
 from database_search import rechercher, enregistrer_recherche_infructueuse
 app = Flask(__name__)
 app.config.update(
@@ -76,13 +75,30 @@ def verifier_token(token):
     if token != app.config['ADMIN_TOKEN']:
         abort(403)
 
-def get_matieres_fallback(niveau, serie=None): # definir une fonction avec serie None par defaut
-    m = get_matieres(niveau, serie) # on definit une var m avec niveau et serie avec serie=None par defaut 
-    if m:    # on teste si m ie serie= None, on retourne m
+# À AJOUTER dans app.py, en haut avec les autres imports :
+#     from database_matieres import get_toutes_matieres
+#
+# PUIS remplacer la fonction get_matieres_fallback existante par celle-ci :
+
+def get_matieres_fallback(niveau, serie=None):
+    # Priorite : matieres reellement presentes en base, croisees sur
+    # les 3 tables (annales officielles + blanches + etablissements).
+    # Avant, seule 'annales' etait consultee -- un eleve BEPC ne
+    # voyait que Maths/PCT alors que ~870 epreuves d'etablissement
+    # existaient deja pour d'autres matieres, invisibles sans passer
+    # par la recherche.
+    m = get_toutes_matieres(niveau, serie)
+    if m:
         return m
-    if serie: # si serie ie serie != None
-        return CATALOGUE.get(niveau, {}).get(serie, []) # on retourne {} si niveau est vide et [] si serie est vide 
-    return CATALOGUE.get(niveau, []) # on retourne si niveau est vide une liste vide []
+    # Repli sur l'ancien comportement (annales seule, puis CATALOGUE
+    # statique) si les 3 tables ne renvoient vraiment rien -- garde
+    # une securite pour ne rien casser sur un niveau/serie tres vide
+    m = get_matieres(niveau, serie)
+    if m:
+        return m
+    if serie:
+        return CATALOGUE.get(niveau, {}).get(serie, [])
+    return CATALOGUE.get(niveau, [])
 
 @app.context_processor
 def inject_globals():
@@ -550,17 +566,16 @@ def etablissements_niveau(niveau_serie):
 
 @app.route('/etablissements/<niveau_serie>/<matiere>')
 def etablissements_matiere(niveau_serie, matiere):
-    region = request.args.get('region')
+    annee = request.args.get('annee', type=int)
     sequence = request.args.get('sequence', type=int)
-    epreuves = get_annales_externes(niveau_serie, matiere, region=region, sequence=sequence)
-    regions = get_regions_disponibles_externes(niveau_serie, matiere)
+    epreuves = get_annales_externes(niveau_serie, matiere, annee=annee, sequence=sequence)
+    annees = get_annees_disponibles(niveau_serie, matiere)
     sequences = get_sequences_disponibles(niveau_serie, matiere)
     return render_template('etablissements_matiere.html',
                            niveau_serie=niveau_serie, matiere=matiere,
                            epreuves=epreuves,
-                           regions_disponibles=regions, region_active=region,
+                           annees_disponibles=annees, annee_active=annee,
                            sequences_disponibles=sequences, sequence_active=sequence)
-
 @app.route('/redirection/<int:annale_id>')
 def redirection_externe(annale_id):
     entree = get_annale_externe_by_id(annale_id)

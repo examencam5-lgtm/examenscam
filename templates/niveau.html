@@ -34,9 +34,10 @@
   }
 
   .header-title {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Fraunces', serif;
     font-size: clamp(26px, 6vw, 38px);
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ink);
     line-height: 1.15;
     margin-bottom: 6px;
@@ -88,9 +89,10 @@
   }
 
   .matiere-name {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Fraunces', serif;
     font-size: 17px;
     font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .matiere-hint {
@@ -114,9 +116,10 @@
   }
 
   .empty-title {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Fraunces', serif;
     font-size: 19px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ink);
     margin-bottom: 6px;
   }
@@ -169,7 +172,7 @@
     {% elif 'Histoire' in matiere %}
       {% set hint = 'Histoire et géographie' %}
     {% else %}
-      {% set hint = 'Annales officielles' %}
+      {% set hint = 'Ressources disponibles' %}
     {% endif %}
 
     {% if serie %}

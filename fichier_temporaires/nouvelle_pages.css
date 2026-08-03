@@ -1,0 +1,197 @@
+/* static/css/nouvelles_pages.css, v3, sobre, aligné sur base.html */
+
+:root {
+  /* Mêmes tokens que base.html, une seule source de vérité visuelle */
+  --ec-paper:   #FAFAF8;
+  --ec-ink:     #1A1A1A;
+  --ec-ink-soft:#5C5C5C;
+  --ec-line:    #DEDCD5;
+  --ec-line-soft: #EDEBE5;
+  --ec-surface: #FFFFFF;
+  --ec-accent:  #1A1A1A;
+  --ec-accent-soft: #F0EFEA;
+
+  --ec-serif: 'Source Serif 4', Georgia, serif;
+  --ec-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --ec-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Courier New", monospace;
+}
+
+/* ── En-tête de page (fil d'ariane + titre) ──────────────
+   Avant : bandeau bleu plein avec filet doré pointillé.
+   Maintenant : papier, une seule ligne fine, la hiérarchie
+   vient de la typo, pas de la couleur. */
+.ec-header {
+  background: var(--ec-surface);
+  color: var(--ec-ink);
+  border-bottom: 1px solid var(--ec-line);
+  padding: 20px 18px 16px;
+  position: relative;
+}
+.ec-fil-ariane {
+  font-family: var(--ec-mono);
+  font-size: 10.5px;
+  color: var(--ec-ink-soft);
+  letter-spacing: 0.2px;
+}
+.ec-fil-ariane a { color: var(--ec-ink-soft); text-decoration: none; }
+.ec-fil-ariane a:hover { color: var(--ec-ink); }
+.ec-eyebrow {
+  font-family: var(--ec-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--ec-ink-soft);
+  margin-top: 10px;
+}
+.ec-titre-page {
+  font-family: var(--ec-serif); font-size: 21px; font-weight: 600;
+  margin-top: 3px; line-height: 1.25; color: var(--ec-ink);
+}
+.ec-sous-titre { font-size: 12px; color: var(--ec-ink-soft); margin-top: 3px; }
+
+/* ── Le sceau, marque de contenu vérifié (officiel/blanc) ──
+   Un seul tracé, un seul ton (l'encre), plus de distinction
+   or/bleu par statut : la distinction se fait par le texte. */
+.ec-sceau {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1.5px solid var(--ec-line);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; flex-shrink: 0;
+}
+.ec-sceau::before {
+  content: ""; position: absolute; inset: 4px;
+  border: 1px dashed var(--ec-line);
+  border-radius: 50%;
+}
+.ec-sceau .icon { width: 18px; height: 18px; stroke: var(--ec-ink-soft); stroke-width: 1.8; }
+.ec-sceau.sur-blanc { border-color: var(--ec-line); }
+.ec-sceau.sur-blanc::before { border-color: var(--ec-line); }
+.ec-sceau.sur-blanc .icon { stroke: var(--ec-ink-soft); }
+
+/* ── Fiche d'archive, établissements ── */
+.ec-fiche-tab {
+  width: 44px; height: 36px; background: var(--ec-accent-soft);
+  border-radius: 2px 6px 6px 2px; border-left: 3px solid var(--ec-ink-soft);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ec-fiche-tab .icon { width: 17px; height: 17px; stroke: var(--ec-ink-soft); stroke-width: 2; }
+
+/* ── Cartes de branches (carrefour) ──────────────────────
+   Avant : fonds distincts par branche (papier/rouge/dashed/
+   gradients bleu et rouge). Maintenant : même carte pour
+   toutes, bordure pleine ou pointillée selon qu'il y a du
+   contenu ou non, la couleur ne porte plus l'information. */
+.ec-branches { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.ec-branche { text-decoration: none; color: inherit; display: block; }
+.ec-branche-carte {
+  border-radius: 999px; padding: 14px 22px;
+  display: flex; align-items: center; gap: 13px;
+  background: var(--ec-surface);
+  border: 1px solid var(--ec-line);
+  transition: border-color 0.15s;
+}
+.ec-branche:hover .ec-branche-carte { border-color: var(--ec-ink-soft); }
+.ec-branche:active .ec-branche-carte { background: var(--ec-accent-soft); }
+
+.ec-branche-officiel { border-color: var(--ec-line); }
+.ec-branche-blanc { border-color: var(--ec-line); }
+.ec-branche-etablissement { border: 1px dashed var(--ec-line); }
+
+/* Corrigés et énoncés identiques pour l'instant, en attendant
+   qu'on choisisse ensemble comment les différencier. */
+.ec-branche-corriges-off,
+.ec-branche-corriges-blanc {
+  background: var(--ec-surface); color: var(--ec-ink); border-color: var(--ec-line);
+}
+.ec-branche-corriges-off .ec-branche-sub-clair,
+.ec-branche-corriges-blanc .ec-branche-sub-clair { color: var(--ec-ink-soft); }
+
+.ec-branche-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; }
+.ec-branche-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 2px; }
+.ec-branche-sub-clair { font-size: 10.5px; color: var(--ec-ink-soft); margin-top: 2px; }
+.ec-branche-prix {
+  background: var(--ec-accent-soft); color: var(--ec-ink);
+  font-family: var(--ec-mono); font-size: 12px; font-weight: 700;
+  padding: 5px 10px; border-radius: 3px; white-space: nowrap; margin-left: auto;
+}
+.ec-branche-chevron { color: var(--ec-ink-soft); font-size: 16px; margin-left: auto; }
+.ec-vide {
+  margin: 16px; padding: 20px 16px; background: var(--ec-accent-soft);
+  border-radius: var(--radius, 3px); font-size: 12.5px; color: var(--ec-ink-soft);
+  text-align: center; font-family: var(--ec-serif); font-style: italic;
+}
+
+/* ── Listes (blancs, établissements) ── */
+.ec-liste { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.ec-item-link { text-decoration: none; color: inherit; display: block; }
+.ec-item { background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: 20px; padding: 16px 20px; }
+.ec-item-titre { font-family: var(--ec-serif); font-size: 14.5px; font-weight: 600; line-height: 1.3; color: var(--ec-ink); }
+.ec-item-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 3px; }
+.ec-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.ec-item-icon { flex-shrink: 0; margin-top: 3px; color: var(--ec-ink-soft); }
+.ec-item-source {
+  font-family: var(--ec-mono); font-size: 9.5px; color: var(--ec-ink-soft);
+  background: var(--ec-accent-soft); padding: 2px 8px; border-radius: 999px;
+  display: inline-block; margin-top: 8px;
+}
+
+.ec-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ec-pill {
+  font-family: var(--ec-mono); font-size: 9.5px; font-weight: 700;
+  padding: 3px 8px; border-radius: 2px;
+  background: var(--ec-accent-soft); color: var(--ec-ink-soft);
+  border: 1px solid var(--ec-line);
+}
+/* pill-region et pill-sequence gardées distinctes par bordure
+   plutôt que par couleur, pour rester lisibles sans être criardes */
+.ec-pill-region { border-style: solid; }
+.ec-pill-sequence { border-style: dashed; }
+
+.ec-filtre-onglets { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; }
+.ec-onglet {
+  font-family: var(--ec-mono); font-size: 11px; font-weight: 700;
+  padding: 7px 15px; border-radius: 999px; background: var(--ec-surface);
+  color: var(--ec-ink-soft); text-decoration: none; white-space: nowrap;
+  border: 1px solid var(--ec-line);
+}
+.ec-onglet.actif { background: var(--ec-accent); color: var(--ec-surface); border-color: var(--ec-accent); }
+.ec-onglet-indispo { opacity: 0.5; }
+
+.ec-avertissement {
+  margin: 0 16px 14px; background: var(--ec-accent-soft); border: 1px solid var(--ec-line);
+  border-left: 3px solid var(--ec-ink-soft); border-radius: 2px;
+  padding: 12px 14px; font-size: 11px; color: var(--ec-ink-soft); line-height: 1.5;
+}
+
+/* ── Catalogue de packs corrigés ── */
+.ec-carte-pack {
+  background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: var(--radius, 3px);
+  padding: 15px;
+}
+.ec-carte-pack-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; gap: 8px; }
+.ec-carte-pack-titre { font-family: var(--ec-serif); font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--ec-ink); }
+.ec-barre-progression { height: 4px; background: var(--ec-line-soft); border-radius: 2px; overflow: hidden; margin: 9px 0 5px; }
+.ec-barre-progression-remplie { height: 100%; background: var(--ec-ink-soft); }
+.ec-progression-texte { font-family: var(--ec-mono); font-size: 10px; color: var(--ec-ink-soft); }
+
+/* ── Fiche pack détail ──────────────────────────────────
+   Avant : hero dégradé bleu + filigrane circulaire doré.
+   Maintenant : bloc encre pleine, sobre, sans motif décoratif,
+   la valeur du pack se dit par le texte, pas par l'habillage. */
+.ec-fiche-hero {
+  background: var(--ec-accent);
+  color: var(--ec-surface); padding: 24px 18px;
+}
+.ec-fiche-hero h2 { font-family: var(--ec-serif); font-size: 19px; font-weight: 600; line-height: 1.3; }
+.ec-prix-gros { font-family: var(--ec-mono); font-size: 26px; font-weight: 700; color: var(--ec-surface); margin-top: 10px; }
+.ec-annee-ligne {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px; background: var(--ec-surface); border: 1px solid var(--ec-line);
+  border-radius: var(--radius, 3px); font-family: var(--ec-mono); font-size: 13px; margin-bottom: 7px;
+  color: var(--ec-ink);
+}
+.ec-statut-pret { color: var(--ec-ink); font-weight: 700; font-size: 11px; }
+.ec-statut-brouillon { color: var(--ec-ink-soft); font-size: 11px; font-style: italic; }
+.ec-bouton-desactive {
+  width: 100%; background: var(--ec-line-soft); color: var(--ec-ink-soft); border: none;
+  border-radius: var(--radius, 3px); padding: 15px; font-size: 13.5px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.ec-bouton-note { text-align: center; font-size: 11px; color: var(--ec-ink-soft); margin-top: 9px; line-height: 1.5; }
