@@ -16,7 +16,7 @@ from database import (get_annales, get_matieres, get_all_annales, add_annale,
                       delete_annale, increment_vues, get_stats, get_connection,
                       get_annale_by_id, create_table, get_total_blancs,
                       get_derniere_maj)  
-from database_search import rechercher, enregistrer_recherche_infructueuse
+from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
 app = Flask(__name__)
 app.config.update(
     SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_SUPPRIME_DE_LHISTORIQUE'),
@@ -600,6 +600,10 @@ def redirection_externe(annale_id):
 #
 # Puis colle la route ci-dessous avec tes autres routes.
 
+# À REMPLACER dans app.py (route /api/search existante)
+# Import a ajuster en haut de app.py :
+#   from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
+# ═══════════════════════════════════════
 
 @app.route('/api/search')
 def api_search():
@@ -608,22 +612,17 @@ def api_search():
     matiere = request.args.get('matiere') or None
 
     if len(q) < 2:
-        return jsonify({'resultats': [], 'suggestions': []})
+        return jsonify({'resultats': [], 'suggestions': [], 'total_trouve': 0})
 
-    from database_search import rechercher_avec_scoring
-    reponse = rechercher_avec_scoring(q, limite=8, niveau=niveau, matiere=matiere)
-    
-    resultats = reponse['resultats']
-    suggestions = reponse['suggestions']
+    resultat = rechercher_avec_scoring(q, limite=8, niveau=niveau, matiere=matiere)
 
-    if not resultats and len(q) >= 3:
+    if not resultat['resultats'] and len(q) >= 3:
         enregistrer_recherche_infructueuse(q)
 
-    return jsonify({
-        'resultats': resultats,
-        'suggestions': suggestions
-    })
-    
+    return jsonify(resultat)
+
+
+   
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
 

@@ -78,48 +78,7 @@
   .suggestion-icon { flex-shrink: 0; width: 15px; height: 15px; color: var(--ink-soft); }
   .suggestion-icon svg { display: block; width: 100%; height: 100%; }
 
-  .search-empty { 
-    padding: 12px 20px; 
-    font-size: 13px; 
-    color: var(--ink-soft); 
-    font-style: italic; 
-  }
-
-  .suggestion-correction {
-    padding: 10px 20px;
-    border-bottom: 1px solid var(--line-soft);
-  }
-
-  .suggestion-correction p {
-    font-size: 13px;
-    color: var(--ink-soft);
-    margin-bottom: 6px;
-  }
-
-  .suggestion-correction .correction-item {
-    display: inline-block;
-    padding: 4px 14px;
-    margin: 2px 4px 2px 0;
-    background: var(--accent-soft);
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink);
-    cursor: pointer;
-    border: 1px solid var(--line);
-    transition: background 0.15s;
-    text-decoration: none;
-  }
-
-  .suggestion-correction .correction-item:hover {
-    background: var(--line);
-  }
-
-  .search-divider {
-    border: none;
-    border-top: 1px solid var(--line-soft);
-    margin: 4px 12px;
-  }
+  .search-empty { padding: 12px 20px; font-size: 13px; color: var(--ink-soft); font-style: italic; }
 </style>
 
 {# Contexte : niveau/matiere lus depuis les variables deja fournies
@@ -184,48 +143,23 @@
     currentItems = resultats;
     activeIndex = -1;
 
-    var html = '';
-
-    if (resultats.length > 0) {
-      html += resultats.map(function(r, i) {
-        return '<a href="' + r.destination + '" class="suggestion-item" data-index="' + i + '">' +
-               iconeLoupe() + '<span>' + r.libelle + '</span></a>';
-      }).join('');
-    }
-
-    if (resultats.length > 0 && suggestions.length > 0) {
-      html += '<hr class="search-divider">';
-    }
-
-    if (suggestions.length > 0) {
-      html += '<div class="suggestion-correction">';
-      html += '<p>Vouliez-vous dire :</p>';
-      html += '<div>';
-      suggestions.forEach(function(suggestion) {
-        html += '<a href="#" class="correction-item" onclick="relancerRecherche(\'' + suggestion + '\'); return false;">' + suggestion + '</a>';
-      });
-      html += '</div></div>';
-    }
-
-    if (resultats.length === 0 && suggestions.length === 0) {
-      var q = input.value.trim();
-      html = '<div class="search-empty">Aucun resultat pour "' + q + '"</div>';
-    }
-
-    box.innerHTML = html;
-    if (html) {
+    if (resultats.length === 0) {
+      if (suggestions.length > 0) {
+        box.innerHTML = '<div class="search-empty">Aucun résultat -- essaie plutôt : ' +
+          suggestions.join(', ') + '</div>';
+      } else {
+        box.innerHTML = '<div class="search-empty">Aucun résultat pour le moment</div>';
+      }
       box.classList.add('open');
-    } else {
-      box.classList.remove('open');
+      return;
     }
-  }
 
-  window.relancerRecherche = function(term) {
-    input.value = term;
-    clearBtn.classList.toggle('visible', term.length > 0);
-    var event = new Event('input', { bubbles: true });
-    input.dispatchEvent(event);
-  };
+    box.innerHTML = resultats.map(function(r, i) {
+      return '<a href="' + r.destination + '" class="suggestion-item" data-index="' + i + '">' +
+             iconeLoupe() + '<span>' + r.libelle + '</span></a>';
+    }).join('');
+    box.classList.add('open');
+  }
 
   input.addEventListener('input', function() {
     var q = input.value.trim();
@@ -257,33 +191,24 @@
   });
 
   input.addEventListener('keydown', function(e) {
-    var allItems = box.querySelectorAll('.suggestion-item, .correction-item');
-    
-    if (!allItems.length) return;
+    var items = box.querySelectorAll('.suggestion-item');
+    if (!items.length) return;
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      activeIndex = Math.min(activeIndex + 1, allItems.length - 1);
+      activeIndex = Math.min(activeIndex + 1, items.length - 1);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       activeIndex = Math.max(activeIndex - 1, 0);
-    } else if (e.key === 'Enter') {
-      if (activeIndex >= 0) {
-        e.preventDefault();
-        var item = allItems[activeIndex];
-        if (item.classList.contains('correction-item')) {
-          item.click();
-        } else {
-          var destination = currentItems[activeIndex]?.destination;
-          if (destination) window.location.href = destination;
-        }
-      }
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      e.preventDefault();
+      window.location.href = currentItems[activeIndex].destination;
       return;
     } else {
       return;
     }
 
-    allItems.forEach(function(el, i) {
+    items.forEach(function(el, i) {
       el.classList.toggle('active', i === activeIndex);
     });
   });
