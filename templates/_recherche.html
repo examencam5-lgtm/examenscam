@@ -155,10 +155,28 @@
     }
 
     box.innerHTML = resultats.map(function(r, i) {
-      return '<a href="' + r.destination + '" class="suggestion-item" data-index="' + i + '">' +
+      return '<a href="' + r.destination + '" class="suggestion-item" data-index="' + i + '" ' +
+             'data-destination="' + r.destination + '" data-niveau="' + (r.niveau || '') + '" data-matiere="' + (r.matiere || '') + '">' +
              iconeLoupe() + '<span>' + r.libelle + '</span></a>';
     }).join('');
     box.classList.add('open');
+
+    // Logue le clic reel (pas juste la frappe) -- sendBeacon envoie
+    // la requete meme si la page navigue immediatement apres, sans
+    // bloquer ni ralentir le clic de l'eleve
+    box.querySelectorAll('.suggestion-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        if (navigator.sendBeacon) {
+          var payload = JSON.stringify({
+            requete: input.value,
+            destination: el.dataset.destination,
+            niveau: el.dataset.niveau,
+            matiere: el.dataset.matiere,
+          });
+          navigator.sendBeacon('/api/log-clic', new Blob([payload], { type: 'application/json' }));
+        }
+      });
+    });
   }
 
   input.addEventListener('input', function() {

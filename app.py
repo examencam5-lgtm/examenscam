@@ -17,7 +17,40 @@ from database import (get_annales, get_matieres, get_all_annales, add_annale,
                       get_annale_by_id, create_table, get_total_blancs,
                       get_derniere_maj)  
 from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
+from flask import g
+from functools import wraps
+from flask import session
+from analytics import (
+    creer_table_evenements, log_evenement, get_ou_creer_session,
+    stats_resume, stats_pages_populaires, stats_recherches_populaires,
+    stats_visites_par_jour, stats_matieres_populaires, stats_destinations_cliquees,
+    stats_journal_recherches, stats_journal_clics, stats_parcours_session
+)
+
+creer_table_evenements()
 app = Flask(__name__)
+ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
+
+@app.before_request
+def _avant_requete():
+    g.session_id = get_ou_creer_session(request)
+    if request.method == 'GET' and not any(request.path.startswith(p) for p in ROUTES_IGNOREES_TRACKING):
+        vargs = request.view_args or {}
+        log_evenement(
+            'page_vue',
+            g.session_id,
+            route=request.path,
+            niveau=vargs.get('niveau'),
+            serie=vargs.get('serie'),
+            matiere=vargs.get('matiere'),
+            referrer=request.referrer,
+        )
+
+@app.after_request
+def _apres_requete(response):
+    if not request.cookies.get('ec_session') and hasattr(g, 'session_id'):
+        response.set_cookie('ec_session', g.session_id, max_age=60*60*24*365, samesite='Lax')
+    return response
 app.config.update(
     SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_SUPPRIME_DE_LHISTORIQUE'),
     DEBUG = os.environ.get('DEBUG', 'True') == 'True',
@@ -582,11 +615,9 @@ def redirection_externe(annale_id):
     if not entree:
         return "Épreuve introuvable", 404
     increment_vue_externe(annale_id)
-    # Decision strategique (doc section 4.1) : on redirige vers la page
-    # article, jamais vers le PDF direct — neutralite envers la source
-    # tierce + coherence avec la CGU (indexation de metadonnees, pas
-    # d'hebergement). lien_page_source contient la page article ;
-    # lien_externe contient le PDF direct et ne doit jamais etre expose.
+    log_evenement('redirection_externe', g.session_id,
+                  niveau=entree['niveau'], serie=entree['serie'],
+                  matiere=entree['matiere'], destination=entree['lien_page_source'])
     return redirect(entree['lien_page_source'])
 
 
@@ -621,8 +652,107 @@ def api_search():
 
     return jsonify(resultat)
 
+@app.route('/api/log-clic', methods=['POST'])
+def api_log_clic():
+    data = request.get_json(silent=True) or {}
+    log_evenement(
+        'clic_resultat',
+        request.cookies.get('ec_session', 'inconnu'),
+        requete=data.get('requete'),
+        destination=data.get('destination'),
+        niveau=data.get('niveau'),
+        matiere=data.get('matiere'),
+    )
+    return '', 204
 
-   
+# ═══════════════════════════════════════════════════════
+# A REMPLACER / AJOUTER dans app.py
+# ═══════════════════════════════════════
+#
+# IMPORTANT : Flask a besoin d'un SECRET_KEY pour signer les
+# sessions (cookie de connexion). Verifie que tu as deja cette
+# ligne quelque part en haut de app.py :
+#
+#   app.secret_key = 'une-longue-chaine-aleatoire-secrete'
+#
+# Si tu ne l'as pas, ajoute-la (change la valeur pour un vrai
+# secret, pas ce texte d'exemple).
+
+from functools import wraps
+from flask import session
+
+def admin_requis(f):
+    """
+    Decorateur : verifie que la session Flask a ete authentifiee
+    via /admin/login, redirige vers le login sinon. Remplace le
+    systeme precedent ou le token devait etre tape dans chaque URL.
+    """
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not session.get('admin_connecte'):
+            return redirect('/admin/login')
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    erreur = False
+    if request.method == 'POST':
+        mot_de_passe = request.form.get('mot_de_passe', '')
+        if mot_de_passe == app.config['ADMIN_TOKEN']:
+            session['admin_connecte'] = True
+            return redirect('/admin/dashboard')
+        erreur = True
+    return render_template('admin_login.html', erreur=erreur)
+
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_connecte', None)
+    return redirect('/admin/login')
+
+
+# ═══════════════════════════════════════════════════════
+# ROUTES DASHBOARD -- remplacent les anciennes versions avec
+# <token> dans l'URL. Retire l'ancien parametre <token> de la
+# signature ET de l'URL, ajoute juste @admin_requis au-dessus.
+# ═══════════════════════════════════════════════════════
+
+@app.route('/admin/dashboard')
+@admin_requis
+def admin_dashboard():
+    jours = request.args.get('jours', 30, type=int)
+    return render_template('admin_dashboard.html',
+        resume=stats_resume(jours),
+        pages=stats_pages_populaires(jours),
+        recherches=stats_recherches_populaires(jours),
+        matieres=stats_matieres_populaires(jours),
+        visites_par_jour=stats_visites_par_jour(min(jours, 30)),
+        destinations=stats_destinations_cliquees(jours),
+        jours=jours,
+    )
+
+
+@app.route('/admin/dashboard/journal')
+@admin_requis
+def admin_journal():
+    jours = request.args.get('jours', 30, type=int)
+    return render_template('admin_journal.html',
+        recherches=stats_journal_recherches(jours),
+        clics=stats_journal_clics(jours),
+        jours=jours,
+    )
+
+
+@app.route('/admin/session/<session_id>')
+@admin_requis
+def admin_parcours(session_id):
+    jours = request.args.get('jours', 30, type=int)
+    return render_template('admin_parcours.html',
+        session_id=session_id,
+        evenements=stats_parcours_session(session_id, jours),
+    )
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
 

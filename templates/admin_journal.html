@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Journal detaille · ExamensCam Admin{% endblock %}
+
+{% block content %}
+<style>
+  .dash-wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  .dash-title { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 4px; }
+  .dash-sub { font-size: 12px; color: var(--ink-soft); margin-bottom: 20px; }
+  .dash-back { font-size: 12px; color: var(--ink-soft); text-decoration: none; }
+
+  .dash-section { margin-top: 28px; }
+  .dash-section-titre { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-bottom: 10px; color: var(--ink); }
+
+  table.dash-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; font-size: 12.5px; }
+  table.dash-table th { text-align: left; padding: 8px 10px; background: var(--accent-soft); font-family: 'Inter', sans-serif; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-soft); }
+  table.dash-table td { padding: 7px 10px; border-top: 1px solid var(--line); color: var(--ink); vertical-align: top; }
+  table.dash-table a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); }
+  .dash-session-id { font-family: 'Inter', monospace; font-size: 10.5px; color: var(--ink-soft); }
+  .dash-heure { font-family: 'Inter', monospace; font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
+  .dash-vide { padding: 16px; text-align: center; color: var(--ink-soft); font-size: 13px; font-style: italic; }
+</style>
+
+<div class="dash-wrap">
+  <a href="/admin/dashboard" class="dash-back">&larr; Retour au dashboard</a>
+  <h1 class="dash-title">Journal detaille</h1>
+  <p class="dash-sub">Chaque ligne = un evenement reel. Clique une session pour voir tout son parcours.</p>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Recherches ({{ recherches|length }})</p>
+    {% if recherches %}
+    <table class="dash-table">
+      <tr><th>Heure</th><th>Session</th><th>Requete tapee</th><th>Contexte page</th></tr>
+      {% for r in recherches %}
+      <tr>
+        <td class="dash-heure">{{ r.date_evenement[5:16] }}</td>
+        <td><a href="/admin/session/{{ r.session_id }}" class="dash-session-id">{{ r.session_id[:8] }}</a></td>
+        <td>{{ r.requete }}</td>
+        <td>{{ r.niveau or '' }} {{ r.matiere or '' }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="dash-vide">Aucune recherche enregistree pour l'instant.</div>
+    {% endif %}
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Clics sur resultats ({{ clics|length }})</p>
+    {% if clics %}
+    <table class="dash-table">
+      <tr><th>Heure</th><th>Session</th><th>Requete d'origine</th><th>Destination cliquee</th></tr>
+      {% for c in clics %}
+      <tr>
+        <td class="dash-heure">{{ c.date_evenement[5:16] }}</td>
+        <td><a href="/admin/session/{{ c.session_id }}" class="dash-session-id">{{ c.session_id[:8] }}</a></td>
+        <td>{{ c.requete or '' }}</td>
+        <td>{{ c.destination }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="dash-vide">Aucun clic enregistre pour l'instant.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

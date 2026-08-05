@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard · ExamensCam Admin{% endblock %}
+
+{% block content %}
+<style>
+  .dash-wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .dash-header { margin-bottom: 24px; }
+  .dash-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+  .dash-filtres { display: flex; gap: 8px; margin-top: 12px; }
+  .dash-filtre { font-family: 'Inter', sans-serif; font-size: 12px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: var(--ink-soft); }
+  .dash-filtre.actif { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+  .dash-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .dash-carte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .dash-carte-num { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; color: var(--ink); }
+  .dash-carte-label { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+
+  .dash-section { margin-bottom: 32px; }
+  .dash-section-titre { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; margin-bottom: 12px; color: var(--ink); }
+
+  .dash-graphe { display: flex; align-items: flex-end; gap: 4px; height: 120px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+  .dash-barre-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .dash-barre { width: 100%; background: var(--accent-soft); border: 1px solid var(--line); border-radius: 2px 2px 0 0; min-height: 2px; }
+  .dash-barre-jour { font-size: 8px; color: var(--ink-soft); margin-top: 4px; writing-mode: vertical-rl; }
+
+  .dash-liste { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .dash-ligne { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .dash-ligne:last-child { border-bottom: none; }
+  .dash-ligne-label { color: var(--ink); font-family: 'Source Serif 4', serif; }
+  .dash-ligne-num { color: var(--ink-soft); font-family: 'Inter', monospace; font-size: 12px; }
+
+  .dash-vide { padding: 20px; text-align: center; color: var(--ink-soft); font-size: 13px; font-style: italic; }
+</style>
+
+<div class="dash-wrap">
+  <div class="dash-header">
+    <h1 class="dash-title">Dashboard ExamensCam</h1>
+    <div class="dash-filtres">
+      <a href="?jours=7" class="dash-filtre {% if jours == 7 %}actif{% endif %}">7 jours</a>
+      <a href="?jours=30" class="dash-filtre {% if jours == 30 %}actif{% endif %}">30 jours</a>
+      <a href="?jours=90" class="dash-filtre {% if jours == 90 %}actif{% endif %}">90 jours</a>
+      <a href="/admin/dashboard/journal?jours={{ jours }}" class="dash-filtre">Journal detaille &rarr;</a>
+    </div>
+  </div>
+
+  <div class="dash-cartes">
+    <div class="dash-carte">
+      <div class="dash-carte-num">{{ resume.total_vues }}</div>
+      <div class="dash-carte-label">Pages vues</div>
+    </div>
+    <div class="dash-carte">
+      <div class="dash-carte-num">{{ resume.visiteurs_uniques }}</div>
+      <div class="dash-carte-label">Visiteurs uniques</div>
+    </div>
+    <div class="dash-carte">
+      <div class="dash-carte-num">{{ resume.total_recherches }}</div>
+      <div class="dash-carte-label">Recherches</div>
+    </div>
+    <div class="dash-carte">
+      <div class="dash-carte-num">{{ resume.total_redirections }}</div>
+      <div class="dash-carte-label">Redirections etablissements</div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Frequentation (30 derniers jours max)</p>
+    {% if visites_par_jour %}
+    <div class="dash-graphe">
+      {% set max_n = visites_par_jour | map(attribute='n') | max %}
+      {% for jour in visites_par_jour %}
+      <div class="dash-barre-wrap">
+        <div class="dash-barre" style="height: {{ (jour.n / max_n * 100) if max_n else 0 }}%;" title="{{ jour.n }} vues, {{ jour.visiteurs }} visiteurs"></div>
+        <span class="dash-barre-jour">{{ jour.jour[5:] }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="dash-vide">Pas encore de donnees</div>
+    {% endif %}
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Recherches les plus frequentes</p>
+    <div class="dash-liste">
+      {% for r in recherches %}
+      <div class="dash-ligne">
+        <span class="dash-ligne-label">{{ r.requete }}</span>
+        <span class="dash-ligne-num">{{ r.n }}</span>
+      </div>
+      {% else %}
+      <div class="dash-vide">Pas encore de recherches enregistrees</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Pages les plus visitees</p>
+    <div class="dash-liste">
+      {% for p in pages %}
+      <div class="dash-ligne">
+        <span class="dash-ligne-label">{{ p.route }}</span>
+        <span class="dash-ligne-num">{{ p.n }}</span>
+      </div>
+      {% else %}
+      <div class="dash-vide">Pas encore de donnees</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Matieres les plus consultees</p>
+    <div class="dash-liste">
+      {% for m in matieres %}
+      <div class="dash-ligne">
+        <span class="dash-ligne-label">{{ m.niveau }} · {{ m.matiere }}</span>
+        <span class="dash-ligne-num">{{ m.n }}</span>
+      </div>
+      {% else %}
+      <div class="dash-vide">Pas encore de donnees</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Etablissements/liens les plus cliques</p>
+    <div class="dash-liste">
+      {% for d in destinations %}
+      <div class="dash-ligne">
+        <span class="dash-ligne-label">{{ d.destination }}</span>
+        <span class="dash-ligne-num">{{ d.n }}</span>
+      </div>
+      {% else %}
+      <div class="dash-vide">Pas encore de donnees</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

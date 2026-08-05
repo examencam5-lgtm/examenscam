@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Connexion Admin · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  .login-wrap { max-width: 360px; margin: 80px auto; padding: 0 20px; }
+  .login-title { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 20px; text-align: center; }
+  .login-input {
+    width: 100%; padding: 12px 16px; border: 1px solid var(--line); border-radius: 999px;
+    font-family: 'Source Serif 4', serif; font-size: 15px; color: var(--ink); background: var(--surface);
+    outline: none; margin-bottom: 12px;
+  }
+  .login-input:focus { border-color: var(--ink-soft); }
+  .login-btn {
+    width: 100%; padding: 12px; border: none; border-radius: 999px; background: var(--ink);
+    color: var(--surface); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
+  .login-erreur { color: #B33; font-size: 12.5px; text-align: center; margin-bottom: 12px; }
+</style>
+
+<div class="login-wrap">
+  <h1 class="login-title">ExamensCam Admin</h1>
+  {% if erreur %}
+  <p class="login-erreur">Mot de passe incorrect.</p>
+  {% endif %}
+  <form method="POST">
+    <input type="password" name="mot_de_passe" class="login-input" placeholder="Mot de passe" autofocus required>
+    <button type="submit" class="login-btn">Se connecter</button>
+  </form>
+</div>
+{% endblock %}
