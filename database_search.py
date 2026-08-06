@@ -10,31 +10,13 @@ Import dans app.py :
 """
 import sqlite3
 import re
-import unicodedata  # ← AJOUTÉ
 from pathlib import Path
 
+# Necessaire pour normaliser() les requetes -- oublie dans la
+# version precedente, cause de l'ImportError au demarrage.
+from generer_search_index import normaliser
+
 DB_PATH = Path('data') / 'annales.db'
-
-# ═══════════════════════════════════════════════════════
-# NORMALISATION (copie locale)
-# ═══════════════════════════════════════════════════════
-
-def normaliser(texte: str) -> str:
-    """
-    'LYCÉE Classique d'Édéa' -> 'lycee classique d edea'
-    Retire les accents (NFKD + filtre des caracteres combinants),
-    met en minuscules, remplace la ponctuation par des espaces.
-    Necessaire pour que taper 'lycee' sans accent trouve 'LYCÉE'.
-    """
-    if not texte:
-        return ""
-    texte = texte.lower()
-    texte = unicodedata.normalize('NFKD', texte)
-    texte = ''.join(c for c in texte if not unicodedata.combining(c))
-    # ponctuation -> espace, pour eviter de coller deux mots
-    for char in "'’-_.,":
-        texte = texte.replace(char, ' ')
-    return ' '.join(texte.split())  # normalise les espaces multiples
 
 # ═══════════════════════════════════════════════════════
 # ALIAS - Comprendre le langage des élèves
@@ -113,7 +95,6 @@ ALIAS_SERIES = {
 # ═══════════════════════════════════════════════════════
 
 PRIORITES_MATIERES = {
-    # BAC et Probatoire
     'A4': {
         'Littérature': 40,
         'Langue Française': 35,
@@ -153,7 +134,6 @@ PRIORITES_MATIERES = {
         'Littérature': 15,
         'Dessin Industriel': 10,
     },
-    # BEPC (pas de série)
     'BEPC': {
         'Mathématiques': 40,
         'PCT': 35,
@@ -169,7 +149,6 @@ PRIORITES_MATIERES = {
     }
 }
 
-# Alias inversé pour trouver la matière canonique
 MATIERES_CANONIQUES = {
     'mathématiques': 'Mathématiques',
     'math': 'Mathématiques',
@@ -210,16 +189,10 @@ MATIERES_CANONIQUES = {
 # ═══════════════════════════════════════════════════════
 
 def normaliser_avec_alias(q: str) -> str:
-    """
-    Transforme une requête utilisateur en utilisant les alias.
-    Exemple: "math probat 2023" → "Mathématiques Probatoire 2023"
-    """
     if not q or not q.strip():
         return q
-    
     mots = q.lower().strip().split()
     mots_normalises = []
-    
     for mot in mots:
         if mot in ALIAS_MATIERES:
             mots_normalises.append(ALIAS_MATIERES[mot])
@@ -229,19 +202,10 @@ def normaliser_avec_alias(q: str) -> str:
             mots_normalises.append(ALIAS_SERIES[mot])
         else:
             mots_normalises.append(mot)
-    
     return ' '.join(mots_normalises)
 
 
 def normaliser_requete_complete(q: str) -> dict:
-    """
-    Analyse la requête et extrait :
-    - La requête normalisée
-    - Niveau détecté
-    - Série détectée
-    - Matière détectée
-    - Année détectée
-    """
     if not q or not q.strip():
         return {
             'query_normalisee': q,
@@ -250,10 +214,10 @@ def normaliser_requete_complete(q: str) -> dict:
             'matiere_detectee': None,
             'annee_detectee': None
         }
-    
+
     mots = q.lower().strip().split()
     mots_normalises = []
-    
+
     result = {
         'query_normalisee': '',
         'niveau_detecte': None,
@@ -261,7 +225,7 @@ def normaliser_requete_complete(q: str) -> dict:
         'matiere_detectee': None,
         'annee_detectee': None
     }
-    
+
     for mot in mots:
         if mot in ALIAS_MATIERES:
             valeur = ALIAS_MATIERES[mot]
@@ -283,7 +247,7 @@ def normaliser_requete_complete(q: str) -> dict:
             mots_normalises.append(mot)
         else:
             mots_normalises.append(mot)
-    
+
     result['query_normalisee'] = ' '.join(mots_normalises)
     return result
 
@@ -293,44 +257,35 @@ def normaliser_requete_complete(q: str) -> dict:
 # ═══════════════════════════════════════════════════════
 
 def suggerer_correction(q: str, niveau: str = None, serie: str = None) -> list:
-    """
-    Propose des corrections quand la recherche ne donne aucun résultat.
-    Adapté au niveau et à la série pour suggérer les matières pertinentes.
-    """
     suggestions = []
     q_lower = q.lower().strip()
-    
-    # 1. Si niveau et série sont fournis, suggérer les matières prioritaires
+
     if niveau and serie:
         if niveau.upper() == 'BEPC':
             priorites = PRIORITES_MATIERES.get('BEPC', {})
         else:
             priorites = PRIORITES_MATIERES.get(serie.upper(), {})
-        
+
         matieres_prioritaires = sorted(priorites.items(), key=lambda x: x[1], reverse=True)[:5]
         for matiere, _ in matieres_prioritaires:
             if matiere.lower() not in q_lower and matiere not in suggestions:
                 suggestions.append(matiere)
-    
-    # 2. Vérifier les alias de matière
+
     for alias, valeur in ALIAS_MATIERES.items():
         if alias in q_lower or q_lower in alias:
             if valeur.lower() not in q_lower and valeur not in suggestions:
                 suggestions.append(valeur)
-    
-    # 3. Vérifier les alias de niveau
+
     for alias, valeur in ALIAS_NIVEAUX.items():
         if alias in q_lower or q_lower in alias:
             if valeur.lower() not in q_lower and valeur not in suggestions:
                 suggestions.append(valeur)
-    
-    # 4. Vérifier les alias de série
+
     for alias, valeur in ALIAS_SERIES.items():
         if alias in q_lower or q_lower in alias:
             if valeur.lower() not in q_lower and valeur not in suggestions:
                 suggestions.append(valeur)
-    
-    # 5. Corrections communes
+
     corrections_communes = {
         'mathematique': 'Mathématiques',
         'mathe': 'Mathématiques',
@@ -350,14 +305,13 @@ def suggerer_correction(q: str, niveau: str = None, serie: str = None) -> list:
         if faute in q_lower or q_lower in faute:
             if corrige not in suggestions:
                 suggestions.append(corrige)
-    
-    # 6. Supprimer les doublons et limiter à 5
+
     suggestions = list(dict.fromkeys(suggestions))
     return suggestions[:5]
 
 
 # ═══════════════════════════════════════════════════════
-# FONCTIONS DE BASE (non modifiées)
+# FONCTIONS DE BASE
 # ═══════════════════════════════════════════════════════
 
 def get_connection():
@@ -367,7 +321,6 @@ def get_connection():
 
 
 def creer_table_recherches_infructueuses():
-    """A appeler une fois (ou via create_table() dans database.py)."""
     conn = get_connection()
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS recherches_infructueuses (
@@ -382,49 +335,75 @@ def creer_table_recherches_infructueuses():
     conn.close()
 
 
-def rechercher(q: str, limite: int = 8, niveau: str = None, matiere: str = None) -> list[dict]:
+def rechercher(q: str, limite: int = 8, niveau: str = None, serie: str = None, matiere: str = None) -> list[dict]:
     """
-    Recherche par pertinence pure (doc section 3.3). Filtrable par
-    niveau et/ou matiere pour la recherche contextuelle par page :
-    - accueil : niveau=None, matiere=None -> tout l'index
-    - page niveau (ex: /bepc) : niveau='BEPC' -> scope au niveau
-    - page carrefour matiere : niveau + matiere -> scope precis
-    
-    Cette fonction est NON MODIFIEE pour garantir la compatibilité.
+    Recherche multi-mots INDEPENDANTE DE L'ORDRE, filtrable par
+    niveau/serie/matiere pour la personnalisation contextuelle :
+    - accueil : aucun filtre -> tout l'index
+    - page niveau (/bac) : niveau seul
+    - page serie (/bac/C) : niveau + serie
+    - page matiere (carrefour) : niveau + serie + matiere -> le plus precis
     """
     conn = get_connection()
     try:
         q_normalisee = normaliser(q)
+        tokens = [t for t in q_normalisee.split() if t]
+        if not tokens:
+            return []
 
         filtre_sql = ""
         filtre_params = []
         if niveau:
             filtre_sql += " AND niveau = ?"
             filtre_params.append(niveau)
+        if serie:
+            filtre_sql += " AND serie = ?"
+            filtre_params.append(serie)
         if matiere:
             filtre_sql += " AND matiere = ?"
             filtre_params.append(matiere)
 
-        debut = conn.execute(f"""
-            SELECT libelle, destination, type_source
+        # Priorite 1 : phrase complete contigue (le signal le plus fiable,
+        # ex: quelqu'un qui tape exactement "lycee classique d edea")
+        phrase_rows = conn.execute(f"""
+            SELECT libelle, destination, type_source, niveau, matiere, serie
             FROM search_index
             WHERE libelle_recherche LIKE ?{filtre_sql}
             ORDER BY libelle
-            LIMIT ?
-        """, (f"{q_normalisee}%", *filtre_params, limite)).fetchall()
+        """, (f"%{q_normalisee}%", *filtre_params)).fetchall()
 
-        resultats = [dict(r) for r in debut]
+        # Priorite 2 : tous les mots presents, n'importe quel ordre --
+        # c'est CA qui fait que "maths bac c" == "bac c maths".
+        # Les tokens d'1 caractere (ex: le 'c' de serie C) sont
+        # ignores ici -- LIKE '%c%' matcherait "chimie", "informatique"
+        # etc., beaucoup trop large. Le scoring (calculer_score) gere
+        # deja la precision de la serie via bonus_priorite, pas besoin
+        # que le filtre SQL en depende.
+        tokens_significatifs = [t for t in tokens if len(t) >= 2]
 
-        if len(resultats) < limite:
-            reste = limite - len(resultats)
-            contient = conn.execute(f"""
-                SELECT libelle, destination, type_source
+        if tokens_significatifs:
+            conditions_mots = " AND ".join(["libelle_recherche LIKE ?" for _ in tokens_significatifs])
+            params_mots = [f"%{t}%" for t in tokens_significatifs] + filtre_params
+            tokens_rows = conn.execute(f"""
+                SELECT libelle, destination, type_source, niveau, matiere, serie
                 FROM search_index
-                WHERE libelle_recherche LIKE ? AND libelle_recherche NOT LIKE ?{filtre_sql}
+                WHERE {conditions_mots}{filtre_sql}
                 ORDER BY libelle
-                LIMIT ?
-            """, (f"%{q_normalisee}%", f"{q_normalisee}%", *filtre_params, reste)).fetchall()
-            resultats.extend([dict(r) for r in contient])
+            """, params_mots).fetchall()
+        else:
+            tokens_rows = []
+
+        # Fusion en dedupliquant par destination -- phrase exacte
+        # d'abord, puis le reste des matches multi-mots
+        vus = set()
+        resultats = []
+        for r in list(phrase_rows) + list(tokens_rows):
+            if r['destination'] in vus:
+                continue
+            vus.add(r['destination'])
+            resultats.append(dict(r))
+            if len(resultats) >= limite:
+                break
 
         return resultats
     except Exception as e:
@@ -435,60 +414,39 @@ def rechercher(q: str, limite: int = 8, niveau: str = None, matiere: str = None)
 
 
 # ═══════════════════════════════════════════════════════
-# SCORING - Algorithme de pertinence (PageRank-like)
+# SCORING - Algorithme de pertinence
 # ═══════════════════════════════════════════════════════
 
 def calculer_score(item: dict, q: str, normalisation: dict) -> int:
-    """
-    Calcule un score de pertinence pour chaque résultat.
-    
-    Scoring amélioré avec priorité des matières par série.
-    
-    Critères :
-    - Match exact de la matière avec bonus série : 40 points max
-    - Bonus niveau : 20 points
-    - Bonus série : 15 points
-    - Fraîcheur (année) : 15 points
-    - Popularité (vues) : 10 points
-    - Bonus source (type_source) : 5 points
-    - Bonus qualité (titre contient "corrigé") : 5 points
-    """
     score = 0
     q_lower = q.lower()
     from datetime import datetime
-    
-    # 1. MATCH EXACT DE LA MATIERE AVEC BONUS SÉRIE (40 points max)
-    if 'matiere' in item:
+
+    if item.get('matiere'):
         matiere_item = item['matiere'].lower()
         matiere_detectee = normalisation.get('matiere_detectee')
         niveau_detecte = normalisation.get('niveau_detecte')
         serie_detectee = normalisation.get('serie_detectee')
-        
-        # Trouver la matière canonique
+
         matiere_canonique = None
         for alias, canonique in MATIERES_CANONIQUES.items():
             if alias in matiere_item or matiere_item in alias:
                 matiere_canonique = canonique
                 break
-        
         if not matiere_canonique:
             matiere_canonique = matiere_item.title()
-        
-        # Calculer le bonus de priorité selon la série
+
         bonus_priorite = 0
         if niveau_detecte == 'BEPC':
             priorites = PRIORITES_MATIERES.get('BEPC', {})
             bonus_priorite = priorites.get(matiere_canonique, 0)
         elif serie_detectee:
-            # Essayer d'abord avec la série détectée
             priorites = PRIORITES_MATIERES.get(serie_detectee.upper(), {})
             bonus_priorite = priorites.get(matiere_canonique, 0)
-            # Si pas trouvé, essayer avec la série de l'item
-            if bonus_priorite == 0 and 'serie' in item and item['serie']:
+            if bonus_priorite == 0 and item.get('serie'):
                 priorites = PRIORITES_MATIERES.get(item['serie'].upper(), {})
                 bonus_priorite = priorites.get(matiere_canonique, 0)
-        
-        # Match exact
+
         if matiere_detectee:
             if matiere_detectee.lower() == matiere_item:
                 score += 20 + bonus_priorite
@@ -497,47 +455,39 @@ def calculer_score(item: dict, q: str, normalisation: dict) -> int:
             elif matiere_item in matiere_detectee.lower():
                 score += 10 + (bonus_priorite // 3)
         else:
-            # Match partiel avec les mots de la requête
             for mot in q_lower.split():
                 if len(mot) >= 3 and mot in matiere_item:
                     score += 10
                     break
-    
-    # 2. BONUS NIVEAU (20 points)
+
     niveau_detecte = normalisation.get('niveau_detecte')
-    if niveau_detecte and 'niveau' in item:
+    if niveau_detecte and item.get('niveau'):
         niveau_item = (item['niveau'] or '').lower()
         niveau_req = niveau_detecte.lower()
-        
         if niveau_req == niveau_item:
             score += 20
         elif niveau_req in niveau_item or niveau_item in niveau_req:
             score += 12
-    
-    # 3. BONUS SERIE (15 points)
+
     serie_detectee = normalisation.get('serie_detectee')
-    if serie_detectee and 'serie' in item and item['serie']:
+    if serie_detectee and item.get('serie'):
         serie_item = item['serie'].upper()
         serie_req = serie_detectee.upper()
-        
         if serie_req == serie_item:
             score += 15
         elif serie_req in serie_item or serie_item in serie_req:
             score += 8
-    
-    # 4. FRAICHEUR (15 points)
+
     annee = None
     annee_match = re.search(r'(20\d{2})', item.get('libelle', ''))
     if annee_match:
         annee = int(annee_match.group(1))
-    
     if not annee and normalisation.get('annee_detectee'):
         annee = normalisation.get('annee_detectee')
-    
+
     if annee:
         annee_actuelle = datetime.now().year
         age = annee_actuelle - annee
-        
         if age <= 1:
             score += 15
         elif age <= 2:
@@ -548,8 +498,7 @@ def calculer_score(item: dict, q: str, normalisation: dict) -> int:
             score += 6
         elif age <= 10:
             score += 3
-    
-    # 5. POPULARITE (10 points)
+
     vues = item.get('vues', 0)
     if vues > 0:
         if vues >= 1000:
@@ -560,116 +509,74 @@ def calculer_score(item: dict, q: str, normalisation: dict) -> int:
             score += 4
         elif vues >= 10:
             score += 2
-    
-    # 6. BONUS SOURCE (5 points)
+
     type_source = item.get('type_source', '')
     if type_source == 'officiel':
-        score += 5
+        score += 10
     elif type_source == 'blanc':
-        score += 3
+        score += 5
     elif type_source == 'externe':
-        # Bonus pour les externes si le titre contient "corrigé"
         libelle = item.get('libelle', '').lower()
         if 'corrigé' in libelle or 'corrige' in libelle:
             score += 3
         else:
-            score += 2
-    
-    # 7. BONUS QUALITE (5 points) - titre contient "corrigé"
+            score += 1
+
     libelle = item.get('libelle', '').lower()
     if 'corrigé' in libelle or 'corrige' in libelle:
         score += 5
-    
+
     return score
 
 
-# ═══════════════════════════════════════════════════════
-# RECHERCHE AVEC SCORING
-# ═══════════════════════════════════════════════════════
-
-def rechercher_avec_scoring(q: str, limite: int = 8, niveau: str = None, matiere: str = None) -> dict:
+def rechercher_avec_scoring(q: str, limite: int = 8, niveau: str = None, serie: str = None, matiere: str = None) -> dict:
     """
-    Version améliorée de rechercher() qui utilise :
-    - Les alias
-    - Le scoring de pertinence
-    - Les suggestions
-    
-    Retourne :
-        {
-            'resultats': [...],  # triés par score
-            'suggestions': [...],
-            'requete_normalisee': '...',
-            'total_trouve': 0
-        }
+    Version amelioree de rechercher() : alias + scoring + suggestions.
+    Retourne {'resultats': [...], 'suggestions': [...],
+              'requete_normalisee': '...', 'total_trouve': 0}
     """
-    # 1. Normaliser la requête
     normalisation = normaliser_requete_complete(q)
     q_avec_alias = normalisation['query_normalisee']
-    
-    # 2. Si la requête normalisée est vide, utiliser l'originale
     if not q_avec_alias:
         q_avec_alias = q
-    
-    # 3. Récupérer les résultats (on prend plus pour le scoring)
-    resultats_bruts = rechercher(q_avec_alias, limite=limite * 3, niveau=niveau, matiere=matiere)
-    
-    # 4. Enrichir avec les métadonnées et calculer le score
+
+    resultats_bruts = rechercher(q_avec_alias, limite=limite * 3, niveau=niveau, serie=serie, matiere=matiere)
+
     resultats_enrichis = []
-    
     for item in resultats_bruts:
-        # Récupérer les vues pour les officiels
         if item.get('type_source') == 'officiel':
-            # Extraire l'année depuis la destination (#card-YYYY)
             annee_match = re.search(r'#card-(\d{4})', item.get('destination', ''))
-            if annee_match:
-                item['annee'] = int(annee_match.group(1))
-            else:
-                item['annee'] = None
-            
-            # Chercher les vues dans la table annales
+            item['annee'] = int(annee_match.group(1)) if annee_match else None
             try:
                 conn = get_connection()
                 row = conn.execute("""
-                    SELECT vues FROM annales 
+                    SELECT vues FROM annales
                     WHERE matiere = ? AND annee = ?
                     LIMIT 1
                 """, (item.get('matiere'), item.get('annee', 0))).fetchone()
-                if row:
-                    item['vues'] = row['vues']
-                else:
-                    item['vues'] = 0
+                item['vues'] = row['vues'] if row else 0
                 conn.close()
-            except:
+            except Exception:
                 item['vues'] = 0
         else:
             item['vues'] = 0
-        
-        # Extraire l'année du libellé si pas déjà faite
+
         if 'annee' not in item or not item['annee']:
             annee_match = re.search(r'(20\d{2})', item.get('libelle', ''))
-            if annee_match:
-                item['annee'] = int(annee_match.group(1))
-            else:
-                item['annee'] = None
-        
-        # Calculer le score
+            item['annee'] = int(annee_match.group(1)) if annee_match else None
+
         item['score'] = calculer_score(item, q, normalisation)
         resultats_enrichis.append(item)
-    
-    # 5. Trier par score décroissant
+
     resultats_tries = sorted(resultats_enrichis, key=lambda x: x.get('score', 0), reverse=True)
-    
-    # 6. Limiter le nombre de résultats
     resultats_finaux = resultats_tries[:limite]
-    
-    # 7. Suggestions si pas de résultats
+
     suggestions = []
     if not resultats_finaux and len(q) >= 3:
-        # Déterminer niveau et série pour les suggestions
         niveau_sugg = normalisation.get('niveau_detecte')
         serie_sugg = normalisation.get('serie_detectee')
         suggestions = suggerer_correction(q, niveau=niveau_sugg, serie=serie_sugg)
-    
+
     return {
         'resultats': resultats_finaux,
         'suggestions': suggestions,
@@ -678,16 +585,7 @@ def rechercher_avec_scoring(q: str, limite: int = 8, niveau: str = None, matiere
     }
 
 
-# ═══════════════════════════════════════════════════════
-# ENREGISTREMENT DES RECHERCHES INFructueuses
-# ═══════════════════════════════════════════════════════
-
 def enregistrer_recherche_infructueuse(q: str):
-    """
-    Incremente le compteur si la requete existe deja, sinon la cree.
-    Signal gratuit de la demande reelle (doc section 3.5) -- a
-    consulter periodiquement pour prioriser le scraping.
-    """
     conn = get_connection()
     try:
         conn.execute("""
@@ -705,7 +603,6 @@ def enregistrer_recherche_infructueuse(q: str):
 
 
 def get_recherches_infructueuses_frequentes(limite: int = 20) -> list[dict]:
-    """Pour un futur dashboard admin -- les requetes les plus demandees sans resultat."""
     conn = get_connection()
     try:
         rows = conn.execute("""

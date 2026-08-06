@@ -85,6 +85,7 @@
    par la route qui a rendu la page en cours. is defined evite une
    erreur Jinja si la route ne les fournit pas (ex: accueil). #}
 {% set ctx_niveau = niveau if niveau is defined and niveau else '' %}
+{% set ctx_serie = serie if serie is defined and serie else '' %}
 {% set ctx_matiere = matiere if matiere is defined and matiere else '' %}
 
 <div class="search-zone">
@@ -100,8 +101,9 @@
       class="search-input"
       id="search-input"
       data-niveau="{{ ctx_niveau }}"
+      data-serie="{{ ctx_serie }}"
       data-matiere="{{ ctx_matiere }}"
-      placeholder="{% if ctx_matiere %}Rechercher en {{ ctx_matiere }}...{% elif ctx_niveau %}Rechercher en {{ ctx_niveau }}...{% else %}Rechercher un examen, un établissement...{% endif %}"
+      placeholder="{% if ctx_matiere %}Rechercher en {{ ctx_matiere }}...{% elif ctx_serie %}Rechercher en {{ ctx_niveau }} {{ ctx_serie }}...{% elif ctx_niveau %}Rechercher en {{ ctx_niveau }}...{% else %}Rechercher un examen, un établissement...{% endif %}"
       autocomplete="off"
     >
     <button class="search-clear" id="search-clear" aria-label="Effacer">
@@ -124,6 +126,7 @@
   var currentItems = [];
 
   var niveauCtx = input.dataset.niveau || '';
+  var serieCtx = input.dataset.serie || '';
   var matiereCtx = input.dataset.matiere || '';
 
   function fermer() {
@@ -156,7 +159,7 @@
 
     box.innerHTML = resultats.map(function(r, i) {
       return '<a href="' + r.destination + '" class="suggestion-item" data-index="' + i + '" ' +
-             'data-destination="' + r.destination + '" data-niveau="' + (r.niveau || '') + '" data-matiere="' + (r.matiere || '') + '">' +
+             'data-destination="' + r.destination + '" data-niveau="' + (r.niveau || '') + '" data-serie="' + (r.serie || '') + '" data-matiere="' + (r.matiere || '') + '">' +
              iconeLoupe() + '<span>' + r.libelle + '</span></a>';
     }).join('');
     box.classList.add('open');
@@ -171,6 +174,7 @@
             requete: input.value,
             destination: el.dataset.destination,
             niveau: el.dataset.niveau,
+            serie: el.dataset.serie,
             matiere: el.dataset.matiere,
           });
           navigator.sendBeacon('/api/log-clic', new Blob([payload], { type: 'application/json' }));
@@ -192,6 +196,7 @@
     debounceTimer = setTimeout(function() {
       var url = '/api/search?q=' + encodeURIComponent(q);
       if (niveauCtx) url += '&niveau=' + encodeURIComponent(niveauCtx);
+      if (serieCtx) url += '&serie=' + encodeURIComponent(serieCtx);
       if (matiereCtx) url += '&matiere=' + encodeURIComponent(matiereCtx);
 
       fetch(url)

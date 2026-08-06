@@ -636,16 +636,26 @@ def redirection_externe(annale_id):
 #   from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
 # ═══════════════════════════════════════
 
+# À REMPLACER dans app.py (route /api/search existante)
+# ═══════════════════════════════════════
+
 @app.route('/api/search')
 def api_search():
     q = request.args.get('q', '').strip()
     niveau = request.args.get('niveau') or None
+    serie = request.args.get('serie') or None
     matiere = request.args.get('matiere') or None
 
     if len(q) < 2:
         return jsonify({'resultats': [], 'suggestions': [], 'total_trouve': 0})
 
-    resultat = rechercher_avec_scoring(q, limite=8, niveau=niveau, matiere=matiere)
+    resultat = rechercher_avec_scoring(q, limite=8, niveau=niveau, serie=serie, matiere=matiere)
+
+    if len(q) >= 3:
+        log_evenement(
+            'recherche', g.session_id, route=request.path,
+            niveau=niveau, matiere=matiere, requete=q
+        )
 
     if not resultat['resultats'] and len(q) >= 3:
         enregistrer_recherche_infructueuse(q)
