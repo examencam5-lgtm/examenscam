@@ -98,36 +98,6 @@ def get_annales(niveau: str, serie: Optional[str] = None,
         return []
     finally:
         conn.close()
-
-def get_annale_by_id(annale_id: int) -> Optional[dict]:
-    conn = get_connection()
-    try:
-        row = conn.execute(
-            "SELECT * FROM annales WHERE id = ? AND actif = 1",
-            (annale_id,)
-        ).fetchone()
-        return dict(row) if row else None
-    except Exception as e:
-        print(f"get_annale_by_id error: {e}")
-        return None
-    finally:
-        conn.close()
-
-def get_all_annales() -> list:
-    conn = get_connection()
-    try:
-        rows = conn.execute("""
-            SELECT * FROM annales
-            WHERE actif = 1
-            ORDER BY date_ajout DESC
-        """).fetchall()
-        return [dict(row) for row in rows]
-    except Exception as e:
-        print(f"get_all_annales error: {e}")
-        return []
-    finally:
-        conn.close()
-
 def get_stats() -> dict:
     conn = get_connection()
     try:
@@ -147,55 +117,11 @@ def get_stats() -> dict:
         return {'total': 0, 'par_niveau': []}
     finally:
         conn.close()
-
-def add_annale(niveau: str, serie: Optional[str], matiere: str,
-               annee: int, lien_drive: str, corrige_dispo: bool = False,
-               lien_corrige: Optional[str] = None, source: str = 'inconnu') -> int:
-    conn = get_connection()
-    try:
-        cursor = conn.execute("""
-            INSERT OR IGNORE INTO annales
-                (niveau, serie, matiere, annee, lien_drive,
-                 corrige_dispo, lien_corrige, source)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (niveau, serie or None, matiere, annee, lien_drive,
-              int(corrige_dispo), lien_corrige or None, source))
-        conn.commit()
-        return cursor.lastrowid
-    except Exception as e:
-        print(f"add_annale error: {e}")
-        return -1
-    finally:
-        conn.close()
-
-def delete_annale(annale_id: int) -> bool:
-    conn = get_connection()
-    try:
-        conn.execute(
-            "DELETE FROM annales WHERE id = ?", (annale_id,)
-        )
-        conn.commit()
-        return True
-    except Exception as e:
-        print(f"delete_annale error: {e}")
-        return False
-    finally:
-        conn.close()
-
 def increment_vues(annale_id: int):
     conn = get_connection()
-    try:
-        conn.execute(
-            "UPDATE annales SET vues = vues + 1 WHERE id = ?", (annale_id,)
-        )
-        conn.commit()
-    except Exception as e:
-        print(f"increment_vues error: {e}")
-    finally:
-        conn.close()
-
-# À ajouter dans database.py
-
+    conn.execute("UPDATE annales SET vues = vues + 1 WHERE id = ?", (annale_id,))
+    conn.commit()
+    conn.close()
 def get_derniere_maj():
     """
     Renvoie la date de la derniere annale ajoutee en base,
