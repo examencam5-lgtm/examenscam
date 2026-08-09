@@ -509,12 +509,9 @@ def calculer_score(item: dict, q: str, normalisation: dict) -> int:
             score += 4
         elif vues >= 10:
             score += 2
-
     type_source = item.get('type_source', '')
     if type_source == 'officiel':
         score += 10
-    elif type_source == 'blanc':
-        score += 5
     elif type_source == 'externe':
         libelle = item.get('libelle', '').lower()
         if 'corrigé' in libelle or 'corrige' in libelle:
