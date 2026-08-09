@@ -1,7 +1,7 @@
 """
 generer_search_index.py — ExamensCam
-Regenere la table 'search_index' a partir des 3 tables metier
-(annales, annales_blanches, annales_externes).
+Regenere la table 'search_index' a partir des tables metier
+(annales, annales_externes).
 
 A relancer apres chaque import :
     python generer_search_index.py
@@ -92,38 +92,6 @@ def peupler_officielles(conn):
     return len(entrees)
 
 
-def peupler_blanches(conn):
-    """Table 'annales_blanches' -> page de liste /blancs/<niveau>/<serie>/<matiere>"""
-    rows = conn.execute("""
-        SELECT id, niveau, serie, matiere, annee, region, type_evaluation, titre
-        FROM annales_blanches WHERE actif = 1
-    """).fetchall()
-
-    entrees = []
-    for r in rows:
-        parties = [r['niveau']]
-        if r['serie']:
-            parties.append(r['serie'])
-        parties.append(r['matiere'])
-        parties.append(str(r['annee']))
-        libelle = ' '.join(parties)
-        if r['type_evaluation']:
-            libelle += f" - {r['type_evaluation']}"
-        if r['region']:
-            libelle += f" ({r['region']})"
-
-        serie_url = r['serie'] if r['serie'] else 'na'
-        destination = f"/blancs/{r['niveau']}/{serie_url}/{r['matiere']}"
-
-        entrees.append((libelle, normaliser(libelle), destination, 'blanc', r['niveau'], r['matiere'], r['serie']))
-
-    conn.executemany(
-        "INSERT INTO search_index (libelle, libelle_recherche, destination, type_source, niveau, matiere, serie) VALUES (?,?,?,?,?,?,?)",
-        entrees
-    )
-    return len(entrees)
-
-
 def peupler_externes(conn):
     """Table 'annales_externes' -> redirection vers la page article (jamais le PDF direct)."""
     rows = conn.execute("""
@@ -161,15 +129,13 @@ def generer():
     try:
         creer_table_index(conn)
         n1 = peupler_officielles(conn)
-        n2 = peupler_blanches(conn)
         n3 = peupler_externes(conn)
         conn.commit()
 
         print(f"Index regenere :")
         print(f"  - officielles : {n1}")
-        print(f"  - blanches    : {n2}")
         print(f"  - externes    : {n3}")
-        print(f"  - total       : {n1 + n2 + n3}")
+        print(f"  - total       : {n1 + n3}")
     except Exception as e:
         print(f"Erreur generation index : {e}")
         conn.rollback()
