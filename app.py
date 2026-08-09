@@ -62,7 +62,7 @@ CATALOGUE = {
         'C': ['Mathematiques','Physique','Chimie','Philosophie','Français','Anglais'],
         'D': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
         'TI': ['Mathematiques','Physique','Chimie','Informatique','Philosophie','Français','Anglais'],
-        'A4': ['Philosophie','Français','Anglais','Histoire-Géo'],
+        'A4': ['Philosophie','Français','Anglais','Histoire','Mathematiques','Geographie'],
     },
     'BAC': {
         'C': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
