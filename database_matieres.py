@@ -1,14 +1,14 @@
 """
 database_matieres.py — ExamensCam
 Liste les matieres reellement disponibles pour un niveau/serie
-donne, en croisant les 3 tables (annales, annales_blanches,
-annales_externes) -- pas seulement 'annales' comme le faisait
-get_matieres_fallback() jusqu'ici.
+donne, en croisant les 2 tables (annales, annales_externes) --
+pas seulement 'annales' comme le faisait get_matieres_fallback()
+jusqu'ici.
 
 Pourquoi ce fichier est separe : eviter les imports circulaires
-entre database.py, database_blanches.py et database_externes.py --
-celui-ci se contente d'ouvrir sa propre connexion et de lire, sans
-dependre des autres modules.
+entre database.py et database_externes.py -- celui-ci se contente
+d'ouvrir sa propre connexion et de lire, sans dependre des autres
+modules.
 """
 import sqlite3
 from pathlib import Path
@@ -26,6 +26,8 @@ ORDRE_PAR_SERIE = {
     "TI": ["Mathematiques", "Physique", "Informatique", "Chimie"],
     "A4": ["Litterature", "Anglais", "Allemand", "Espagnol", "Francais", "Histoire", "Geographie"],
 }
+
+TABLES_SOURCES = ("annales", "annales_externes")
 
 
 def get_connection():
@@ -47,24 +49,17 @@ def trier_matieres(matieres: set, serie: Optional[str]) -> list[str]:
 
 def get_toutes_matieres(niveau: str, serie: Optional[str] = None) -> list[str]:
     """
-    Union des matieres presentes dans les 3 tables pour ce
-    niveau/serie, triee alphabetiquement, sans doublons.
+    Union des matieres presentes dans les tables sources pour ce
+    niveau/serie, triee selon l'ordre pedagogique, sans doublons.
     """
     conn = get_connection()
     try:
         matieres = set()
 
-        for table in ("annales", "annales_blanches", "annales_externes"):
+        for table in TABLES_SOURCES:
             query = f"SELECT DISTINCT matiere FROM {table} WHERE niveau = ? AND actif = 1"
             params = [niveau]
             if serie:
-                # serie IS NULL ne doit "compter pour toutes les series"
-                # QUE pour les niveaux qui n'ont structurellement pas de
-                # serie (BEPC). Pour BAC/Probatoire, une ligne mal
-                # classee (serie=None par echec de detection au scraping)
-                # ne doit PAS apparaitre sur toutes les pages de serie --
-                # c'est exactement le bug qui faisait fuiter Allemand/
-                # Espagnol sur la page BAC C alors qu'ils n'y appartiennent pas.
                 if niveau == 'BEPC':
                     query += " AND (serie = ? OR serie IS NULL)"
                 else:
