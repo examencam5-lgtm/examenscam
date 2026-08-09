@@ -136,8 +136,3 @@ def get_sequences_disponibles(niveau_serie: str, matiere: str) -> list[dict]:
     conn.close()
     sequences_avec_donnees = {r[0] for r in rows}
     return [{"num": s, "disponible": s in sequences_avec_donnees} for s in range(1, 7)]
-
-
-if __name__ == "__main__":
-    print("Matieres terminale-c :", get_matieres_externes("terminale-c"))
-    print("Annees disponibles :", get_annees_disponibles("terminale-c", "Mathematiques"))
