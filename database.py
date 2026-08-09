@@ -34,18 +34,6 @@ def create_table():
         CREATE INDEX IF NOT EXISTS idx_niveau_serie ON annales(niveau, serie);
         CREATE INDEX IF NOT EXISTS idx_matiere ON annales(matiere);
         CREATE INDEX IF NOT EXISTS idx_annee ON annales(annee);
-
-        CREATE TABLE IF NOT EXISTS transactions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            annale_id INTEGER REFERENCES annales(id),
-            telephone TEXT NOT NULL,
-            methode TEXT NOT NULL,
-            montant INTEGER NOT NULL DEFAULT 1000,
-            statut TEXT NOT NULL DEFAULT 'en_attente',
-            reference TEXT,
-            date_creation TEXT DEFAULT (datetime('now')),
-            date_paiement TEXT
-        );
     """)
     conn.commit()
     conn.close()
@@ -98,6 +86,7 @@ def get_annales(niveau: str, serie: Optional[str] = None,
         return []
     finally:
         conn.close()
+
 def get_stats() -> dict:
     conn = get_connection()
     try:
@@ -117,11 +106,13 @@ def get_stats() -> dict:
         return {'total': 0, 'par_niveau': []}
     finally:
         conn.close()
+
 def increment_vues(annale_id: int):
     conn = get_connection()
     conn.execute("UPDATE annales SET vues = vues + 1 WHERE id = ?", (annale_id,))
     conn.commit()
     conn.close()
+
 def get_derniere_maj():
     """
     Renvoie la date de la derniere annale ajoutee en base,
@@ -137,8 +128,6 @@ def get_derniere_maj():
         if not row or not row['derniere']:
             return None
 
-        # date_ajout stocke via datetime('now'), ex: '2026-07-28 14:32:10'
-        # split sur '.' au cas ou SQLite ajoute des microsecondes
         valeur = row['derniere'].split('.')[0]
         dt = datetime.strptime(valeur, "%Y-%m-%d %H:%M:%S")
 
@@ -151,20 +140,5 @@ def get_derniere_maj():
     except Exception as e:
         print(f"get_derniere_maj error: {e}")
         return None
-    finally:
-        conn.close()
-
-
-def get_total_blancs() -> int:
-    """Nombre d'annales blanches actives en base."""
-    conn = get_connection()
-    try:
-        row = conn.execute(
-            "SELECT COUNT(*) as n FROM annales WHERE actif = 1 AND type_sujet = 'blanc'"
-        ).fetchone()
-        return row['n'] if row else 0
-    except Exception as e:
-        print(f"get_total_blancs error: {e}")
-        return 0
     finally:
         conn.close()

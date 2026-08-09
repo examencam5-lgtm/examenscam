@@ -2,15 +2,13 @@
 import os, re
 from flask import Flask, render_template, redirect, request, abort, jsonify
 from database_carrefour import get_carrefour
-from database_blanches import get_epreuves_blanches, get_regions_disponibles
 from database_matieres import get_toutes_matieres
-from database_corriges import get_pack_detail, get_packs_catalogue
 from database_externes import (
     get_matieres_externes, get_annales_externes, get_annale_externe_by_id,
     increment_vue_externe, get_annees_disponibles, get_sequences_disponibles,
     CORRESPONDANCE_NIVEAU_SERIE
 )
-from database import (get_annales, get_matieres, increment_vues, get_stats, get_total_blancs,
+from database import (get_annales, get_matieres, increment_vues, get_stats,
                       get_derniere_maj, create_table)
 from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
 from flask import g
@@ -66,23 +64,11 @@ CATALOGUE = {
         'TI': ['Mathematiques','Physique','Chimie','Informatique','Philosophie','Français','Anglais'],
         'A4': ['Philosophie','Français','Anglais','Histoire-Géo'],
     },
-    'Probatoire Blanc': {
-        'C': ['Mathematiques','Physique','Chimie','Philosophie','Français','Anglais'],
-        'D': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
-        'TI': ['Mathematiques','Physique','Chimie','Informatique','Français','Anglais'],
-        'A4': ['Philosophie','Français','Anglais','Histoire-Géo'],
-    },
     'BAC': {
         'C': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
         'D': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
         'TI': ['Mathematiques','Physique','Chimie','Informatique','Dessin Industriel','Philosophie','Français','Anglais'],
         'A4': ['Philosophie','Français','Anglais','Histoire-Géo','Latin','Economie'],
-    },
-    'BAC Blanc': {
-        'C': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
-        'D': ['Mathematiques','Physique','Chimie','SVT','Philosophie','Français','Anglais'],
-        'TI': ['Mathematiques','Physique','Chimie','Informatique','Français','Anglais'],
-        'A4': ['Philosophie','Français','Anglais','Histoire-Géo'],
     },
 }
 
@@ -108,9 +94,8 @@ def inject_globals():
 @app.route('/')
 def index():
     stats = get_stats()
-    total_blancs = get_total_blancs()
     derniere_maj = get_derniere_maj()
-    return render_template('index.html', stats=stats, total=stats['total'], total_blancs=total_blancs, derniere_maj=derniere_maj)
+    return render_template('index.html', stats=stats, total=stats['total'], derniere_maj=derniere_maj)
 
 @app.route('/conditions')
 def conditions():
@@ -154,48 +139,30 @@ def bac_serie(serie):
 @app.route('/bepc/<matiere>')
 def bepc_choix(matiere):
     officiels = get_annales('BEPC', matiere=matiere, type_sujet='officiel')
-    blancs = get_annales('BEPC', matiere=matiere, type_sujet='blanc')
     return render_template('choix_type.html',
         niveau='BEPC', serie=None, matiere=matiere,
         nb_officiels=len(officiels),
-        nb_blancs=len(blancs),
-        nb_corriges=len([a for a in officiels + blancs if a.get('corrige_dispo')]),
-        url_off_enonces=f'/annales/BEPC/{matiere}/officiel/enonces',
-        url_off_corriges=f'/annales/BEPC/{matiere}/officiel/corriges',
-        url_blanc_enonces=f'/annales/BEPC/{matiere}/blanc/enonces',
-        url_blanc_corriges=f'/annales/BEPC/{matiere}/blanc/corriges')
+        url_off_enonces=f'/annales/BEPC/{matiere}/officiel/enonces')
 
 @app.route('/probatoire/<serie>/<matiere>')
 def probatoire_choix(serie, matiere):
     if serie not in SERIES_VALIDES:
         abort(404)
     officiels = get_annales('Probatoire', serie=serie, matiere=matiere, type_sujet='officiel')
-    blancs = get_annales('Probatoire', serie=serie, matiere=matiere, type_sujet='blanc')
     return render_template('choix_type.html',
         niveau='Probatoire', serie=serie, matiere=matiere,
         nb_officiels=len(officiels),
-        nb_blancs=len(blancs),
-        nb_corriges=len([a for a in officiels + blancs if a.get('corrige_dispo')]),
-        url_off_enonces=f'/annales/Probatoire/{serie}/{matiere}/officiel/enonces',
-        url_off_corriges=f'/annales/Probatoire/{serie}/{matiere}/officiel/corriges',
-        url_blanc_enonces=f'/annales/Probatoire/{serie}/{matiere}/blanc/enonces',
-        url_blanc_corriges=f'/annales/Probatoire/{serie}/{matiere}/blanc/corriges')
+        url_off_enonces=f'/annales/Probatoire/{serie}/{matiere}/officiel/enonces')
 
 @app.route('/bac/<serie>/<matiere>')
 def bac_choix(serie, matiere):
     if serie not in SERIES_VALIDES:
         abort(404)
     officiels = get_annales('BAC', serie=serie, matiere=matiere, type_sujet='officiel')
-    blancs = get_annales('BAC', serie=serie, matiere=matiere, type_sujet='blanc')
     return render_template('choix_type.html',
         niveau='BAC', serie=serie, matiere=matiere,
         nb_officiels=len(officiels),
-        nb_blancs=len(blancs),
-        nb_corriges=len([a for a in officiels + blancs if a.get('corrige_dispo')]),
-        url_off_enonces=f'/annales/BAC/{serie}/{matiere}/officiel/enonces',
-        url_off_corriges=f'/annales/BAC/{serie}/{matiere}/officiel/corriges',
-        url_blanc_enonces=f'/annales/BAC/{serie}/{matiere}/blanc/enonces',
-        url_blanc_corriges=f'/annales/BAC/{serie}/{matiere}/blanc/corriges')
+        url_off_enonces=f'/annales/BAC/{serie}/{matiere}/officiel/enonces')
 
 @app.route('/annales/<niveau>/<matiere>/<type_sujet>/<type_doc>')
 def annales_bepc(niveau, matiere, type_sujet, type_doc):
@@ -275,62 +242,13 @@ def acces_interdit(e):
     return render_template('403.html'), 403
 
 # ═══════════════════════════════════════
-# CARREFOUR (5 branches)
+# CARREFOUR (2 branches V1 : officiel + établissements)
 # ═══════════════════════════════════════
 @app.route('/carrefour/<niveau>/<matiere>')
 def carrefour_niveau(niveau, matiere):
     serie = request.args.get('serie')
     data = get_carrefour(niveau, matiere, serie=serie)
     return render_template('carrefour.html', niveau=niveau, serie=serie, matiere=matiere, data=data)
-
-# ═══════════════════════════════════════
-# EXAMENS BLANCS
-# ═══════════════════════════════════════
-
-@app.route('/blancs/<niveau>/<serie>/<matiere>')
-def blancs_liste(niveau, serie, matiere):
-    serie_reelle = None if serie == 'na' else serie
-    region = request.args.get('region')
-    epreuves = get_epreuves_blanches(niveau, matiere, serie=serie_reelle, region=region)
-    regions = get_regions_disponibles(niveau, matiere, serie=serie_reelle)
-    return render_template('blancs_liste.html', niveau=niveau, serie=serie_reelle,
-                            matiere=matiere, epreuves=epreuves,
-                            regions_disponibles=regions, region_active=region)
-
-@app.route('/voir-blanc/<int:epreuve_id>')
-def voir_blanche(epreuve_id):
-    from database_blanches import get_connection
-    conn = get_connection()
-    epreuve = conn.execute(
-        "SELECT * FROM annales_blanches WHERE id=? AND actif=1", (epreuve_id,)
-    ).fetchone()
-    conn.close()
-    if not epreuve:
-        return "Épreuve introuvable", 404
-    return render_template('voir_blanche.html', epreuve=epreuve)
-
-# ═══════════════════════════════════════
-# CORRIGÉS (officiel + blanc)
-# ═══════════════════════════════════════
-
-@app.route('/corriges')
-def corriges_catalogue():
-    packs = get_packs_catalogue()
-    return render_template('corriges_catalogue.html', packs=packs)
-
-@app.route('/corriges/<niveau>/<serie>/<matiere>')
-def corriges_fiche(niveau, serie, matiere):
-    from database_corriges import get_pack_par_matiere
-    serie_reelle = None if serie == 'na' else serie
-    pack_resume = get_pack_par_matiere(niveau, serie_reelle, matiere)
-    if not pack_resume:
-        return "Pack introuvable", 404
-    pack = get_pack_detail(pack_resume['id'])
-    return render_template('corriges_fiche.html', pack=pack)
-
-@app.route('/corriges-blancs/<niveau>/<serie>/<matiere>')
-def corriges_fiche_blanc(niveau, serie, matiere):
-    return "Page en construction", 200
 
 # ═══════════════════════════════════════
 # ÉTABLISSEMENTS
@@ -409,10 +327,6 @@ def api_log_clic():
     return '', 204
 
 def admin_requis(f):
-    """
-    Decorateur : verifie que la session Flask a ete authentifiee
-    via /admin/login, redirige vers le login sinon.
-    """
     @wraps(f)
     def wrapper(*args, **kwargs):
         if not session.get('admin_connecte'):
@@ -435,10 +349,6 @@ def admin_login():
 def admin_logout():
     session.pop('admin_connecte', None)
     return redirect('/admin/login')
-
-# ═══════════════════════════════════════════════════════
-# ROUTES DASHBOARD
-# ═══════════════════════════════════════════════════════
 
 @app.route('/admin/dashboard')
 @admin_requis
