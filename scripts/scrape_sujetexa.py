@@ -1,4 +1,4 @@
-# scripts/scrape_sujetexa.py
+   # scripts/scrape_sujetexa.py
 """
 Scrape les liens PDF de sujetexa.com pour un niveau/série/année donné.
 On ne télécharge RIEN : on récupère uniquement les URLs des PDFs,
@@ -10,6 +10,13 @@ Usage :
 
 Sortie : un CSV dans data/liens_externes/ avec les colonnes
 niveau, serie, matiere, annee, titre, lien_pdf, lien_page, source
+
+MODIFICATION (recree apres suppression accidentelle + episode de
+coupures DNS repetees le meme jour) : ajout d'un retry automatique
+sur les erreurs reseau (jusqu'a 3 tentatives, avec pause entre
+chaque), pour ne pas perdre toute une session de scraping a cause
+d'une coupure de quelques secondes -- frequent avec la connexion a
+Maroua.
 """
 
 import re
@@ -23,9 +30,6 @@ from bs4 import BeautifulSoup
 # ═══════════════════════════════════════════════════════
 # 1. MAPPING DES CATÉGORIES SUJETEXA
 # ═══════════════════════════════════════════════════════
-# Chaque "niveau/série" correspond à plusieurs sous-catégories matière
-# sur sujetexa. On a extrait ça manuellement depuis leur menu de navigation.
-# Le nom de matière (clé) sera stocké tel quel dans le CSV.
 
 CATEGORIES = {
     "troisieme": {
@@ -44,7 +48,7 @@ CATEGORIES = {
         "Francais": "francais_pa",
         "Anglais": "anglais_pa",
         "Informatique": "informatique_pa",
-        "Philosophie": "ecm_pa", # à vérifier : ECM vs Philo selon année du programme
+        "Philosophie": "ecm_pa",
         "Geographie": "geographie_pa",
         "Histoire": "histoire_pa",
         "Physique-Chimie": "phy-chim_pa",
@@ -73,13 +77,10 @@ CATEGORIES = {
         "Informatique": "informatique_pd",
     },
     "terminale-a": {
-        "Mathematiques": "terminale-a/maths_ta",
-        "Francais": "francais_ta",
-        "Anglais": "anglais_ta",
-        "Informatique": "informatique_ta",
-        "Geographie": "geographie_ta",
-        "Histoire": "histoire_ta",
-        "SVT": "svt_ta",
+        "Litterature": "francais_ta",
+        "Philosophie": "philosophie_ta",
+        "Allemand": "allemand_ta",
+        "Espagnol": "espagnol_ta"
     },
     "terminale-c": {
         "Mathematiques": "terminale-c/maths_tc",
@@ -106,42 +107,52 @@ CATEGORIES = {
 
 BASE_URL = "https://sujetexa.com/index.php/category"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ExamensCamBot/1.0)"}
-
-# Nombre max de pages à parcourir par sous-catégorie avant d'abandonner
-# (évite de scraper les 1020 pages du site si l'année n'est pas trouvée)
 MAX_PAGES = 15
+
+# Retry -- nombre de tentatives et pause entre chaque, sur toute
+# erreur reseau (DNS, timeout, connexion refusee). Une coupure de
+# quelques secondes ne doit plus faire planter toute la session.
+MAX_TENTATIVES = 3
+PAUSE_ENTRE_TENTATIVES = 5
+
+
+def requete_avec_retry(url, description=""):
+    """
+    Fait une requete GET avec jusqu'a MAX_TENTATIVES essais en cas
+    d'erreur reseau. Retourne la Response si succes, None si les
+    trois tentatives echouent (l'appelant doit gerer ce cas -- ne
+    jamais laisser planter tout le script pour UNE page qui echoue).
+    """
+    for tentative in range(1, MAX_TENTATIVES + 1):
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            return resp
+        except requests.exceptions.ConnectionError as e:
+            print(f" ⚠️ Tentative {tentative}/{MAX_TENTATIVES} echouee ({description or url}) : {e}")
+            if tentative < MAX_TENTATIVES:
+                print(f"    Nouvelle tentative dans {PAUSE_ENTRE_TENTATIVES}s...")
+                time.sleep(PAUSE_ENTRE_TENTATIVES)
+        except requests.exceptions.Timeout:
+            print(f" ⚠️ Timeout tentative {tentative}/{MAX_TENTATIVES} ({description or url})")
+            if tentative < MAX_TENTATIVES:
+                time.sleep(PAUSE_ENTRE_TENTATIVES)
+    print(f" ❌ Abandon apres {MAX_TENTATIVES} tentatives : {description or url}")
+    return None
 
 
 def extraire_annee(titre: str) -> int | None:
-    """
-    Cherche une année plausible (1990-2026) dans le titre d'un article.
-    Priorité aux formats 'SESSION 2021' ou '-2021' en fin de titre.
-    """
     matches = re.findall(r'(19[9]\d|20[0-2]\d)', titre)
     if not matches:
         return None
-    # On prend la dernière année trouvée (souvent la plus pertinente,
-    # ex: "COLLEGE MONGO BETI...2025/2026" -> on veut 2026 ou 2025 selon contexte)
     return int(matches[-1])
 
 
 def extraire_lien_pdf_article(page_url: str) -> str:
-    """
-    Visite la page d'un article individuel et en extrait le lien PDF réel.
-
-    Sur sujetexa, la page de catégorie (liste) ne contient PAS le lien PDF,
-    seulement le titre. Le vrai lien est sur la page de l'article, sous la
-    forme d'une image cliquable : [![](thumbnail)](URL_DU_PDF.pdf)
-
-    On cherche simplement le premier <a> dont le href finit par '.pdf' —
-    dans la sidebar, le seul lien "fichier" pointe vers Google Drive (pas .pdf),
-    donc ce filtre n'attrape pas de faux positifs.
-    """
-    try:
-        resp = requests.get(page_url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        print(f" ⚠️ Erreur sur la page article {page_url} : {e}")
+    resp = requete_avec_retry(page_url, "page article")
+    if resp is None:
+        return ""
+    if resp.status_code != 200:
+        print(f" ⚠️ Statut {resp.status_code} sur {page_url}")
         return ""
 
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -151,35 +162,32 @@ def extraire_lien_pdf_article(page_url: str) -> str:
         if href.lower().endswith(".pdf"):
             return href
 
-    return "" # Aucun PDF trouvé sur cette page
+    return ""
 
 
 def scraper_categorie(matiere: str, slug: str, annee_cible: int) -> list[dict]:
-    """
-    Parcourt une sous-catégorie (une matière) page par page.
-
-    ÉTAPE 1 : sur chaque page de liste, on repère les articles dont le
-    titre contient l'année cible (rapide, une seule requête par page).
-
-    ÉTAPE 2 : pour CHAQUE article retenu, on visite sa page individuelle
-    pour en extraire le vrai lien PDF (une requête par article pertinent
-    seulement — pas pour tous les articles, ce qui limiterait le volume
-    de requêtes).
-    """
-    articles_pertinents = [] # (titre, annee, lien_page)
+    articles_pertinents = []
     page = 1
+    echecs_consecutifs = 0
 
     while page <= MAX_PAGES:
         url = f"{BASE_URL}/{slug}/" if page == 1 else f"{BASE_URL}/{slug}/page/{page}/"
 
-        try:
-            resp = requests.get(url, headers=HEADERS, timeout=15)
-        except requests.RequestException as e:
-            print(f" ⚠️ Erreur réseau sur {url} : {e}")
-            break
+        resp = requete_avec_retry(url, f"page {page} de {slug}")
+        if resp is None:
+            echecs_consecutifs += 1
+            # Si 2 pages d'affilee echouent completement (pas juste
+            # un 404 normal), le site ou le reseau a un vrai probleme
+            # -- inutile d'insister sur les 13 pages restantes
+            if echecs_consecutifs >= 2:
+                print(f" ❌ Deux echecs consecutifs sur {slug}, abandon de cette matiere.")
+                break
+            page += 1
+            continue
+        echecs_consecutifs = 0
 
         if resp.status_code == 404:
-            break # Catégorie ou page inexistante -> fin propre
+            break
         if resp.status_code != 200:
             print(f" ⚠️ Statut {resp.status_code} sur {url}")
             break
@@ -187,7 +195,7 @@ def scraper_categorie(matiere: str, slug: str, annee_cible: int) -> list[dict]:
         soup = BeautifulSoup(resp.text, "html.parser")
         articles = soup.find_all("h2")
         if not articles:
-            break # Plus d'articles -> fin de la catégorie
+            break
 
         for h2 in articles:
             lien_titre = h2.find("a")
@@ -200,9 +208,8 @@ def scraper_categorie(matiere: str, slug: str, annee_cible: int) -> list[dict]:
                 articles_pertinents.append((titre, annee_detectee, lien_titre.get("href", "")))
 
         page += 1
-        time.sleep(1) # Politesse entre les pages de catégorie
+        time.sleep(1)
 
-    # ÉTAPE 2 : récupérer le vrai lien PDF pour chaque article retenu
     resultats = []
     for titre, annee, lien_page in articles_pertinents:
         lien_pdf = extraire_lien_pdf_article(lien_page)
@@ -213,16 +220,12 @@ def scraper_categorie(matiere: str, slug: str, annee_cible: int) -> list[dict]:
             "lien_pdf": lien_pdf,
             "lien_page": lien_page,
         })
-        time.sleep(1) # Politesse entre chaque article
+        time.sleep(1)
 
     return resultats
 
 
 def scraper_niveau_serie_annee(niveau_serie: str, annee: int) -> list[dict]:
-    """
-    Point d'entrée principal : scrape toutes les matières
-    d'un niveau/série pour une année donnée.
-    """
     if niveau_serie not in CATEGORIES:
         print(f"❌ Niveau/série inconnu : {niveau_serie}")
         print(f" Options valides : {list(CATEGORIES.keys())}")
@@ -244,7 +247,6 @@ def scraper_niveau_serie_annee(niveau_serie: str, annee: int) -> list[dict]:
 
 
 def sauvegarder_csv(resultats: list[dict], niveau_serie: str, annee: int):
-    """Écrit les résultats dans un CSV prêt à être vérifié puis importé."""
     output_dir = Path("data/liens_externes")
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -272,4 +274,3 @@ if __name__ == "__main__":
 
     resultats = scraper_niveau_serie_annee(niveau_serie_arg, annee_arg)
     sauvegarder_csv(resultats, niveau_serie_arg, annee_arg)
-
