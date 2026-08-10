@@ -40,20 +40,34 @@ HEADERS = {
 
 DELAI_SECONDES = 1.2
 PROFONDEUR_MAX = 4
+MAX_TENTATIVES = 3
+PAUSE_ENTRE_TENTATIVES = 5
 
 CATEGORIES_CIBLES = {
     "bepc": "BEPC",
-    "bac": "BAC",
-    "probatoire": "Probatoire",
 }
 
 PATTERNS_IGNORES = ["orderby,", "/search/", "func-addfile", "func-startdown", "/contact", "/a-propos"]
 
 
 def get(url):
-    resp = requests.get(url, headers=HEADERS, timeout=20)
-    resp.raise_for_status()
-    return BeautifulSoup(resp.text, "html.parser")
+    """
+    Requete avec retry -- un seul timeout/coupure reseau isole ne
+    doit plus faire tomber toute une categorie a 0 (c'est ce qui
+    est arrive sur BEPC : un timeout sur la toute premiere requete
+    a fait abandonner toute la categorie sans reessayer).
+    """
+    for tentative in range(1, MAX_TENTATIVES + 1):
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+            return BeautifulSoup(resp.text, "html.parser")
+        except requests.exceptions.RequestException as e:
+            print(f"    Tentative {tentative}/{MAX_TENTATIVES} echouee sur {url} : {e}")
+            if tentative < MAX_TENTATIVES:
+                time.sleep(PAUSE_ENTRE_TENTATIVES)
+    print(f"    Abandon apres {MAX_TENTATIVES} tentatives : {url}")
+    raise requests.exceptions.RequestException(f"Echec definitif sur {url}")
 
 
 def normaliser_url(href):
@@ -101,11 +115,16 @@ def est_page_de_fichiers(soup):
     """
     Remository (Joomla) affiche les DOSSIERS avec exactement la meme
     structure HTML (<h3> + lien) que les FICHIERS -- impossible de
-    les distinguer par la structure seule. Mais seule une page de
-    vrais fichiers affiche 'Taille :' (poids du fichier), absent sur
-    une page de listing de sous-dossiers. C'est le signal fiable.
+    les distinguer par la structure seule. Seule une page de vrais
+    fichiers affiche le mot 'Taille' (poids du fichier).
+
+    Piege repere en verifiant le HTML reel : le texte utilise une
+    espace INSECABLE (\\xa0) avant le ':' ("Taille\\xa0:"), pas une
+    espace normale -- "Taille :" ne matchait donc jamais. On ne
+    cherche plus que le mot seul, plus robuste a ce genre de variante
+    typographique invisible.
     """
-    return "Taille :" in soup.get_text()
+    return "Taille" in soup.get_text()
 
 
 def explorer(url, prefixe_categorie, profondeur, deja_visites, resultats):
@@ -168,13 +187,14 @@ def scraper():
         explorer(url_racine, prefixe, 0, set(), fichiers_trouves)
         print(f"Total fichiers trouves pour {niveau} : {len(fichiers_trouves)}")
 
-        for titre, lien_detail in fichiers_trouves:
+        for i, (titre, lien_detail) in enumerate(fichiers_trouves, 1):
+            if i % 10 == 0 or i == len(fichiers_trouves):
+                print(f"    ... {i}/{len(fichiers_trouves)} pages detail traitees")
             try:
-                resp = requests.get(lien_detail, headers=HEADERS, timeout=20)
-                resp.raise_for_status()
-                lien_pdf = extraire_lien_telechargement(resp.text)
-            except requests.RequestException as e:
-                print(f"    Erreur detail : {e}")
+                soup_detail = get(lien_detail)
+                lien_pdf = extraire_lien_telechargement(str(soup_detail))
+            except requests.exceptions.RequestException as e:
+                print(f"    Erreur detail (abandonnee apres retries) : {e}")
                 lien_pdf = None
 
             lien_externe = normaliser_url(lien_pdf) if lien_pdf else ""
