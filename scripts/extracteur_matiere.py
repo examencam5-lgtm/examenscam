@@ -63,32 +63,3 @@ def detecter_matiere(titre: str) -> str | None:
     return None
 
 
-if __name__ == "__main__":
-    import csv
-    from collections import Counter
-
-    with open('/mnt/user-data/uploads/epreuvesetcorriges_brut.csv', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
-
-    detectees = Counter()
-    non_detectees = []
-
-    for r in rows:
-        m = detecter_matiere(r['titre'])
-        if m:
-            detectees[m] += 1
-        else:
-            non_detectees.append(r['titre'])
-
-    print(f"Total lignes : {len(rows)}")
-    print(f"Matiere detectee : {sum(detectees.values())} ({100*sum(detectees.values())/len(rows):.1f}%)")
-    print(f"Non detectee : {len(non_detectees)}")
-    print()
-    print("Repartition des matieres detectees :")
-    for m, n in detectees.most_common():
-        print(f"  {m:35s} {n}")
-    print()
-    print("--- 20 titres NON detectes (echantillon) ---")
-    for t in non_detectees[:20]:
-        print(f"  {t[:90]}") 
