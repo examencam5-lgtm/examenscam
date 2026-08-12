@@ -58,9 +58,8 @@
 }
 .ec-sous-titre { font-size: 12px; color: var(--ec-ink-soft); margin-top: 3px; }
 
-/* ── Le sceau, marque de contenu vérifié (officiel/blanc) ──
-   Un seul tracé, un seul ton (l'encre), plus de distinction
-   or/bleu par statut : la distinction se fait par le texte. */
+/* ── Le sceau, marque de contenu vérifié ──
+   Un seul tracé, un seul ton (l'encre). */
 .ec-sceau {
   width: 44px; height: 44px; border-radius: 50%;
   border: 1.5px solid var(--ec-line);
@@ -85,11 +84,7 @@
 }
 .ec-fiche-tab .icon { width: 17px; height: 17px; stroke: var(--ec-ink-soft); stroke-width: 2; }
 
-/* ── Cartes de branches (carrefour) ──────────────────────
-   Avant : fonds distincts par branche (papier/rouge/dashed/
-   gradients bleu et rouge). Maintenant : même carte pour
-   toutes, bordure pleine ou pointillée selon qu'il y a du
-   contenu ou non, la couleur ne porte plus l'information. */
+/* ── Cartes de branches (carrefour) ── */
 .ec-branches { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .ec-branche { text-decoration: none; color: inherit; display: block; }
 .ec-branche-carte {
@@ -103,26 +98,10 @@
 .ec-branche:active .ec-branche-carte { background: var(--ec-accent-soft); }
 
 .ec-branche-officiel { border-color: var(--ec-line); }
-.ec-branche-blanc { border-color: var(--ec-line); }
 .ec-branche-etablissement { border: 1px dashed var(--ec-line); }
-
-/* Corrigés et énoncés identiques pour l'instant, en attendant
-   qu'on choisisse ensemble comment les différencier. */
-.ec-branche-corriges-off,
-.ec-branche-corriges-blanc {
-  background: var(--ec-surface); color: var(--ec-ink); border-color: var(--ec-line);
-}
-.ec-branche-corriges-off .ec-branche-sub-clair,
-.ec-branche-corriges-blanc .ec-branche-sub-clair { color: var(--ec-ink-soft); }
 
 .ec-branche-titre { font-family: var(--ec-serif-titre); font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
 .ec-branche-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 2px; }
-.ec-branche-sub-clair { font-size: 10.5px; color: var(--ec-ink-soft); margin-top: 2px; }
-.ec-branche-prix {
-  background: var(--ec-accent-soft); color: var(--ec-ink);
-  font-family: var(--ec-mono); font-size: 12px; font-weight: 700;
-  padding: 5px 10px; border-radius: 3px; white-space: nowrap; margin-left: auto;
-}
 .ec-branche-chevron { color: var(--ec-ink-soft); font-size: 16px; margin-left: auto; }
 .ec-vide {
   margin: 16px; padding: 20px 16px; background: var(--ec-accent-soft);
@@ -130,7 +109,7 @@
   text-align: center; font-family: var(--ec-serif-corps); font-style: italic;
 }
 
-/* ── Listes (blancs, établissements) ── */
+/* ── Listes (établissements) ── */
 .ec-liste { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 .ec-item-link { text-decoration: none; color: inherit; display: block; }
 .ec-item { background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: 20px; padding: 16px 20px; }
@@ -151,9 +130,6 @@
   background: var(--ec-accent-soft); color: var(--ec-ink-soft);
   border: 1px solid var(--ec-line);
 }
-/* pill-region et pill-sequence gardées distinctes par bordure
-   plutôt que par couleur, pour rester lisibles sans être criardes
-   (doc 6.3 : aucune couleur fonctionnelle) */
 .ec-pill-region { border-style: solid; }
 .ec-pill-sequence { border-style: dashed; }
 
@@ -172,39 +148,3 @@
   border-left: 3px solid var(--ec-ink-soft); border-radius: 2px;
   padding: 12px 14px; font-size: 11px; color: var(--ec-ink-soft); line-height: 1.5;
 }
-
-/* ── Catalogue de packs corrigés ── */
-.ec-carte-pack {
-  background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: var(--radius, 3px);
-  padding: 15px;
-}
-.ec-carte-pack-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; gap: 8px; }
-.ec-carte-pack-titre { font-family: var(--ec-serif-titre); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; color: var(--ec-ink); }
-.ec-barre-progression { height: 4px; background: var(--ec-line-soft); border-radius: 2px; overflow: hidden; margin: 9px 0 5px; }
-.ec-barre-progression-remplie { height: 100%; background: var(--ec-ink-soft); }
-.ec-progression-texte { font-family: var(--ec-mono); font-size: 10px; color: var(--ec-ink-soft); }
-
-/* ── Fiche pack détail ──────────────────────────────────
-   Avant : hero dégradé bleu + filigrane circulaire doré.
-   Maintenant : bloc encre pleine, sobre, sans motif décoratif,
-   la valeur du pack se dit par le texte, pas par l'habillage. */
-.ec-fiche-hero {
-  background: var(--ec-accent);
-  color: var(--ec-surface); padding: 24px 18px;
-}
-.ec-fiche-hero h2 { font-family: var(--ec-serif-titre); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
-.ec-prix-gros { font-family: var(--ec-mono); font-size: 26px; font-weight: 700; color: var(--ec-surface); margin-top: 10px; }
-.ec-annee-ligne {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 12px; background: var(--ec-surface); border: 1px solid var(--ec-line);
-  border-radius: var(--radius, 3px); font-family: var(--ec-mono); font-size: 13px; margin-bottom: 7px;
-  color: var(--ec-ink);
-}
-.ec-statut-pret { color: var(--ec-ink); font-weight: 700; font-size: 11px; }
-.ec-statut-brouillon { color: var(--ec-ink-soft); font-size: 11px; font-style: italic; }
-.ec-bouton-desactive {
-  width: 100%; background: var(--ec-line-soft); color: var(--ec-ink-soft); border: none;
-  border-radius: var(--radius, 3px); padding: 15px; font-size: 13.5px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-}
-.ec-bouton-note { text-align: center; font-size: 11px; color: var(--ec-ink-soft); margin-top: 9px; line-height: 1.5; }
