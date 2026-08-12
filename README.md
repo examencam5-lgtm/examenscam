@@ -1,74 +1,68 @@
 # ExamensCam
 
-Plateforme qui organise les annales officielles des examens nationaux camerounais (BEPC, Probatoire, BAC) par niveau, série et matière, pour les rendre accessibles et faciles à retrouver.
+Plateforme qui organise les annales officielles des examens nationaux camerounais (BEPC, Probatoire, BAC) par niveau, serie et matiere.
 
-## Le problème
+## Le probleme
 
-Les annales d'examens camerounais sont dispersées entre plusieurs sites, souvent mal classées, parfois filigranées ou difficiles à consulter. ExamensCam les rassemble à un seul endroit, organisées de façon cohérente avec le programme MINESEC réel (niveaux, séries, matières).
+Les annales d'examens camerounais sont dispersees entre plusieurs sites, souvent mal classees ou difficiles a consulter. ExamensCam les rassemble a un seul endroit, organisees selon le programme MINESEC reel.
 
-## Fonctionnalités (V1)
+## Fonctionnalites
 
-- Recherche par matière, niveau et série, avec reconnaissance d'alias et de fautes courantes (ex : "math", "bac c" → résultats pertinents)
-- Navigation par niveau (BEPC, Probatoire, BAC) puis série puis matière
-- Deux sources de contenu par matière :
-  - **Énoncés officiels** — hébergés directement (PDF nettoyés, sans filigrane)
-  - **Établissements** — épreuves indexées depuis des sites tiers, avec redirection vers la source
-- Suivi anonyme des recherches et des pages consultées (aucune donnée personnelle), pour orienter les priorités de collecte
-
-## Ce qui n'est pas encore là (prévu V2)
-
-- Corrigés détaillés (en attente d'immatriculation RCCM, prévue décembre 2026)
-- Paiement Mobile Money (CinetPay)
-- Distinction visuelle entre épreuves zéro, harmonisées régionales et devoirs d'établissement
+- Recherche par matiere, niveau et serie, avec reconnaissance d'alias et de fautes courantes
+- Navigation par niveau (BEPC, Probatoire, BAC), puis serie, puis matiere
+- Deux sources de contenu par matiere :
+  - Enonces officiels, heberges directement, PDF nettoyes
+  - Etablissements, epreuves indexees depuis des sites tiers, avec redirection vers la source
+- Suivi anonyme des recherches et des pages consultees, sans donnee personnelle, pour orienter les priorites de collecte
 
 ## Stack technique
 
-- **Backend** : Python + Flask
-- **Base de données** : SQLite, versionnée dans Git (persistance sur hébergement gratuit sans base externe)
-- **PDF** : pikepdf, pypdf, pypdfium2, ReportLab, OpenCV (nettoyage de filigranes, génération)
-- **Scraping** : requests + BeautifulSoup (sujetexa.com, mongosukulu.com)
-- **Frontend** : HTML/Jinja2, CSS minimaliste, mobile-first
-- **Hébergement** : Render.com
+- Backend : Python et Flask
+- Base de donnees : SQLite, versionnee dans Git
+- PDF : pikepdf, pypdf, pypdfium2, ReportLab, OpenCV
+- Scraping : requests et BeautifulSoup
+- Frontend : HTML, Jinja2, CSS
+- Hebergement : Render.com
 
 ## Installation locale
 
-\`\`\`bash
+```bash
 git clone <url-du-repo>
 cd examenscam
 pip install -r requirements.txt
 python app.py
-\`\`\`
+```
 
-L'application attend un fichier `data/annales.db` (SQLite) — déjà versionné dans le dépôt, aucune configuration supplémentaire nécessaire pour démarrer.
+Le fichier `data/annales.db` est deja versionne dans le depot, aucune configuration supplementaire n'est necessaire pour demarrer.
 
-Variables d'environnement utilisées (optionnelles en local, à définir sur l'hébergement en production) :
+Variables d'environnement utilisees :
 
-\`\`\`
+```
 SECRET_KEY=
 DEBUG=False
 ADMIN_TOKEN=
-\`\`\`
+```
 
 ## Architecture
 
-\`\`\`
-app.py                     # Routes Flask, point d'entrée
-database.py                # Accès table 'annales' (énoncés officiels)
-database_externes.py       # Accès table 'annales_externes' (établissements)
-database_carrefour.py      # Agrège les compteurs pour la page carrefour
-database_matieres.py       # Liste des matières réellement présentes en base
-database_search.py         # Scoring et alias de recherche
-generer_search_index.py    # Reconstruit l'index de recherche après import
-scripts/                   # Outils de collecte et d'import (scraping, CSV)
-pdf_pipeline/               # Nettoyage de filigranes sur les PDF
-templates/                  # Pages HTML (Jinja2)
-static/                     # CSS
-\`\`\`
+```
+app.py                     Routes Flask, point d'entree
+database.py                Acces table annales, enonces officiels
+database_externes.py       Acces table annales_externes, etablissements
+database_carrefour.py      Compteurs pour la page carrefour
+database_matieres.py       Matieres reellement presentes en base
+database_search.py         Scoring et alias de recherche
+generer_search_index.py    Reconstruit l'index de recherche
+scripts/                   Outils de collecte et d'import
+pdf_pipeline/               Nettoyage des PDF
+templates/                  Pages HTML
+static/                     CSS
+```
 
-## État du projet
+## Etat du projet
 
-En développement actif. Objectif : 500 épreuves officielles en base avant la rentrée de septembre 2026.
+En developpement actif.
 
 ## Licence
 
-Projet privé, tous droits réservés pour le moment.
+Projet prive, tous droits reserves pour le moment.
