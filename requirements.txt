@@ -1,12 +1,11 @@
 flask
 gunicorn
 pypdf
+pikepdf
 reportlab
 pillow
 opencv-python-headless
-pillow
-easyocr
+pypdfium2
 numpy
-scikit-image
-python-Levenshtein
-regex
+requests
+beautifulsoup4
