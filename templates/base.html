@@ -8,41 +8,43 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Classes .ec-* utilisées par carrefour, blancs, corrigés, établissements -->
+  <!-- Fichier CSS principal des sous-pages et composantes -->
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo.svg') }}">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/nouvelles_pages.css') }}">
 
   <style>
-    /* ────────────────────────────────────────
-       TOKENS - palette quasi-monochrome
-       Un seul accent, utilisé avec parcimonie.
-       Fond #DFD3B8 : valeur validée (doc strategique section 6.2),
-       choisie apres comparaison de 10 variantes -- ne pas remplacer
-       par une autre valeur beige sans revalidation explicite.
-    ──────────────────────────────────────── */
     :root {
-      --paper:   #DFD3B8;
-      --ink:     #1A1A1A;
-      --ink-soft:#5C5C5C;
-      --line:    #DEDCD5;
-      --line-soft: #EDEBE5;
-      --surface: #FFFFFF;
-      /* Pas d'accent colore (doc section 6.3) : aucune couleur
-         fonctionnelle sur les elements interactifs. Teste puis
-         explicitement rejete par decision du porteur de projet --
-         a ne pas reintroduire sans validation explicite. */
-      --accent:  #1A1A1A;
-      --accent-soft: #F0EFEA;
-      --radius: 3px;
+      --paper:        #FFFFFF;
+      --ink:          #0F172A;
+      --ink-soft:     #64748B;
+      --line:         #E2E8F0;
+      --line-soft:    #F8FAFC;
+      --surface:      #FFFFFF;
+      --accent:       #2563EB;
+      --accent-soft:  #F1F5F9;
+      --radius:       8px;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--paper);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(218, 237, 255, 0.40) 0%, transparent 40%),
+        radial-gradient(circle at 90% 50%, rgba(226, 239, 255, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 50% 95%, rgba(236, 244, 255, 0.45) 0%, transparent 45%),
+        var(--paper);
       color: var(--ink);
       min-height: 100vh;
       display: flex;
@@ -50,20 +52,24 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    main { flex: 1; }
-    a { color: inherit; }
+    main {
+      flex: 1;
+    }
 
-    /* Titres : Fraunces (doc section 6.1) -- distinct du corps de
-       texte en Source Serif 4. Georgia abandonnee (trop generique). */
+    a {
+      color: inherit;
+    }
+
     h1, h2, h3, .serif {
       font-family: 'Fraunces', serif;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: -0.01em;
     }
 
     /* ── NAVBAR ──────────────────────────────── */
     .navbar {
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--line);
       position: sticky;
       top: 0;
@@ -71,7 +77,7 @@
     }
 
     .navbar-inner {
-      max-width: 880px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 0 20px;
       height: 60px;
@@ -83,36 +89,29 @@
     .navbar-brand {
       text-decoration: none;
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 6px;
     }
 
     .brand-name {
-      font-family: 'Fraunces', serif;
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--ink);
-      letter-spacing: -0.01em;
-    }
-
-    .brand-mark {
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0F172A;
+      letter-spacing: -0.02em;
     }
 
     .nav-links {
       display: none;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
       list-style: none;
     }
 
     .nav-links a {
       display: block;
-      padding: 8px 14px;
-      font-size: 13px;
+      padding: 6px 14px;
+      font-size: 13.5px;
       font-weight: 500;
       color: var(--ink-soft);
       text-decoration: none;
@@ -120,16 +119,23 @@
       transition: color 0.15s, border-color 0.15s;
     }
 
-    .nav-links a:hover { color: var(--ink); }
-    .nav-links a.active { color: var(--ink); border-bottom-color: var(--accent); }
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
 
     .hamburger {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: none;
+      background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: 6px;
       padding: 7px 12px;
       cursor: pointer;
       font-family: 'Inter', sans-serif;
@@ -138,7 +144,9 @@
       color: var(--ink);
     }
 
-    .hamburger:hover { border-color: var(--ink-soft); }
+    .hamburger:hover {
+      border-color: var(--ink-soft);
+    }
 
     .mobile-menu {
       display: none;
@@ -147,7 +155,9 @@
       padding: 8px 20px 12px;
     }
 
-    .mobile-menu.open { display: block; }
+    .mobile-menu.open {
+      display: block;
+    }
 
     .mobile-menu a {
       display: block;
@@ -159,8 +169,18 @@
       border-bottom: 1px solid var(--line-soft);
     }
 
-    .mobile-menu a:last-child { border-bottom: none; }
-    .mobile-menu a:hover { color: var(--ink); }
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--ink);
+    }
+
+    .mobile-menu a.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
     @media (min-width: 640px) {
       .nav-links { display: flex; }
@@ -177,7 +197,7 @@
     }
 
     .footer-inner {
-      max-width: 880px;
+      max-width: 960px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -187,9 +207,9 @@
     }
 
     .footer-brand {
-      font-family: 'Fraunces', serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--ink);
     }
 
@@ -206,37 +226,15 @@
       text-decoration: none;
     }
 
-    .footer-links a:hover { color: var(--ink); }
+    .footer-links a:hover {
+      color: var(--ink);
+    }
 
     .footer-copy {
       font-size: 11px;
-      color: #9A9890;
+      color: #94A3B8;
       letter-spacing: 0.3px;
     }
-
-    /* ── COMPOSANT BOUTON GLOBAL ─────────────── */
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background: var(--accent);
-      color: var(--surface);
-      border-radius: var(--radius);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 14px;
-      border: 1px solid var(--accent);
-      transition: opacity 0.15s;
-    }
-
-    .btn:hover { opacity: 0.85; color: var(--surface); }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--ink);
-      border: 1px solid var(--line);
-    }
-
-    .btn-outline:hover { border-color: var(--ink-soft); opacity: 1; color: var(--ink); }
   </style>
 
   {% block extra_head %}{% endblock %}
@@ -244,20 +242,22 @@
 
 <body>
 
+  {% set path_lower = request.path|lower %}
+
   <nav class="navbar">
     <div class="navbar-inner">
       <a href="/" class="navbar-brand">
-        <span class="brand-mark"></span>
+        <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="ExamensCam" width="28" height="28">
         <span class="brand-name">ExamensCam</span>
       </a>
 
       <ul class="nav-links">
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/bepc">BEPC</a></li>
-        <li><a href="/probatoire">Probatoire</a></li>
-        <li><a href="/bac">BAC</a></li>
-        <li><a href="/a-propos">À propos</a></li>
-        <li><a href="/conditions">Conditions</a></li>
+        <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">Accueil</a></li>
+        <li><a href="/bepc" class="{{ 'active' if 'bepc' in path_lower else '' }}">BEPC</a></li>
+        <li><a href="/probatoire" class="{{ 'active' if 'probatoire' in path_lower else '' }}">Probatoire</a></li>
+        <li><a href="/bac" class="{{ 'active' if 'bac' in path_lower else '' }}">BAC</a></li>
+        <li><a href="/a-propos" class="{{ 'active' if 'a-propos' in path_lower else '' }}">À propos</a></li>
+        <li><a href="/conditions" class="{{ 'active' if 'conditions' in path_lower else '' }}">Conditions</a></li>
       </ul>
 
       <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
@@ -266,16 +266,16 @@
     </div>
 
     <div class="mobile-menu" id="mobile-menu">
-      <a href="/">Accueil</a>
-      <a href="/bepc">BEPC</a>
-      <a href="/probatoire">Probatoire</a>
-      <a href="/bac">BAC</a>
-      <a href="/a-propos">À propos</a>
-      <a href="/conditions">Conditions d'utilisation</a>
+      <a href="/" class="{{ 'active' if request.path == '/' else '' }}">Accueil</a>
+      <a href="/bepc" class="{{ 'active' if 'bepc' in path_lower else '' }}">BEPC</a>
+      <a href="/probatoire" class="{{ 'active' if 'probatoire' in path_lower else '' }}">Probatoire</a>
+      <a href="/bac" class="{{ 'active' if 'bac' in path_lower else '' }}">BAC</a>
+      <a href="/a-propos" class="{{ 'active' if 'a-propos' in path_lower else '' }}">À propos</a>
+      <a href="/conditions" class="{{ 'active' if 'conditions' in path_lower else '' }}">Conditions d'utilisation</a>
     </div>
   </nav>
 
-  {% include '_recherche.html' %}
+  {% include '_recherche.html' ignore missing %}
 
   <main>
     {% block content %}{% endblock %}
@@ -283,7 +283,6 @@
 
   <footer>
     <div class="footer-inner">
-      <div class="footer-brand">ExamensCam</div>
       <div class="footer-links">
         <a href="/">Accueil</a>
         <a href="/bepc">BEPC</a>
@@ -292,7 +291,7 @@
         <a href="/a-propos">À propos</a>
         <a href="/conditions">Conditions d'utilisation</a>
       </div>
-      <p class="footer-copy">ExamensCam · Cameroun</p>
+      <p class="footer-copy">Cameroun · Annales officielles MINESEC</p>
     </div>
   </footer>
 
@@ -300,17 +299,19 @@
     var btn = document.getElementById('hamburger');
     var menu = document.getElementById('mobile-menu');
 
-    btn.addEventListener('click', function() {
-      var isOpen = menu.classList.toggle('open');
-      btn.setAttribute('aria-expanded', isOpen);
-    });
-
-    menu.querySelectorAll('a').forEach(function(link) {
-      link.addEventListener('click', function() {
-        menu.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
+    if (btn && menu) {
+      btn.addEventListener('click', function() {
+        var isOpen = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen);
       });
-    });
+
+      menu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          menu.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
   </script>
 
   {% block extra_scripts %}{% endblock %}

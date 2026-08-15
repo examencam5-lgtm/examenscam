@@ -95,7 +95,14 @@ def inject_globals():
 def index():
     stats = get_stats()
     derniere_maj = get_derniere_maj()
-    return render_template('index.html', stats=stats, total=stats['total'], derniere_maj=derniere_maj)
+    return render_template(
+        'index.html',
+        stats=stats,
+        total=stats['total'],
+        total_officiel=stats['total_officiel'],
+        total_externe=stats['total_externe'],
+        derniere_maj=derniere_maj
+    )
 
 @app.route('/conditions')
 def conditions():

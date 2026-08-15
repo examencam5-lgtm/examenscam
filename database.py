@@ -87,26 +87,6 @@ def get_annales(niveau: str, serie: Optional[str] = None,
     finally:
         conn.close()
 
-def get_stats() -> dict:
-    conn = get_connection()
-    try:
-        total = conn.execute(
-            "SELECT COUNT(*) as n FROM annales WHERE actif = 1"
-        ).fetchone()['n']
-        par_niveau = conn.execute("""
-            SELECT niveau, COUNT(*) as n FROM annales
-            WHERE actif = 1 GROUP BY niveau ORDER BY n DESC
-        """).fetchall()
-        return {
-            'total': total,
-            'par_niveau': [dict(r) for r in par_niveau],
-        }
-    except Exception as e:
-        print(f"get_stats error: {e}")
-        return {'total': 0, 'par_niveau': []}
-    finally:
-        conn.close()
-
 def increment_vues(annale_id: int):
     conn = get_connection()
     conn.execute("UPDATE annales SET vues = vues + 1 WHERE id = ?", (annale_id,))
@@ -140,5 +120,40 @@ def get_derniere_maj():
     except Exception as e:
         print(f"get_derniere_maj error: {e}")
         return None
+    finally:
+        conn.close()
+
+def get_stats() -> dict:
+    """
+    Statistiques pour la page d'accueil.
+    total_officiel : annales self-hosted (table annales)
+    total_externe  : etablissements + ex-blanches, indexes uniquement (table annales_externes)
+    Les deux compteurs restent separes -- jamais additionnes,
+    car ils ne representent pas la meme nature de contenu.
+    """
+    conn = get_connection()
+    try:
+        total_officiel = conn.execute(
+            "SELECT COUNT(*) as n FROM annales WHERE actif = 1"
+        ).fetchone()['n']
+
+        total_externe = conn.execute(
+            "SELECT COUNT(*) as n FROM annales_externes WHERE actif = 1"
+        ).fetchone()['n']
+
+        par_niveau = conn.execute("""
+            SELECT niveau, COUNT(*) as n FROM annales
+            WHERE actif = 1 GROUP BY niveau ORDER BY n DESC
+        """).fetchall()
+
+        return {
+            'total': total_officiel,          # compat : index.html utilise deja 'total'
+            'total_officiel': total_officiel,
+            'total_externe': total_externe,
+            'par_niveau': [dict(r) for r in par_niveau],
+        }
+    except Exception as e:
+        print(f"get_stats error: {e}")
+        return {'total': 0, 'total_officiel': 0, 'total_externe': 0, 'par_niveau': []}
     finally:
         conn.close()

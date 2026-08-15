@@ -12,13 +12,13 @@
 
 <div class="ec-liste">
   {% for m in matieres %}
-  <a href="{{ url_for('etablissements_matiere', niveau_serie=niveau_serie, matiere=m.matiere) }}" style="text-decoration:none; color:inherit;">
-    <div class="ec-item" style="display:flex; justify-content:space-between; align-items:center;">
+  <a href="{{ url_for('etablissements_matiere', niveau_serie=niveau_serie, matiere=m.matiere) }}" class="ec-item-link">
+    <div class="ec-item ec-item-simple">
       <div>
         <div class="ec-item-titre">{{ m.matiere }}</div>
         <div class="ec-item-sub">{{ m.nombre }} épreuve(s) indexée(s)</div>
       </div>
-      <span style="color:#5D6D7E; font-size:18px;">›</span>
+      <span class="ec-item-chevron">›</span>
     </div>
   </a>
   {% else %}

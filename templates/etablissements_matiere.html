@@ -45,10 +45,11 @@
         <svg class="ec-item-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
       </div>
       <div class="ec-tags">
-        {# Region gardee en tag informatif, plus en filtre onglet #}
         {% if e.region %}<span class="ec-pill ec-pill-region">{{ e.region }}</span>{% endif %}
         {% if e.sequence and e.sequence > 0 %}<span class="ec-pill ec-pill-sequence">Séquence {{ e.sequence }}</span>{% endif %}
       </div>
+      {# Nom du site tiers -- seul element discret ici, ce n'est pas
+         du contenu ExamensCam, juste l'indication de la redirection #}
       <span class="ec-item-source">{{ e.source_site }}.com</span>
     </div>
   </a>

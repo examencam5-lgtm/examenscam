@@ -1,36 +1,24 @@
-/* static/css/nouvelles_pages.css, v4, aligné sur la doc stratégique
-   (section 6) et sur base.html — même palette, même hiérarchie
-   typographique partout sur le site. */
+/* static/css/nouvelles_pages.css
+   Harmonisé sur base.html - Source unique de vérité visuelle */
 
 :root {
-  /* Mêmes tokens que base.html, une seule source de vérité visuelle.
-     --ec-paper aligné sur --paper de base.html (#DFD3B8, doc 6.2) :
-     avant #FAFAF8 (quasi blanc), incohérent avec le reste du site. */
-  --ec-paper:   #DFD3B8;
-  --ec-ink:     #1A1A1A;
-  --ec-ink-soft:#5C5C5C;
-  --ec-line:    #DEDCD5;
-  --ec-line-soft: #EDEBE5;
-  --ec-surface: #FFFFFF;
-  --ec-accent:  #1A1A1A;
-  --ec-accent-soft: #F0EFEA;
+  --ec-paper:       #FFFFFF;
+  --ec-ink:         #0F172A;
+  --ec-ink-soft:    #64748B;
+  --ec-line:        #E2E8F0;
+  --ec-line-soft:   #F8FAFC;
+  --ec-surface:     #FFFFFF;
+  --ec-accent:      #2563EB;
+  --ec-accent-soft: #F1F5F9;
 
-  /* Deux polices serif distinctes (doc 6.1) :
-     --ec-serif-titre  = Fraunces, pour les titres
-     --ec-serif-corps  = Source Serif 4, pour le corps de texte
-     --ec-serif est gardé comme alias de corps pour compatibilité
-     avec d'anciennes classes non encore auditées. */
   --ec-serif-titre: 'Fraunces', Georgia, serif;
   --ec-serif-corps: 'Source Serif 4', Georgia, serif;
-  --ec-serif: var(--ec-serif-corps);
-  --ec-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --ec-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Courier New", monospace;
+  --ec-serif:       var(--ec-serif-corps);
+  --ec-sans:        'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --ec-mono:        ui-monospace, "SF Mono", "Cascadia Mono", monospace;
 }
 
-/* ── En-tête de page (fil d'ariane + titre) ──────────────
-   Avant : bandeau bleu plein avec filet doré pointillé.
-   Maintenant : papier, une seule ligne fine, la hiérarchie
-   vient de la typo, pas de la couleur. */
+/* ── EN-TÊTE DE PAGES SECONDAIRES ────────────────────── */
 .ec-header {
   background: var(--ec-surface);
   color: var(--ec-ink);
@@ -46,28 +34,94 @@
 }
 .ec-fil-ariane a { color: var(--ec-ink-soft); text-decoration: none; }
 .ec-fil-ariane a:hover { color: var(--ec-ink); }
+
 .ec-eyebrow {
-  font-family: var(--ec-mono); font-size: 10px; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase; color: var(--ec-ink-soft);
+  font-family: var(--ec-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ec-accent);
   margin-top: 10px;
 }
 .ec-titre-page {
-  font-family: var(--ec-serif-titre); font-size: 21px; font-weight: 600;
+  font-family: var(--ec-serif-titre);
+  font-size: 22px;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  margin-top: 3px; line-height: 1.25; color: var(--ec-ink);
+  margin-top: 3px;
+  line-height: 1.25;
+  color: var(--ec-ink);
 }
-.ec-sous-titre { font-size: 12px; color: var(--ec-ink-soft); margin-top: 3px; }
+.ec-sous-titre {
+  font-size: 12px;
+  color: var(--ec-ink-soft);
+  margin-top: 3px;
+}
 
-/* ── Le sceau, marque de contenu vérifié ──
-   Un seul tracé, un seul ton (l'encre). */
+/* ── BARRE DE RECHERCHE SECONDAIRE (STYLE PILULE) ─────
+   NOTE : la barre de recherche PRINCIPALE du site vit dans
+   _recherche.html (.search-pill / .search-input), incluse une
+   seule fois depuis base.html. Ces classes .ec-search-* sont
+   pour un usage local dans une page (ex: recherche interne à
+   une section), pas dupliquées globalement. Agrandies ici car
+   trop petites et texte tronqué signalé sur mobile. */
+.ec-search-bar-container {
+  max-width: 580px;
+  margin: 24px auto 0;
+  padding: 0 16px;
+}
+.ec-search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+.ec-search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+.ec-search-input {
+  width: 100%;
+  padding: 16px 24px 16px 52px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--ec-ink);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ec-search-input::placeholder {
+  color: #94A3B8;
+}
+.ec-search-input:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* ── SCEAU ET BADGES ───────────────────────────────── */
 .ec-sceau {
-  width: 44px; height: 44px; border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1.5px solid var(--ec-line);
-  display: flex; align-items: center; justify-content: center;
-  position: relative; flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
 }
 .ec-sceau::before {
-  content: ""; position: absolute; inset: 4px;
+  content: "";
+  position: absolute;
+  inset: 4px;
   border: 1px dashed var(--ec-line);
   border-radius: 50%;
 }
@@ -76,75 +130,185 @@
 .ec-sceau.sur-blanc::before { border-color: var(--ec-line); }
 .ec-sceau.sur-blanc .icon { stroke: var(--ec-ink-soft); }
 
-/* ── Fiche d'archive, établissements ── */
+/* ── FICHE-TAB : icône établissements (carrefour) ────── */
 .ec-fiche-tab {
-  width: 44px; height: 36px; background: var(--ec-accent-soft);
-  border-radius: 2px 6px 6px 2px; border-left: 3px solid var(--ec-ink-soft);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 44px;
+  height: 36px;
+  background: var(--ec-accent-soft);
+  border-radius: 2px 6px 6px 2px;
+  border-left: 3px solid var(--ec-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 .ec-fiche-tab .icon { width: 17px; height: 17px; stroke: var(--ec-ink-soft); stroke-width: 2; }
 
-/* ── Cartes de branches (carrefour) ── */
+/* ── BRANCHES : cartes de choix sur carrefour.html ───── */
 .ec-branches { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .ec-branche { text-decoration: none; color: inherit; display: block; }
 .ec-branche-carte {
-  border-radius: 999px; padding: 14px 22px;
-  display: flex; align-items: center; gap: 13px;
+  border-radius: 16px;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   background: var(--ec-surface);
   border: 1px solid var(--ec-line);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
-.ec-branche:hover .ec-branche-carte { border-color: var(--ec-ink-soft); }
+.ec-branche:hover .ec-branche-carte {
+  border-color: var(--ec-accent);
+  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.08);
+  transform: translateY(-2px);
+}
 .ec-branche:active .ec-branche-carte { background: var(--ec-accent-soft); }
 
 .ec-branche-officiel { border-color: var(--ec-line); }
 .ec-branche-etablissement { border: 1px dashed var(--ec-line); }
 
-.ec-branche-titre { font-family: var(--ec-serif-titre); font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
-.ec-branche-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 2px; }
-.ec-branche-chevron { color: var(--ec-ink-soft); font-size: 16px; margin-left: auto; }
+.ec-branche-titre {
+  font-family: var(--ec-serif-titre);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ec-ink);
+}
+.ec-branche-sub { font-size: 12px; color: var(--ec-ink-soft); margin-top: 2px; }
+.ec-branche-chevron { color: var(--ec-ink-soft); font-size: 18px; margin-left: auto; }
+
+/* ── État vide ────────────────────────────────────────── */
 .ec-vide {
-  margin: 16px; padding: 20px 16px; background: var(--ec-accent-soft);
-  border-radius: var(--radius, 3px); font-size: 12.5px; color: var(--ec-ink-soft);
-  text-align: center; font-family: var(--ec-serif-corps); font-style: italic;
+  margin: 16px;
+  padding: 22px 16px;
+  background: var(--ec-accent-soft);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--ec-ink-soft);
+  text-align: center;
+  font-family: var(--ec-serif-corps);
+  font-style: italic;
 }
 
-/* ── Listes (établissements) ── */
+/* ── CARTES ET LISTES ──────────────────────────────── */
 .ec-liste { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
-.ec-item-link { text-decoration: none; color: inherit; display: block; }
-.ec-item { background: var(--ec-surface); border: 1px solid var(--ec-line); border-radius: 20px; padding: 16px 20px; }
-.ec-item-titre { font-family: var(--ec-serif-titre); font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; color: var(--ec-ink); }
-.ec-item-sub { font-size: 11px; color: var(--ec-ink-soft); margin-top: 3px; }
-.ec-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.ec-item-icon { flex-shrink: 0; margin-top: 3px; color: var(--ec-ink-soft); }
-.ec-item-source {
-  font-family: var(--ec-mono); font-size: 9.5px; color: var(--ec-ink-soft);
-  background: var(--ec-accent-soft); padding: 2px 8px; border-radius: 999px;
-  display: inline-block; margin-top: 8px;
+.ec-item-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ec-item-chevron {
+  color: var(--ec-ink-soft);
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.ec-item {
+  background: var(--ec-surface);
+  border: 1px solid var(--ec-line);
+  border-radius: 16px;
+  padding: 16px 20px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.ec-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
 }
 
-.ec-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+/* Modificateur pour les listes simples (etablissements_index,
+   etablissements_niveau) : titre seul ou titre+sub, chevron a droite */
+.ec-item-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ec-item-titre {
+  font-family: var(--ec-serif-titre);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ec-ink);
+}
+.ec-item-sub { font-size: 12px; color: var(--ec-ink-soft); margin-top: 3px; }
+
+/* ── Header interne d'une carte item (titre + icone redirection) ── */
+.ec-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ec-item-icon {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--ec-ink-soft);
+}
+
+/* ── Tags secondaires (region, sequence) sous le titre ── */
+.ec-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
 .ec-pill {
-  font-family: var(--ec-mono); font-size: 9.5px; font-weight: 700;
-  padding: 3px 8px; border-radius: 2px;
-  background: var(--ec-accent-soft); color: var(--ec-ink-soft);
+  font-family: var(--ec-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--ec-accent-soft);
+  color: var(--ec-ink-soft);
   border: 1px solid var(--ec-line);
 }
 .ec-pill-region { border-style: solid; }
-.ec-pill-sequence { border-style: dashed; }
+.ec-pill-sequence { border-style: dashed; border-color: var(--ec-accent); color: var(--ec-accent); }
 
+/* ── Nom du site tiers : seul element discret de la carte,
+   ce n'est pas du contenu ExamensCam, juste l'indication
+   de la redirection externe ── */
+.ec-item-source {
+  font-family: var(--ec-mono);
+  font-size: 9.5px;
+  color: var(--ec-ink-soft);
+  background: var(--ec-line-soft);
+  padding: 2px 9px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-top: 9px;
+}
+
+/* ── ONGLETS DE FILTRE ─────────────────────────────── */
 .ec-filtre-onglets { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; }
 .ec-onglet {
-  font-family: var(--ec-mono); font-size: 11px; font-weight: 700;
-  padding: 7px 15px; border-radius: 999px; background: var(--ec-surface);
-  color: var(--ec-ink-soft); text-decoration: none; white-space: nowrap;
+  font-family: var(--ec-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--ec-surface);
+  color: var(--ec-ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
   border: 1px solid var(--ec-line);
 }
-.ec-onglet.actif { background: var(--ec-accent); color: var(--ec-surface); border-color: var(--ec-accent); }
-.ec-onglet-indispo { opacity: 0.5; }
+.ec-onglet.actif {
+  background: var(--ec-accent);
+  color: #FFFFFF;
+  border-color: var(--ec-accent);
+}
 
+/* ── AVERTISSEMENT : bandeau info (source externe) ───── */
 .ec-avertissement {
-  margin: 0 16px 14px; background: var(--ec-accent-soft); border: 1px solid var(--ec-line);
-  border-left: 3px solid var(--ec-ink-soft); border-radius: 2px;
-  padding: 12px 14px; font-size: 11px; color: var(--ec-ink-soft); line-height: 1.5;
+  margin: 0 16px 14px;
+  background: var(--ec-accent-soft);
+  border: 1px solid var(--ec-line);
+  border-left: 3px solid var(--ec-accent);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 12.5px;
+  color: var(--ec-ink-soft);
+  line-height: 1.5;
 }

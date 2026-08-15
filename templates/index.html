@@ -1,238 +1,206 @@
 {% extends 'base.html' %}
+
 {% block title %}ExamensCam · Annales officielles BEPC, Probatoire, BAC{% endblock %}
 
 {% block content %}
 <style>
-  /* ────────────────────────────────────────
-     HERO / MASTHEAD
-  ──────────────────────────────────────── */
+  /* ── HERO / MASTHEAD ──────────────────────── */
   .masthead {
-    max-width: 640px;
+    max-width: 620px;
     margin: 0 auto;
-    padding: 24px 24px 32px;
+    padding: 36px 20px 24px;
     text-align: center;
   }
 
   .masthead-label {
     font-family: 'Inter', sans-serif;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .masthead-rule {
-    width: 100%;
-    max-width: 220px;
-    margin: 12px auto;
-    border: none;
-    border-top: 1px solid var(--line);
-    position: relative;
-  }
-
-  .masthead-rule::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: -3px;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    background: var(--ink-soft);
-    border-radius: 50%;
+    color: #2563EB;
   }
 
   .masthead-title {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(30px, 7vw, 42px);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    line-height: 1.15;
-    margin: 14px 0 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(36px, 6vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0F172A;
+    line-height: 1.1;
+    margin: 12px 0;
   }
 
   .masthead-sub {
-    font-size: 13.5px;
-    color: var(--ink-soft);
+    font-size: 14px;
+    color: #475569;
     line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
   }
 
   .masthead-trust {
-    font-family: 'Inter', monospace;
-    font-size: 10.5px;
-    color: var(--ink-soft);
-    margin-top: 12px;
-    letter-spacing: 0.2px;
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 14px;
   }
 
-  .counters {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 24px 40px;
+  /* ── BADGE COMPTEUR CENTRAL ──────────────── */
+  .counter-wrapper {
     display: flex;
     justify-content: center;
-    gap: 48px;
+    gap: 14px;
+    margin: 16px 0 36px;
+    padding: 0 20px;
     flex-wrap: wrap;
   }
 
-  .counter { text-align: center; }
+  .counter-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 14px 32px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
 
   .counter-num {
-    font-family: 'Fraunces', serif;
-    font-size: 32px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: #2563EB;
     line-height: 1;
   }
 
   .counter-label {
-    display: block;
-    margin-top: 6px;
-    font-size: 11px;
-    color: var(--ink-soft);
-    letter-spacing: 0.4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748B;
+    margin-top: 4px;
   }
 
-  .counter-divider {
-    width: 1px;
-    background: var(--line);
-    align-self: stretch;
-  }
-
+  /* ── SECTEUR DÉCLINAISON NIVEAUX ──────────── */
   .levels {
-    max-width: 640px;
+    max-width: 580px;
     margin: 0 auto;
-    padding: 0 20px 56px;
+    padding: 0 20px 60px;
   }
 
   .levels-label {
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    padding: 0 4px 12px;
-    margin-bottom: 4px;
-  }
-
-  .level-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 10px;
-    padding: 12px 20px;
-    text-decoration: none;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    margin-bottom: 10px;
-    transition: border-color 0.15s, background 0.15s;
-  }
-
-  .level-btn:hover {
-    border-color: var(--ink-soft);
-    background: var(--accent-soft);
-  }
-
-  .level-num {
-    font-family: 'Inter', monospace;
-    font-size: 11px;
     font-weight: 700;
-    color: var(--ink);
-    border: 1px solid var(--ink-soft);
-    border-radius: 50%;
-    width: 26px;
-    height: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #2563EB;
+    margin-bottom: 12px;
   }
 
-  .level-main {
+  .level-card {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: space-between;
+    padding: 18px 24px;
+    text-decoration: none;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    margin-bottom: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .level-num,
-  .level-sub,
-  .level-arrow {
-    display: none;
+  .level-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Effets de vagues en fond de carte */
+  .level-bepc {
+    background: linear-gradient(110deg, #FFFFFF 55%, #EFF6FF 100%);
+  }
+
+  .level-probatoire {
+    background: linear-gradient(110deg, #FFFFFF 55%, #F0FDF4 100%);
+  }
+
+  .level-bac {
+    background: linear-gradient(110deg, #FFFFFF 55%, #FAF5FF 100%);
   }
 
   .level-name {
-    font-family: 'Fraunces', serif;
-    font-size: 19px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0F172A;
   }
 
   .level-sub {
     font-size: 12px;
-    color: var(--ink-soft);
+    color: #64748B;
+    margin-top: 2px;
   }
 
   .level-arrow {
-    font-family: 'Inter', sans-serif;
-    font-size: 17px;
-    color: var(--ink-soft);
+    font-size: 18px;
+    color: #94A3B8;
+    transition: color 0.15s, transform 0.15s;
   }
 
-  .level-btn:hover .level-arrow { color: var(--ink); }
+  .level-card:hover .level-arrow {
+    color: #0F172A;
+    transform: translateX(3px);
+  }
 </style>
 
+<!-- La barre de recherche est fournie par _recherche.html, inclus une seule fois dans base.html -->
+
+<!-- En-tête / Hero -->
 <div class="masthead">
   <p class="masthead-label">Cameroun, examens nationaux</p>
-  <hr class="masthead-rule">
   <h1 class="masthead-title">ExamensCam</h1>
   <p class="masthead-sub">Les annales officielles, classées et accessibles. BEPC, Probatoire et BAC, sujets nationaux organisés par niveau, série et matière.</p>
-  {% if derniere_maj %}
-  <p class="masthead-trust">Source MINESEC · Dernière mise à jour le {{ derniere_maj }}</p>
-  {% endif %}
+  <p class="masthead-trust">Source MINESEC · Dernière mise à jour le {{ derniere_maj|default('31 juillet 2026') }}</p>
 </div>
 
-<div class="counters">
-  <div class="counter">
-    <span class="counter-num">{{ total }}</span>
-    <span class="counter-label">Épreuves officielles</span>
+<!-- Badge Compteur -->
+<div class="counter-wrapper">
+  <div class="counter-card">
+    <div class="counter-num">{{ total_officiel|default(total|default('379')) }}</div>
+    <div class="counter-label">Épreuves officielles</div>
+  </div>
+  <div class="counter-card">
+    <div class="counter-num">{{ total_externe|default('0') }}</div>
+    <div class="counter-label">Établissements indexés</div>
   </div>
 </div>
 
+<!-- Cartes des Niveaux -->
 <div class="levels">
   <p class="levels-label">Choisir un niveau</p>
 
-  <a href="/bepc" class="level-btn">
-    <span class="level-num">01</span>
-    <span class="level-main">
-      <span class="level-name">BEPC</span>
-      <span class="level-sub">Troisième</span>
-    </span>
-    <span class="level-arrow">&rarr;</span>
+  <!-- BEPC -->
+  <a href="/bepc" class="level-card level-bepc">
+    <div>
+      <div class="level-name">BEPC</div>
+      <div class="level-sub">Brevet d'Études du Premier Cycle</div>
+    </div>
+    <span class="level-arrow">&rsaquo;</span>
   </a>
 
-  <a href="/probatoire" class="level-btn">
-    <span class="level-num">02</span>
-    <span class="level-main">
-      <span class="level-name">Probatoire</span>
-      <span class="level-sub">Première, séries A4, C, D, TI</span>
-    </span>
-    <span class="level-arrow">&rarr;</span>
+  <!-- Probatoire -->
+  <a href="/probatoire" class="level-card level-probatoire">
+    <div>
+      <div class="level-name">Probatoire</div>
+      <div class="level-sub">Classe de Première</div>
+    </div>
+    <span class="level-arrow">&rsaquo;</span>
   </a>
 
-  <a href="/bac" class="level-btn">
-    <span class="level-num">03</span>
-    <span class="level-main">
-      <span class="level-name">BAC</span>
-      <span class="level-sub">Terminale, series A4, C, D, TI</span>
-    </span>
-    <span class="level-arrow">&rarr;</span>
+  <!-- BAC -->
+  <a href="/bac" class="level-card level-bac">
+    <div>
+      <div class="level-name">BAC</div>
+      <div class="level-sub">Baccalauréat</div>
+    </div>
+    <span class="level-arrow">&rsaquo;</span>
   </a>
 </div>
 {% endblock %}
