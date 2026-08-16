@@ -38,9 +38,19 @@
     <div class="ec-item">
       <div class="ec-item-header">
         <div class="ec-item-titre">
-          {% if e.etablissement %}{{ e.etablissement }}{% else %}Examen harmonisé{% endif %}
+          {# Priorite d'affichage du titre d'une carte :
+             1. Etablissement (sujetexa/mongosukulu -- devoirs d'ecole)
+             2. "Examen harmonise" -- UNIQUEMENT si type_evaluation le confirme
+                explicitement, jamais par defaut (etait le bug : ce texte
+                s'affichait a tort sur du contenu MINESEC national comme
+                concourscameroon/sigmaths, qui n'a pas d'etablissement mais
+                n'est pas non plus une harmonisation regionale)
+             3. Titre brut scrape (concourscameroon/sigmaths -- deja
+                descriptif : "Mathematiques - Serie C - MINESEC - 2016")
+             4. Fallback generique neutre en dernier recours #}
+          {% if e.etablissement %}{{ e.etablissement }}{% elif e.type_evaluation and 'harmonis' in e.type_evaluation|lower %}Examen harmonisé{% elif e.titre %}{{ e.titre }}{% else %}Épreuve nationale{% endif %}
           {% if e.sequence and e.sequence > 0 %}, Séquence {{ e.sequence }}{% endif %}
-          · {{ e.annee }}
+          {% if e.etablissement or not e.titre %} · {{ e.annee }}{% endif %}
         </div>
         <svg class="ec-item-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
       </div>

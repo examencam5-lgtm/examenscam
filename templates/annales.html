@@ -52,10 +52,18 @@
 
   .header-sub { font-size: 13px; color: var(--ink-soft); }
 
+  /* Meme structure visuelle que .counter-card sur l'accueil (carte
+     contenue, bordure pleine, radius) -- juste une variante compacte
+     en ligne au lieu de la grande carte centree. Avant : bande pleine
+     largeur sans bordure ni radius, un composant different plutot
+     qu'une simple variante de taille. Voir lettre section 3.2. */
   .count-strip {
-    background: var(--accent-soft);
-    border-bottom: 1px solid var(--line);
+    max-width: 680px;
+    margin: 16px auto 0;
     padding: 12px 24px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
