@@ -9,17 +9,26 @@
     padding: 32px 24px 28px;
   }
 
-  .back-link {
-    display: inline-flex;
+  .fil-ariane {
+    display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--ink-soft);
-    text-decoration: none;
+    flex-wrap: wrap;
     font-size: 13px;
+    color: var(--ink-soft);
     margin-bottom: 18px;
   }
 
-  .back-link:hover { color: var(--ink); }
+  .fil-ariane a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .fil-ariane a:hover { color: var(--ink); }
+
+  .fil-ariane .separateur { color: var(--ink-soft); opacity: 0.6; }
+
+  .fil-ariane .courant { color: var(--ink); }
 
   .header-eyebrow {
     font-family: 'Inter', sans-serif;
@@ -31,7 +40,6 @@
     margin-bottom: 8px;
   }
 
-  /* Titre en Fraunces (doc section 6.1) -- coherent avec base.html */
   .header-title {
     font-family: 'Fraunces', serif;
     font-size: clamp(26px, 6vw, 36px);
@@ -44,7 +52,6 @@
 
   .header-sub { font-size: 13px; color: var(--ink-soft); }
 
-  /* ── COMPTEUR ─────────────────────────────── */
   .count-strip {
     background: var(--accent-soft);
     border-bottom: 1px solid var(--line);
@@ -64,7 +71,6 @@
     color: var(--ink);
   }
 
-  /* ── LISTE ANNALES ────────────────────────── */
   .annales-list {
     max-width: 680px;
     margin: 0 auto;
@@ -151,6 +157,9 @@
     white-space: nowrap;
   }
 
+  /* Fleche accordeon -- volontairement differente du chevron de
+     navigation (le clic deplie sur place, ne navigue pas).
+     Voir lettre d'ajustements UI section 3.3. */
   .toggle-arrow {
     font-size: 12px;
     color: var(--ink-soft);
@@ -214,7 +223,6 @@
     flex-shrink: 0;
   }
 
-  /* ── ÉTAT VIDE ────────────────────────────── */
   .empty-state {
     text-align: center;
     padding: 48px 24px;
@@ -241,20 +249,33 @@
 </style>
 
 <div class="page-header">
-  <a href="/" class="back-link">&larr; Accueil</a>
+  <nav class="fil-ariane" aria-label="Fil d'ariane">
+    <a href="{{ url_for('index') }}">Accueil</a>
+    <span class="separateur">&rsaquo;</span>
+    {% if niveau == 'BAC' %}
+      {% set lien_niveau = url_for('bac_serie', serie=serie) if serie else url_for('bac') %}
+    {% elif niveau == 'Probatoire' %}
+      {% set lien_niveau = url_for('probatoire_serie', serie=serie) if serie else url_for('probatoire') %}
+    {% else %}
+      {% set lien_niveau = url_for('bepc') %}
+    {% endif %}
+    <a href="{{ lien_niveau }}">{{ niveau }}{% if serie %} &middot; S&eacute;rie {{ serie }}{% endif %}</a>
+    <span class="separateur">&rsaquo;</span>
+    <span class="courant">{{ matiere }}</span>
+  </nav>
 
   <p class="header-eyebrow">
-    {{ niveau }}{% if serie %} · Série {{ serie }}{% endif %}
+    {{ niveau }}{% if serie %} &middot; S&eacute;rie {{ serie }}{% endif %}
   </p>
 
   <h1 class="header-title">{{ matiere }}</h1>
 
-  <p class="header-sub">Épreuves officielles, classées par année</p>
+  <p class="header-sub">&Eacute;preuves officielles, class&eacute;es par ann&eacute;e</p>
 </div>
 
 {% if annales %}
 <div class="count-strip">
-  <span class="count-label">Épreuves disponibles</span>
+  <span class="count-label">&Eacute;preuves disponibles</span>
   <span class="count-num">{{ annales|length }}</span>
 </div>
 {% endif %}
@@ -269,16 +290,14 @@
         <div class="toggle-left">
           <span class="year-badge">{{ annale.annee }}</span>
           <div class="toggle-label">
-            <span class="toggle-title">Épreuve officielle</span>
-            <span class="toggle-hint">
-              {% if annale.corrige_dispo %}Corrigé disponible{% else %}Énoncé uniquement{% endif %}
-            </span>
+            <span class="toggle-title">&Eacute;preuve officielle</span>
+            <span class="toggle-hint">{% if annale.corrige_dispo %}Corrig&eacute; disponible{% else %}&Eacute;nonc&eacute; uniquement{% endif %}</span>
           </div>
         </div>
 
         <div style="display:flex; align-items:center; gap:10px;">
           {% if annale.corrige_dispo %}
-          <span class="badge-corrige">Corrigé</span>
+          <span class="badge-corrige">Corrig&eacute;</span>
           {% endif %}
           <span class="toggle-arrow" id="arrow-{{ annale.annee }}">&#9660;</span>
         </div>
@@ -302,7 +321,7 @@
         <div class="corrige-banner">
           <div class="corrige-text">
             <span class="corrige-dot"></span>
-            Corrigé détaillé disponible
+            Corrig&eacute; d&eacute;taill&eacute; disponible
           </div>
         </div>
         {% endif %}
@@ -314,14 +333,14 @@
   {% else %}
   <div class="empty-state">
     <h2 class="empty-title">Aucune annale disponible</h2>
-    <p class="empty-sub">Les épreuves pour cette matière arrivent bientôt.</p>
+    <p class="empty-sub">Les &eacute;preuves pour cette mati&egrave;re arrivent bient&ocirc;t.</p>
   </div>
   {% endif %}
 
 </div>
 
 <div class="bottom-nav">
-  <a href="/" class="btn btn-outline">&larr; Retour à l'accueil</a>
+  <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Retour &agrave; l'accueil</a>
 </div>
 
 <script>
@@ -339,16 +358,11 @@ function toggleAnnale(annee) {
   }
 }
 
-// Ouvre automatiquement l'accordeon correspondant si on arrive sur
-// la page via un lien avec ancre (#card-2023), typiquement depuis
-// un clic sur un resultat de recherche.
 window.addEventListener('DOMContentLoaded', function() {
   if (window.location.hash) {
     var annee = window.location.hash.replace('#card-', '');
     if (annee) {
       toggleAnnale(annee);
-      // Scroll jusqu'a la carte ouverte -- sinon elle peut etre
-      // hors ecran si la page a beaucoup d'annales
       var card = document.getElementById('card-' + annee);
       if (card) {
         setTimeout(function() {

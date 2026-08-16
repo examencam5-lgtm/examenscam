@@ -3,25 +3,32 @@
 
 {% block content %}
 <style>
-  /* Reprend les tokens de base.html, rien de nouveau ici */
-
   .page-header {
     background: var(--surface);
     border-bottom: 1px solid var(--line);
     padding: 32px 24px 28px;
   }
 
-  .back-link {
-    display: inline-flex;
+  .fil-ariane {
+    display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--ink-soft);
-    text-decoration: none;
+    flex-wrap: wrap;
     font-size: 13px;
+    color: var(--ink-soft);
     margin-bottom: 18px;
   }
 
-  .back-link:hover { color: var(--ink); }
+  .fil-ariane a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .fil-ariane a:hover { color: var(--ink); }
+
+  .fil-ariane .separateur { color: var(--ink-soft); opacity: 0.6; }
+
+  .fil-ariane .courant { color: var(--ink); }
 
   .header-eyebrow {
     font-family: 'Inter', sans-serif;
@@ -48,7 +55,6 @@
     color: var(--ink-soft);
   }
 
-  /* ── LISTE DES MATIÈRES ──────────────────── */
   .section-wrapper {
     max-width: 680px;
     margin: 0 auto;
@@ -100,6 +106,9 @@
     color: var(--ink-soft);
   }
 
+  /* Chevron unifie avec le reste du site : toute navigation vers
+     une nouvelle page utilise ›, jamais →. Voir lettre d'ajustements
+     UI section 3.3. */
   .matiere-arrow {
     font-size: 16px;
     color: var(--ink-soft);
@@ -107,7 +116,6 @@
 
   .matiere-row:hover .matiere-arrow { color: var(--ink); }
 
-  /* ── ÉTAT VIDE ────────────────────────────── */
   .empty-state {
     text-align: center;
     padding: 48px 24px;
@@ -126,7 +134,6 @@
 
   .empty-sub { font-size: 13px; color: var(--ink-soft); }
 
-  /* ── RETOUR ───────────────────────────────── */
   .bottom-nav {
     max-width: 680px;
     margin: 0 auto;
@@ -135,7 +142,11 @@
 </style>
 
 <div class="page-header">
-  <a href="/" class="back-link">&larr; Accueil</a>
+  <nav class="fil-ariane" aria-label="Fil d'ariane">
+    <a href="{{ url_for('index') }}">Accueil</a>
+    <span class="separateur">&rsaquo;</span>
+    <span class="courant">{{ niveau }}{% if serie %} &middot; S&eacute;rie {{ serie }}{% endif %}</span>
+  </nav>
 
   <p class="header-eyebrow">
     {% if serie %}{{ niveau }} · Série {{ serie }}{% else %}{{ niveau }}{% endif %}
@@ -186,7 +197,7 @@
         <span class="matiere-name">{{ matiere }}</span>
         <span class="matiere-hint">{{ hint }}</span>
       </span>
-      <span class="matiere-arrow">&rarr;</span>
+      <span class="matiere-arrow">&rsaquo;</span>
     </a>
 
     {% endfor %}
@@ -202,7 +213,7 @@
 </div>
 
 <div class="bottom-nav">
-  <a href="/" class="btn-outline btn">&larr; Retour à l'accueil</a>
+  <a href="{{ url_for('index') }}" class="btn-outline btn">&larr; Retour à l'accueil</a>
 </div>
 
 {% endblock %}
