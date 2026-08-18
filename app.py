@@ -1,6 +1,16 @@
 # app.py — ExamensCam — Version finale complète
-import os, re
-from flask import Flask, render_template, redirect, request, abort, jsonify
+import os
+from dotenv import load_dotenv
+load_dotenv()
+import re
+import time
+from functools import wraps
+
+from flask import (
+    Flask, render_template, redirect, request, abort, jsonify,
+    g, session,
+)
+
 from database_carrefour import get_carrefour
 from database_matieres import get_toutes_matieres
 from database_externes import (
@@ -11,49 +21,54 @@ from database_externes import (
 from database import (get_annales, get_matieres, increment_vues, get_stats,
                       get_derniere_maj, create_table)
 from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
-from flask import g
-from functools import wraps
-from flask import session
+
 from analytics import (
     creer_table_evenements, log_evenement, get_ou_creer_session,
-    stats_resume, stats_pages_populaires, stats_recherches_populaires,
-    stats_visites_par_jour, stats_matieres_populaires, stats_destinations_cliquees,
-    stats_journal_recherches, stats_journal_clics, stats_parcours_session
+    est_probablement_bot, stats_resume, stats_pages_populaires,
+    stats_recherches_populaires, stats_matieres_populaires,
+    stats_visites_par_jour, stats_destinations_cliquees,
+    stats_sources, stats_nouveaux_vs_recurrents, stats_duree_sessions,
+    stats_journal_recherches, stats_journal_clics, stats_parcours_session,
 )
 
 creer_table_evenements()
 app = Flask(__name__)
-ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 
-@app.before_request
-def _avant_requete():
-    g.session_id = get_ou_creer_session(request)
-    if request.method == 'GET' and not any(request.path.startswith(p) for p in ROUTES_IGNOREES_TRACKING):
-        vargs = request.view_args or {}
-        log_evenement(
-            'page_vue',
-            g.session_id,
-            route=request.path,
-            niveau=vargs.get('niveau'),
-            serie=vargs.get('serie'),
-            matiere=vargs.get('matiere'),
-            referrer=request.referrer,
-        )
+# ═══════════════════════════════════════════════════════
+# CONFIGURATION & SECURITE
+# ═══════════════════════════════════════════════════════
+# Aucun fallback en dur pour les secrets. Un fallback visible dans le
+# code (meme "juste pour le dev") devient un mot de passe public des
+# qu'il finit sur GitHub. Si la variable d'env manque sur Render, le
+# site DOIT refuser de demarrer plutot que de tourner avec un secret
+# devine par n'importe qui.
+_SECRET_KEY = os.environ.get('SECRET_KEY')
+_ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN')
+_DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-@app.after_request
-def _apres_requete(response):
-    if not request.cookies.get('ec_session') and hasattr(g, 'session_id'):
-        response.set_cookie('ec_session', g.session_id, max_age=60*60*24*365, samesite='Lax')
-    return response
+if not _SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY manquant. Configure cette variable d'environnement sur "
+        "Render avant de deployer -- sans elle, les cookies de session "
+        "admin peuvent etre forges par n'importe qui."
+    )
+if not _ADMIN_TOKEN:
+    raise RuntimeError(
+        "ADMIN_TOKEN manquant. Configure cette variable d'environnement sur "
+        "Render avant de deployer -- sans elle, l'admin est inaccessible "
+        "(ou pire, accessible avec un mot de passe devinable)."
+    )
+
 app.config.update(
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_SUPPRIME_DE_LHISTORIQUE'),
-    DEBUG = os.environ.get('DEBUG', 'True') == 'True',
-    ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN', 'TOKEN_SUPPRIME_DE_LHISTORIQUE'),
+    SECRET_KEY=_SECRET_KEY,
+    DEBUG=_DEBUG,
+    ADMIN_TOKEN=_ADMIN_TOKEN,
 )
 
 with app.app_context():
     create_table()
 
+ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
 
 CATALOGUE = {
@@ -86,6 +101,81 @@ def get_matieres_fallback(niveau, serie=None):
 @app.context_processor
 def inject_globals():
     return {'site_nom': 'ExamensCam'}
+
+
+# ═══════════════════════════════════════════════════════
+# RATE-LIMITING LOGIN ADMIN — en memoire, pas de dependance externe
+# ═══════════════════════════════════════════════════════
+# Structure : { ip: [timestamp_echec_1, timestamp_echec_2, ...] }
+# Au-dela de MAX_TENTATIVES echecs dans la fenetre glissante de
+# FENETRE_BLOCAGE_SEC, l'IP est bloquee jusqu'a expiration du plus
+# ancien echec de la fenetre. Limite connue et acceptee : ce compteur
+# se remet a zero si Render redemarre le process (redeploy, reveil
+# apres veille sur le free tier) -- compromis correct pour un site
+# mono-instance, pas une solution entreprise.
+_TENTATIVES_LOGIN = {}
+MAX_TENTATIVES = 5
+FENETRE_BLOCAGE_SEC = 15 * 60
+
+
+def _ip_client():
+    # Render est derriere un proxy -- X-Forwarded-For contient la vraie IP.
+    xff = request.headers.get('X-Forwarded-For', '')
+    if xff:
+        return xff.split(',')[0].strip()
+    return request.remote_addr or 'inconnu'
+
+
+def _login_bloque(ip: str) -> bool:
+    maintenant = time.time()
+    echecs = [t for t in _TENTATIVES_LOGIN.get(ip, []) if maintenant - t < FENETRE_BLOCAGE_SEC]
+    _TENTATIVES_LOGIN[ip] = echecs
+    return len(echecs) >= MAX_TENTATIVES
+
+
+def _enregistrer_echec(ip: str):
+    _TENTATIVES_LOGIN.setdefault(ip, []).append(time.time())
+
+
+def _minutes_avant_deblocage(ip: str) -> int:
+    echecs = _TENTATIVES_LOGIN.get(ip, [])
+    if not echecs:
+        return 0
+    plus_ancien = min(echecs)
+    reste = FENETRE_BLOCAGE_SEC - (time.time() - plus_ancien)
+    return max(1, round(reste / 60))
+
+
+# ═══════════════════════════════════════════════════════
+# TRACKING GLOBAL
+# ═══════════════════════════════════════════════════════
+
+@app.before_request
+def _avant_requete():
+    g.session_id = get_ou_creer_session(request)
+
+    route_ignoree = any(request.path.startswith(p) for p in ROUTES_IGNOREES_TRACKING)
+    admin_actif = session.get('admin_connecte', False)
+    bot = est_probablement_bot(request.headers.get('User-Agent'))
+
+    if request.method == 'GET' and not route_ignoree and not admin_actif and not bot:
+        vargs = request.view_args or {}
+        log_evenement(
+            'page_vue',
+            g.session_id,
+            route=request.path,
+            niveau=vargs.get('niveau'),
+            serie=vargs.get('serie'),
+            matiere=vargs.get('matiere'),
+            referrer=request.referrer,
+        )
+
+@app.after_request
+def _apres_requete(response):
+    if not request.cookies.get('ec_session') and hasattr(g, 'session_id'):
+        response.set_cookie('ec_session', g.session_id, max_age=60*60*24*365, samesite='Lax')
+    return response
+
 
 # ══════════════════════════════════════════
 # ROUTES PRINCIPALES
@@ -333,6 +423,11 @@ def api_log_clic():
     )
     return '', 204
 
+
+# ══════════════════════════════════════════
+# ADMIN — AUTHENTIFICATION
+# ══════════════════════════════════════════
+
 def admin_requis(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -341,21 +436,43 @@ def admin_requis(f):
         return f(*args, **kwargs)
     return wrapper
 
+
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     erreur = False
-    if request.method == 'POST':
+    bloque = False
+    minutes_restantes = 0
+    ip = _ip_client()
+
+    if _login_bloque(ip):
+        bloque = True
+        minutes_restantes = _minutes_avant_deblocage(ip)
+    elif request.method == 'POST':
         mot_de_passe = request.form.get('mot_de_passe', '')
         if mot_de_passe == app.config['ADMIN_TOKEN']:
             session['admin_connecte'] = True
+            _TENTATIVES_LOGIN.pop(ip, None)
             return redirect('/admin/dashboard')
-        erreur = True
-    return render_template('admin_login.html', erreur=erreur)
+        else:
+            _enregistrer_echec(ip)
+            erreur = True
+            if _login_bloque(ip):
+                bloque = True
+                minutes_restantes = _minutes_avant_deblocage(ip)
+
+    return render_template('admin_login.html', erreur=erreur, bloque=bloque,
+                            minutes_restantes=minutes_restantes)
+
 
 @app.route('/admin/logout')
 def admin_logout():
     session.pop('admin_connecte', None)
     return redirect('/admin/login')
+
+
+# ══════════════════════════════════════════
+# ADMIN — DASHBOARD & ANALYTICS
+# ══════════════════════════════════════════
 
 @app.route('/admin/dashboard')
 @admin_requis
@@ -368,6 +485,9 @@ def admin_dashboard():
         matieres=stats_matieres_populaires(jours),
         visites_par_jour=stats_visites_par_jour(min(jours, 30)),
         destinations=stats_destinations_cliquees(jours),
+        sources=stats_sources(jours),
+        visiteurs=stats_nouveaux_vs_recurrents(jours),
+        duree=stats_duree_sessions(jours),
         jours=jours,
     )
 
@@ -375,9 +495,11 @@ def admin_dashboard():
 @admin_requis
 def admin_journal():
     jours = request.args.get('jours', 30, type=int)
+    offset_recherches = request.args.get('or_', 0, type=int)
+    offset_clics = request.args.get('oc', 0, type=int)
     return render_template('admin_journal.html',
-        recherches=stats_journal_recherches(jours),
-        clics=stats_journal_clics(jours),
+        recherches=stats_journal_recherches(jours, offset=offset_recherches),
+        clics=stats_journal_clics(jours, offset=offset_clics),
         jours=jours,
     )
 
@@ -388,7 +510,9 @@ def admin_parcours(session_id):
     return render_template('admin_parcours.html',
         session_id=session_id,
         evenements=stats_parcours_session(session_id, jours),
+        jours=jours,
     )
+
 
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

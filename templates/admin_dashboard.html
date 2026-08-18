@@ -5,16 +5,22 @@
 <style>
   .dash-wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
 
-  .dash-header { margin-bottom: 24px; }
+  .dash-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
   .dash-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
-  .dash-filtres { display: flex; gap: 8px; margin-top: 12px; }
+  .dash-filtres { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
   .dash-filtre { font-family: 'Inter', sans-serif; font-size: 12px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: var(--ink-soft); }
   .dash-filtre.actif { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .dash-logout { font-size: 12px; color: var(--ink-soft); text-decoration: none; align-self: center; }
 
-  .dash-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .dash-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
   .dash-carte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
   .dash-carte-num { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; color: var(--ink); }
   .dash-carte-label { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+
+  .dash-cartes-sec { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .dash-carte-sec { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .dash-carte-sec-num { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--ink); }
+  .dash-carte-sec-label { font-size: 10.5px; color: var(--ink-soft); margin-top: 3px; }
 
   .dash-section { margin-bottom: 32px; }
   .dash-section-titre { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; margin-bottom: 12px; color: var(--ink); }
@@ -25,23 +31,29 @@
   .dash-barre-jour { font-size: 8px; color: var(--ink-soft); margin-top: 4px; writing-mode: vertical-rl; }
 
   .dash-liste { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-  .dash-ligne { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .dash-ligne { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
   .dash-ligne:last-child { border-bottom: none; }
   .dash-ligne-label { color: var(--ink); font-family: 'Source Serif 4', serif; }
   .dash-ligne-num { color: var(--ink-soft); font-family: 'Inter', monospace; font-size: 12px; }
+
+  .dash-barre-pct-wrap { flex: 1; height: 6px; background: var(--line); border-radius: 999px; margin: 0 12px; overflow: hidden; }
+  .dash-barre-pct { height: 100%; background: var(--ink); }
 
   .dash-vide { padding: 20px; text-align: center; color: var(--ink-soft); font-size: 13px; font-style: italic; }
 </style>
 
 <div class="dash-wrap">
   <div class="dash-header">
-    <h1 class="dash-title">Dashboard ExamensCam</h1>
-    <div class="dash-filtres">
-      <a href="?jours=7" class="dash-filtre {% if jours == 7 %}actif{% endif %}">7 jours</a>
-      <a href="?jours=30" class="dash-filtre {% if jours == 30 %}actif{% endif %}">30 jours</a>
-      <a href="?jours=90" class="dash-filtre {% if jours == 90 %}actif{% endif %}">90 jours</a>
-      <a href="/admin/dashboard/journal?jours={{ jours }}" class="dash-filtre">Journal detaille &rarr;</a>
+    <div>
+      <h1 class="dash-title">Dashboard ExamensCam</h1>
+      <div class="dash-filtres">
+        <a href="?jours=7" class="dash-filtre {% if jours == 7 %}actif{% endif %}">7 jours</a>
+        <a href="?jours=30" class="dash-filtre {% if jours == 30 %}actif{% endif %}">30 jours</a>
+        <a href="?jours=90" class="dash-filtre {% if jours == 90 %}actif{% endif %}">90 jours</a>
+        <a href="/admin/dashboard/journal?jours={{ jours }}" class="dash-filtre">Journal detaille &rarr;</a>
+      </div>
     </div>
+    <a href="/admin/logout" class="dash-logout">Se deconnecter</a>
   </div>
 
   <div class="dash-cartes">
@@ -63,8 +75,33 @@
     </div>
   </div>
 
+  <div class="dash-cartes-sec">
+    <div class="dash-carte-sec">
+      <div class="dash-carte-sec-num">{{ visiteurs.nouveaux }}</div>
+      <div class="dash-carte-sec-label">Nouveaux visiteurs</div>
+    </div>
+    <div class="dash-carte-sec">
+      <div class="dash-carte-sec-num">{{ visiteurs.recurrents }}</div>
+      <div class="dash-carte-sec-label">Visiteurs recurrents</div>
+    </div>
+    <div class="dash-carte-sec">
+      <div class="dash-carte-sec-num">
+        {% if duree.duree_moyenne_sec >= 60 %}
+          {{ (duree.duree_moyenne_sec / 60) | round(1) }} min
+        {% else %}
+          {{ duree.duree_moyenne_sec }} s
+        {% endif %}
+      </div>
+      <div class="dash-carte-sec-label">Duree moyenne session</div>
+    </div>
+    <div class="dash-carte-sec">
+      <div class="dash-carte-sec-num">{{ duree.taux_rebond_pct }}%</div>
+      <div class="dash-carte-sec-label">Taux de rebond (1 page)</div>
+    </div>
+  </div>
+
   <div class="dash-section">
-    <p class="dash-section-titre">Frequentation (30 derniers jours max)</p>
+    <p class="dash-section-titre">Frequentation (30 derniers jours max, heure de Maroua)</p>
     {% if visites_par_jour %}
     <div class="dash-graphe">
       {% set max_n = visites_par_jour | map(attribute='n') | max %}
@@ -78,6 +115,21 @@
     {% else %}
     <div class="dash-vide">Pas encore de donnees</div>
     {% endif %}
+  </div>
+
+  <div class="dash-section">
+    <p class="dash-section-titre">Sources de trafic</p>
+    <div class="dash-liste">
+      {% for s in sources %}
+      <div class="dash-ligne">
+        <span class="dash-ligne-label">{{ s.source | capitalize }}</span>
+        <div class="dash-barre-pct-wrap"><div class="dash-barre-pct" style="width: {{ s.pct }}%;"></div></div>
+        <span class="dash-ligne-num">{{ s.n }} ({{ s.pct }}%)</span>
+      </div>
+      {% else %}
+      <div class="dash-vide">Pas encore de donnees</div>
+      {% endfor %}
+    </div>
   </div>
 
   <div class="dash-section">

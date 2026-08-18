@@ -1,190 +1,177 @@
-{% extends 'base.html' %}
-{% block title %}À propos · ExamensCam{% endblock %}
+{% extends "base.html" %}
+{# ============================================================
+   apropos.html — Page À propos ExamensCam
+   Étend base.html : header, nav, footer déjà gérés là-bas.
+   Si tes noms de block diffèrent (ex. {% block body %} au lieu
+   de {% block content %}), adapte juste la ligne ci-dessous —
+   rien d'autre à changer.
+   ============================================================ #}
+
+{% block title %}À propos, ExamensCam{% endblock %}
 
 {% block content %}
 <style>
-  .page-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
-    padding: 32px 24px 28px;
+  /* Styles scopés à cette page. Si tes variables --ink, --accent, etc.
+     existent déjà globalement dans style.css, supprime ce bloc :root
+     et garde uniquement les règles .apropos-* en dessous. */
+  :root {
+    --ink: #17181a;
+    --ink-soft: #5b5e64;
+    --ink-faint: #96999e;
+    --accent: #2952b3;
+    --line: #e6e6e2;
+    --line-strong: #d5d5cf;
+    --card-bg: #ffffff;
+    --radius-sm: 8px;
+    --radius-lg: 18px;
+    --shadow: 0 1px 2px rgba(20,20,15,0.05);
   }
 
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--ink-soft);
-    text-decoration: none;
-    font-size: 13px;
-    margin-bottom: 18px;
+  .apropos-header { padding: 24px 20px 4px; }
+  .apropos-breadcrumb {
+    font-size: 14px; color: var(--ink-faint); text-decoration: none;
+    margin-bottom: 10px; display: inline-block;
+  }
+  .apropos-title {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 32px;
+    color: var(--ink); margin: 0 0 24px;
   }
 
-  .back-link:hover { color: var(--ink); }
-
-  .header-title {
-    font-family: 'Source Serif 4', serif;
-    font-size: clamp(26px, 6vw, 34px);
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 1.15;
+  .apropos-section { padding: 0 20px 28px; }
+  .apropos-label {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent);
+    margin: 0 0 12px;
   }
-
-  .wrapper {
-    max-width: 620px;
-    margin: 0 auto;
-    padding: 32px 20px 56px;
+  .apropos-section p {
+    font-family: 'Source Serif 4', serif; font-size: 16px; line-height: 1.6;
+    color: var(--ink); margin: 0 0 14px;
   }
+  .apropos-section p:last-child { margin-bottom: 0; }
 
-  .section {
-    margin-bottom: 32px;
-  }
-
-  .section-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 10px;
-  }
-
-  .section-title {
-    font-family: 'Source Serif 4', serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 10px;
-  }
-
-  .section-text {
-    font-size: 14px;
-    line-height: 1.75;
-    color: var(--ink);
-  }
-
-  .section-text + .section-text { margin-top: 12px; }
-
-  .credentials {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .credential {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 12px 16px;
+  /* Cartes de contenu — même containment que le reste du site
+     (résultats, cartes matière) : radius-lg, bordure fine, pas d'ombre forte */
+  .apropos-card {
+    background: var(--card-bg);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    font-size: 13px;
-    color: var(--ink);
-  }
-
-  .credential-mark {
-    font-family: 'Source Serif 4', serif;
-    color: var(--ink-soft);
-    flex-shrink: 0;
-  }
-
-  .contact-box {
-    background: var(--accent-soft);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
     padding: 20px;
-    text-align: center;
   }
 
-  .contact-box a {
-    font-family: 'Source Serif 4', serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--ink);
-    text-decoration: none;
+  .apropos-list { list-style: none; margin: 0; padding: 0; }
+  .apropos-list li {
+    font-family: 'Source Serif 4', serif; font-size: 16px; color: var(--ink);
+    padding: 10px 0; border-bottom: 1px solid var(--line);
   }
+  .apropos-list li:last-child { border-bottom: none; }
+  .apropos-list li strong { font-weight: 600; }
 
-  .contact-box a:hover { text-decoration: underline; }
+  .apropos-divider { border: none; border-top: 1px solid var(--line); margin: 28px 20px; }
 
-  .contact-note {
-    font-size: 12px;
-    color: var(--ink-soft);
-    margin-top: 8px;
+  .apropos-contact-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-bottom: 1px solid var(--line);
   }
-
-  .bottom-nav {
-    max-width: 620px;
-    margin: 0 auto;
-    padding: 0 20px 40px;
-  }
+  .apropos-contact-item:last-child { border-bottom: none; }
+  .apropos-contact-item a { color: var(--accent); text-decoration: none; font-weight: 600; }
 </style>
 
-<div class="page-header">
-  <a href="/" class="back-link">&larr; Accueil</a>
-  <h1 class="header-title">À propos</h1>
+<div class="apropos-header">
+  <a href="{{ url_for('index') }}" class="apropos-breadcrumb">← Accueil</a>
+  <h1 class="apropos-title">À propos</h1>
 </div>
 
-<div class="wrapper">
+<hr class="apropos-divider">
 
-  <div class="section">
-    <p class="section-label">Qui suis-je</p>
-    <p class="section-title">Mohamadou</p>
-    <p class="section-text">
-      Étudiant en Licence de Mathématiques à l'Université de Maroua, et
-      répétiteur privé depuis plusieurs années pour le BEPC, le
-      Probatoire et le BAC, séries C, D, TI et A4.
-    </p>
-    <p class="section-text">
-      J'ai obtenu mon BAC C en autodidacte, sans tuteur, sans internet,
-      sans bibliothèque. C'est cette expérience qui m'a poussé à
-      construire ExamensCam : donner à un élève loin d'une grande ville
-      l'accès structuré que je n'avais pas eu à l'époque.
-    </p>
+<!-- 1. QU'EST-CE QU'EXAMENSCAM -->
+<section class="apropos-section">
+  <p class="apropos-label">Qu'est-ce qu'ExamensCam</p>
+  <p>Il n'existe pas un seul endroit où retrouver l'ensemble des annales officielles camerounaises. Elles sont dispersées sur des dizaines de sites, mal classées, souvent difficiles à retrouver par niveau, série ou année.</p>
+  <p>ExamensCam centralise ces annales (BEPC, Probatoire, BAC séries C, D, TI et A4), classées par niveau, série, matière et année, pour qu'un élève, où qu'il soit au Cameroun, y accède en quelques clics plutôt que de chercher sur dix sites différents.</p>
+  <p>Chaque document est vérifié avant publication. Certains sont hébergés directement sur la plateforme ; d'autres redirigent vers leur site source d'origine.</p>
+</section>
 
-    <div class="credentials">
-      <div class="credential">
-        <span class="credential-mark">&middot;</span>
-        <span>Licence de Mathématiques, Université de Maroua</span>
-      </div>
-      <div class="credential">
-        <span class="credential-mark">&middot;</span>
-        <span>Répétiteur privé BEPC, Probatoire, BAC C, D, TI, A4</span>
-      </div>
-      <div class="credential">
-        <span class="credential-mark">&middot;</span>
-        <span>Conception, organisation et vérification du contenu par mes soins</span>
-      </div>
+<!-- 2. LE CONTENU COUVERT -->
+<section class="apropos-section">
+  <p class="apropos-label">Le contenu couvert</p>
+  <div class="apropos-card">
+    <ul class="apropos-list">
+      <li><strong>Plus de 10 000 épreuves couvertes</strong></li>
+      <li>Annales officielles BEPC, Probatoire et BAC (séries C, D, TI, A4)</li>
+      <li>Épreuves zéro, blanches et harmonisées, en complément des sujets officiels</li>
+      <li>Classement par niveau, série, matière et année</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. CONTRIBUER UNE ÉPREUVE -->
+<section class="apropos-section">
+  <p class="apropos-label">Contribuer une épreuve</p>
+  <p>Un établissement ou un enseignant possédant des épreuves non encore indexées peut les transmettre pour publication sur ExamensCam.</p>
+  <p><strong>Si l'épreuve est déjà disponible en ligne ailleurs</strong>, ExamensCam l'indexe et redirige vers sa source d'origine : le document reste hébergé là où il se trouve déjà.<br>
+  <strong>Si l'épreuve n'est disponible nulle part en ligne</strong>, ExamensCam l'héberge directement sur la plateforme.</p>
+  <p>Chaque contribution enrichit une base commune consultée par des élèves partout au Cameroun, quelle que soit leur région. C'est aujourd'hui l'un des moyens les plus directs de rendre une épreuve accessible au-delà de son propre établissement.</p>
+  <p>Les documents transmis sont vérifiés avant publication, puis indexés avec la même rigueur que le reste du catalogue.</p>
+</section>
+
+<!-- 4. GRATUITÉ ET TRANSPARENCE -->
+<section class="apropos-section">
+  <p class="apropos-label">Gratuité et transparence</p>
+  <p>L'accès aux annales est entièrement gratuit, sans inscription, sans compte à créer, sans étape intermédiaire avant d'atteindre le document recherché.</p>
+  <p>Cette gratuité répond à un principe simple : un élève ou un enseignant qui cherche une épreuve ne devrait jamais être ralenti par une barrière (formulaire, paiement, création de compte) avant d'accéder à un document déjà public par nature.</p>
+  <p>Aucun contenu n'est verrouillé derrière un paiement caché.</p>
+</section>
+
+<!-- 5. QUI GÈRE EXAMENSCAM -->
+<section class="apropos-section">
+  <p class="apropos-label">Qui gère ExamensCam</p>
+  <p>ExamensCam est conçu et développé par Hamadou Mamoudou, étudiant en mathématiques à l'Université de Maroua, qui a déjà accompagné des élèves en classe d'examen pour la réussite de leurs épreuves.</p>
+  <p>La partie technique est autodidacte, principalement acquise via <a href="https://www.edx.org/learn/computer-science/harvard-university-cs50-s-introduction-to-computer-science" target="_blank" rel="noopener">CS50</a> (Harvard), un cursus disponible en accès libre et ouvert à toute personne intéressée par l'informatique même sans accès à un cursus académique dédié.</p>
+</section>
+
+<!-- 6. STACK TECHNIQUE -->
+<section class="apropos-section">
+  <p class="apropos-label">Stack technique</p>
+  <p>ExamensCam repose sur une architecture technique construite et maintenue directement :</p>
+  <div class="apropos-card">
+    <ul class="apropos-list">
+      <li><strong>Backend :</strong> Python, Flask</li>
+      <li><strong>Frontend :</strong> HTML, CSS, templates Jinja2</li>
+      <li><strong>Base de données :</strong> SQLite, avec les tables annales et annales externes</li>
+      <li><strong>Traitement des documents :</strong> pipeline propriétaire de collecte, nettoyage et suppression de filigranes (pikepdf, pypdf, ReportLab)</li>
+      <li><strong>Déploiement :</strong> Render, versioning Git</li>
+    </ul>
+  </div>
+  <p style="margin-top:14px;">Code source consultable : <a href="https://github.com/examencam5-lgtm/examenscam" target="_blank" rel="noopener">github.com/examencam5-lgtm/examenscam</a></p>
+</section>
+
+<!-- 7. FINANCEMENT -->
+<section class="apropos-section">
+  <p class="apropos-label">Financement</p>
+  <p>ExamensCam ne bénéficie d'aucun sponsor, aucune subvention, aucune organisation partenaire. Le domaine et l'hébergement sont financés personnellement.</p>
+  <p>Le projet reste ouvert à toute contribution ou collaboration technique : développement, maintenance, ou tout apport structurant pour la plateforme. Toute proposition peut être adressée via les coordonnées de contact ci-dessous.</p>
+</section>
+
+<!-- 8. CONTACT -->
+<section class="apropos-section">
+  <p class="apropos-label">Contact</p>
+  <p>Pour toute question, suggestion, signalement d'erreur, contribution d'épreuve, ou demande d'accompagnement pédagogique :</p>
+  <div class="apropos-card">
+    <div class="apropos-contact-item">
+      <span>WhatsApp</span>
+      <a href="https://wa.me/237659929291" target="_blank" rel="noopener">wa.me/237659929291</a>
     </div>
-  </div>
-
-  <div class="section">
-    <p class="section-label">Pourquoi ExamensCam</p>
-    <p class="section-text">
-      La plupart des annales circulent de façon éparpillée, mal
-      classées, parfois illisibles à cause de filigranes ou de scans de
-      mauvaise qualité. ExamensCam les organise par niveau, série,
-      matière et année, et vérifie chaque document avant publication.
-    </p>
-    <p class="section-text">
-      L'objectif n'est pas seulement de stocker des PDF, mais de
-      construire une bibliothèque fiable, que ce soit un élève à Maroua
-      ou à Douala qui la consulte.
-    </p>
-  </div>
-
-  <div class="section">
-    <p class="section-label">Contact</p>
-    <div class="contact-box">
+    <div class="apropos-contact-item">
+      <span>Email</span>
       <a href="mailto:examenscam5@gmail.com">examenscam5@gmail.com</a>
-      <p class="contact-note">Pour toute question, suggestion ou signalement.</p>
+    </div>
+    <div class="apropos-contact-item">
+      <span>Conditions d'utilisation</span>
+      <a href="{{ url_for('conditions') }}">Consulter</a>
     </div>
   </div>
-
-</div>
-
-<div class="bottom-nav">
-  <a href="/" class="btn btn-outline">&larr; Retour à l'accueil</a>
-</div>
+</section>
 
 {% endblock %}
+

@@ -9,3 +9,4 @@ pypdfium2
 numpy
 requests
 beautifulsoup4
+python-dotenv

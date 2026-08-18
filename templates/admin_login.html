@@ -11,21 +11,32 @@
     outline: none; margin-bottom: 12px;
   }
   .login-input:focus { border-color: var(--ink-soft); }
+  .login-input:disabled { opacity: 0.5; }
   .login-btn {
     width: 100%; padding: 12px; border: none; border-radius: 999px; background: var(--ink);
     color: var(--surface); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer;
   }
+  .login-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .login-erreur { color: #B33; font-size: 12.5px; text-align: center; margin-bottom: 12px; }
+  .login-bloque { color: #B33; font-size: 12.5px; text-align: center; margin-bottom: 12px; line-height: 1.5; }
 </style>
 
 <div class="login-wrap">
   <h1 class="login-title">ExamensCam Admin</h1>
-  {% if erreur %}
+
+  {% if bloque %}
+  <p class="login-bloque">
+    Trop de tentatives echouees.<br>
+    Reessaie dans environ {{ minutes_restantes }} minute{{ 's' if minutes_restantes > 1 else '' }}.
+  </p>
+  {% elif erreur %}
   <p class="login-erreur">Mot de passe incorrect.</p>
   {% endif %}
+
   <form method="POST">
-    <input type="password" name="mot_de_passe" class="login-input" placeholder="Mot de passe" autofocus required>
-    <button type="submit" class="login-btn">Se connecter</button>
+    <input type="password" name="mot_de_passe" class="login-input" placeholder="Mot de passe"
+           autofocus required {% if bloque %}disabled{% endif %}>
+    <button type="submit" class="login-btn" {% if bloque %}disabled{% endif %}>Se connecter</button>
   </form>
 </div>
 {% endblock %}
