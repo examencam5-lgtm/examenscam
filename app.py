@@ -159,6 +159,51 @@ def _minutes_avant_deblocage(ip: str) -> int:
 
 
 # ═══════════════════════════════════════════════════════
+# RATE-LIMITING GLOBAL — routes publiques a fort volume
+# ═══════════════════════════════════════════════════════
+# Different du rate-limiting login (qui bloque apres des ECHECS).
+# Ici on limite simplement le NOMBRE de requetes par IP dans une
+# fenetre glissante, peu importe si elles reussissent -- protege
+# /api/search et /api/log-clic contre le spam/bot qui saturerait le
+# service Render (free tier, ressources limitees) ou gonflerait
+# artificiellement les tables evenements/recherches_infructueuses.
+#
+# Le debounce cote client (_recherche.html, 200ms) limite deja le
+# trafic normal a environ 5 req/sec max pendant une frappe active --
+# les limites ci-dessous sont largement au-dessus de cet usage
+# normal, pour ne jamais gener un vrai visiteur qui tape vite.
+_REQUETES_PAR_IP = {}
+
+
+def _rate_limit_depasse(cle: str, max_requetes: int, fenetre_sec: int) -> bool:
+    """
+    cle = ip + nom de route, pour que /api/search et /api/log-clic
+    aient chacune leur propre compteur independant par IP.
+    """
+    maintenant = time.time()
+    requetes = [t for t in _REQUETES_PAR_IP.get(cle, []) if maintenant - t < fenetre_sec]
+    requetes.append(maintenant)
+    _REQUETES_PAR_IP[cle] = requetes
+    return len(requetes) > max_requetes
+
+
+def limiter_debit(max_requetes: int, fenetre_sec: int):
+    """
+    Decorateur a poser sur une route Flask. Renvoie 429 (Too Many
+    Requests) si l'IP appelante depasse max_requetes dans fenetre_sec.
+    """
+    def decorateur(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            cle = f"{_ip_client()}:{f.__name__}"
+            if _rate_limit_depasse(cle, max_requetes, fenetre_sec):
+                return jsonify({'erreur': 'Trop de requetes, ralentis un peu.'}), 429
+            return f(*args, **kwargs)
+        return wrapper
+    return decorateur
+
+
+# ═══════════════════════════════════════════════════════
 # TRACKING GLOBAL
 # ═══════════════════════════════════════════════════════
 
@@ -409,6 +454,7 @@ def redirection_externe(annale_id):
     return redirect(entree['lien_page_source'])
 
 @app.route('/api/search')
+@limiter_debit(max_requetes=40, fenetre_sec=10)
 def api_search():
     q = request.args.get('q', '').strip()
     niveau = request.args.get('niveau') or None
@@ -432,6 +478,7 @@ def api_search():
     return jsonify(resultat)
 
 @app.route('/api/log-clic', methods=['POST'])
+@limiter_debit(max_requetes=20, fenetre_sec=10)
 def api_log_clic():
     data = request.get_json(silent=True) or {}
     log_evenement(
