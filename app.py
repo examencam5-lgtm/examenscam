@@ -63,6 +63,18 @@ app.config.update(
     SECRET_KEY=_SECRET_KEY,
     DEBUG=_DEBUG,
     ADMIN_TOKEN=_ADMIN_TOKEN,
+    # Cookies de session -- protection du cookie admin_connecte.
+    # SESSION_COOKIE_SECURE=True force le cookie a n'etre envoye que
+    # sur HTTPS. Render sert le site en HTTPS, donc True en prod.
+    # Mais en local (python app.py sur http://127.0.0.1, jamais
+    # HTTPS), un navigateur refuse d'envoyer un cookie Secure sur une
+    # connexion non chiffree -- le login semblerait "ne pas retenir"
+    # la connexion. On desactive donc cette protection uniquement
+    # quand DEBUG est actif (donc uniquement en local, jamais sur
+    # Render ou DEBUG doit rester False).
+    SESSION_COOKIE_SECURE=not _DEBUG,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
 )
 
 with app.app_context():
