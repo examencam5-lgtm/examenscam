@@ -131,6 +131,40 @@
   var serieCtx = input.dataset.serie || '';
   var matiereCtx = input.dataset.matiere || '';
 
+  // ═══════════════════════════════════════════════════════
+  // SECURITE XSS — echappement systematique avant insertion HTML
+  // ═══════════════════════════════════════════════════════
+  // libelle et destination viennent de la base de donnees, alimentee
+  // en partie par du scraping automatise de sources externes
+  // (mongosukulu, sigmaths, concourscameroon). Ces sources ne sont
+  // pas sous notre controle -- un titre scrape pourrait un jour
+  // contenir du HTML/JS malveillant. On ne fait jamais confiance a
+  // une donnee qui finit dans innerHTML sans l'avoir echappee, meme
+  // si elle "vient de notre propre base".
+  //
+  // Technique : creer un noeud texte via textContent force le
+  // navigateur a traiter la chaine comme du texte pur, jamais du
+  // HTML -- puis on relit innerHTML pour recuperer la version avec
+  // entites HTML deja echappees (&lt; &gt; &quot; etc), prete a etre
+  // reinseree en toute securite dans une chaine HTML plus large.
+  function echapperHTML(texte) {
+    var div = document.createElement('div');
+    div.textContent = texte == null ? '' : String(texte);
+    return div.innerHTML;
+  }
+
+  // Rejette les schemes d'URL executables (javascript:, data:,
+  // vbscript:) qui pourraient etre utilises pour du XSS via un
+  // attribut href, meme si le texte affiche semble inoffensif.
+  function urlEstSure(url) {
+    if (typeof url !== 'string') return false;
+    var u = url.trim().toLowerCase();
+    if (u.indexOf('javascript:') === 0) return false;
+    if (u.indexOf('data:') === 0) return false;
+    if (u.indexOf('vbscript:') === 0) return false;
+    return true;
+  }
+
   function fermer() {
     box.classList.remove('open');
     box.innerHTML = '';
@@ -150,8 +184,11 @@
 
     if (resultats.length === 0) {
       if (suggestions.length > 0) {
+        // suggestions vient aussi du serveur (alias/corrections) --
+        // meme regle : jamais de confiance aveugle, on echappe.
+        var suggestionsEchappees = suggestions.map(echapperHTML).join(', ');
         box.innerHTML = '<div class="search-empty">Aucun résultat -- essaie plutôt : ' +
-          suggestions.join(', ') + '</div>';
+          suggestionsEchappees + '</div>';
       } else {
         box.innerHTML = '<div class="search-empty">Aucun résultat pour le moment</div>';
       }
@@ -160,9 +197,10 @@
     }
 
     box.innerHTML = resultats.map(function(r, i) {
-      return '<a href="' + r.destination + '" class="suggestion-item" data-index="' + i + '" ' +
-             'data-destination="' + r.destination + '" data-niveau="' + (r.niveau || '') + '" data-serie="' + (r.serie || '') + '" data-matiere="' + (r.matiere || '') + '">' +
-             iconeLoupe() + '<span>' + r.libelle + '</span></a>';
+      var destination = urlEstSure(r.destination) ? r.destination : '#';
+      return '<a href="' + echapperHTML(destination) + '" class="suggestion-item" data-index="' + i + '" ' +
+             'data-destination="' + echapperHTML(destination) + '" data-niveau="' + echapperHTML(r.niveau || '') + '" data-serie="' + echapperHTML(r.serie || '') + '" data-matiere="' + echapperHTML(r.matiere || '') + '">' +
+             iconeLoupe() + '<span>' + echapperHTML(r.libelle) + '</span></a>';
     }).join('');
     box.classList.add('open');
 
@@ -224,7 +262,10 @@
       activeIndex = Math.max(activeIndex - 1, 0);
     } else if (e.key === 'Enter' && activeIndex >= 0) {
       e.preventDefault();
-      window.location.href = currentItems[activeIndex].destination;
+      var dest = currentItems[activeIndex].destination;
+      if (urlEstSure(dest)) {
+        window.location.href = dest;
+      }
       return;
     } else {
       return;

@@ -1,10 +1,10 @@
 # app.py — ExamensCam — Version finale complète
 import os
-from dotenv import load_dotenv
-load_dotenv()
 import re
 import time
 from functools import wraps
+from dotenv import load_dotenv
+load_dotenv()
 
 from flask import (
     Flask, render_template, redirect, request, abort, jsonify,
@@ -337,6 +337,15 @@ def page_non_trouvee(e):
 @app.errorhandler(403)
 def acces_interdit(e):
     return render_template('403.html'), 403
+
+@app.errorhandler(500)
+def erreur_serveur(e):
+    # La stack trace complete part dans les logs Render (comportement
+    # normal de Flask, utile pour diagnostiquer) -- mais on ne renvoie
+    # jamais ce detail au visiteur, meme si DEBUG passait a True par
+    # accident un jour. Page generique uniquement, aucune info technique.
+    app.logger.error(f"Erreur serveur non geree: {e}")
+    return render_template('500.html'), 500
 
 # ═══════════════════════════════════════
 # CARREFOUR (2 branches V1 : officiel + établissements)
