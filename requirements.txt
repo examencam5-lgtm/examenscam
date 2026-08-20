@@ -1,12 +1,28 @@
-flask
-gunicorn
-pypdf
-pikepdf
-reportlab
-pillow
-opencv-python-headless
-pypdfium2
-numpy
-requests
-beautifulsoup4
-python-dotenv
+# Versions fixees (==) et non plancher (>=) volontairement -- un
+# `pip install -r requirements.txt` doit installer EXACTEMENT ce qui
+# a ete teste, jamais "la derniere version disponible aujourd'hui".
+# Sans ca, Render peut installer une version differente a chaque
+# redeploiement sans qu'aucun code n'ait change, et casser le site
+# ou introduire une faille sans avertissement.
+#
+# Audite le 20 aout 2026 avec pip-audit (base OSV) : aucune
+# vulnerabilite connue sur ces versions precises.
+#
+# Pour mettre a jour en connaissance de cause plus tard :
+#   pip install --upgrade <paquet>
+#   pip-audit
+#   puis remettre a jour la ligne correspondante ici seulement si
+#   pip-audit ne signale rien de nouveau.
+
+flask==3.1.3
+gunicorn==26.1.0
+pypdf==6.16.1
+pikepdf==10.12.0
+reportlab==5.0.0
+pillow==12.3.0
+opencv-python-headless==5.0.0.93
+pypdfium2==5.13.0
+numpy==2.5.2
+requests==2.34.2
+beautifulsoup4==4.15.0
+python-dotenv==1.2.3
