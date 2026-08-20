@@ -34,6 +34,7 @@
   {% endif %}
 
   <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <input type="password" name="mot_de_passe" class="login-input" placeholder="Mot de passe"
            autofocus required {% if bloque %}disabled{% endif %}>
     <button type="submit" class="login-btn" {% if bloque %}disabled{% endif %}>Se connecter</button>

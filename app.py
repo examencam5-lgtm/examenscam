@@ -2,9 +2,12 @@
 import os
 import re
 import time
+import secrets
 from functools import wraps
 from dotenv import load_dotenv
 load_dotenv()
+
+
 
 from flask import (
     Flask, render_template, redirect, request, abort, jsonify,
@@ -509,6 +512,7 @@ def admin_requis(f):
 def admin_login():
     erreur = False
     bloque = False
+    csrf_invalide = False
     minutes_restantes = 0
     ip = _ip_client()
 
@@ -516,20 +520,40 @@ def admin_login():
         bloque = True
         minutes_restantes = _minutes_avant_deblocage(ip)
     elif request.method == 'POST':
-        mot_de_passe = request.form.get('mot_de_passe', '')
-        if mot_de_passe == app.config['ADMIN_TOKEN']:
-            session['admin_connecte'] = True
-            _TENTATIVES_LOGIN.pop(ip, None)
-            return redirect('/admin/dashboard')
-        else:
-            _enregistrer_echec(ip)
+        # Protection CSRF : le token soumis doit correspondre exactement
+        # a celui genere pour CETTE session au moment de l'affichage du
+        # formulaire. Un site tiers essayant de forcer une soumission
+        # depuis le navigateur d'un visiteur n'a aucun moyen de connaitre
+        # ce token -- la requete est rejetee sans meme verifier le mot
+        # de passe. Comparaison via secrets.compare_digest pour eviter
+        # une fuite d'information par timing attack.
+        token_soumis = request.form.get('csrf_token', '')
+        token_attendu = session.get('csrf_token', '')
+        if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
+            csrf_invalide = True
             erreur = True
-            if _login_bloque(ip):
-                bloque = True
-                minutes_restantes = _minutes_avant_deblocage(ip)
+        else:
+            mot_de_passe = request.form.get('mot_de_passe', '')
+            if mot_de_passe == app.config['ADMIN_TOKEN']:
+                session['admin_connecte'] = True
+                session.pop('csrf_token', None)
+                _TENTATIVES_LOGIN.pop(ip, None)
+                return redirect('/admin/dashboard')
+            else:
+                _enregistrer_echec(ip)
+                erreur = True
+                if _login_bloque(ip):
+                    bloque = True
+                    minutes_restantes = _minutes_avant_deblocage(ip)
+
+    # Nouveau token a chaque affichage du formulaire (GET, ou apres un
+    # echec en POST) -- un token ne doit jamais etre reutilisable
+    # indefiniment.
+    session['csrf_token'] = secrets.token_urlsafe(32)
 
     return render_template('admin_login.html', erreur=erreur, bloque=bloque,
-                            minutes_restantes=minutes_restantes)
+                            minutes_restantes=minutes_restantes,
+                            csrf_token=session['csrf_token'])
 
 
 @app.route('/admin/logout')
