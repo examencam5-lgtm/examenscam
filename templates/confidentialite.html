@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{# ============================================================
+   confidentialite.html — Politique de confidentialité ExamensCam
+   Même système de classes que conditions.html et apropos.html
+   (.legal-* réutilisé, même page-type que les CGU).
+   ============================================================ #}
+
+{% block title %}Politique de confidentialité, ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --ink: #17181a;
+    --ink-soft: #5b5e64;
+    --ink-faint: #96999e;
+    --accent: #2952b3;
+    --line: #e6e6e2;
+    --line-strong: #d5d5cf;
+    --card-bg: #ffffff;
+    --radius-sm: 8px;
+    --radius-lg: 18px;
+    --shadow: 0 1px 2px rgba(20,20,15,0.05);
+  }
+
+  .legal-header { padding: 24px 20px 4px; }
+  .legal-breadcrumb {
+    font-size: 14px; color: var(--ink-faint); text-decoration: none;
+    margin-bottom: 10px; display: inline-block;
+  }
+  .legal-title {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 32px;
+    color: var(--ink); margin: 0 0 6px;
+  }
+  .legal-sub { font-size: 13px; color: var(--ink-faint); margin: 0 0 24px; }
+
+  .legal-btn-back {
+    display: inline-block; margin: 0 20px;
+    background: var(--card-bg); border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm); padding: 12px 22px;
+    font-family: system-ui, sans-serif; font-size: 14px; font-weight: 600;
+    color: var(--ink); text-decoration: none;
+  }
+  .legal-btn-back:active { transform: scale(0.98); }
+
+  .legal-section { padding: 0 20px 26px; }
+  .legal-label {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .legal-section p {
+    font-family: 'Source Serif 4', serif; font-size: 16px; line-height: 1.6;
+    color: var(--ink); margin: 0 0 14px;
+  }
+  .legal-section p:last-child { margin-bottom: 0; }
+
+  .legal-card {
+    background: var(--card-bg); border: 1px solid var(--line);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px;
+  }
+  .legal-list { list-style: none; margin: 0; padding: 0; }
+  .legal-list li {
+    font-family: 'Source Serif 4', serif; font-size: 16px; color: var(--ink);
+    padding: 10px 0; border-bottom: 1px solid var(--line);
+  }
+  .legal-list li:last-child { border-bottom: none; }
+  .legal-list li strong { font-weight: 600; }
+
+  .legal-divider { border: none; border-top: 1px solid var(--line); margin: 28px 20px; }
+
+  .legal-contact-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-bottom: 1px solid var(--line);
+  }
+  .legal-contact-item:last-child { border-bottom: none; }
+  .legal-contact-item a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+  .legal-bottom-nav { padding: 0 20px 40px; }
+  .legal-bottom-nav a { color: var(--ink-soft); text-decoration: none; font-size: 14px; }
+</style>
+
+<div class="legal-header">
+  <a href="{{ url_for('index') }}" class="legal-breadcrumb">← Accueil</a>
+  <h1 class="legal-title">Politique de confidentialité</h1>
+  <p class="legal-sub">Dernière mise à jour : {{ derniere_maj_confidentialite|default("à compléter") }}</p>
+</div>
+
+<!-- 1. OBJET DE LA POLITIQUE -->
+<section class="legal-section">
+  <p class="legal-label">Objet de la politique</p>
+  <p>Cette politique de confidentialité décrit quelles données ExamensCam collecte, pourquoi, et comment elles sont utilisées. Elle s'applique à l'ensemble du site examenscam.com.</p>
+  <p>ExamensCam ne requiert aucune création de compte. La quasi-totalité du service est utilisable sans qu'aucune donnée personnelle identifiable ne soit collectée.</p>
+</section>
+
+<!-- 2. QUI EST RESPONSABLE -->
+<section class="legal-section">
+  <p class="legal-label">Qui est responsable des données</p>
+  <p>Le traitement des données décrit dans cette politique est assuré directement par ExamensCam, projet conçu et développé par Hamadou Mamoudou. Aucun tiers n'intervient dans la collecte ou le traitement de ces données.</p>
+</section>
+
+<!-- 3. DONNÉES COLLECTÉES -->
+<section class="legal-section">
+  <p class="legal-label">Données collectées</p>
+  <p>ExamensCam collecte deux types de données uniquement :</p>
+  <div class="legal-card">
+    <ul class="legal-list">
+      <li><strong>Cookie de session</strong> (durée standard d'environ un an), utilisé pour le comptage des visites de façon anonyme, sans identification du visiteur.</li>
+      <li><strong>Recherches sans résultat</strong> : lorsqu'une recherche n'aboutit à aucun résultat, la requête est enregistrée.</li>
+    </ul>
+  </div>
+  <p style="margin-top:14px;">Aucune adresse IP, aucun nom, aucun email, aucun numéro de téléphone n'est collecté dans le cadre de la navigation normale sur le site. Les visiteurs restent anonymes.</p>
+</section>
+
+<!-- 4. FINALITÉ -->
+<section class="legal-section">
+  <p class="legal-label">Finalité de chaque donnée</p>
+  <div class="legal-card">
+    <ul class="legal-list">
+      <li>Le comptage de visites permet de suivre la fréquentation du site et d'orienter son développement.</li>
+      <li>Les recherches sans résultat permettent d'identifier les annales, matières ou établissements les plus demandés mais pas encore disponibles, afin de prioriser les prochains ajouts au catalogue.</li>
+    </ul>
+  </div>
+  <p style="margin-top:14px;">Aucune de ces données n'est utilisée à des fins publicitaires, commerciales ou de profilage individuel.</p>
+</section>
+
+<!-- 5. PARTAGE AVEC DES TIERS -->
+<section class="legal-section">
+  <p class="legal-label">Partage avec des tiers</p>
+  <p>ExamensCam ne partage, ne vend et ne transmet aucune donnée à un tiers. Le comptage de visites et l'enregistrement des recherches sont assurés par un système développé et hébergé directement par ExamensCam, sans recours à un service tiers (type Google Analytics ou équivalent).</p>
+</section>
+
+<!-- 6. DURÉE DE CONSERVATION -->
+<section class="legal-section">
+  <p class="legal-label">Durée de conservation</p>
+  <p>Le cookie de session est conservé environ un an, durée standard fixée par le navigateur, puis expire automatiquement. Les recherches sans résultat sont conservées sans limite de durée, dans la mesure où elles ne contiennent aucune donnée personnelle et servent uniquement à orienter le développement du catalogue.</p>
+</section>
+
+<!-- 7. DROITS DE L'UTILISATEUR -->
+<section class="legal-section">
+  <p class="legal-label">Droits de l'utilisateur</p>
+  <p>ExamensCam ne collectant aucune donnée personnelle identifiable, il n'existe pas de profil individuel à consulter, rectifier ou supprimer. Toute question sur le fonctionnement de cette politique peut être adressée aux coordonnées de contact ci-dessous.</p>
+</section>
+
+<!-- 8. SÉCURITÉ -->
+<section class="legal-section">
+  <p class="legal-label">Sécurité</p>
+  <p>Le site est hébergé sur Render, avec chiffrement HTTPS activé par défaut sur l'ensemble des pages. Aucune donnée sensible (bancaire, de paiement ou d'identification) n'est traitée par ExamensCam à ce jour.</p>
+</section>
+
+<!-- 9. MODIFICATION -->
+<section class="legal-section">
+  <p class="legal-label">Modification de la politique</p>
+  <p>Cette politique peut être modifiée à tout moment. La version en vigueur est celle publiée sur le site à la date de consultation.</p>
+</section>
+
+<!-- 10. CONTACT -->
+<section class="legal-section">
+  <p class="legal-label">Contact</p>
+  <p>Pour toute question relative à cette politique de confidentialité :</p>
+  <div class="legal-card">
+    <div class="legal-contact-item">
+      <span>WhatsApp</span>
+      <a href="https://wa.me/237659929291" target="_blank" rel="noopener">wa.me/237659929291</a>
+    </div>
+    <div class="legal-contact-item">
+      <span>Email</span>
+      <a href="mailto:examencam5@gmail.com">examencam5@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<div class="legal-bottom-nav">
+  <a href="{{ url_for('index') }}" class="legal-btn-back">← Retour à l'accueil</a>
+</div>
+
+{% endblock %}
+
