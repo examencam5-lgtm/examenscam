@@ -1,0 +1,155 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee de Bogo",
+    "annee_scolaire": "2025-2027",
+    "duree": "03",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ du plan dans lui-même qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ définie par $z' = (1 + i)z + 2i$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $z_A = 1 - i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $(C)$ le cercle d'équation cartésienne $x^2 + y^2 - 2x + 4y = 0$. Déterminer l'équation de l'ensemble $(C')$ image de $(C)$ par $f$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, l'affixe $z_n$ de la $n$-ième image de $M_0$ d'affixe $z_0$ est donnée par $z_n = (1+i)^n(z_0 + 2) - 2$.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit la fonction $g$ définie sur $]0, +\\infty[$ par $g(x) = x^2 + 1 - 2\\ln x$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Étudier les variations de la fonction $g$ sur $]0, +\\infty[$ et dresser son tableau de variations.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "En déduire le signe de $g(x)$ pour tout $x$ de $]0, +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $f$ la fonction définie sur $]0, +\\infty[$ par $f(x) = x + \\frac{1 + 2\\ln x}{x}$. Calculer les limites de $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que pour tout $x \\in ]0, +\\infty[$, $f'(x) = \\frac{g(x)}{x^2}$. En déduire le sens de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Montrer que la droite $(\\Delta)$ d'équation $y = x$ est asymptote oblique à la courbe représentative $(C_f)$ de $f$ en $+\\infty$, et préciser la position relative de $(C_f)$ par rapport à $(\\Delta)$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "L'espace est rapporté à un repère orthonormé direct $(O, \\vec{i}, \\vec{j}, \\vec{k})$. On considère les points $A(1, 0, -1)$, $B(0, 1, 2)$ et $C(2, -1, 1)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer les coordonnées du produit vectoriel $\\vec{AB} \\wedge \\vec{AC}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire une équation cartésienne du plan $(ABC)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $(D)$ la droite passant par l'origine $O$ et de vecteur directeur $\\vec{u} = \\vec{i} - \\vec{j} + 2\\vec{k}$. Déterminer les coordonnées du point d'intersection $H$ de la droite $(D)$ avec le plan $(ABC)$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation diophantienne $(E) : 17x - 23y = 4$.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Une coopérative agricole souhaite acheminer des engrais de son entrepôt principal situé dans une ville $A$ vers un centre de distribution situé dans une ville $G$. Le réseau routier reliant les différentes localités intermédiaires $B, C, D, E, F$ est représenté par un graphe pondéré où les sommets sont les villes et les arêtes représentent les routes, les poids étant les coûts de transport en milliers de FCFA. Par ailleurs, la gestion du stock d'engrais suit une suite arithmético-géométrique dont les termes initiaux permettent de déterminer le budget exact à allouer. Le comptable de la coopérative, ancien élève de Terminale C, décide d'utiliser ses compétences en arithmétique et en théorie des graphes pour optimiser les coûts et valider les prévisions budgétaires.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le trajet le plus court de l'entrepôt $A$ au centre de distribution $G$ ainsi que le coût minimal associé en utilisant un algorithme approprié.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le budget prévisionnel sachant qu'il correspond au plus petit entier naturel $n$ tel que la suite des dépenses $(u_n)$ vérifie $u_n \\geq 500$, avec $u_0 = 100$ et $u_{n+1} = \\frac{1}{2}u_n + 50$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Vérifier si le nombre total de camions à mobiliser, solution d'un système de congruences lié aux livraisons, respecte la capacité maximale de transport fixée à $150$ unités.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "L'expression $z' = (1+i)z + 2i$ est de la forme $z' = az + b$ avec $a = 1+i$ et $b = 2i$. Comme $a \\neq 1$ et $a = \\sqrt{2}e^{i\\frac{\\pi}{4}}$, $f$ est une similitude directe de rapport $\\sqrt{2}$, d'angle $\\frac{\\pi}{4}$ et de centre $\\Omega$ d'affixe $\\omega = \\frac{2i}{1 - (1+i)} = \\frac{2i}{-i} = -2$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Pour $z_A = 1 - i$, on a $z'_{A} = (1+i)(1-i) + 2i = (1 - i^2) + 2i = 2 + 2i$. L'affixe de $A'$ est donc $2 + 2i$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "L'équation de $(C)$ se réécrit $(x-1)^2 + (y+2)^2 = 5$, c'est un cercle de centre $I(1, -2)$ et de rayon $R = \\sqrt{5}$. Son image par la similitude de rapport $\\sqrt{2}$ est un cercle $(C')$ de rayon $R' = \\sqrt{2} \\times \\sqrt{5} = \\sqrt{10}$ et de centre $I' = f(I)$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Démonstration par récurrence : Pour $n=0$, $z_0 = (1+i)^0(z_0+2)-2 = z_0$. Supposons la propriété vraie à l'rang $n$. Alors $z_{n+1} = (1+i)z_n + 2i = (1+i)[(1+i)^n(z_0+2)-2] + 2i = (1+i)^{n+1}(z_0+2) - 2 - 2i + 2i = (1+i)^{n+1}(z_0+2) - 2$. La propriété est donc héréditaire et vraie pour tout $n$ de $\\mathbb{N}$._net"
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T15:28:02"
+}

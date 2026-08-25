@@ -1,0 +1,154 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\e2f17b4a4a1743d3b5011faaf9d975e0_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, u, v)$. On considère l'équation (E) d'inconnue complexe z : $z^2 - 2z + 4 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre l'équation (E) dans l'ensemble des nombres complexes $\\mathbb{C}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions sous forme trigonométrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.",
+                "texte": "On considère les points A, B et C d'affixes respectives $z_A = 1 + i\\sqrt{3}$, $z_B = 1 - i\\sqrt{3}$ et $z_C = 2$. Calculer la distance AB.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Déterminer la nature du triangle ABC.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer l'affixe du point D tel que le quadrilatère ABCD soit un losange.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Calculer l'aire du losange ABCD en centimètres carrés.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit f la fonction numérique définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x - 1 - \\ln x$. On note (Cf) sa courbe représentative dans un repère orthonormé.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de f en 0.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de f en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée f'(x) pour tout x de $]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de f'(x) puis dresser le tableau de variation de f.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet exactement deux solutions a et b dans $]0, +\\infty[$, avec $0 < a < 1 < b$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer le signe de f(x) suivant les valeurs de x.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que la droite (D) d'équation $y = x - 1$ est asymptote oblique à (Cf) en $+\\infty$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'équation (E) d'inconnue (x, y) dans $\\mathbb{Z} \\times \\mathbb{Z} : 7x - 4y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est solution particulière de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer les solutions de (E) telles que $x$ et $y$ soient des multiples de 3.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit n un entier naturel. Déterminer suivant les valeurs de n le reste de la division euclidienne de $3^n$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire le reste de la division euclidienne de $3^{2026}$ par 7.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans une localité, un groupement de producteurs souhaite acheminer une production de maïs depuis un point de collecte A vers un entrepôt F en traversant un réseau routier modélisé par un graphe orienté. Les sommets représentent des carrefours et les arêtes représentent les routes. Le responsable du projet dispose d'une quantité initiale de carburant de 21 litres dans son véhicule pour effectuer le trajet. La consommation en carburant sur chaque tronçon est proportionnelle à la distance parcourue. Par ailleurs, la production totale y (en tonnes) de maïs du groupement sur une période de 5 ans est liée à l'année x par une relation de régression linéaire obtenue par la méthode des moindres carrés.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "En exploitant les données du réseau routier où la consommation totale pour aller de A à F s'exprime par une fonction linéaire des distances, déterminer si le responsable pourra arriver à la destination F avec les 21 litres d'essence disponibles.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "À partir des relevés statistiques de production fournis sur 5 ans, calculer les coefficients de la droite de régression linéaire de y en x par la méthode des moindres carrés.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "En utilisant l'équation de la droite de régression obtenue, estimer la production prévisionnelle de maïs pour la huitième année afin d'évaluer la capacité de stockage de l'entrepôt.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T11:55:46"
+}

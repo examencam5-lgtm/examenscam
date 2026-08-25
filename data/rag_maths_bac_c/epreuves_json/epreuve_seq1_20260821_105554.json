@@ -1,0 +1,192 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "Délégation Régionale de Extrême-Nord",
+    "etablissement": "Établissement",
+    "annee_scolaire": "2026-2027",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": false
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère le nombre complexe $Z = \\frac{1 + i\\sqrt{3}}{1 - i}$ et le polynôme complexe $P(z) = z^3 - (3 + i)z^2 + (2 + 3i)z - 2i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Mettre $Z$ sous forme trigonométrique, puis en déduire la forme algébrique de $Z^{2025}$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que $P(z) = 0$ admet une solution imaginaire pure $z_0$ que l'on précisera.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Déterminer les nombres complexes $a$ et $b$ tels que pour tout $z \\in \\mathbb{C}$, $P(z) = (z - z_0)(z^2 + az + b)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.d)",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $P(z) = 0$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "L'arithmétique dans $\\mathbb{Z}$ et les congruences.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne de $3^n$ par $7$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire le reste de la division euclidienne de $A = 3^{2026} + 2^{2026}$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation diophantienne $(E) : 17x - 13y = 4$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Trouver les couples d'entiers relatifs $(x, y)$ solutions de $(E)$ tels que $x^2 + y^2 < 50$.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère la fonction numérique $f$ définie par $f(x) = \\sqrt{x^2 + 4x + 5} - x$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer l'ensemble de définition $D_f$ de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la limite de $f$ en $+\\infty$, puis interpréter graphiquement le résultat.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Calculer la limite de $f$ en $-\\infty$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que la droite $(\\Delta)$ d'équation $y = -2x - 2$ est asymptote oblique à la courbe de $f$ en $-\\infty$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "M. Kamga possède un terrain rectangulaire dont les dimensions $a$ et $b$ (en mètres) vérifient le système $\\begin{cases} a \\times b = 2925 \\\\ \\text{PGCD}(a, b) = 15 \\end{cases}$ avec $a > b$. Il souhaite entourer ce terrain de fil barbelé vendu en rouleaux de $12$ mètres à $5000$ Francs le rouleau. De plus, pour sécuriser son portail, il utilise un digicode dont le code secret est un nombre entier naturel $N$ à trois chiffres $xyz$ en base $10$, tel que $N$ est divisible par $11$, et son écriture en base $7$ est $zyx$ (avec $x \\neq 0$). M. Kamga dispose d'un budget total de $250000$ Francs pour l'achat des rouleaux de fil barbelé et se demande si cela suffira.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions $a$ et $b$ du terrain de M. Kamga.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Dire si le budget de $250000$ Francs dont dispose M. Kamga est suffisant pour clôturer entièrement son terrain.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Aider M. Kamga à retrouver le code secret $N$ du digicode de son portail.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "On a $1 + i\\sqrt{3} = 2 e^{i\\pi/3}$ et $1 - i = \\sqrt{2} e^{-i\\pi/4}$. Ainsi $Z = \\sqrt{2} e^{i7\\pi/12}$. Pour $Z^{2025}$, on trouve la forme algébrique après simplification."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "En testant $z_0 = i$, on a $P(i) = i^3 - (3+i)(-1) + (2+3i)(i) - 2i = -i + 3 + i + 2i - 3 - 2i = 0$. Donc $z_0 = i$ est solution imaginaire pure."
+          },
+          {
+            "numero": "1.c)",
+            "texte": "Par identification ou division euclidienne, on trouve $a = -3$ et $b = 2$. Donc $P(z) = (z - i)(z^2 - 3z + 2).$"
+          },
+          {
+            "numero": "1.d)",
+            "texte": "Les solutions de $P(z) = 0$ sont $z_1 = i$, $z_2 = 1$ et $z_3 = 2$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "Les restes de $3^n$ modulo $7$ sont périodiques de période $6$: $3^0 \\equiv 1$, $3^1 \\equiv 3$, $3^2 \\equiv 2$, $3^3 \\equiv 6$, $3^4 \\equiv 4$, $3^5 \\equiv 5 \\pmod 7$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "En effectuant la division euclidienne des exposants par $6$, on trouve que $A \\equiv 3^4 + 2^4 \\pmod 7 \\equiv 4 + 2 \\equiv 6 \\pmod 7$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "L'ensemble des solutions de $(E)$ est l'ensemble des couples $(13k + 9, 17k + 11)$ où $k \\in \\mathbb{Z}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "En remplaçant dans l'inégalité, le seul couple solution est $(9, 11)$ pour $k = 0$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de $x^2 + 4x + 5$ est négatif et le coefficient de $x^2$ est positif, donc $D_f = \\mathbb{is}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "En $+\\infty$, $\\lim_{x \\to +\\infty} f(x) = 0$. La droite d'équation $y = 0$ est asymptote horizontale en $+\\infty$."
+          },
+          {
+            "numero": "3.",
+            "texte": "En $-\\infty$, en utilisant la quantité conjuguée, on trouve $\\lim_{x \\to -\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "4.",
+            "texte": "La limite de $f(x) - (-2x - 2)$ en $-\\infty$ est nulle, donc la droite d'équation $y = -2x - 2$ est asymptote oblique."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T10:55:54"
+}

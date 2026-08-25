@@ -1,12 +1,23 @@
 # app.py — ExamensCam — Version finale complète
 import os
 import re
+import json
+import io
 import time
+from pathlib import Path
 import secrets
 from functools import wraps
 from dotenv import load_dotenv
 load_dotenv()
-
+from flask import send_file
+from scripts.generer_epreuve_json import generer_epreuve_json
+from scripts.construire_pdf_officiel import construire_pdf
+from scripts.extraire_entete_personnalisable import (
+    extraire_entete_pour_upload, personnaliser_et_decouper, generer_apercu_brut,
+    supprimer_extraction_temporaire, ExtractionEnteteEchouee, EnteteSourceIncomplete,
+    DOSSIER_ENTETES_TMP, nettoyer_entetes_expirees,
+)
+import tempfile
 
 
 from flask import (
@@ -261,6 +272,9 @@ def conditions():
 @app.route('/a-propos')
 def a_propos():
     return render_template('a_propos.html')
+@app.route('/confidentialite')
+def confidentialite():
+    return render_template('confidentialite.html')
 
 @app.route('/bepc')
 def bepc():
@@ -604,6 +618,122 @@ def admin_parcours(session_id):
         evenements=stats_parcours_session(session_id, jours),
         jours=jours,
     )
+
+# ═══════════════════════════════════════
+# GÉNÉRATEUR D'ÉPREUVES (RAG Maths BAC C)
+# ═══════════════════════════════════════
+# Rate-limit STRICT et volontairement different de celui de
+# /api/search : chaque generation coute un vrai appel Gemini (donc
+# de l'argent / du quota), contrairement a une recherche. 2
+# generations / 10 min / IP suffit largement pour un usage legitime
+# et bloque un script qui spammerait le bouton.
+#
+# Flux en 2 requetes :
+#   1. POST extraire-entete : upload -> extraction Gemini (page complete
+#      + fraction de decoupe + champs avec positions, stockes sous un
+#      jeton) -> renvoie les champs pour que le prof les edite.
+#   2. POST generer : jeton + valeurs editees -> PERSONNALISE reellement
+#      l'image (recouvre chaque champ modifie et reecrit la nouvelle
+#      valeur au meme endroit, voir personnaliser_et_decouper) -> genere
+#      l'epreuve -> construit le PDF -> le renvoie.
+#
+# Jeton = uuid4 hex nu (32 caracteres), jamais un nom de fichier fourni
+# par le client -- protection anti path-traversal, comme partout
+# ailleurs sur ce site.
+MOTIF_JETON_VALIDE = re.compile(r'^[0-9a-f]{32}$')
+
+
+@app.route('/generateur-epreuves')
+def generateur_epreuves():
+    return render_template('generateur.html', erreur=None)
+
+
+@app.route('/generateur-epreuves/extraire-entete', methods=['POST'])
+@limiter_debit(max_requetes=4, fenetre_sec=600)
+def generateur_epreuves_extraire_entete():
+    nettoyer_entetes_expirees()
+
+    fichier = request.files.get('exemple_entete')
+    if not fichier or fichier.filename == '':
+        return jsonify({'ok': False, 'erreur': "Aucun fichier reçu."}), 400
+
+    suffixe = Path(fichier.filename).suffix.lower()
+    with tempfile.NamedTemporaryFile(suffix=suffixe, delete=False) as tmp:
+        chemin_tmp = Path(tmp.name)
+        fichier.save(chemin_tmp)
+
+    try:
+        jeton, confiance, champs = extraire_entete_pour_upload(chemin_tmp)
+    except EnteteSourceIncomplete as e:
+        # Cas distinct de ExtractionEnteteEchouee : le HAUT de l'en-tête
+        # est déjà coupé dans la photo elle-même -- aucun recadrage ne
+        # peut réparer ça. Le front doit distinguer ce cas (message
+        # "reprends la photo") d'un simple échec technique.
+        app.logger.info(f"Photo d'en-tête incomplète (haut coupé) : {e}")
+        return jsonify({'ok': False, 'erreur': str(e), 'code': 'haut_tronque'})
+    except ExtractionEnteteEchouee as e:
+        app.logger.warning(f"Extraction en-tête échouée : {e}")
+        return jsonify({'ok': False, 'erreur': str(e)})
+    finally:
+        chemin_tmp.unlink(missing_ok=True)
+    # champs = [{label, valeur, boite (ou null)}, ...] -- le front
+    # construit un formulaire pré-rempli, un input par champ, avec un
+    # avertissement si boite est null (édition possible mais non
+    # visible sur l'image, voir personnaliser_entete_image).
+    return jsonify({'ok': True, 'jeton': jeton, 'confiance': confiance, 'champs': champs})
+
+
+@app.route('/generateur-epreuves/apercu-entete/<jeton>')
+def generateur_epreuves_apercu_entete(jeton):
+    if not MOTIF_JETON_VALIDE.match(jeton):
+        abort(404)
+    try:
+        png_bytes = generer_apercu_brut(jeton)
+    except ExtractionEnteteEchouee:
+        abort(404)
+    return send_file(io.BytesIO(png_bytes), mimetype='image/png')
+
+
+@app.route('/generateur-epreuves/generer', methods=['POST'])
+@limiter_debit(max_requetes=2, fenetre_sec=600)
+def generateur_epreuves_generer():
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        sequence = int(payload.get('sequence'))
+    except (TypeError, ValueError):
+        return jsonify({'erreur': 'Séquence invalide.'}), 400
+    if sequence not in (1, 2, 3, 4, 5, 6):
+        return jsonify({'erreur': 'Séquence invalide.'}), 400
+
+    jeton = payload.get('jeton', '')
+    if not MOTIF_JETON_VALIDE.match(jeton):
+        return jsonify({'erreur': "En-tête manquante ou invalide -- réuploade un exemple."}), 400
+
+    # { label: nouvelle_valeur } -- construit par generateur.html à
+    # partir du formulaire pré-rempli avec les `champs` reçus à
+    # l'étape précédente. Un label absent = valeur d'origine gardée.
+    valeurs_editees = payload.get('valeurs') or {}
+    if not isinstance(valeurs_editees, dict):
+        valeurs_editees = {}
+
+    try:
+        chemin_entete, contexte_regional = personnaliser_et_decouper(jeton, valeurs_editees)
+    except ExtractionEnteteEchouee as e:
+        return jsonify({'erreur': str(e)}), 400
+
+    metadonnees = {'chemin_image_entete': str(chemin_entete)}
+
+    try:
+        chemin_json = generer_epreuve_json(sequence, metadonnees, contexte_regional=contexte_regional)
+        chemin_pdf = construire_pdf(chemin_json)
+    except RuntimeError as e:
+        app.logger.error(f"Échec génération épreuve (séquence {sequence}): {e}")
+        return jsonify({'erreur': "La génération a échoué. Réessaie dans quelques minutes."}), 500
+    finally:
+        supprimer_extraction_temporaire(jeton)
+
+    return send_file(chemin_pdf, as_attachment=True, download_name=chemin_pdf.name)
 
 
 if __name__ == '__main__':

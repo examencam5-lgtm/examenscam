@@ -89,9 +89,9 @@
   width: 100%;
   padding: 16px 24px 16px 52px;
   border-radius: 9999px;
-  border: 1px solid #E2E8F0;
-  background: #FFFFFF;
-  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--ec-line);
+  background: var(--ec-surface);
+  font-family: var(--ec-sans);
   font-size: 15px;
   color: var(--ec-ink);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
@@ -102,8 +102,8 @@
   color: #94A3B8;
 }
 .ec-search-input:focus {
-  border-color: #3B82F6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  border-color: var(--ec-accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 /* ── SCEAU ET BADGES ───────────────────────────────── */
@@ -119,9 +119,13 @@
   flex-shrink: 0;
 }
 .ec-sceau .icon { width: 18px; height: 18px; stroke: var(--ec-ink-soft); stroke-width: 1.8; }
-.ec-sceau.sur-blanc { border-color: var(--ec-line); }
-.ec-sceau.sur-blanc::before { border-color: var(--ec-line); }
-.ec-sceau.sur-blanc .icon { stroke: var(--ec-ink-soft); }
+/* NOTE (nettoyage 23/08/2026) : le modificateur .sur-blanc a été
+   retiré -- il redéfinissait exactement les mêmes valeurs que la
+   classe de base (border-color: var(--ec-line), stroke identique),
+   donc n'avait plus aucun effet. Reliquat probable d'une version où
+   .ec-sceau pouvait apparaître sur un fond coloré différent du blanc
+   actuel. Si ce cas d'usage revient, réintroduire un vrai
+   modificateur avec des valeurs qui diffèrent réellement de la base. */
 
 /* ── FICHE-TAB : icône établissements (carrefour) ────── */
 .ec-fiche-tab {
@@ -156,9 +160,13 @@
   transform: translateY(-2px);
 }
 .ec-branche:active .ec-branche-carte { background: var(--ec-accent-soft); }
-
-.ec-branche-officiel { border-color: var(--ec-line); }
-.ec-branche-etablissement { border-color: var(--ec-line); }
+/* NOTE (nettoyage 23/08/2026) : .ec-branche-officiel et
+   .ec-branche-etablissement ont été retirées -- toutes deux ne
+   faisaient que réaffirmer border-color: var(--ec-line), déjà la
+   valeur par défaut de .ec-branche-carte. Aucun effet visuel réel,
+   juste du bruit dans le fichier. Si les deux branches doivent un
+   jour se distinguer visuellement, leur donner de vraies valeurs
+   différentes (couleur d'accent propre à chacune, par exemple). */
 
 .ec-branche-titre {
   font-family: var(--ec-serif-titre);
@@ -256,8 +264,10 @@
   color: var(--ec-ink-soft);
   border: 1px solid var(--ec-line);
 }
-.ec-pill-region { border-style: solid; }
 .ec-pill-sequence { background: var(--ec-accent-soft); border-color: var(--ec-accent); color: var(--ec-accent); }
+/* NOTE (nettoyage 23/08/2026) : .ec-pill-region retirée -- ne posait
+   que border-style: solid, déjà la valeur par défaut du border
+   shorthand de .ec-pill. Aucun effet. */
 
 /* ── Nom du site tiers : seul element discret de la carte,
    ce n'est pas du contenu ExamensCam, juste l'indication
@@ -320,6 +330,8 @@
   padding: 10px 18px;
   border-radius: 999px;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-outline {
@@ -354,4 +366,291 @@ a:focus-visible, button:focus-visible, .ec-item-link:focus-visible {
 }
 .ec-filtre-onglets::-webkit-scrollbar {
   display: none;
+}
+
+/* ═══════════════════════════════════════════════
+   ASSISTANT ÉPREUVES — INTERFACE CHAT
+
+   NOTE (nettoyage 23/08/2026) : ce bloc utilisait var(--ec-ink, #1A5276)
+   à 4 endroits -- le #1A5276 est un fallback qui ne s'active QUE si
+   --ec-ink n'existe pas. Or --ec-ink EST défini dans :root (#0F172A).
+   Ce fallback n'a donc jamais été appliqué : l'avatar, les bulles
+   utilisateur et les boutons du chat s'affichaient en gris-noir
+   (#0F172A), jamais dans le bleu #1A5276 probablement voulu à
+   l'origine. Remplacé par var(--ec-accent) (#2563EB, la couleur
+   d'accent réelle du design system) pour que ces éléments se
+   distinguent visuellement du texte normal, comme un accent de
+   marque est censé le faire. Toutes les couleurs codées en dur
+   (#F0F2F5, #1a1a1a, #666, #ccc, #555, #e0e0e0) ont aussi été
+   remplacées par les variables --ec-* correspondantes, pour respecter
+   la règle de "source unique de vérité" énoncée en tête de fichier.
+
+   FIX (24/08/2026) -- classes manquantes pour le formulaire de
+   confirmation des champs d'en-tête (étape 3 du flux, voir
+   generateur.html : afficherApercuEtFormulaire()). Le HTML/JS
+   référence .chat-champs-form, .chat-champ, .chat-champ-input et
+   .chat-note depuis le début, mais aucune de ces 4 classes n'existait
+   dans ce fichier -- l'étape la plus importante du flux (confirmer
+   les valeurs avant de générer) s'affichait donc avec le style par
+   défaut du navigateur, en rupture totale avec le reste de
+   l'interface. Ajoutées ci-dessous, dans le même système de valeurs
+   (var(--ec-*), rayons et espacements cohérents avec .ec-item et
+   .chat-input-form).
+
+   FIX (24/08/2026) -- robustesse layout : .chat-page a une hauteur
+   FIXE (calc(100vh - 140px)) et seule .chat-fenetre défile en
+   interne (overflow-y: auto). Mais .chat-saisie, elle, n'avait aucune
+   limite de hauteur ni de défilement propre -- avec un en-tête à 6-8
+   champs (établissement, région, délégation, année, classe, durée,
+   coefficient, examinateur...), le formulaire de confirmation pouvait
+   dépasser la hauteur du conteneur parent et pousser le bouton
+   "Générer l'épreuve" hors de l'écran visible, surtout sur mobile en
+   paysage ou petit écran. .chat-saisie reçoit maintenant sa propre
+   limite de hauteur + défilement interne quand son contenu déborde.
+   ═══════════════════════════════════════════════ */
+
+.chat-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px);
+  min-height: 500px;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ec-line);
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ec-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.chat-header h1 {
+  font-family: var(--ec-serif-titre);
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--ec-ink);
+}
+
+.chat-soustitre {
+  font-size: 0.85rem;
+  color: var(--ec-ink-soft);
+  margin: 2px 0 0;
+}
+
+.chat-fenetre {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 4px;
+  min-height: 0; /* indispensable dans un flex column pour que overflow-y
+                    fonctionne réellement au lieu de faire grandir le parent */
+}
+
+.chat-bulle {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.chat-bulle-bot {
+  align-self: flex-start;
+  background: var(--ec-accent-soft);
+  color: var(--ec-ink);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bulle-user {
+  align-self: flex-end;
+  background: var(--ec-accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-saisie {
+  padding-top: 12px;
+  border-top: 1px solid var(--ec-line);
+  margin-top: 12px;
+  flex-shrink: 0;
+  /* FIX (24/08/2026) : plafond + défilement propre -- voir note en
+     tête de bloc. max-height empirique : assez pour ~5 champs visibles
+     sans scroll sur un écran mobile courant, le reste défile. */
+  max-height: 46vh;
+  overflow-y: auto;
+}
+
+.chat-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chat-option-btn {
+  padding: 10px 16px;
+  border: 1.5px solid var(--ec-accent);
+  border-radius: 20px;
+  background: var(--ec-surface);
+  color: var(--ec-accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.chat-option-btn:hover {
+  background: var(--ec-accent);
+  color: #fff;
+}
+
+.chat-option-principale {
+  background: var(--ec-accent);
+  color: #fff;
+}
+
+.chat-input-form {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input-form input[type="text"],
+.chat-input-form input[type="file"] {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--ec-line);
+  border-radius: 20px;
+  font-size: 0.95rem;
+  color: var(--ec-ink);
+  background: var(--ec-surface);
+  font-family: var(--ec-sans);
+}
+
+.chat-input-form input[type="text"]:focus {
+  outline: 2px solid var(--ec-accent);
+  outline-offset: 1px;
+}
+
+.chat-input-form .btn {
+  border-radius: 20px;
+  padding: 10px 18px;
+  flex-shrink: 0;
+}
+
+.chat-attente {
+  text-align: center;
+  font-style: italic;
+  color: var(--ec-ink-soft);
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .chat-page { height: calc(100vh - 100px); }
+  .chat-saisie { max-height: 52vh; }
+}
+
+.chat-apercu-image {
+  max-width: 100%;
+  max-height: 320px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid var(--ec-line);
+  border-radius: 6px;
+  margin: 8px 0;
+  display: block;
+  background: var(--ec-line-soft);
+}
+
+/* ── FIX (24/08/2026) : formulaire de confirmation des champs
+   d'en-tête -- étape 3 du flux (afficherApercuEtFormulaire).
+   Présenté comme une carte, cohérent avec .ec-item ailleurs sur le
+   site (même rayon 16px, même bordure, même surface), pour que cette
+   étape (la plus importante -- c'est ici que le prof valide ce qui
+   sera réellement écrit sur son épreuve) ne ressemble pas à un
+   formulaire HTML brut posé au milieu d'une conversation. ── */
+.chat-champs-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--ec-surface);
+  border: 1px solid var(--ec-line);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+.chat-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chat-champ label {
+  font-family: var(--ec-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ec-ink-soft);
+  letter-spacing: 0.1px;
+}
+
+.chat-champ-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--ec-line);
+  border-radius: 10px;
+  font-family: var(--ec-sans);
+  font-size: 0.95rem;
+  color: var(--ec-ink);
+  background: var(--ec-surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.chat-champ-input:focus {
+  outline: none;
+  border-color: var(--ec-accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.chat-champs-form .btn {
+  width: 100%;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 12px 18px;
+}
+
+.chat-champs-form .chat-option-btn {
+  border-radius: 12px;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+}
+
+.chat-note {
+  font-size: 12.5px;
+  color: var(--ec-ink-soft);
+  font-style: italic;
+  font-family: var(--ec-serif-corps);
+  margin: 0;
 }

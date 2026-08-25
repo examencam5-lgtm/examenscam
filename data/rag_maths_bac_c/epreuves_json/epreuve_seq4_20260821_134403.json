@@ -1,0 +1,183 @@
+{
+  "metadonnees": {
+    "region": "EXTREME-NORD",
+    "delegation": "Délégation Régionale de EXTREME-NORD",
+    "etablissement": "LYCEE BILINGUE DE MAROUA",
+    "annee_scolaire": "2026-2027",
+    "duree": "04h",
+    "coefficient": "07",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E) : 13x - 8y = 3$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer l'ensemble des entiers naturels $n$ tels que $2^{4n} + 3$ soit divisible par $5$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $z$ un nombre complexe tel que $z^3 = 8i$. Déterminer la forme exponentielle de chacune des solutions de cette équation.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $(u_n)$ la suite définie par $u_0 = 1$ et pour tout $n \\in \\mathbb{N}$, $u_{n+1} = \\frac{1}{3}u_n + n - 1$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "On pose, pour tout $n \\in \\mathbb{N}$, $v_n = 4u_n - 6n + 15$. Démontrer que la suite $(v_n)$ est géométrique de raison $\\frac{1}{3}$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Exprimer $v_n$ puis $u_n$ en fonction de $n$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Calculer la limite de la suite $(u_n)$ en $+\\infty$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction définie sur $]0, +\\infty[$ par $f(x) = x - 1 - \\ln x$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier les variations de $f$ et dresser son tableau de variations.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "En déduire le signe de $f(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Calculer l'aire, en unités d'aire, du domaine plan délimité par la courbe de $f$, l'axe des abscisses et les droites d'équations $x = 1$ et $x = e$.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Un promoteur immobilier souhaite aménager un terrain rectangulaire dont les dimensions dépendent de solutions mathématiques. Le terrain est traversé par une canalisation dont le débit est modélisé par une fonction numérique. De plus, les fonds disponibles pour ce projet sont gérés suivant une progression arithmétique complexe. Le promoteur a besoin d'évaluer la faisabilité de son projet avant d'engager les travaux.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions du terrain sachant qu'elles correspondent aux solutions d'une équation polynomiale associée à un nombre complexe donné.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le volume total d'eau évacué par la canalisation sur une période de 5 jours, sachant que le débit instantané est donné par la fonction $f(x) = x - 1 - \\ln x$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Dire si le budget initial de 500 000 FCFA suffira pour achever les travaux sachant que les coûts suivent une suite arithmético-géométrique.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On résout $13x - 8y = 3$. Une solution particulière est $(3, 4)$. L'ensemble des solutions est $\\{(8k + 3, 13k + 4) \\mid k \\in \\mathbb{Z}\\}."
+          },
+          {
+            "numero": "2.",
+            "texte": "Par étude des congruences modulo $5$, $2^4 \\equiv 1 \\pmod 5$. Donc $2^{4n} + 3 \\equiv 1 + 3 \\equiv 4 \\pmod 5$, ce qui montre qu'aucun entier $n$ ne convient."
+          },
+          {
+            "numero": "3.",
+            "texte": "Les solutions de $z^3 = 8i$ sont $z_0 = 2e^{i\\frac{\\pi}{6}}$, $z_1 = 2e^{i\\frac{5\\pi}{6}}$ et $z_2 = 2e^{-i\\frac{\\pi}{2}}."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On a $u_1 = \\frac{1}{3}(1) + 0 - 1 = -\\frac{2}{3}$ et $u_2 = \\frac{1}{3}(-\\frac{2}{3}) + 1 - 1 = -\\frac{2}{9}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On calcule $v_{n+1} = 4u_{n+1} - 6(n+1) + 15 = \\frac{1}{3}v_n$. La suite est géométrique de raison $\\frac{1}{3}$."
+          },
+          {
+            "numero": "3.",
+            "texte": "On trouve $v_n = 19 \\left(\\frac{1}{3}\\right)^n$ et $u_n = \\frac{19}{4}\\left(\\frac{1}{3}\\right)^n + \\frac{6n - 15}{4}$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Comme $\\lim_{n \\to +\\infty} \\left(\\frac{1}{3}\\right)^n = 0$ et $\\lim_{n \\to +\\infty} \\frac{6n-15}{4} = +\\infty$, on a $\\lim_{n \\to +\\infty} u_n = +\\infty$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "$\\lim_{x \\to 0^+} f(x) = +\\infty$ et $\\lim_{x \\to +\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "La dérivée est $f'(x) = 1 - \\frac{1}{x} = \\frac{x-1}{x}$. $f$ décroît sur $]0, 1]$ et croît sur $[1, +\\infty[$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le minimum de $f$ est $f(1) = 0$. Donc pour tout $x \\in ]0, +\\infty[$, $f(x) \\geq 0$."
+          },
+          {
+            "numero": "4.",
+            "texte": "L'aire vaut $\\int_1^e (x - 1 - \\ln x) dx = \\frac{e^2 - 3}{2}$ unités d'aire."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T13:44:03"
+}

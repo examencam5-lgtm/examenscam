@@ -1,0 +1,164 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\0c3352649aba4618966cc81442274576_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.75,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction définie sur $]0; +\\infty[$ par $f(x) = x - 1 + \\ln x$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f(x)$ lorsque $x$ tend vers $0$ par valeurs supérieures.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f(x)$ lorsque $x$ tend vers $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0; +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans $]0; +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Vérifier que $\\alpha \\in ]0.5; 1.5[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "4.",
+                "texte": "En déduire suivant les valeurs de $x$ le signe de $f(x)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "5.",
+                "texte": "Tracer la courbe représentative de $f$ dans un repère orthonormé.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'ensemble des entiers naturels. Dans tout cet exercice, les congruences sont considérées modulo 7.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les restes de la division euclidienne des puissances de 2 par 7 pour les exposants de 1 à 6.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire que pour tout entier naturel $n$, $2^{3n} \\equiv 1$ (mod 7).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $2^n$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer le reste de la division euclidienne de $2^{2026} + 3^{2026}$ par 7, sachant que $3 \\equiv -4$ (mod 7).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que pour tout entier $n$, l'entier $2^{n} + 3^{n} + 4^{n}$ n'est jamais divisible par 7.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.75,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O; \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $z^2 - 4z + 8 = 0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions sous forme trigonométrique.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $A$ et $B$ les points d'affixes respectives $z_A = 2 + 2i$ et $z_B = 2 - 2i$. Calculer le module et un argument de $z_A$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer la nature du triangle $OAB$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On considère la transformation $s$ du plan qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z' = i z + 2$. Préciser la nature et les éléments caractéristiques de $s$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer l'affixe du point $A'$, image de $A$ par $s$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.c)",
+                "texte": "Calculer la distance $AA'$.",
+                "bareme": 0.5
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.75,
+        "exercices": null,
+        "situation_contexte": "Un entrepreneur nommé Paul souhaite acheminer des plants d'arbres depuis une pépinière située en un point $A$ jusqu'à un site de reboisement situé en un point $B$. Pour optimiser son projet, il modélise le coût de transport en milliers de francs CFA par la fonction $C(x) = x^2 - 4\\ln x$, où $x$ représente le nombre de camions mobilisés par jour avec $x \\in [1; 5]$. Par ailleurs, pour l'attribution des marchés de transport, il doit résoudre une énigme arithmétique liée au nombre total de plants $N$ tel que $N \\equiv 3$ (mod 5) et $N \\equiv 2$ (mod 7). Enfin, un test statistique est réalisé sur l'âge $x_i$ et le rendement journalier $y_i$ des équipes de travail.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre de camions $x_0$ à mobiliser pour que le coût journalier de transport $C(x)$ soit minimal.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le plus petit nombre strictement positif de plants $N$ vérifiant les conditions d'attribution du marché.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le montant total de la prime à verser aux équipes sachant qu'elle dépend directement du résultat trouvé à la tâche 1 et au coût minimal.",
+            "bareme": 1.75
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T07:40:12"
+}

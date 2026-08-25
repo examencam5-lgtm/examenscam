@@ -1,0 +1,144 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "C:\\Users\\GENIUS ELECTRONICS\\examenscam\\data\\_tmp_entetes_upload\\entete_f40fcb4b019a4fadaf703fc57938445a.png"
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.8,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit a un entier naturel. On considère les nombres entiers A et B définis par A = 5^{2n} - 1 et B = 5^{2n} + 2^{n} pour tout entier naturel n.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Démontrer que pour tout entier naturel n, le nombre $5^{2n} - 1$ est un multiple de 8.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Etudier suivant les valeurs de l'entier naturel n le reste de la division euclidienne de $2^{n}$ par 8.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer le PGCD de 125 et 75 en utilisant l'algorithme d'Euclide.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire les solutions dans $\\mathbb{Z}^{2}$ de l'équation $125x - 75y = 25$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que si un entier p est premier, alors $p^{2} - 1$ est divisible par 8 pour tout p strictement supérieur à 3.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct (O, \\vec{u}, \\vec{v}). On considère l'équation (E) d'inconnue z : z^{3} - (3 + i)z^{2} + (4 + 3i)z - 4i = 0.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le nombre z_{0} = i est solution de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer les nombres complexes a, b et c tels que pour tout nombre complexe z, on ait z^{3} - (3 + i)z^{2} + (4 + 3i)z - 4i = (z - i)(az^{2} + bz + c).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation z^{2} - 3z + 4 = 0.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire l'ensemble des solutions de l'équation (E) sous forme algébrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Ecrire sous forme trigonométrique les solutions de l'équation (E).",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.3,
+            "enonce_intro": "Soit f la fonction numérique définie sur l'intervalle ]0, +\\infty[ par f(x) = x - 1 - \\ln(x).",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de la fonction f en 0 par valeurs supérieures.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de la fonction f en +\\infty.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée f'(x) pour tout x de l'intervalle ]0, +\\infty[.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer le signe de f'(x) sur l'intervalle ]0, +\\infty[ et dresser le tableau de variations complet de la fonction f.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.a)",
+                "texte": "En déduire le signe de f(x) pour tout x appartenant à l'intervalle ]0, +\\infty[.",
+                "bareme": 0.8
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que pour tout x de ]0, +\\infty[, on a $\\ln(x) \\leq x - 1$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.7,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole de la région de l'Ouest souhaite acheminer une production de maïs vers un entrepôt central situé dans une autre ville. Le gestionnaire de la coopérative utilise un modèle mathématique pour optimiser les coûts de transport. Le nombre de camions à mobiliser chaque jour est lié à un paramètre entier n par la relation $N(n) = n^{3} - 3n^{2} + 2n$. De plus, le coût unitaire en milliers de francs CFA par voyage est régi par une fonction de coût associée aux quantités transportées x, dont l'étude passe par le nombre complexe z_{1} = 2 + i\\sqrt{3} représentant la position initiale d'un convoi sur un radar de contrôle.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer pour quelles valeurs de l'entier naturel n le nombre de camions N(n) est un multiple de 3.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le module et un argument du nombre complexe z_{1} afin d'identifier l'angle de trajectoire correct du convoi sur le radar.",
+            "bareme": 1.6
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer la quantité minimale de camions à engager sachant que le paramètre n vérifie l'équation $n^{3} - 3n^{2} + 2n = 0$ avec n supérieur ou égal à 2.",
+            "bareme": 1.6
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T16:14:58"
+}

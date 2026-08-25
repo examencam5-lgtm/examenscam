@@ -1,0 +1,219 @@
+{
+  "metadonnees": {
+    "region": "EXTREM-NORD",
+    "delegation": "Délégation Régionale de EXTREM-NORD",
+    "etablissement": "LYCEE BILINGUE DE MAROUA",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "07",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]-\\infty, 1[ \\cup ]1, +\\infty[$ par $f(x) = \\frac{x^2 - 3x + 3}{x - 1}$ et soit $(C_f)$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer les limites de $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer les nombres réels $a$, $b$ et $c$ tels que pour tout $x \\neq 1$, $f(x) = ax + b + \\frac{c}{x - 1}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "En déduire l'existence d'une asymptote oblique $(D)$ à $(C_f)$ dont on précisera l'équation.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]-\\infty, 1[ \\cup ]1, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que le point $\\Omega(1, -1)$ est un centre de symétrie pour la courbe $(C_f)$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Dans l'ensemble des nombres complexes $\\mathbb{C}$, on considère l'équation $(E) : z^3 - (3 + i)z^2 + (3 + 3i)z - 3i = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le nombre complexe $i$ est solution de l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer les nombres complexes $u$ et $v$ tels que pour tout $z \\in \\mathbb{C}$, on ait $z^3 - (3 + i)z^2 + (3 + 3i)z - 3i = (z - i)(z^2 + uz + v)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $z^2 - 3z + 3 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.d)",
+                "texte": "En déduire l'ensemble des solutions de l'équation $(E)$ sous forme algébrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.",
+                "texte": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. Placer les points $A$, $B$ et $C$ d'affixes respectives $z_A = i$, $z_B = \\frac{3 + i\\sqrt{3}}{2}$ et $z_C = \\frac{3 - i\\sqrt{3}}{2}$, puis calculer le module et un argument de $\\frac{z_B - z_A}{z_C - z_A}$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Arithmétique et Divisibilité dans $\\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne de $5^n$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire le reste de la division euclidienne de $2023^{2024}$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $11x - 7y = 4$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Trouver tous les couples d'entiers relatifs $(x, y)$ solutions de cette équation tels que $x^2 + y^2 \\le 50$.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Un promoteur immobilier souhaite aménager une parcelle de terrain rectangulaire pour y construire un espace de loisirs. La longueur et la largeur de ce terrain sont déterminées par des paramètres mathématiques précis. Le budget global d'aménagement dépend de la résolution d'un système arithmétique lié au nombre de plants à acheter. Soit $a$ et $b$ deux entiers naturels représentant respectivement le nombre de centaines de plants de palmiers et le nombre de centaines de plants de cocotiers. Ces nombres vérifient le système : $\\left\\{\\begin{matrix} a \\equiv 3 \\pmod 5 \\ a \\equiv 2 \\pmod 7 \\end{matrix}\\right.$ et $b$ est le plus petit entier strictement positif tel que le nombre complexe $(1 + i\\sqrt{3})^b$ soit un nombre réel strictement positif. De plus, la hauteur maximale atteinte par une fontaine décorative programmable est modélisée par une fonction dont le paramètre de réglage est issu des solutions d'une équation complexe.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre exact de plants de palmiers $a$ à commander en résolvant le système de congruences.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le nombre exact de plants de cocotiers $b$ en utilisant l'forme trigonométrique du nombre complexe.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Sachant que le coût total de l'opération est proportionnel à la somme de ces deux types de plants et que chaque plant revient à $500\\text{ FCFA}$, calculer le montant total de la commande.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "$\\lim_{x \\to -\\infty} f(x) = -\\infty$, $\\lim_{x \\to +\\infty} f(x) = +\\infty$, $\\lim_{x \\to 1^-} f(x) = +\\infty$ et $\\lim_{x \\to 1^+} f(x) = -\\infty$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "Par identification, on trouve $a = 1$, $b = -2$ et $c = 1$. Ainsi, $f(x) = x - 2 + \\frac{1}{x - 1}$."
+          },
+          {
+            "numero": "1.c)",
+            "texte": "La droite $(D)$ d'équation $y = x - 2$ est asymptote oblique à $(C_f)$ en $-\\infty$ et en $+\\infty$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Pour tout $x \\neq 1$, $f'(x) = \\frac{(2x - 3)(x - 1) - (x^2 - 3x + 3)}{(x - 1)^2} = \\frac{x^2 - 2x}{(x - 1)^2}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "Le signe de $f'(x)$ est celui de $x^2 - 2x$ sur $]-\\infty, 1[ \\cup ]1, +\\infty[$. $f$ est croissante sur $]-\\infty, 0]$, décroissante sur $[0, 1[$ et sur $]1, 2]$, puis croissante sur $[2, +\\infty[$."
+          },
+          {
+            "numero": "3.",
+            "texte": "On montre que pour tout $x \\neq 1$, $f(2 - x) + f(x) = -2$, ce qui prouve que $\\Omega(1, -1)$ est centre de symétrie."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "On calcule $i^3 - (3 + i)i^2 + (3 + 3i)i - 3i = -i + 3 + i + 3i - 3 - 3i = 0$. Donc $i$ est solution."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "Par identification, on obtient $u = -3$ et $v = 3$. Ainsi, $z^3 - (3 + i)z^2 + (3 + 3i)z - 3i = (z - i)(z^2 - 3z + 3)$."
+          },
+          {
+            "numero": "1.c)",
+            "texte": "Le discriminant est $\\Delta = -3 = (i\\sqrt{3})^2$. Les solutions sont $z_1 = \\frac{3 + i\\sqrt{3}}{2}$ et $z_2 = \\frac{3 - i\\sqrt{3}}{2}$."
+          },
+          {
+            "numero": "1.d)",
+            "texte": "L'ensemble des solutions est $S = \\{i, \\frac{3 + i\\sqrt{3}}{2}, \\frac{3 - i\\sqrt{3}}{2}\\}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Le module est $1$ et l'argument vaut $\\frac{\\pi}{3}$ ou $-\\frac{\\pi}{3}$ selon l'ordre."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "$5^0 \\equiv 1 [7]$, $5^1 \\equiv 5 [7]$, $5^2 \\equiv 4 [7]$, $5^3 \\equiv 6 [7]$, $5^4 \\equiv 2 [7]$, $5^5 \\equiv 3 [7]$, $5^6 \\equiv 1 [7]$. Les restes sont périodiques de période $6$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "On a $2023 \\equiv 0 \\pmod 7$, donc $2023^{2024} \\equiv 0 \\pmod 7$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Une solution particulière est $(3, 1)$. L'ensemble des solutions est $\\{(7k + 3, 11k + 1) / k \\in \\mathbb{Z}\\}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "La condition $x^2 + y^2 \\le 50$ donne uniquement le couple $(3, 1)$ pour $k = 0$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-22T13:22:27"
+}

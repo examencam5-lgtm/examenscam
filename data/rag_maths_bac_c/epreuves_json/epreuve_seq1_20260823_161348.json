@@ -1,0 +1,139 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\f4baf427d9cd41dcaecd76f9958058bc_final.png"
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie par $f(x) = \\sqrt{x^{2} + 3x} - x$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'ensemble de définition $D_f$ de la fonction $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Calculer la limite de $f$ en $-\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que la droite $(D)$ d'équation $y = -2x - \\frac{3}{2}$ est asymptote à la courbe de $f$ en $-\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Préciser la position relative de la courbe de $f$ par rapport à $(D)$ sur son intervalle de validité.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation (E) d'inconnue complexe $z$ : $z^{2} - (3+i)z + 4+3i = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le discriminant $\\Delta$ de l'équation (E).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer une racine carrée complexe de $\\Delta$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "En déduire les solutions $z_1$ et $z_2$ de l'équation (E).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $z_3 = 1+i$. Écrire $z_3$ sous forme trigonométrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Calculer le module et un argument du nombre complexe $Z = \\frac{z_1}{z_3}$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "On considère les entiers naturels $a$ et $b$ tels que $a \\equiv 3$ (mod 7) et $b \\equiv 5$ (mod 7).",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le reste de la division euclidienne de $a + b$ par 7.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer le reste de la division euclidienne de $a \\times b$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer les restes successifs des puissances de 3 modulo 7.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le reste de la division euclidienne de $3^{2025}$ par 7.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer tous les entiers naturels $n$ tels que $n^2 + 2n$ soit divisible par 5.",
+                "bareme": 1.25
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de l'organisation d'un tournoi inter-quartiers de football à Bafoussam, un comité de gestion souhaite répartir un lot de $N$ équipements sportifs (ballons et maillots) dont le nombre total est compris entre 800 et 1000. Pour le transport des équipements, le comité utilise des cartons. Si on range les équipements par paquets de 18, il reste 5 équipements. Si on les range par paquets de 24, il reste 5 équipements également. Par ailleurs, pour l'achat des trophées, le trésorier dispose d'un montant total $S$ en milliers de francs CFA tel que $S$ est la solution de l'équation arithmétique $5S \\equiv 10$ (mod 13), avec $S \\in [20, 40]$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre exact $N$ d'équipements sportifs dont dispose le comité.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Résoudre dans l'intervalle $[20, 40]$ l'équation régissant le montant $S$ et déterminer la somme exacte allouée pour les trophées.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Sachant qu'un ballon coûte 4500 francs et un maillot 2500 francs, déterminer le nombre exact de ballons et de maillots achetés avec le budget $S$ si l'intégralité de la somme est épuisée.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T16:13:48"
+}

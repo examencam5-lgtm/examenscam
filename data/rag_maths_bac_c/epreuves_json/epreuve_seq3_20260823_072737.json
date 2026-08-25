@@ -1,0 +1,181 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\9b226a516a044ae0ae2edfad1511020d_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui, à tout point $M$ d'affixe $z$, associe le point $M'$ d'affixe $z'$ définie par $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $z_A = 1 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer que $f$ admet un unique point invariant $\\Omega$ dont on précisera l'affixe $\\omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Préciser la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $B$ le point d'affixe $z_B = 3$. Déterminer l'affixe du point $B'$ image de $B$ par $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Déterminer l'ensemble $(E)$ des points $M$ du plan dont l'affixe $z$ vérifie $|z' - 2| = 3$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Donner la nature géométrique de l'ensemble $(E)$ ainsi que son rayon.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + \\frac{2}{3}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n > 1$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On définit la suite $(v_n)$ par $v_n = u_n - 1$ pour tout entier naturel $n$. Démontrer que $(v_n)$ est une suite géométrique de raison $\\frac{1}{3}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $v_n$ puis $u_n$ en fonction de $n$, et calculer la limite de la suite $(u_n)$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la fonction $g$ définie sur $\\mathbb{R}$ par $g(x) = (x - 1)e^x + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les limites de $g$ en $+\\infty$ et en $-\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la dérivée $g'(x)$ pour tout nombre réel $x$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le signe de $g'(x)$ sur $\\mathbb{R}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations complet de la fonction $g$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Démontrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ dans $\\mathbb{R}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $\\alpha$ appartient à l'intervalle [0, 1].",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère dans l'ensemble des entiers relatifs $\\mathbb{Z}$ l'équation $(E) : 7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de $(E)$ pour lesquelles $x$ et $y$ sont des multiples de 3.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le plus petit entier naturel $x$ solution de $(E)$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Un artisan spécialisé dans la fabrication de meubles à Douala souhaite optimiser sa production hebdomadaire. Il dispose d'un capital initial et fabrique deux types de tables, notées $T_1$ et $T_2$. Le bénéfice réalisé par la vente de $x$ tables $T_1$ et $y$ tables $T_2$ est modélisé par une fonction de coût et de production liée à un nombre complexe de référence $Z = x + iy$. Pour sécuriser son approvisionnement en bois, l'artisan étudie une suite de livraisons périodiques dont le volume de matière premiére suit une loi arithmético-géométrique.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre de tables $T_1$ et $T_2$ à produire si le couple $(x, y)$ est solution de l'équation $7x - 5y = 3$ avec la condition supplémentaire que le total des tables produites $x + y$ est égal à 9.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "En utilisant l'affixe $Z = x + iy$ des tables produites, calculer le module de $Z - 2 - i$ sachant que les coordonnées $(x, y)$ vérifient la relation $x^2 + y^2 - 2x - 4y - 4 = 0$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer le stock limite de bois disponible sachant que la quantité de matière première suit la suite $(u_n)$ définie par $u_0 = 2$ et $u_{n+1} = \\frac{1}{3}u_n + \\frac{2}{3}$ étudiée dans la partie ressources, puis estimer la production à long terme.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T07:27:37"
+}

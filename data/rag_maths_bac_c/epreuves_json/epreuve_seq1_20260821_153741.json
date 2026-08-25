@@ -1,0 +1,174 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "Délégation Régionale de Extrême-Nord",
+    "etablissement": "lycee classique des mokolo",
+    "annee_scolaire": "2026-2027",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère les nombres complexes.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans l'ensemble des nombres complexes $\\mathbb{C}$ l'équation $z^2 - 2\\sqrt{3}z + 4 = 0$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Écrire sous forme exponentielle les solutions trouvées à la question précédente.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $z_1 = \\sqrt{3} - i$ et $z_2 = 1 - i$. Déterminer la forme algébrique et la forme trigonométrique du nombre complexe $Z = \\frac{z_1}{z_2}$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "En déduire la valeur exacte de $\\cos\\left(\\frac{\\pi}{12}\\right)$ et $\\sin\\left(\\frac{\\pi}{12}\\right)$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Arithmétique et congruences dans $\\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne de $5^n$ par $7$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $A_n = 5^{2n} + 5^n + 3$. Démontrer que pour tout entier naturel $n$, $A_n$ est divisible par $7$ si et seulement si $n$ n'est pas un multiple de $3$.",
+                "bareme": 2.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{Z}$ l'équation de congruence : $5x \\equiv 3 \\pmod{7}$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Étude de fonctions et limites.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Soit la fonction $f$ définie sur $\\mathbb{R}$ par $f(x) = \\sqrt{x^2 + 4} - x$. Déterminer la limite de $f$ en $-\\infty$ et en $+\\infty$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Démontrer que la droite $(d)$ d'équation $y = -2x$ est asymptote oblique à la courbe de $f$ en $-\\infty$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in \\mathbb{R}$, puis dresser le tableau de variations de la fonction $f$.",
+                "bareme": 2.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Dans le cadre de la modernisation d'un réseau informatique régional au Cameroun, un administrateur réseau utilise des clés de cryptage basées sur des propriétés arithmétiques et des nombres complexes. Pour sécuriser l'accès à un serveur central situé à Bafoussam, le code d'accès journalier $N$ est un entier naturel déterminé par un algorithme complexe. De plus, la position géographique d'un relais hertzien est repérée par un point d'affixe $Z$ dans le plan complexe.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "L'algorithme de génération du code $N$ indique qu'il s'agit du plus petit entier naturel non nul tel que $N \\equiv 3 \\pmod{11}$ et $N \\equiv 5 \\pmod{7}$. Déterminer la valeur du code $N$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Pour le calibrage du relais, l'affixe $Z$ du point de fixation vérifie l'équation $Z^2 - 4iZ - 3 = 0$. Résoudre cette équation dans $\\mathbb{C}$ et donner les affixes possibles sous forme algébrique.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Le coût d'installation (en milliers de francs CFA) est donné par la partie réelle du nombre complexe $W = (1 + i\\sqrt{3})^4$. Calculer ce coût exact.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de l'équation $z^2 - 2\\sqrt{3}z + 4 = 0$ est $\\Delta = (-2\\sqrt{3})^2 - 4(1)(4) = 12 - 16 = -4 = (2i)^2$. Les solutions sont $z_1 = \\frac{2\\sqrt{3} - 2i}{2} = \\sqrt{3} - i$ et $z_2 = \\sqrt{3} + i$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Pour $z_1 = \\sqrt{3} - i$, le module est $|z_1| = \\sqrt{3 + 1} = 2$. On a $z_1 = 2\\left(\\frac{\\sqrt{3}}{2} - \\frac{1}{2}i\\right) = 2e^{-i\\frac{\\pi}{6}}$. Pour $z_2 = \\sqrt{3} + i$, on a de même $z_2 = 2e^{i\\frac{\\pi}{6}}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "Avec $z_1 = \\sqrt{3} - i$ et $z_2 = 1 - i$, la forme algébrique de $Z = \\frac{z_1}{z_2}$ s'obtient en multipliant par le conjugué du dénominateur : $Z = \\frac{(\\sqrt{3}-i)(1+i)}{(1-i)(1+i)} = \\frac{\\sqrt{3} + i\\sqrt{3} - i + 1}{2} = \\frac{(\\sqrt{3}+1) + i(\\sqrt{3}-1)}{2}$. Sous forme trigonométrique, $Z = \\frac{2e^{-i\\frac{\\pi}{6}}}{\\sqrt{2}e^{-i\\frac{\\pi}{4}}} = \\sqrt{2}e^{i\\frac{\\pi}{12}}$."
+          },
+          {
+            "numero": "3.",
+            "texte": "En identifiant la forme algébrique et la forme trigonométrique de $Z$, on a $Z = \\sqrt{2}\\left(\\cos\\left(\\frac{\\pi}{12}\\right) + i\\sin\\left(\\frac{\\pi}{12}\\right)\\right) = \\frac{\\sqrt{3}+1}{2} + i\\frac{\\sqrt{3}-1}{2}$. Par identification, $\\cos\\left(\\frac{\\pi}{12}\\right) = \\frac{\\sqrt{6} + \\sqrt{2}}{4}$ et $\\sin\\left(\\frac{\\pi}{12}\\right) = \\frac{\\sqrt{6} - \\sqrt{2}}{4}$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Étudions les puissances de $5$ modulo $7$ : $5^0 \\equiv 1 \\pmod{7}$, $5^1 \\equiv 5 \\pmod{7}$, $5^2 \\equiv 25 \\equiv 4 \\pmod{7}$, $5^3 \\equiv 20 \\equiv 6 \\pmod{7}$, $5^4 \\equiv 30 \\equiv 2 \\pmod{7}$, $5^5 \\equiv 10 \\equiv 3 \\pmod{7}$, $5^6 \\equiv 15 \\equiv 1 \\pmod{7}$. Le cycle des restes est de période $6$ : $5^{6k} \\equiv 1$, $5^{6k+1} \\equiv 5$, $5^{6k+2} \\equiv 4$, $5^{6k+3} \\equiv 6$, $5^{6k+4} \\equiv 2$, $5^{6k+5} \\equiv 3 \\pmod{7}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On examine $A_n = 5^{2n} + 5^n + 3 \\pmod{7}$ en posant $X = 5^n \\pmod{7}$. On a $A_n \\equiv X^2 + X + 3 \\pmod{7}$. Les valeurs possibles de $X$ dans $\\mathbb{Z}/7\\mathbb{Z}$ sont $\\{1, 5, 4, 6, 2, 3\\}$. En testant ces valeurs : pour $X=1$, $1+1+3=5 \\not\\equiv 0$; pour $X=5$, $25+5+3 = 33 \\equiv 5 \\not\\equiv 0$; etc. Plus simplement, $X^2 + X + 3 \\equiv 0 \\pmod{7} \\iff (2X+1)^2 + 11 \\equiv 0 \\iff (2X+1)^2 \\equiv 3 \\pmod{7}$. Or $3$ n'est pas un résidu quadratique modulo $7$. Donc $A_n$ n'est jamais divisible par $7$, ce qui contredit l'énoncé ou nécessite une rectification de l'énoncé original par l'auteur (ou $A_n \\equiv 0$ selon les classes d'équivalence de $n$ modulo $3$)."
+          },
+          {
+            "numero": "3.",
+            "texte": "Pour résoudre $5x \\equiv 3 \\pmod{7}$, on remarque que l'inverse de $5$ modulo $7$ est $3$ (car $5 \\times 3 = 15 \\equiv 1 \\pmod{7}$). En multipliant par $3$, on obtient $x \\equiv 9 \\equiv 2 \\pmod{7}$. L'ensemble des solutions est $S = \\{2 + 7k, k \\in \\mathbb{Z}\\}$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Soit $f(x) = \\sqrt{x^2 + 4} - x$. En $+\\infty$, forme indéterminée $\\infty - \\infty$. On utilise la quantité conjuguée : $f(x) = \\frac{4}{\\sqrt{x^2+4} + x}$. Ainsi, $\\lim_{x \\to +\\infty} f(x) = 0$. En $-\\infty$, $\\lim_{x \\to -\\infty} \\sqrt{x^2+4} = +\\infty$ et $\\lim_{x \\to -\\infty} (-x) = +\\infty$, donc $\\lim_{x \\to -\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Pour montrer que la droite d'équation $y = -2x$ est asymptote en $-\\infty$, calculons $\\lim_{x \\to -\\infty} [f(x) - (-2x)] = \\lim_{x \\to -\\infty} (\\sqrt{x^2+4} + x)$. En posant $X = -x$ (avec $X \\to +\\infty$), cela donne $\\sqrt{X^2+4} - X$, dont la limite en $+\\infty$ est $0$. La droite est bien asymptote oblique en $-\\infty$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La dérivée est $f'(x) = \\frac{x}{\\sqrt{x^2+4}} - 1 = \\frac{x - \\sqrt{x^2+4}}{\\sqrt{x^2+4}}$. Pour tout $x \\in \\mathbb{R}$, on a $x < \\sqrt{x^2+4}$, donc $f'(x) < 0$. La fonction $f$ est strictement décroissante sur $\\mathbb{R}$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T15:37:41"
+}

@@ -1,0 +1,161 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\ad63f115db994e4a8c2e1a322f328376_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $1 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que $f$ admet un unique point invariant $\\Omega$ dont on précisera l'affixe $\\omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Identifier la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer l'ensemble $(C)$ des points $M$ d'affixe $z$ tels que $|z - 2 + i| = 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'équation de l'ensemble $(C')$ image de $(C)$ par l'application $f$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_n + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n < 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "On définit la suite $(v_n)$ par $v_n = u_n - 2$ pour tout $n \\in \\mathbb{N}$. Montrer que $(v_n)$ est une suite géométrique de raison $\\frac{1}{2}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Exprimer $u_n$ en fonction de $n$ puis calculer la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\\infty$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit $f$ la fonction définie sur $\\mathbb{R}$ par $f(x) = (x - 1)e^x + 2$. On note $(C_f)$ sa courbe représentative dans un repère orthonormé.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f(x)$ en $-\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f(x)$ en $+\\infty$ et préciser la branche infinie de $(C_f)$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout réel $x$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variation complet de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans l'intervalle $[-2, 0]$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "Dans l'ensemble des entiers relatifs $\\mathbb{Z}$, on considère l'équation $(E) : 7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer tous les couples d'entiers $(x, y)$ solutions de $(E)$ tels que $0 \\leq x \\leq 10$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de l'extension d'une coopérative agricole à Yaoundé, un gestionnaire souhaite optimiser la répartition de ses ressources financières et l'acheminement de sa production. La coopérative dispose d'un capital initial lié aux solutions d'un système arithmétique et utilise un entrepôt dont le volume est modélisé par des fonctions numériques. Les bénéfices mensuels en milliers de francs CFA suivent une suite arithmético-géométrique dont le premier terme dépend du nombre d'engins achetés $x$ et $y$ vérifiant $7x - 5y = 3$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "En utilisant les solutions de l'équation arithmétique associée au capital de la coopérative, déterminer le nombre minimal d'engins $x$ et $y$ à acquérir sachant que $0 \\leq x \\leq 10$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "À partir du volume de l'entrepôt modélisé par la fonction $f$ étudiée dans les ressources, calculer le seuil de production nécessaire pour garantir un bénéfice positif.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Estimer la production à long terme de la coopérative en étudiant la limite de la suite des bénéfices mensuels obtenue.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T08:12:03"
+}

@@ -1,0 +1,139 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\1c5c253708c446309beb915abe3e99cf_final.png"
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation $(E) : z^{2} - 2z + 5 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes $\\mathbb{C}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions sous forme trigonométrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $z_{1} = 1 + 2i$ et $z_{2} = 1 - 2i$. Calculer le module et un argument de $z_{1}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Placer dans le repère les points $M_{1}$ et $M_{2}$ d'affixes respectives $z_{1}$ et $z_{2}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer l'affixe du point $A$ tel que le triangle $OM_{1}A$ soit équilatéral direct.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère la suite numérique $(u_{n})$ définie par $u_{0} = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_{n} + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_{1}$ et $u_{2}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $u_{n} < 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_{n})$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_{n})$ est convergente.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "On pose pour tout $n \\in \\mathbb{N}$, $v_{n} = 3 - u_{n}$. Démontrer que $(v_{n})$ est une suite géométrique dont on précisera la raison et le premier terme.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'équation $(E') : 17x - 24y = 5$ où $(x, y)$ est un couple d'entiers relatifs.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le PGCD de $17$ et $24$ à l'aide de l'algorithme d'Euclide.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire un couple d'entiers $(u_{0}, v_{0})$ solution particulière de l'équation $17u - 24v = 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déduire de la question précédente une solution particulière $(x_{0}, y_{0})$ de l'équation $(E')$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $17x - 24y = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Résoudre alors l'équation $(E')$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Monsieur TANKO souhaite clôturer un terrain rectangulaire destiné à la culture maraîchère. Les dimensions $x$ et $y$ de ce terrain en décamètres sont des entiers naturels non nuls tels que $x + y = 20$ et le PGCD de $x$ et $y$ est égal à $4$. Pour l'achat du grillage, le fournisseur applique un tarif unitaire lié à un nombre complexe $z_{0}$ solution d'une équation d'inconnue $z$ telle que $z^{2} - 8z + 25 = 0$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions $x$ et $y$ du terrain de Monsieur TANKO.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le module du nombre complexe $z_{0}$ qui représente le prix unitaire en milles francs du décamètre de grillage.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le montant total en milles francs à dépenser par Monsieur TANKO pour l'achat du grillage sachant que le périmètre du terrain détermine la longueur nécessaire.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T16:19:40"
+}

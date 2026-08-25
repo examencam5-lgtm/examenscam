@@ -1,0 +1,161 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\83112640d28a42c193b6cfd7480bd139_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $O, u, v$. On considère l'équation (E) d'inconnue $z$ dans l'ensemble des nombres complexes $\\mathbb{C}$ : $z^{2} - 2z + 5 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le discriminant de l'équation (E).",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer les solutions $z_{1}$ et $z_{2}$ de l'équation (E) sous forme algébrique, avec $z_{1}$ ayant une partie imaginaire positive.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Écrire $z_{1}$ et $z_{2}$ sous forme trigonométrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit A et B les points d'affixes respectives $z_{1}$ et $z_{2}$. Calculer la distance AB.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.c)",
+                "texte": "Déterminer la nature du triangle OAB.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur l'intervalle $0, +\\infty$ par $f(x) = x - 1 + \\ln(x)$. On note $C_{f}$ sa courbe représentative dans un repère orthogonal.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer la limite de $f(x)$ quand $x$ tend vers $0$ par valeurs supérieures.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la limite de $f(x)$ quand $x$ tend vers $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Justifier que la fonction $f$ est dérivable sur $0, +\\infty$ et calculer sa dérivée $f'(x)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans l'intervalle $1, 2$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère la suite numérique $(u_{n})_{n \\in \\mathbb{N}}$ définie par $u_{0} = 2$ et, pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_{n} + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_{1}$ et $u_{2}$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, on a $u_{n} > 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_{n})_{n \\in \\mathbb{N}}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Démontrer que la suite $(u_{n})_{n \\in \\mathbb{N}}$ est convergente et calculer sa limite.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.5,
+            "enonce_intro": "Dans l'ensemble des entiers relatifs $\\mathbb{Z}$, on considère l'équation (E') : $5x - 7y = 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $3, 1$ est une solution particulière de l'équation (E').",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E').",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de (E') pour lesquelles $x$ et $y$ sont des entiers strictement positifs.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le plus petit entier $x$ solution tel que $x > 10$.",
+                "bareme": 0.5
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans une localité, une coopérative agricole gère la production et la distribution de plants. Pour optimiser l'irrigation des champs disposés selon un plan géométrique, les ingénieurs utilisent un système de repérage complexe. Soit un point d'origine et deux positions remarquables représentées par les nombres complexes $z_{A} = 3 + 4i$ et $z_{B} = 1 - 2i$. La coopérative souhaite installer un bassin de rétention dont l'emplacement est lié à ces paramètres, et analyser l'évolution du volume d'eau distribué au cours des semaines à l'aide d'une suite numérique de terme général $v_{n}$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Calculer l'affixe $z_{C}$ du point C tel que le triangle ABC soit équilatéral direct, sachant que $z_{A} = 3 + 4i$ et $z_{B} = 1 - 2i$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer l'ensemble des points M du plan d'affixe $z$ tels que le nombre complexe $\\frac{z - z_{A}}{z - z_{B}}$ soit imaginaire pur.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Évaluer le nombre de semaines nécessaires pour que le volume d'eau atteigne un seuil critique, sachant que la suite du volume est définie par $v_{n+1} = \\frac{1}{2}v_{n} + 1$ avec $v_{0} = 10$ milliers de litres, en utilisant un raisonnement par récurrence.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T18:48:35"
+}

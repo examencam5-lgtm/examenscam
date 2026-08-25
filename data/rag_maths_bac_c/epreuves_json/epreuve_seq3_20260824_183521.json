@@ -1,0 +1,149 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\b6bf852740dc4bbf991beaccb2954028_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $1$",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $z^{2} - 2z + 5 = 0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions sous forme exponentielle.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "On considère la similitude directe $s$ de centre $O$, de rapport $\\sqrt{2}$ et d'angle $\\frac{\\pi}{4}$. Donner l'écriture complexe de $s$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $s$ du point $A$ d'affixe $1 + 2i$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.c)",
+                "texte": "Calculer la distance $OA'$ en fonction de l'affixe de $A$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n < 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On pose pour tout entier naturel $n$, $v_n = 3 - u_n$. Montrer que $(v_n)$ est une suite géométrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer la limite de la suite $(u_n)$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 6.0,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $0$ par $f(x) = x - 1 + \\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer la limite de $f$ en $0$ par valeurs supérieures.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Démontrer que l'équation $f(x) = 0$ admet une solution unique $\\alpha$ dans l'intervalle $1$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Donner un encadrement de $\\alpha$ d'amplitude $10^{-1}$.",
+                "bareme": 1.25
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre d'un projet de développement agricole dans une localité, un technicien étudie la prolifération d'une population de parasites dans un champ expérimental. La masse en kilogrammes de ces parasites au bout de $t$ semaines est modélisée par une fonction numérique $f$ telle que $f(t) = t e^{-t} + 2$. Pour neutraliser ces nuisibles, le système de traitement automatique de la ferme se declenche lorsque la quantité de parasites atteint un seuil critique lié à une fonction de référence $g(x) = x^2 - 4x + 5$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la quantité initiale de parasites présente dans le champ à la date $t = 0$, puis calculer la limite de la masse de parasites lorsque le temps $t$ tend vers $+\\infty$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Étudier les variations de la fonction $f$ sur l'intervalle $0$ afin de déterminer la période durant laquelle la masse de parasites augmente.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer la valeur exacte du temps $t_0$ pour lequel la masse de parasites atteint exactement la valeur critique définie par $g(1)$, puis évaluer si ce seuil est atteint au cours des deux premières semaines.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T18:35:21"
+}

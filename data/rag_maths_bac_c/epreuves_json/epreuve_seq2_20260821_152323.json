@@ -1,0 +1,201 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee classique de maroua",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "07",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère le nombre complexe $Z = \\sqrt{3} - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Écrire $Z$ sous forme exponentielle.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer la forme algébrique et la forme exponentielle de $Z^{2024}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $z^2 - 2\\sqrt{3}z + 4 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $A$ et $B$ les points d'affixes respectives $z_A = \\sqrt{3} + i$ et $z_B = \\sqrt{3} - i$. Calculer l'affixe du point $C$ tel que le triangle $OABC$ soit un losange.",
+                "bareme": 1.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'ensemble des entiers relatifs $\\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans $\\mathbb{Z}^2$ l'équation diophantienne $11x - 7y = 3$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire les solutions du système de congruences $\\begin{cases} x \\equiv 2 \\pmod{11} \\\\ x \\equiv 5 \\pmod{7} \\end{cases}$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Montrer que pour tout entier naturel $n$, le nombre $A_n = 2^{4n} - 1$ est divisible par $15$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer le reste de la division euclidienne de $2^{2025}$ par $15$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $\\mathbb{R}$ par $f(x) = x - 1 + \\sqrt{x^2 + 2x + 2}$. On désigne par $(\\mathcal{C}_f)$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Justifier que pour tout $x \\in \\mathbb{R}$, $x^2 + 2x + 2 > 0$ et en déduire l'ensemble de définition de $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier les limites de $f$ en $+\\infty$ et en $-\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que la droite $(\\Delta_1)$ d'équation $y = 2x$ est asymptote à $(\\mathcal{C}_f)$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que la droite $(\\Delta_2)$ d'équation $y = -2$ est asymptote à $(\\mathcal{C}_f)$ en $-\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in \\mathbb{R}$, étudier son signe et dresser le tableau de variations de $f$.",
+                "bareme": 1.75
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Un promoteur immobilier souhaite aménager un terrain rectangulaire pour un projet de construction. Pour sécuriser le périmètre, il doit installer une clôture électrique. Le coût du matériel est de $5000$ FCFA par mètre. Le plan du terrain est repéré dans un système orthonormé où les dimensions sont en mètres. Les quatre sommets du terrain $A$, $B$, $C$ et $D$ ont pour affixes respectives dans le plan complexe : $z_A = 1+i$, $z_B = 5+i$, $z_C = 5+4i$ et $z_D = 1+4i$. Par ailleurs, le capital disponible pour l'achat du matériel évolue chaque mois selon une suite arithmético-géométrique liée à des investissements en bourse. Le capital initial est $U_0 = 100000$ FCFA et la relation de récurrence est $U_{n+1} = \\frac{1}{2}U_n + 25000$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Calculer les dimensions du terrain (longueur et largeur) puis déterminer le périmètre exact de la clôture à installer.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le montant total nécessaire pour l'achat de la clôture électrique.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer le capital $U_n$ disponible au bout de $n$ mois et préciser si le promoteur disposera d'un budget suffisant au bout de $3$ mois pour régler la facture de la clôture.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "On a $|Z| = \\sqrt{(\\sqrt{3})^2 + (-1)^2} = \\sqrt{3 + 1} = 2$. Donc $Z = 2(\\frac{\\sqrt{3}}{2} - \\frac{1}{2}i) = 2 e^{-i\\frac{\\pi}{6}}$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "$Z^{2024} = (2 e^{-i\\frac{\\pi}{6}})^{2024} = 2^{2024} e^{-i\\frac{2024\\pi}{6}} = 2^{2024} e^{-i\\frac{1012\\pi}{3}}$. Comme $\\frac{1012}{3} = 337 + \\frac{1}{3}$, $e^{-i\\frac{1012\\pi}{3}} = e^{-i\\frac{\\pi}{3}} = \\frac{1}{2} - \\frac{\\sqrt{3}}{2}i$. Ainsi, $Z^{2024} = 2^{2023}(1 - i\\sqrt{3})$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculons le discriminant : $\\Delta = (-2\\sqrt{3})^2 - 4(1)(4) = 12 - 16 = -4 = (2i)^2$. Les solutions sont $z_1 = \\frac{2\\sqrt{3} - 2i}{2} = \\sqrt{3} - i$ et $z_2 = \\sqrt{3} + i$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Pour que $OABC$ soit un losange, il faut que $\\vec{OA} + \\vec{OC} = \\vec{OB}$ ou par les affixes $z_A + z_C = z_B$, soit $z_C = z_B - z_A = (\\sqrt{3}-i) - (\\sqrt{3}+i) = -2i$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "L'équation est $11x - 7y = 3$. Une solution particulière évidente est $(2, 3)$ car $11(2) - 7(3) = 22 - 21 = 1$, donc en multipliant par $3$, on obtient le couple $(6, 9)$. La solution générale est $x = 6 + 7k$ et $y = 9 + 11k avec k \\in \\mathbb{Z}$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "Le système équivaut à $x \\equiv 2 \\pmod{11}$ et $x \\equiv 5 \\pmod{7}$. La première congruence donne $x = 11k + 2$. En substituant dans la seconde : $11k + 2 \\equiv 5 \\pmod{7} \\implies 4k \\equiv 3 \\pmod{7} \\implies k \\equiv 6 \\pmod{7}$. Ainsi $k = 7q + 6$, d'où $x = 11(7q + 6) + 2 = 77q + 68$. L'ensemble des solutions est $x \\equiv 68 \\pmod{77}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $2^4 = 16 \\equiv 1 \\pmod{15}$. Donc $A_n = (2^4)^n - 1 \\equiv 1^n - 1 \\equiv 0 \\pmod{15}$. $A_n$ est donc toujours divisible par $15$."
+          },
+          {
+            "numero": "3.",
+            "texte": "On écrit $2025 = 4 \\times 506 + 1$. Alors $2^{2025} = 2^{4 \\times 506 + 1} = (2^4)^{506} \\times 2^1 \\equiv 1^{506} \\times 2 \\equiv 2 \\pmod{15}$. Le reste est $2$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Pour tout $x \\in \\mathbb{R}$, $x^2 + 2x + 2 = (x+1)^2 + 1 \\ge 1 > 0$. La fonction est donc définie sur $\\mathbb{R}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "En $+\\infty$, $\\lim_{x \\to +\\infty} (x^2+2x+2) = +\\infty$ donc $\\lim_{x \\to +\\infty} f(x) = +\\infty$. En $-\\infty$, en utilisant la quantité conjuguée : $f(x) = x - 1 + \\frac{(x+1)^2 + 1 - x^2 - 2x - 2}{\\sqrt{x^2+2x+2} - (x+1)}$ ce qui donne $\\lim_{x \\to -\\infty} f(x) = -2$."
+          },
+          {
+            "numero": "3.",
+            "texte": "En $+\\infty$, $\\sqrt{x^2+2x+2} = |x+1|\\sqrt{1 + \\frac{2}{x} + \\frac{2}{x^2}} = x+1$ pour $x > -1$. Ainsi $f(x) = x - 1 + x + 1 = 2x$. La droite d'équation $y = 2x$ est donc asymptote oblique en $+\\infty$."
+          },
+          {
+            "numero": "4.",
+            "texte": "La limite en $-\\infty$ étant finie et égale à $-2$, la droite d'équation $y = -2$ est asymptote horizontale en $-\\infty$."
+          },
+          {
+            "numero": "5.",
+            "texte": "On a $f'(x) = 1 + \\frac{x+1}{\\sqrt{x^2+2x+2}} = \\frac{\\sqrt{x^2+2x+2} + x + 1}{\\sqrt{x^2+2x+2}}$. Comme $\\sqrt{x^2+2x+2} > |x+1|$, le numérateur est toujours strictement positif. Donc $f'(x) > 0$ sur $\\mathbb{R}$, et $f$ est strictement croissante."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T15:23:23"
+}

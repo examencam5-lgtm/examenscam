@@ -1,0 +1,158 @@
+{
+  "metadonnees": {
+    "region": "Adamaoua",
+    "delegation": "Delegation Regionale de L'adamaoua",
+    "etablissement": "lycee classique de ngaoudere",
+    "annee_scolaire": "2026-2027",
+    "duree": "04h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.5,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 3.5,
+            "enonce_intro": "Dans tout cet exercice, $\\mathbb{Z}$ désigne l'ensemble des entiers relatifs.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $5^n$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "En déduire que pour tout entier naturel $n$, le nombre $5^{2n} + 2^{3n+1}$ est divisible par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{Z}$ l'équation $3x^2 + 5x - 2 \\equiv 0 [7]$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O; \\vec{u}; \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $z^2 - 4z + 8 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "On considère le nombre complexe $P(z) = z^3 - (5+i)z^2 + (8+5i)z - 8i$.\n a) Vérifier que $i$ est une solution de l'équation $P(z) = 0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2. b)",
+                "texte": "Déterminer les nombres complexes $a$ et $b$ tels que pour tout $z \\in \\mathbb{C}$, on ait $P(z) = (z - i)(z^2 + az + b)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2. c)",
+                "texte": "En déduire toutes les solutions de l'équation $P(z) = 0$ sous forme algébrique.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit $a$ et $b$ deux entiers naturels non nuls tels que $PGCD(a, b) = 15$ et $a + b = 120$ avec $a < b$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Justifier que les diviseurs de $15$ sont $1$, $3$, $5$ et $15$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $x$ et $y$ deux entiers naturels tels que $a = 15x$ et $b = 15y$. Traduire les conditions sur $a$ et $b$ en des conditions sur $x$ et $y$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer tous les couples $(x, y)$ possibles, puis en déduire les valeurs de $a$ et $b$.",
+                "bareme": 1.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $\\mathbb{R}$ par $f(x) = 2x^3 - 3x^2 - 12x + 1$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer la dérivée $f'(x)$ et étudier son signe selon les valeurs de $x$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Démontrer que l'équation $f(x) = 0$ admet exactement trois solutions dans $\\mathbb{R}$.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 5.0,
+        "situation_contexte": "Une coopérative agricole souhaite sécuriser un vaste terrain rectangulaire destiné à la culture maraîchère. Les dimensions $a$ et $b$ en décamètres de ce terrain sont des entiers naturels tels que $a$ est le reste de la division euclidienne de $5^{2024}$ par $7$ et $b$ est la solution entière de l'équation arithmétique $4x \\equiv 6 [10]$ comprise entre $1$ et $5$. Pour délimiter l'espace de stockage des engrais, un technicien utilise des capteurs électroniques dont les fréquences de fonctionnement obéissent à des nombres complexes. L'un des processeurs principaux traite un signal dont l'état complexe $z$ vérifie l'équation $z^3 - (5+i)z^2 + (8+5i)z - 8i = 0$. Par ailleurs, la production hebdomadaire $Q(t)$ en tonnes de la coopérative est modélisée par la fonction étudiée $f(t) = 2t^3 - 3t^2 - 12t + 1$ où $t$ représente le temps en semaines.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions $a$ et $b$ du terrain de la coopérative agricole.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Aider le technicien à identifier toutes les fréquences complexes possibles des capteurs en résolvant l'équation associée au processeur.",
+            "bareme": 1.75
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer les périodes de croissance de la production agricole de la coopérative à l'aide de l'étude de la fonction $f$.",
+            "bareme": 1.75
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On a $5^1 \\equiv 5 [7]$, $5^2 \\equiv 4 [7]$, $5^3 \\equiv 6 [7]$, $5^4 \\equiv 2 [7]$, $5^5 \\equiv 3 [7]$ et $5^6 \\equiv 1 [7]$. Le reste dépend de la classe de $n$ modulo $6$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On utilise les congruences modulo $7$. $5^{2n} = (5^2)^n \\equiv 2^n [7]$ et $2^{3n+1} = 2 \\times (2^3)^n = 2 \\times 8^n \\equiv 2 \\times 1^n \\equiv 2 [7]$. La somme conduit à un multiple de $7$ après analyse complète des congruences de $2^n$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le discriminant modulo $7$ ou l'évaluation directe pour $x \\in \\{0, 1, 2, 3, 4, 5, 6\\}$ donne les solutions $x \\equiv 1 [7]$ et $x \\equiv 2 [7]$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T11:54:01"
+}

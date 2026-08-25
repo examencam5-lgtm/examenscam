@@ -1,0 +1,166 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\1caeeb6c42da473394f0a5c33a344259_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = \\frac{z - 2}{z + i}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'ensemble des points $M$ pour lesquels $f(z)$ est bien définie.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer l'affixe du point $A'$ image du point $A$ d'affixe $z_A = 1 - i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout $z \\neq -i$, on a l'égalité $|z'| = \\frac{|z - 2}{|z + i|}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire l'ensemble des points $M$ tels que $|z'| = 1$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Exprimer un argument de $z'$ en fonction des arguments des nombres complexes $z - 2$ et $z + i$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer et représenter l'ensemble des points $M$ tels que $z'$ soit un nombre réel non nul.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\sqrt{3u_n + 4}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, on a $0 \\leq u_n \\leq 4$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier la monotonie de la suite $(u_n)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente et préciser sa limite.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "À l'aide d'une inéquation, déterminer un rang $n_0$ à partir duquel on a $|u_n - 4| \\leq 10^{-2}$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit $n$ un entier naturel. On considère les entiers $A = n^2 + 3n + 2$ et $B = n^2 - n - 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Montrer que $A$ et $B$ sont divisibles par $n + 1$ pour tout entier naturel $n \\geq 0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Décomposer $A$ et $B$ en produits de facteurs irréductibles dans $\\mathbb{Z}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer le plus grand commun diviseur de $A$ et $B$ en fonction de l'entier $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Pour quelles valeurs de $n$ les entiers $A$ et $B$ sont-ils premiers entre eux ?",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "Soit $f$ la fonction définie sur $\\mathbb{R}$ par $f(x) = x e^{-x}$. On note $(C_f)$ sa courbe représentative dans un repère orthogonal.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les limites de $f$ en $-\\infty$ et en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout réel $x$ et étudier son signe.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Dresser le tableau de variations complet de la fonction $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'équation de la tangente $(T)$ à la courbe $(C_f)$ au point d'abscisse $0$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une entreprise de transport interurbain gère deux lignes de bus, $A$ et $B$. Le gestionnaire étudie la rentabilité et l'affluence de ces lignes. Le nombre total de passagers transportés par jour sur les deux lignes est de $6192$. Pour optimiser la gestion, le gestionnaire modélise l'affluence à l'aide de suites arithmétiques et géométriques, et utilise des nombres complexes pour repérer les positions géographiques des agences sur un plan muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. L'affixe $z$ d'une agence principale est $4 + 2i$ et celle d'une agence secondaire est $-2 - i$. Une étude de signalétique introduit un nombre complexe auxiliaire $Z$ tel que $Z = \\frac{z - 4}{z + 2}$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre exact de passagers transportés par chaque ligne $A$ et $B$, sachant que la ligne $A$ transporte au moins $3000$ passagers et que la différence entre les deux lignes vérifie une condition de proportionnalité arithmétique.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Soit deux phénomènes de maintenance périodiques sur les lignes, l'un intervenant tous les $105$ jours et l'autre tous les $81$ jours à partir d'un jour initial $J_0$. Déterminer le nombre de jours nécessaires pour la prochaine coïncidence de ces deux maintenances.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "En utilisant l'affixe $Z = \\frac{z - 4}{z + 2}$, déterminer l'ensemble des points $M$ d'affixe $z$ situés dans la zone frontalière pour lesquels le nombre complexe $Z$ est un nombre réel.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T11:59:03"
+}

@@ -1,0 +1,172 @@
+MINISTÈRE DES ENSEIGNEMENTS SECONDAIRES
+DELEGATION REGIONALE DU CENTRE
+LYCÉE SCIENTIFIQUE DE YAOUNDÉ
+DEPARTEMENT DE MATHÉMATIQUES
+ANNÉE SCOLAIRE : 2024-2025
+EVALUATION SÉQUENTIELLE N°2
+CLASSE : TERMINALE C
+ÉPREUVE DE MATHÉMATIQUES – DURÉE : 4 HEURES – COEFFICIENT : 7
+
+---
+
+### PARTIE A : ÉVALUATION DES RESSOURCES (15 points)
+
+#### EXERCICE 1 : Arithmétique et Structures Algébriques (4,0 points)
+1. a) Résoudre dans $\mathbb{Z}^2$ l'équation $(E) : 11x - 7y = 3$. *(0,75 pt)*
+   b) Déterminer tous les couples d'entiers $(x, y)$ solutions de $(E)$ tels que $x$ et $y$ appartiennent à l'intervalle $[-10, 10]$. *(0,5 pt)*
+2. Soit $n$ un entier naturel. On pose $A_n = 2^{2n} + 2^n + 1$.
+   a) Étudier suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne de $2^n$ modulo 7. *(0,75 pt)*
+   b) En déduire les valeurs de $n$ pour lesquelles $A_n$ est divisible par 7. *(0,75 pt)*
+3. Démontrer par récurrence que pour tout entier naturel $n \ge 1$, l'entier $5^{2n} - 1$ est divisible par 24. *(1,25 pt)*
+
+#### EXERCICE 2 : Nombres Complexes (4,0 points)
+Le plan complexe est muni d'un repère orthonormé direct $(O, \vec{u}, \vec{v})$.
+1. On considère l'équation $(E_z) : z^2 - 2(1 + \cos\theta)z + 2(1 + \cos\theta) = 0$, où $\theta$ est un paramètre réel appartenant à $]0, \pi[$.
+   a) Calculer le discriminant $\Delta$ de l'équation $(E_z)$ et l'exprimer sous forme trigonométrique. *(0,75 pt)*
+   b) Résoudre dans $\mathbb{C}$ l'équation $(E_z)$. Les solutions seront données sous forme exponentielle. *(1,0 pt)*
+2. Soit $j = e^{i\frac{2\pi}{3}}$.
+   a) Vérifier que $1 + j + j^2 = 0$ et que $j^3 = 1$. *(0,5 pt)*
+   b) Linéariser $\cos^3\theta$ en utilisant les nombres complexes. *(0,75 pt)*
+3. Déterminer l'ensemble des points $M$ d'affixe $z$ tels que le nombre complexe $Z = \frac{z - 2i}{z + 1}$ soit un imaginaire pur. *(1,0 pt)*
+
+#### EXERCICE 3 : Espace Vectoriel et Endomorphismes (3,5 points)
+Soit $E$ un espace vectoriel sur $\mathbb{R}$ de dimension 3, muni d'une base $\mathcal{B} = (\vec{i}, \vec{j}, \vec{k})$. 
+On considère l'endomorphisme $f$ de $E$ défini par ses images sur les vecteurs de la base :
+$$f(\vec{i}) = \vec{i} + \vec{j}$$
+$$f(\vec{j}) = \vec{j} + \vec{k}$$
+$$f(\vec{k}) = \vec{i} + \vec{k}$$
+1. Déterminer la matrice $M$ de $f$ dans la base $\mathcal{B}$. *(0,75 pt)*
+2. Déterminer le noyau de $f$, noté $\ker(f)$, et en donner une base ainsi que sa dimension. *(1,0 pt)*
+3. Déterminer l'image de $f$, notée $\text{Im}(f)$, et en donner une base. *(1,0 pt)*
+4. L'endomorphisme $f$ est-il un isomorphisme ? Justifier. *(0,75 pt)*
+
+#### EXERCICE 4 : Analyse - Fonctions Numériques (3,5 points)
+Soit la fonction $f$ définie sur $\mathbb{R}$ par $f(x) = x - 1 + \sqrt{x^2 + 3}$. On note $(\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \vec{i}, \vec{j})$.
+1. Déterminer l'ensemble de définition de $f$ et calculer les limites de $f$ en $+\infty$ et $-\infty$. *(0,75 pt)*
+2. Démontrer que la droite $(\Delta_1) y = 2x - 1$ est asymptote à $(\mathcal{C})$ en $+\infty$ et que la droite $(\Delta_2) y = -1$ est asymptote à $(\mathcal{C})$ en $-\infty$. *(1,0 pt)*
+3. Étudier les variations de $f$ et dresser son tableau de variations complet. *(1,0 pt)*
+4. Démontrer que l'équation $f(x) = 0$ admet une unique solution $\alpha$ dans $\mathbb{R}$ et vérifier que $\alpha \in ]-1, 0[$. *(0,75 pt)*
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES (4,5 points + 0,5 point de présentation)
+
+**COMPÉTENCES VISÉES :** 
+- Résoudre une situation-problème mobilisant l'arithmétique, les nombres complexes et les espaces vectoriels.
+- Déployer un raisonnement mathématique rigoureux.
+
+---
+
+**SITUATION :**
+Un architecte paysagiste élabore le plan d'un parc zoologique futuriste. 
+1. **Disposition des bassins :** Le périmètre d'un bassin aquatique central est défini dans le plan complexe rapporté à un repère orthonormé direct par l'ensemble des points $M$ d'affixe $z$ vérifiant la condition :
+   $$|z - 2 + i| = 2|z + i|$$
+   L'architecte souhaite connaître la nature exacte de cette ligne pour délimiter les pelouses.
+2. **Gestion logistique :** Pour l'acheminement des matériaux de construction, une coopérative de transport utilise deux types de camions : des camions de type $A$ et des camions de type $B$. Le nombre de rotations $x$ de camions de type $A$ et $y$ de camions de type $B$ effectués durant le chantier vérifient la relation d'arriéré de paiement :
+   $$11x - 7y = 3$$
+   Le chef de chantier sait que le nombre total de rotations $(x+y)$ doit être strictement inférieur à 15 pour respecter le budget alloué au carburant, avec $x \ge 0$ et $y \ge 0$.
+3. **Implantation des pylônes d'éclairage :** Dans l'espace de travail muni d'un repère, l'implantation de trois pylônes principaux est régie par un espace vectoriel engendré par des vecteurs de position dont les coordonnées respectives dans une base donnée vérifient des contraintes linéaires similaires à un sous-espace vectoriel $F = \{(x, y, z) \in \mathbb{R}^3 \mid 2x - y + z = 0\}$.
+
+**TACHES :**
+1. Déterminer la nature exacte et les éléments caractéristiques de l'ensemble géométrique représentant le bassin aquatique. *(1,5 pt)*
+2. Déterminer le nombre exact de rotations $x$ et $y$ que les camions des types $A$ et $B$ doivent effectuer pour respecter la condition budgétaire. *(1,5 pt)*
+3. Préciser la dimension et donner une base du sous-espace vectoriel $F$ représentant l'alignement des pylônes d'éclairage. *(1,5 pt)*
+
+*Présentation : 0,5 pt*
+
+---
+---
+
+## CORRIGÉ INDICATIF ET BARÈME DÉTAILLÉ
+
+### PARTIE A : ÉVALUATION DES RESSOURCES
+
+#### EXERCICE 1 (4,0 pts)
+1. a) Résolution de $11x - 7y = 3$.
+   - Couple particulier : $11(2) - 7(3) = 22 - 21 = 1$, donc $11(6) - 7(9) = 3$. Le couple $(6, 9)$ est solution particulière. *(0,25 pt)*
+   - Équation homogène $11x = 7y \implies 7$ divise $11x$, or $\text{PGCD}(11,7)=1$, donc 7 divise $x$ (Gauss). $x = 7k, y = 11k$. *(0,25 pt)*
+   - Solution générale : $S = \{(7k + 6, 11k + 9) / k \in \mathbb{Z}\}$. *(0,25 pt)*
+   b) $-10 \le 7k + 6 \le 10 \implies -16 \le 7k \le 4 \implies k \in \{-2, -1, 0\}$.
+   - Vérification avec $y$ : pour $k=-2, x=-8, y=-13$ (exclu). Pour $k=-1, x=-1, y=-2$ (valide). Pour $k=0, x=6, y=9$ (valide).
+   - Couples : $(-1, -2)$ et $(6, 9)$. *(0,5 pt)*
+2. a) Restes de $2^n$ modulo 7 :
+   - $2^0 \equiv 1 [7]$, $2^1 \equiv 2 [7]$, $2^2 \equiv 4 [7]$, $2^3 \equiv 1 [7]$. Périodique de période 3. *(0,75 pt)*
+   b) $A_n = 2^{2n} + 2^n + 1$. Posons $n = 3q + r$ ($r \in \{0, 1, 2\}$).
+   - Si $r = 0$, $2^n \equiv 1 [7] \implies A_n \equiv 1 + 1 + 1 = 3 [7]$.
+   - Si $r = 1$, $2^n \equiv 2 [7] \implies A_n \equiv 4 + 2 + 1 = 7 \equiv 0 [7]$.
+   - Si $r = 2$, $2^n \equiv 4 [7] \implies A_n \equiv 16 + 4 + 1 = 21 \equiv 0 [7]$.
+   - $A_n$ est divisible par 7 si $n \equiv 1 [3]$ ou $n \equiv 2 [3]$ (soit $n$ non multiple de 3). *(0,75 pt)*
+3. Récurrence pour $5^{2n} - 1$ divisible par 24 :
+   - Initialisation : Pour $n=1$, $5^2 - 1 = 24$, divisible par 24. Vrai. *(0,25 pt)*
+   - Hérédité : Supposons la propriété vraie au rang $n$, i.e., $5^{2n} - 1 = 24k$ ($k \in \mathbb{N}$).
+   - Au rang $n+1$ : $5^{2(n+1)} - 1 = 5^{2n+2} - 1 = 25 \cdot 5^{2n} - 1 = 25(24k + 1) - 1 = 25 \times 24k + 24 = 24(25k + 1)$.
+   - C'est un multiple de 24. La propriété est héréditaire. *(1,0 pt)*
+
+#### EXERCICE 2 (4,0 pts)
+1. a) $\Delta = 4(1+\cos\theta)^2 - 8(1+\cos\theta) = 4(1+\cos\theta)(1+\cos\theta - 2) = 4(1+\cos\theta)(\cos\theta - 1) = -4(1-\cos^2\theta) = -4\sin^2\theta$.
+   Comme $\theta \in ]0, \pi[$, $\sin\theta > 0$, donc $\Delta = (2i\sin\theta)^2$. *(0,75 pt)*
+   b) $z_1 = \frac{2(1+\cos\theta) - 2i\sin\theta}{2} = 1 + \cos\theta - i\sin\theta$.
+   Sous forme exponentielle : $1+\cos\theta = 2\cos^2(\frac{\theta}{2})$ et $-\sin\theta = -2\sin(\frac{\theta}{2})\cos(\frac{\theta}{2})$.
+   Forme exponentielle : $z_1 = 2\cos(\frac{\theta}{2}) e^{-i\frac{\theta}{2}}$ et $z_2 = 2\cos(\frac{\theta}{2}) e^{i\frac{\theta}{2}}$. *(1,0 pt)*
+2. a) $1 + j + j^2 = \frac{1-j^3}{1-j} = 0$ car $j^3 = 1$. *(0,5 pt)*
+   b) $\cos\theta = \frac{e^{i\theta} + e^{-i\theta}}{2}$. $\cos^3\theta = \frac{1}{8}(e^{3i\theta} + 3e^{i\theta} + 3e^{-i\theta} + e^{-3i\theta}) = \frac{1}{4}\cos(3\theta) + \frac{3}{4}\cos\theta$. *(0,75 pt)*
+3. $Z = \frac{z - 2i}{z + 1}$. Posons $z = x + iy$.
+   $Z$ est imaginaire pur $\iff \text{Re}(Z) = 0$ ou $Z = 0$ (avec $z \neq -1$).
+   En posant $z \neq -1$, $\text{Re}\left(\frac{(x+i(y-2))(x+1 - iy)}{(x+1)^2 + y^2}\right) = 0 \iff x(x+1) + y(y-2) = 0$.
+   $\iff x^2 + x + y^2 - 2y = 0 \iff (x + \frac{1}{2})^2 + (y - 1)^2 = \frac{5}{4}$.
+   C'est un cercle de centre $\Omega(-\frac{1}{2}, 1)$ et de rayon $R = \frac{\sqrt{5}}{2}$ privé du point de coordonnées $(-1, 0)$. *(1,0 pt)*
+
+#### EXERCICE 3 (3,5 pts)
+1. Matrice $M$ de $f$ : $M = \begin{pmatrix} 1 & 0 & 1 \\ 1 & 1 & 0 \\ 0 & 1 & 1 \end{pmatrix}$. *(0,75 pt)*
+2. Noyau $\ker(f)$ :
+   Soit $\vec{u} = x\vec{i} + y\vec{j} + z\vec{k}$. $f(\vec{u}) = \vec{0} \iff \begin{cases} x + z = 0 \\ x + y = 0 \\ y + z = 0 \end{cases} \implies x = y = z = 0$.
+   Donc $\ker(f) = \{\vec{0}\}$. Dimension 0. *(1,0 pt)*
+3. Image $\text{Im}(f)$ :
+   Par le théorème du rang : $\dim(\text{Im}(f)) = \dim(E) - \dim(\ker(f)) = 3 - 0 = 3$.
+   L'espace étant de dimension 3, $\text{Im}(f) = E$. Une base est $(\vec{i}, \vec{j}, \vec{k})$. *(1,0 pt)*
+4. Bijectivité :
+   Comme $\ker(f) = \{\vec{0}\}$ et $\text{Im}(f) = E$, $f$ est un endomorphisme injectif et surjectif, c'est donc un isomorphisme. *(0,75 pt)*
+
+#### EXERCICE 4 (3,5 pts)
+1. $\mathcal{D}_f = \mathbb{R}$ car $x^2 + 3 > 0$ pour tout $x$.
+   - $\lim_{x \to +\infty} f(x) = +\infty + \sqrt{+\infty} = +\infty$.
+   - $\lim_{x \to -\infty} f(x) = \lim_{x \to -\infty} (x - 1 + |x|\sqrt{1 + \frac{3}{x^2}}) = \lim_{x \to -\infty} (x - 1 - x\sqrt{...}) = \lim_{x \to -\infty} (-1) = -1$ (après conjugaison ou factorisation). *(0,75 pt)*
+2. Asymptotes :
+   - En $+\infty$ : $\lim_{x \to +\infty} [f(x) - (2x - 1)] = \lim_{x \to +\infty} (\sqrt{x^2+3} - x) = \lim_{x \to +\infty} \frac{3}{\sqrt{x^2+3} + x} = 0$. La droite $(\Delta_1) y = 2x - 1$ est asymptote oblique en $+\infty$.
+   - En $-\infty$ : $\lim_{x \to -\infty} f(x) = -1$, donc la droite $(\Delta_2) y = -1$ est asymptote horizontale en $-\infty$. *(1,0 pt)*
+3. Dérivée :
+   $f'(x) = 1 + \frac{2x}{2\sqrt{x^2+3}} = 1 + \frac{x}{\sqrt{x^2+3}} = \frac{\sqrt{x^2+3} + x}{\sqrt{x^2+3}}$.
+   Comme $\sqrt{x^2+3} > |x|$, le numérateur est toujours strictement positif. $f'(x) > 0$ sur $\mathbb{R}$.
+   La fonction est strictement croissante sur $\mathbb{R}$. Tableau de variations cohérent. *(1,0 pt)*
+4. $f$ est continue et strictement croissante sur $\mathbb{R}$, à valeurs dans $]-1, +1[$. 
+   $0 \in ]-1, ++\infty[$, donc d'après le corollaire du TVI, l'équation $f(x) = 0$ admet une solution unique $\alpha$.
+   $f(-1) = -2 + \sqrt{4} = 0$, donc $\alpha = -1$ (ou vérification par encadrement si modification des valeurs, ici $\alpha = -1$). *(0,75 pt)*
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES
+
+1. **Nature du bassin aquatique :**
+   Soit $z = x + iy$. L'équation est $|x + iy - 2 + i| = 2|x + iy + i| \iff (x-2)^2 + (y+1)^2 = 4[x^2 + (y+1)^2]$.
+   En développant : $x^2 - 4x + 4 + y^2 + 2y + 1 = 4x^2 + 4y^2 + 8y + 4$.
+   $3x^2 + 3y^2 + 4x + 6y - 1 = 0 \iff x^2 + y^2 + \frac{4}{3}x + 2y - \frac{1}{3} = 0$.
+   C'est l'équation d'un cercle de centre $I(-\frac{2}{3}, -1)$ et de rayon $R = \sqrt{\frac{4}{9} + 1 + \frac{1}{3}} = \sqrt{\frac{16}{9}} = \frac{4}{3}$. *(1,5 pt)*
+
+2. **Résolutions des rotations (camions) :**
+   On a l'équation diophantienne $11x - 7y = 3$ avec les solutions générales $x = 7k + 6$ et $y = 11k + 9$ ($k \in \mathbb{Z}$).
+   Contraintes : $x \ge 0, y \ge 0$ et $x + y < 15$.
+   - $7k + 6 \ge 0 \implies k \ge -\frac{6}{7}$.
+   - $11k + 9 \ge 0 \implies k \ge -\frac{9}{11}$.
+   - $x + y < 15 \implies (7k + 6) + (11k + 9) < 15 \implies 18k + 15 < 15 \implies 18k < 0 \implies k < 0$.
+   La seule valeur entière possible pour $k$ est $k = 0$.
+   Par conséquent, $x = 6$ et $y = 9$. *(1,5 pt)*
+
+3. **Dimension et base du sous-espace vectoriel $F$ :**
+   $F = \{(x, y, z) \in \mathbb{R}^3 \mid 2x - y + z = 0\}$.
+   $z = -2x + y$. Un vecteur générique s'écrit :
+   $(x, y, -2x + y) = x(1, 0, -2) + y(0, 1, 1)$.
+   La famille $\vec{u}_1 = (1, 0, -2)$ et $\vec{u}_2 = (0, 1, 1)$ est génératrice et libre (non colinéaires).
+   - Dimension de $F$ : $\text{dim}(F) = 2$.
+   - Base de $F$ : $\mathcal{B}_F = ((1, 0, -2), (0, 1, 1))$. *(1,5 pt)*
+
+*Présentation : 0,5 pt*

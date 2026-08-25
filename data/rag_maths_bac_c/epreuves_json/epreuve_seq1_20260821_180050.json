@@ -1,0 +1,219 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee classique de maroua",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $\\left(O, \\vec{u}, \\vec{v}\\right)$. On considère l'équation dans l'ensemble des nombres complexes $\\mathbb{C}$ : $\\left(E\\right) : z^3 - (3+i)z^2 + (4+2i)z - 4 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Montrer que l'équation $\\left(E\\right)$ admet une solution réelle $z_0$ que l'on précisera.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer les nombres complexes $a$ et $b$ tels que pour tout nombre complexe $z$, on ait : $z^3 - (3+i)z^2 + (4+2i)z - 4 = (z - 2)\\left(z^2 + az + b\\right)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $\\left(E\\right)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Écrire sous forme trigonométrique les solutions non réelles de $\\left(E\\right)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $n$ un entier naturel. Déterminer les valeurs de $n$ pour lesquelles le nombre $\\left(1 + i\\sqrt{3}\\right)^n$ est un nombre réel.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Dans tout cet exercice, $n$ désigne un entier naturel.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $5^n$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire le reste de la division euclidienne par $7$ du nombre $A_n = 5^{2n} + 5^n + 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer par récurrence que pour tout entier naturel $n$, le nombre $3^{2n+1} + 2^{n+2}$ est divisible par $7$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On considère l'équation dans $\\mathbb{Z} \\times \\mathbb{Z}$ : $7x - 4y = 3$. Vérifier que le couple $(1, 1)$ est une solution particulière de cette équation.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $7x - 4y = 3$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit la fonction numérique $f$ définie sur l'intervalle $]1, +\\infty[$ par $f(x) = \\frac{x^2}{\\sqrt{x^2 - 1}}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de la fonction $f$ en $1$ à droite, puis interpréter graphiquement le résultat.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de la fonction $f$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout $x \\in ]1, +\\infty[$, la dérivée $f'(x)$ est de la même is-signe que $x(x^2 - 2)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations de la fonction $f$ sur $]1, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que la fonction $f$ réalise une bijection de $[\\sqrt{2}, +\\infty[$ vers un intervalle $J$ à préciser.",
+                "bareme": 1.25
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "M. Fotso est un entrepreneur dans la région de l'Ouest Cameroun. Il possède un terrain de forme rectangulaire dont l'aire est de $2028 \\text{ m}^2$ et dont les dimensions $a$ et $b$ (en mètres, avec $a > b$) vérifient la condition $\\text{PGCD}(a, b) = 13$. De plus, M. Fotso utilise des codes secrets pour sécuriser l'accès à son entrepôt. Le code actuel est un nombre entier naturel constitué de trois chiffres dont l'écriture en base $7$ est $\\overline{xyz}_7$ et l'écriture en base $9$ est $\\overline{zyx}_9$, avec $y$ un multiple de $4$ strictement supérieur à $2$. Enfin, il souhaite planter des arbres le long de la plus grande diagonale de son terrain, séparés par un intervalle régulier calculé grâce à un nombre complexe lié aux dimensions.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions exactes $a$ et $b$ du terrain rectangulaire de M. Fotso.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Retrouver le code secret exact de l'entrepôt de M. Fotso.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le nombre total d'arbres à planter sachant qu'on en place aux deux extrémités de la plus grande diagonale du terrain.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "En testant les diviseurs du terme constant $4$, on remarque que pour $z = 2$, $2^3 - (3+i)(2)^2 + (4+2i)(2) - 4 = 8 - 4(3+i) + 8 + 4i - 4 = 16 - 12 - 4i + 8 + 4i - 4 = 0$. Ainsi, $z_0 = 2$ est une solution réelle."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "Par identification ou division euclidienne, on trouve $a = -1-i$ et $b = 2-2i$ (ou $2$). Vérification : $(z-2)(z^2 - (1+i)z + 2) = z^3 - (1+i)z^2 + 2z - 2z^2 + 2(1+i)z - 4 = z^3 - (3+i)z^2 + (4+2i)z - 4$."
+          },
+          {
+            "numero": "1.c)",
+            "texte": "On résout $z^2 - (1+i)z + 2 = 0$. Le discriminant est $\\Delta = (1+i)^2 - 8 = 2i - 8 = -8+2i$. On trouve les racines complexes associées."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Les solutions non réelles s'écrivent sous forme trigonométrique en déterminant module et argument."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "On écrit $1+i\\sqrt{3} = 2 e^{i\\pi/3}$. Alors $\\left(1+i\\sqrt{3}\\right)^n = 2^n e^{i \\frac{n\\pi}{3}}$. Ce nombre est réel si et seulement si $\\frac{n\\pi}{3} = k\\pi$ avec $k \\in \\mathbb{Z}$, soit $n = 3k$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "On a $5^0 \\equiv 1 [7]$, $5^1 \\equiv 5 [7]$, $5^2 \\equiv 4 [7]$, $5^3 \\equiv 6 [7]$, $5^4 \\equiv 2 [7]$, $5^5 \\equiv 3 [7]$, $5^6 \\equiv 1 [7]$. La période est $6$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "On utilise la périodicité pour trouver le reste de $A_n$ selon les valeurs de $n$ modulo $6$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Démonstration par récurrence standard de la divisibilité par $7$."
+          },
+          {
+            "numero": "3.a)",
+            "texte": "Pour le couple $(1,1)$, $7(1) - 4(1) = 7 - 4 = 3$. Le couple $(1,1)$ est donc solution."
+          },
+          {
+            "numero": "3.b)",
+            "texte": "L'ensemble des solutions est l'ensemble des couples de la forme $(4k+1, 7k+1)$ avec $k \\in \\mathbb{Z}$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "$\\lim_{x \\to 1^+} f(x) = +\\infty$. La droite d'équation $x = 1$ est asymptote verticale à la courbe de $f$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "$\\lim_{x \\to +\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Le calcul de la dérivée donne $f'(x) = \\frac{x(x^2 - 2)}{(x^2 - 1)^{3/2}}$, ce qui est du signe de $x(x^2 - 2)$ sur $]1, +\\infty[$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "Tableau de variations : décroissante sur $]1, \\sqrt{2}]$, puis croissante sur $[\\sqrt{2}, +\\infty[$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La fonction $f$ est continue et strictement croissante sur $[\\sqrt{2}, +\\infty[$, elle réalise donc une bijection vers l'intervalle $[2, +\\infty[$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T18:00:50"
+}

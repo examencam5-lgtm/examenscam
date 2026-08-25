@@ -1,0 +1,183 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "C:\\Users\\GENIUS ELECTRONICS\\examenscam\\data\\_tmp_entetes_upload\\entete_0a8cdf82e09145d3a80a81b294b77595.png",
+    "region": "",
+    "delegation": "",
+    "etablissement": "",
+    "annee_scolaire": "",
+    "classe": "",
+    "duree": "",
+    "coefficient": ""
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit n un entier naturel. On considère les entiers a = n^{3} - 2n^{2} + n et b = n^{2} - 1.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Montrer que a s'écrit sous la forme d'un produit de trois entiers consécutifs.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire que a est divisible par 6 pour tout entier naturel n.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les racines carrées de 8 dans l'anneau des entiers modulo 9, ou plus simplement factoriser b en produit de deux facteurs.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Exprimer le plus grand commun diviseur de a et b en fonction de n, après avoir décomposé a et b en facteurs irréductibles.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Résoudre dans l'ensemble des entiers relatifs l'équation diophantienne $7x - 4y = 3$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Trouver tous les couples de solutions $(x, y)$ tels que $x$ et $y$ soient compris entre 0 et 10.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application f qui à tout point M d'affixe z associe le point M' d'affixe $z' = \\frac{z - 2i}{z + 1}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Préciser l'ensemble de définition de l'application f.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point A' image du point A d'affixe $1 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer l'ensemble des points M dont l'image M' a pour affixe un nombre réel pur.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'ensemble des points M dont l'image M' a pour affixe un nombre réel.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que pour tout nombre complexe z différent de -1, on a l'égalité $|z' - 1| \\times |z + 1| = \\sqrt{5}$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.0,
+            "enonce_intro": "On considère la fonction f définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x + 1 - \\ln x$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les limites de la fonction f aux bornes de son ensemble de définition.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la dérivée f'(x) pour tout x de l'intervalle $]0, +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Etudier le signe de f'(x) puis dresser le tableau de variations complet de la fonction f.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Démontrer que la droite (D) d'équation $y = x + 1$ est asymptote oblique à la courbe représentative de f en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Préciser la position relative de la courbe de f et de la droite (D).",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Tracer la droite (D) et l'allure de la courbe représentative de f dans le repère.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "Soit la suite numérique $(u_n)$ définie par son premier terme $u_0 = 2$ et la relation de récurrence $u_{n+1} = \\frac{1}{2}u_n + 1$ pour tout entier naturel n.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les termes $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel n, on a $u_n > 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Etudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente et calculer sa limite.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole dirigée par M. Kamga souhaite répartir de manière équitable un stock de 312 sacs d'engrais et 216 sacs de semences entre plusieurs centres de distribution situés le long d'une route nationale. Pour sécuriser le convoi, la coopérative analyse un système de repérage par nombres complexes et une périodicité de livraison basée sur des congruences.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre maximal de centres de distribution que M. Kamga peut approvisionner sachant que chaque centre doit recevoir le même nombre de sacs d'engrais et le même nombre de sacs de semences, sans aucun reste.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Le premier camion part un jour noté $J_0$. Les livraisons successives dans la zone obéissent à un cycle de périodicité tel que le jour de la k-ième livraison vérifie une relation de congruence modulo 7. Déterminer le plus petit nombre de jours nécessaires pour que deux tournées initialement décalées de 3 jours coïncident.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Dans le plan complexe muni d'un repère orthonormé, les positions des entrepôts principaux sont reliées par des affixes z vérifiant l'équation complexe liée au dispositif de guidage. Calculer l'affixe du point d'intersection des axes de livraison sachant que l'impédance complexe du signal vérifie $z + 2i = i(z - 4)$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T07:03:49"
+}

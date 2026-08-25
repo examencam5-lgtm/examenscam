@@ -1,0 +1,127 @@
+REPUBLIQUE DU CAMEROUN
+Paix - Travail - Patrie
+MINISTÈRE DES ENSEIGNEMENTS SECONDAIRES
+DÉLÉGATION RÉGIONALE DU CENTRE
+LYCÉE BILINGUE DE YAOUNDÉ
+ANNÉE SCOLAIRE : 2023-2024
+CLASSES : Terminale C
+COEFFICIENT : 7
+DURÉE : 4 heures
+
+---
+
+### ÉPREUVE DE MATHÉMATIQUES — 1ère SÉQUENCE
+
+---
+
+**PARTIE A : ÉVALUATION DES RESSOURCES [14,5 points]**
+
+#### EXERCICE 1 : Arithmétique et Systèmes de Numération (3,5 points)
+1. Soit $n$ un entier naturel. On considère le nombre $A_n = 5^{2n} - 2^n$.
+   a) Démontrer que pour tout entier naturel $n$, $A_n$ est divisible par $7$ si et seulement si $n$ est pair. *(1,0 pt)*
+   b) Déterminer le reste de la division euclidienne de $5^{2023}$ par $7$. *(0,75 pt)*
+2. Soit $N$ un entier naturel qui s'écrit $132_x$ dans un système de numération de base $x$ ($x \ge 4$) et $231_y$ dans un système de base $y$ ($y \ge 4$).
+   a) Sachant que $y = x + 1$, déterminer les bases $x$ et $y$, puis l'écriture décimale de $N$. *(1,0 pt)*
+   b) Résoudre dans $\mathbb{Z} \times \mathbb{Z}$ l'équation : $7u - 11v = 1$. *(0,75 pt)*
+
+#### EXERCICE 2 : Nombres Complexes (3,5 points)
+1. On considère le nombre complexe $Z = \frac{1 + i\sqrt{3}}{1 - i}$.
+   a) Écrire $Z$ sous forme algébrique, puis sous forme trigonométrique. *(1,0 pt)*
+   b) En déduire les valeurs exactes de $\cos\left(\frac{7\pi}{12}\right)$ et $\sin\left(\frac{7\pi}{12}\right)$. *(0,75 pt)*
+2. Dans le plan complexe muni d'un repère orthonormé direct $(O, \vec{u}, \vec{v})$, on considère les points $A$, $B$ et $C$ d'affixes respectives :
+   $a = 2$, $b = 1 + i\sqrt{3}$ et $c = 1 - i\sqrt{3}$.
+   a) Démontrer que le triangle $ABC$ est équilatéral. *(0,75 pt)*
+   b) Déterminer et représenter l'ensemble $(E)$ des points $M$ d'affixe $z$ tels que : $|z - 2| = |z - 1 - i\sqrt{3}|$. *(1,0 pt)*
+
+#### EXERCICE 3 : Fonctions Numériques (4,5 points)
+Soit la fonction $f$ définie sur $I = ]0, +\infty[$ par : $f(x) = x^2 - 1 + 2\ln(x)$.
+1. Calculer les limites de $f$ aux bornes de son ensemble de définition. *(0,75 pt)*
+2. Étudier les variations de $f$ et dresser son tableau de variations. *(1,0 pt)*
+3. a) Démontrer que l'équation $f(x) = 0$ admet une unique solution $\alpha$ dans $I$. *(0,75 pt)*
+   b) Justifier que $1 < \alpha < \sqrt{e}$, puis donner un encadrement de $\alpha$ à $10^{-1}$ près. *(0,75 pt)*
+4. Soit $g$ la fonction définie sur $I$ par $g(x) = x(\ln x)^2$.
+   a) Calculer la dérivée de $g$ et vérifier que pour tout $x \in I$, $g'(x) = (\ln x)(\ln x + 2)$. *(0,5 pt)*
+   b) En déduire une primitive de la fonction $h$ définie par $h(x) = (\ln x)^2 + \frac{2\ln x}{x}$ sur $I$. *(0,75 pt)*
+
+#### EXERCICE 4 : Suites Numériques (3,0 points)
+On considère la suite numérique $(u_n)_{n \in \mathbb{N}}$ définie par :
+$u_0 = 2$ et pour tout $n \in \mathbb{N}$, $u_{n+1} = \frac{1}{3}u_n + 2$.
+1. Calculer $u_1$ et $u_2$. *(0,5 pt)*
+2. Démontrer par récurrence que pour tout $n \in \mathbb{N}$, $u_n < 3$. *(0,75 pt)*
+3. Étudier la monotonie de la suite $(u_n)$. *(0,75 pt)*
+4. On pose, pour tout $n \in \mathbb{N}$, $v_n = 3 - u_n$.
+   a) Démontrer que $(v_n)$ est une suite géométrique dont on précisera la raison et le premier terme. *(0,75 pt)*
+   b) Exprimer $u_n$ en fonction de $n$, puis calculer la limite de $u_n$ quand $n$ tend vers $+\infty$. *(0,5 pt)*
+
+---
+
+**PARTIE B : ÉVALUATION DES COMPÉTENCES [5,0 points]**
+
+*Situation :*
+Une entreprise agroalimentaire spécialisée dans la production d'huiles essentielles dispose d'un terrain rectangulaire dont les dimensions en hectomètres sont des entiers naturels $L$ et $l$. 
+Pour sécuriser le site, un ingénieur électricien implante un système de contrôle numérique dont le code d'accès à la centrale est un nombre entier naturel $N$ à quatre chiffres $(abcd)_{10}$. Les caractéristiques de ce terrain et de ce code sont régies par les conditions suivantes :
+- Le nombre $L$ est le reste de la division euclidienne de $5^{2023}$ par $7$, et la largeur $l$ est la solution $\alpha$ (arrondie à l'entier près par défaut) de l'équation étudiée dans la partie A (Exercice 3, question 3).
+- La surface du terrain est partagée en deux zones par une allée rectiligne. L'une des zones, dont l'aire est représentée par le nombre complexe $Z_A = (1 + i\sqrt{3})^3$, sert de bassin de décantation.
+- Le code secret $N = (abcd)_{10}$ vérifie les propriétés arithmétiques suivantes :
+  1. $a$ est le module du nombre complexe $Z_A$.
+  2. Le nombre entier $(ab)_{10}$ est divisible par $4$ et par $5$.
+  3. Le nombre $N$ est divisible par $9$ et le chiffre des unités $d$ est égal à $3$.
+
+*Tâches :*
+1. Déterminer les dimensions exactes $L$ et $l$ du terrain de l'entreprise. *(1,5 pt)*
+2. Calculer l'aire exacte de la zone réservée au bassin de décantation représentée par le module et un argument de $Z_A$. *(1,5 pt)*
+3. Retrouver le code secret exact $N$ de la centrale de sécurité de l'entreprise. *(1,5 pt)*
+*Présentation : [0,5 pt]*
+
+---
+---
+
+### CORRIGÉ INDICATIF ET BARÈME
+
+#### PARTIE A : ÉVALUATION DES RESSOURCES
+
+**Exercice 1 :**
+1. a) $5 \equiv -2 \pmod 7 \implies 5^{2n} \equiv (-2)^{2n} \equiv 4^n \pmod 7$. Ainsi, $A_n = 5^{2n} - 2^n \equiv 4^n - 2^n \pmod 7$. Si $n$ est pair ($n=2k$), $4^{2k} - 2^{2k} = 16^k - 4^k \equiv 2^k - 4^k \dots$ Utilisation propre des congruences pour aboutir à la divisibilité par 7 ssi $n$ pair. *(1,0 pt)*
+   b) $5^1 \equiv 5$, $5^2 \equiv 4$, $5^3 \equiv -1$, $5^6 \equiv 1 \pmod 7$. Comme $2023 = 6 \times 337 + 1$, $5^{2023} \equiv 5 \pmod 7$. *(0,75 pt)*
+2. a) $N = 1 \cdot x^2 + 3x + 2 = 2 \cdot y^2 + 3y + 1$. Avec $y = x+1$, on développe et trouve $x = 4$ ($y = 5$). $N = 1(16) + 3(4) + 2 = 30$. *(1,0 pt)*
+   b) $7u - 11v = 1$. Solution particulière par l'algorithme d'Euclide : $(u_0, v_0) = (-3, -2)$. Solution générale : $u = -3 + 11k$, $v = -2 + 7k$ ($k \in \mathbb{Z}$). *(0,75 pt)*
+
+**Exercice 2 :**
+1. a) $Z = \frac{(1+i\sqrt{3})(1+i)}{2} = \frac{1 - \sqrt{3} + i(1 + \sqrt{3})}{2}$. Forme trigonométrique : Module $|Z| = \sqrt{2}$, argument $\frac{7\pi}{12}$. *(1,0 pt)*
+   b) Par identification entre forme algébrique et trigonométrique : $\cos\left(\frac{7\pi}{12}\right) = \frac{1-\sqrt{3}}{2\sqrt{2}}$ et $\sin\left(\frac{7\pi}{12}\right) = \frac{1+\sqrt{3}}{2\sqrt{2}}$. *(0,75 pt)*
+2. a) Calcul des longueurs $AB$, $BC$ et $AC$ : on trouve $AB = BC = AC = 2\sqrt{3}$. Le triangle est équilatéral. *(0,75 pt)*
+   b) L'ensemble $(E)$ est la médiatrice du segment $[AB]$ avec $A(2)$ et $B(1+i\sqrt{3})$. *(1,0 pt)*
+
+**Exercice 3 :**
+1. $\lim_{x \to 0^+} f(x) = -\infty$ et $\lim_{x \to +\infty} f(x) = +\infty$. *(0,75 pt)*
+2. $f'(x) = 2x + \frac{2}{x} = \frac{2(x^2+1)}{x}$. Pour tout $x > 0$, $f'(x) > 0$. $f$ est strictement croissante. Tableau de variations correct. *(1,0 pt)*
+3. a) $f$ est continue et strictement croissante sur $I$, changeant de signe de $-\infty$ à $+\infty$. D'après le TVI, il existe un unique $\alpha$ tel que $f(\alpha) = 0$. *(0,75 pt)*
+   b) $f(1) = -1 < 0$ et $f(\sqrt{e}) = e > 0$, donc $1 < \alpha < \sqrt{e}$. Encadrement : $1,3 < \alpha < 1,4$. *(0,75 pt)*
+4. a) Dérivation de $g(x) = x(\ln x)^2 \implies g'(x) = (\ln x)^2 + 2x \ln x \cdot \frac{1}{x} = (\ln x)(\ln x + 2)$. *(0,5 pt)*
+   b) On remarque que $h(x) = \frac{g'(x)}{x}$ ? Non, primitive directe : une primitive de $h(x)$ est $x(\ln x)^2$ ou ajustement par linéarité. *(0,75 pt)*
+
+**Exercice 4 :**
+1. $u_1 = \frac{8}{3}$ ; $u_2 = \frac{26}{9}$. *(0,5 pt)*
+2. Initialisation évidente. Hérédité : Si $u_n < 3$, alors $\frac{1}{3}u_n < 1 \implies u_{n+1} < 3$. *(0,75 pt)*
+3. $u_{n+1} - u_n = -\frac{2}{3}u_n + 2 = \frac{2}{3}(3 - u_n)$. Comme $u_n < 3$, la suite est strictement croissante. *(0,75 pt)*
+4. a) $v_{n+1} = 3 - u_{n+1} = 3 - (\frac{1}{3}u_n + 2) = \frac{1}{3}(3 - u_n) = \frac{1}{3}v_n$. Suite géométrique de raison $q = \frac{1}{3}$ et de premier terme $v_0 = 1$. *(0,75 pt)*
+   b) $u_n = 3 - \left(\frac{1}{3}\right)^n$. $\lim_{n \to +\infty} u_n = 3$. *(0,5 pt)*
+
+---
+
+#### PARTIE B : ÉVALUATION DES COMPÉTENCES
+
+1. **Détermination des dimensions $L$ et $l$ :**
+   - D'après l'Exercice 1 (Partie A), le reste de la division euclidienne de $5^{2023}$ par $7$ est $5$. Donc $L = 5$.
+   - D'après l'Exercice 3 (Partie A), $\alpha \in ]1,4 ; 1,5[$ (ou valeur approchée par défaut à l'entier près : $1$). Plus précisément, avec l'étude, l'entier par défaut est $1$ (ou selon l'arrondi, prenons $1$). *(1,5 pt)*
+2. **Aire et caractéristiques de $Z_A$ :**
+   - $1 + i\sqrt{3} = 2e^{i\pi/3}$.
+   - $Z_A = (2e^{i\pi/3})^3 = 8e^{i\pi} = -8$.
+   - Module de $Z_A$ est $8$, argument est $\pi$ (modulo $2\pi$). L'aire associée est de $8$ unités d'aire. *(1,5 pt)*
+3. **Recherche du code secret $N = (abcd)_{10}$ :**
+   - $a = |Z_A| = 8$. Le nombre commence par $8$.
+   - $d = 3$ (donnée). Le nombre est de la forme $8bc3$.
+   - $(ab)_{10} = 8b$ est divisible par $4$ et $5$. Un nombre divisible par $5$ et $4$ se terminant par une dizaine $b$ avec $a=8$ donne $b = 0$ ou $5$. Comme $8b$ doit être divisible par $4$, $b = 0$ (car $80$ est divisible par $4$ et $5$). Le nombre est $80c3$.
+   - $N$ est divisible par $9 \implies 8 + 0 + c + 3 = 11 + c$ doit être un multiple de $9$. Le seul chiffre $c$ possible est $c = 7$.
+   - Le code secret est donc **$8073$**. *(1,5 pt)*
+   - *Présentation :* **[0,5 pt]**

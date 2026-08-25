@@ -1,0 +1,155 @@
+{
+  "metadonnees": {
+    "region": "extreme nord",
+    "delegation": "Délégation Régionale de extreme nord",
+    "etablissement": "lycee classique de maroua",
+    "annee_scolaire": "2026-2027",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.75,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation (E) d'inconnue $z \\in \\mathbb{C}$ : $z^{2} - (3 + i)z + 2 + 3i = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le carré du nombre complexe $1 - i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire les racines carrées du nombre complexe $−2 + 2i$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Vérifier que le discriminant de l'équation (E) est $\\Delta = -2 + 2i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Résoudre dans l'ensemble $\\mathbb{C}$ l'équation (E).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soient $z_{1}$ et $z_{2}$ les solutions de (E) telles que la partie imaginaire de $z_{1}$ soit positive. Préciser la forme algébrique de $z_{1}$ et de $z_{2}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer le module et un argument de chacun des nombres complexes $z_{1}$ et $z_{2}$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.25,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $I = [0, +\\infty[$ par $f(x) = x\\sqrt{x} - 3x + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Justifier que la fonction $f$ est dérivable sur l'intervalle ouvert $]0, +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que pour tout $x$ de $]0, +\\infty[$, on a $f^{\\prime}(x) = \\frac{3}{2}\\sqrt{x} - 3$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le signe de $f^{\\prime}(x)$ sur $I$ et déterminer le sens de variation de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Calculer la valeur exacte de $f(4)$ et dresser le tableau de variations complet de $f$ sur $I$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet exactement deux solutions dans l'intervalle $I$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Donner un encadrement d'amplitude $10^{-1}$ de la plus grande solution.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'entier naturel $n$ et l'expression $A_{n} = 2^{2n+1} + 3^{n+1}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les restes de la division euclidienne de $2^{n}$ par 5 pour les valeurs de $n$ de 0 à 3.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Établir que pour tout entier naturel $n$, on a $2^{4n} \\equiv 1$ (mod 5).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $2^{2n+1}$ par 5.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer de même le reste de la division euclidienne de $3^{n+1}$ par 5 selon les valeurs de $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "En déduire que pour tout entier naturel $n$, le nombre $A_{n}$ est divisible par 5.",
+                "bareme": 1.25
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.75,
+        "exercices": null,
+        "situation_contexte": "Un artisan ébéniste souhaite concevoir une table design dont le plateau supérieur a une forme géométrique liée à un nombre complexe $z_{0}$. Pour valider les dimensions de son prototype, il utilise un nombre complexe $z_{0}$ vérifiant $z_{0}^{2} - 6z_{0} + 25 = 0$. Par ailleurs, pour fabriquer les pieds de la table, il achète un lot de barres métalliques dont le nombre total $N$ est un entier naturel tel que le reste de la division euclidienne de $N$ par 17 est 4, et le reste de sa division euclidienne par 13 est 7. Enfin, le coût total en milliers de francs CFA de la matière première est lié à la plus grande solution de l'équation étudiée dans les ressources.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Résoudre dans l'ensemble $\\mathbb{C}$ l'équation caractérisant le plateau de la table, puis déterminer le module de la solution dont la partie imaginaire est strictement positive.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le nombre minimal de barres métalliques $N$ que l'ébéniste doit commander sachant que ce nombre est compris entre 100 et 300.",
+            "bareme": 1.75
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le montant exact en francs CFA de la matière première si le coefficient multiplicateur est basé sur la solution trouvée à l'exercice 2 des ressources.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T14:42:18"
+}

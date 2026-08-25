@@ -1,0 +1,174 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "Délégation Régionale de Extrême-Nord",
+    "etablissement": "Établissement",
+    "annee_scolaire": "2025-2026",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "On considère l'équation $(E) : z^3 - (3+2i)z^2 + (1+4i)z - 2 + 2i = 0$. Montrer que $i$ est une solution de $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer les nombres complexes $a$ et $b$ tels que pour tout nombre complexe $z$, on ait : $z^3 - (3+2i)z^2 + (1+4i)z - 2 + 2i = (z - i)(z^2 + az + b)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans l'ensemble $\\mathbb{C}$ des nombres complexes l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Soient $A$, $B$ et $C$ les points d'affixes respectives $z_A = i$, $z_B = 1 + i$ et $z_C = 2 - i$. Calculer le rapport $\\frac{z_C - z_A}{z_B - z_A}$ et en déduire la nature du triangle $ABC$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Déterminer l'affixe du centre de gravité du triangle $ABC$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère l'arithmétique dans l'ensemble $\\mathbb{Z}$ des entiers relatifs.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Soit $n$ un entier naturel. Démontrer par récurrence que $5^n - 1$ est un multiple de $4$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $5^n$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "On considère l'équation diophantienne $(E_0) : 17x - 11y = 3$, où $x$ et $y$ sont des entiers relatifs.\n a) Vérifier que le couple $(4, 5)$ est une solution particulière de $(E_0)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3. b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E_0)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer le plus petit entier naturel $n$ tel que $17^n \\equiv 1 \\pmod{11}$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 6.0,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur l'intervalle $I = ]0, +\\infty[$ par $f(x) = x - 1 + \\frac{1 + \\ln x}{x}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer la limite de $f$ en $0$ et interpréter graphiquement le résultat.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que la droite $(\\Delta)$ d'équation $y = x - 1$ est asymptote oblique à la courbe représentative $(\\mathcal{C}_f)$ de $f$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Etudier la position relative de $(\\mathcal{C}_f)$ et de $(\\Delta)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Montrer que pour tout $x \\in ]0, +\\infty[$, on a $f'(x) = \\frac{x^2 - 1 - \\ln x}{x^2}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "6.",
+                "texte": "En posant $g(x) = x^2 - 1 - \\ln x$, dresser le tableau de variations de $g$ sur $I$, en déduire le signe de $g(x)$ sur $I$, puis dresser le tableau de variations complet de $f$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Une coopérative agricole du Cameroun souhaite délimiter un champ rectangulaire et installer un système d'irrigation automatisé. Le périmètre du champ est lié aux solutions d'une équation complexe et son aire est optimisée à l'aide de l'étude d'une fonction numérique. De plus, la gestion du stock d'engrais obéit à des contraintes arithmétiques.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Le nombre de sacs d'engrais $N$ commandés vérifie le système de congruences : $\\begin{cases} N \\equiv 3 \\pmod{5} \\\\ N \\equiv 2 \\pmod{7} \\end{cases}$. Déterminer le nombre de sacs sachant qu'il est compris entre $100$ et $150$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Les dimensions $x$ et $y$ du champ (en dizaines de mètres) sont les solutions non nulles de l'équation $z^2 - (a+3)z + 2a = 0$ où $a = 1 + i$. Calculer l'aire maximale que peut atteindre ce champ en utilisant une modélisation par une fonction adéquate.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Pour clôturer le champ, un paysan achète du grillage dont le coût total en milliers de francs CFA est donné par la suite $(u_n)$ définie par $u_0 = 2$ et $u_{n+1} = \\frac{1}{2}u_n + 1$. Calculer le coût pour $n = 5$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On remplace $z$ par $i$ dans $(E) : i^3 - (3+2i)i^2 + (1+4i)i - 2 + 2i = -i + (3+2i) + i - 4 - 2 + 2i = 0$. Donc $i$ est solution."
+          },
+          {
+            "numero": "2.",
+            "texte": "Par identification, on trouve $a = -3-i$ et $b = 2-2i$."
+          },
+          {
+            "numero": "3.",
+            "texte": "L'équation se factorise en $(z-i)(z^2 - (3+i)z + 2 - 2i) = 0$. Les solutions sont $z_1 = i$, $z_2 = 1+i$, $z_3 = 2-i$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Le rapport vaut $\\frac{(2-i)-i}{(1+i)-i} = \\frac{2-2i}{1} = 2-2i$. Le triangle est rectangle isocèle en $A$."
+          },
+          {
+            "numero": "5.",
+            "texte": "L'affixe du centre de gravité est $z_G = \\frac{z_A + z_B + z_C}{3} = \\frac{i + 1+i + 2-i}{3} = 1 + \\frac{1}{3}i$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T15:21:44"
+}

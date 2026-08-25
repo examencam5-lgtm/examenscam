@@ -1,0 +1,188 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee de dogba",
+    "annee_scolaire": "2026-2027",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.5,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ du plan dans lui-même qui, à tout point $M$ d'affixe $z$, associe le point $M'$ d'affixe $z'$ définie par $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $z_A = 1 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que $f$ admet un unique point invariant $\\Omega$ dont on précisera l'affixe $\\omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Préciser la nature géométrique et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $B$ le point d'affixe $z_B = 3$. Calculer l'affixe du vecteur $\\overrightarrow{MM'}$ en fonction de $z$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'ensemble $(E)$ des points $M$ du plan tels que le triangle $\\Omega M M'$ soit rectangle en $\\Omega$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $z_n$ la suite de nombres complexes définie par $z_0 = 0$ et pour tout entier naturel $n$, $z_{n+1} = i z_n + 2 - i$. Exprimer $z_n$ en fonction de $n$.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x - 2 + \\frac{1 + \\ln x}{x}$. On note $(C)$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de la fonction $f$ en $0$. Interpréter graphiquement ce résultat.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout $x \\in ]0, +\\infty[$, $f'(x) = \\frac{x^2 - 1 - \\ln x}{x^2}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "On pose $g(x) = x^2 - 1 - \\ln x$ pour $x \\in ]0, +\\infty[$. Étudier les variations de la fonction $g$ et dresser son tableau de variations.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.c)",
+                "texte": "En déduire le signe de $g(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Montrer que la droite $(\\Delta)$ d'équation $y = x - 2$ est asymptote oblique à la courbe $(C)$ en $+\\infty$. Préciser la position relative de $(C)$ et $(\\Delta)$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "L'espace vectoriel $\\mathbb{R}^3$ est muni de sa base canonique $\\mathcal{B} = (\\vec{i}, \\vec{j}, \\vec{k})$. Soit $f$ l'endomorphisme de $\\mathbb{R}^3$ dont la matrice dans la base $\\mathcal{B}$ est $A = \\begin{pmatrix} 2 & -1 & 1 \\ 0 & 1 & 0 \\ -1 & 1 & 2 \\end{pmatrix}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le noyau $\\ker(f)$ de l'endomorphisme $f$ et en donner une base.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la dimension de l'image $\\operatorname{Im}(f)$ de $f$ en utilisant le théorème du rang.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Déterminer une base de l'image $\\operatorname{Im}(f)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la matrice $A^2 - 3A + 2I_3$, où $I_3$ est la matrice identité d'ordre $3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que l'endomorphisme $f$ est bijectif et exprimer son application réciproque $f^{-1}$ comme combinaison linéaire de $f$ et de l'identité.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 5.0,
+        "situation_contexte": "M. Tientcheu, chef d'entreprise à Douala, souhaite optimiser la production de deux types de compléments alimentaires naturels, notés $P_1$ et $P_2$, conditionnés en tonnes. Le bénéfice mensuel (en millions de francs CFA) réalisé par l'entreprise est modélisé par une fonction de deux variables ou par l'étude de suites et de fonctions d'une variable. Pour moderniser ses unités de production, il investit dans un système de dosage automatique programmé. Les techniciens constatent que la quantité d'intrants chimiques $u_n$ (exprimée en litres) nécessaire au fonctionnement du mois $n$ est régie par la relation de récurrence $u_{n+1} = \\frac{1}{3}u_n + 2$, avec $u_0 = 3$. Par ailleurs, le coût global de production de $x$ tonnes de compléments $P_1$ est donné par $C(x) = x^2 - 4x + 4 + 3\\ln(x+1)$ pour $x \\in [0, 4]$. Enfin, pour transporter ses produits vers Yaoundé et Bafoussam, un livreur doit emprunter un réseau routier modélisé par un graphe connexe pondéré par les distances en kilomètres entre différentes villes.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la limite de la suite des quantités d'intrants $(u_n)$ lorsque le nombre de mois $n$ tend vers $+\\infty$, afin d'aider M. Tientcheu à prévoir le seuil de consommation en régime permanent.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer la production $x_0$ de compléments $P_1$ pour laquelle le coût marginal de production est minimal, sachant que le coût marginal est représenté par la dérivée de la fonction de coût $C(x)$ sur $[0, 4]$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer le chemin le plus court reliant la ville de départ $A$ à la ville d'arrivée $G$ en appliquant l'algorithme de Dijkstra sur le réseau routier dont les distances sont données par la matrice des arêtes du graphe de livraison.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "Pour $z_A = 1 + i$, on a $z'_A = i(1 + i) + 2 - i = i + i^2 + 2 - i = i - 1 + 2 - i = 1$. L'affixe de $A'$ est $1$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "Un point $M$ d'affixe $z$ est invariant par $f$ si et seulement si $z = i z + 2 - i$, soit $z(1 - i) = 2 - i$. En multipliant par le conjugué $1 + i$, on obtient $z = \\frac{(2 - i)(1 + i)}{2} = \\frac{2 + 2i - i - i^2}{2} = \\frac{3 + i}{2} = \\frac{3}{2} + \\frac{1}{2}i$. Le point invariant unique est $\\Omega$ d'affixe $\\omega = \\frac{3}{2} + \\frac{1}{2}i$."
+          },
+          {
+            "numero": "1.c)",
+            "texte": "L'écriture complexe de $f$ est de la forme $z' = az + b$ avec $a = i = e^{i\\frac{\\pi}{2}}$. Comme $a \\neq 1$, $f$ est une similitude plane directe de rapport $|i| = 1$ (donc une rotation), d'angle $\\frac{\\pi}{2}$ et de centre $\\Omega$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "L'affixe du vecteur $\\overrightarrow{MM'}$ est $z' - z = i z + 2 - i - z = (i - 1)z + 2 - i$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "Le triangle $\\Omega M M'$ est rectangle en $\\Omega$ si et seulement si $\\frac{z' - \\omega}{z - \\omega} = i k$ avec $k \\in \\mathbb{R}^*$. Or $z' - \\omega = i(z - \\omega)$. Ainsi, $\\frac{z' - \\omega}{z - \\omega} = i$, ce qui signifie que le triangle est toujours rectangle en $\\Omega$ pour tout $M \\neq \\Omega$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La suite $(z_n)$ est une suite arithmético-géométrique. En posant $z_n = v_n + \\omega$, on obtient $v_{n+1} = i v_n$. Ainsi $v_n = i^n v_0 = i^n (0 - (\\frac{3}{2} + \\frac{1}{2}i)) = -i^n(\\frac{3}{2} + \\frac{1}{2}i)$. D'où $z_n = -i^n(\\frac{3}{2} + \\frac{1}{2}i) + \\frac{3}{2} + \\frac{1}{2}i$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T18:11:51"
+}

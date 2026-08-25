@@ -1,0 +1,162 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee de bogo",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.8,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]0, +\\infty[$ par $f(x) = x - 2 + \\ln x - \\frac{\\ln x}{x}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Montrer que la droite $(\\Delta)$ d'équation $y = x - 2$ est asymptote oblique à la courbe de $f$ en $+\\infty$, et préciser la position relative de la courbe par rapport à $(\\Delta)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$ et vérifier que $f'(x) = \\frac{(x-1)(x+1+\\ln x)}{x^2}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire le sens de variation de la fonction $g$ définie par $g(x) = x + 1 + \\ln x$ sur $]0, +\\infty[$, puis montrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ sur $]0, +\\infty[$ avec $0.2 < \\alpha < 0.3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.c)",
+                "texte": "Dresser le tableau de variations complet de la fonction $f$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": null,
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'ensemble des entiers naturels $n$ tels que $2^{n} \\equiv 1$ (mod 7).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire le reste de la division euclidienne de $2^{2026}$ par $7$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E) : 11x - 7y = 4$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer les solutions de $(E)$ pour lesquelles le couple $(x, y)$ vérifie $x^{2} + y^{2} < 20$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $s$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Préciser la nature et les éléments caractéristiques de la transformation $s$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point invariant par $s$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer l'ensemble $(\\Gamma)$ des points $M$ d'affixe $z$ tels que le nombre complexe $Z = \\frac{z - 2 + i}{z - i}$ soit un nombre réel non nul.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Donner la nature géométrique de l'ensemble $(\\Gamma)$ ainsi que ses éléments caractéristiques.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 2.8,
+            "enonce_intro": "Soit $(u_{n})$ la suite numérique définie par $u_{0} = 3$ et pour tout $n \\in \\mathbb{N}$, $u_{n+1} = \\frac{2u_{n} + 3}{u_{n} + 4}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $u_{n} > 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Étudier le sens de variation de la suite $(u_{n})$.",
+                "bareme": 0.9
+              },
+              {
+                "numero": "1.c)",
+                "texte": "En déduire que la suite $(u_{n})$ est convergente et calculer sa limite.",
+                "bareme": 0.9
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.7,
+        "exercices": null,
+        "situation_contexte": "M. Tientcheu, un entrepreneur camerounais, souhaite investir dans la production à grande échelle de compléments alimentaires naturels. Pour le conditionnement, son entreprise utilise des boîtes dont le volume total est modélisé par une fonction de coût. Le bénéfice mensuel réalisé par l'entreprise, exprimé en millions de francs CFA en fonction de la quantité $x$ de tonnes produites (avec $x \\in [1, 5]$), est donné par la fonction $B(x) = x^{2} \\ln x - 3x^{2} + 4x$. Pour assurer la pérennité de son usine, il doit également stocker des additifs chimiques dont les quantités suivent une progression arithmétique rigoureuse régie par des contraintes de divisibilité modulo $5$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la production $x$ en tonnes pour laquelle le bénéfice mensuel $B(x)$ de l'entreprise est maximal, sachant que la dérivée du bénéfice s'exprime à l'aide de la fonction d'étude des ressources.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer la valeur exacte du bénéfice maximal réalisable par l'entreprise sous cette condition de production.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Vérifier si un seuil de production fixé à $x \\equiv 3$ (mod 5) tonnes par mois respecte la rentabilité minimale exigée par les actionnaires, sachant que le seuil de rentabilité impose $x^{2} - 2 \\equiv 0$ (mod 5).",
+            "bareme": 1.7
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T14:55:42"
+}

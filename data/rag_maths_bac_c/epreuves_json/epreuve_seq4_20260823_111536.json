@@ -1,0 +1,154 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\e2310f0234e5454dbb22db929e4decf9_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'ensemble des entiers naturels $n$ et les entiers $a = n^{2} + 3$ et $b = n + 1$. On pose $d = \\text{pgcd}(a, b)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Démontrer que $d$ divise $2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire les valeurs possibles de $d$ selon la parité de $n$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les valeurs de l'entier $n$ pour lesquelles $a$ est divisible par $b$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $5x + 7y = 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $x$ et $y$ des entiers relatifs tels que $5x + 7y = 1$. Démontrer que $x \\equiv 3$ (mod 7).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déduire de ce qui précède l'ensemble des solutions de l'équation $5x + 7y = 1$ dans $\\mathbb{Z} \\times \\mathbb{Z}$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère la suite de nombres complexes $(z_n)$ définie par $z_0 = 1$ et pour tout entier naturel $n$, $z_{n+1} = \\frac{1+i\\sqrt{3}}{2} z_n$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Mettre le nombre complexe $\\frac{1+i\\sqrt{3}}{2}$ sous forme trigonométrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Exprimer le module et un argument de $z_n$ en fonction de $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer $z_1$, $z_2$ et $z_3$ sous forme algébrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'ensemble des valeurs de $n$ pour lesquelles $z_n$ est un nombre réel.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $A_n$ le point d'affixe $z_n$. Calculer la distance $A_n A_{n+1}$ en fonction de $n$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer la longueur de la ligne brisée $A_0 A_1 A_2 \\dots A_n$ en fonction de $n$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]0, +\\infty[$ par $f(x) = x - 1 - \\ln x$. On note $(C)$ sa courbe représentative dans un repère orthonormé $(O, I, J)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$. Interpréter graphiquement ce résultat.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Démontrer que l'équation $f(x) = 0$ admet exactement deux solutions dans $]0, +\\infty[$, notées $\\alpha$ et $\\beta$ avec $\\alpha < 1 < \\beta$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer le signe de $f(x)$ suivant les valeurs de $x$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole de la région de l'Ouest souhaite aménager un terrain rectangulaire pour la culture d'une nouvelle variété de maïs. Le périmètre de ce terrain est représenté dans le plan complexe par un ensemble de points liés à un paramètre réel $m$. Le bénéfice journalier $B(x)$ en milliers de francs CFA réalisé par la coopérative est modélisé par une fonction dont la dérivée seconde permet d'optimiser le rendement en fonction de la quantité $x$ d'engrais utilisée.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions du terrain en résolvant l'équation complexe liée aux affixes des sommets du périmètre.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Étudier les variations de la fonction de bénéfice $B(x)$ afin de déterminer la quantité d'engrais qui maximise ce bénéfice.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le montant maximal du bénéfice journalier que la coopérative peut espérer réaliser.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T11:15:36"
+}

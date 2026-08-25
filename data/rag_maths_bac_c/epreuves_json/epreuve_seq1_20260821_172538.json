@@ -1,0 +1,201 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee classique de maroua",
+    "annee_scolaire": "2026-2027",
+    "duree": "4",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.5,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Cet exercice comporte deux parties indépendantes A et B relatives à l'arithmétique.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Montrer que pour tout entier naturel $n$, le nombre $5^{2n} - 1$ est divisible par $8$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire que pour tout entier naturel $n$, $5^{2n} + 3$ est divisible par $4$ mais non par $8$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z}^2$ l'équation $11x - 7y = 4$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer les solutions $(x, y)$ de cette équation telles que $x^2 + y^2 < 50$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans l'ensemble $\\mathbb{C}$ des nombres complexes l'équation $z^2 - 4z + 13 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "On considère le nombre complexe $Z = \\frac{2 + 3i}{1 - i}$. Mettre $Z$ sous forme algébrique, puis sous forme trigonométrique.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $a$ un nombre complexe. Démontrer que si $|a| = 1$ et $a \\neq 1$, alors le nombre $\\frac{a + 1}{a - 1}$ est un nombre imaginaire pur.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Interpréter géométriquement ce résultat en considérant les points d'affixes $1$, $-1$ et $a$.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère la fonction numérique $f$ définie sur $]-1, +\\infty[$ par $f(x) = \\frac{x^2 + 3x + 3}{x + 1}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer la limite de $f$ en $-1$ par valeurs supérieures et interpréter graphiquement le résultat.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer la limite de $f$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que la droite $(\\Delta)$ d'équation $y = x + 2$ est asymptote oblique à la courbe représentative de $f$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Calculer la dérivée $f'(x)$ et étudier son signe pour tout $x \\in ]-1, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 5.0,
+        "situation_contexte": "Une coopérative agricole dispose d'un stock de $N$ sacs d'engrais, avec $N$ compris entre $2000$ et $2500$. Pour le transport vers les champs, un gestionnaire remarque que si l'on groupe les sacs par camions de $17$ unités, il reste $5$ sacs. Si l'on forme des groupes de $13$ unités, il reste $8$ sacs. Par ailleurs, pour délimiter une parcelle expérimentale de forme géométrique, un technicien utilise un système de repérage complexe où les positions de deux bornes principales $A$ et $B$ sont les solutions dans $\\mathbb{C}$ de l'équation $z^2 - 6z + 34 = 0$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre exact $N$ de sacs d'engrais dont dispose la coopérative.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer les affixes exactes des bornes $A$ et $B$, puis calculer la distance entre ces deux bornes dans le plan.",
+            "bareme": 1.75
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le produit scalaire des affixes de $A$ et $B$ considérées comme des vecteurs du plan muni du repère orthonormé, et conclure sur leur orthogonalité.",
+            "bareme": 1.75
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "On a $5^{2n} = (5^2)^n = 25^n$. Or $25 \\equiv 1 \\pmod 8$, donc $25^n \\equiv 1^n \\pmod 8$. Ainsi, $5^{2n} - 1 \\equiv 0 \\pmod 8$, ce qui prouve que $5^{2n} - 1$ est divisible par $8$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "On écrit $5^{2n} + 3 = (5^{2n} - 1) + 4$. D'après la question précédente, $5^{2n} - 1 = 8k$ avec $k \\in \\mathbb{N}$. Donc $5^{2n} + 3 = 8k + 4 = 4(2k + 1)$. Le nombre est bien divisible par $4$ mais non par $8$ car $2k+1$ est impair."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "L'équation $11x - 7y = 4$ admet le couple particulier $(1, 1)$. La solution générale est $x = 7k + 1$ et $y = 11k + 1$ avec $k \\in \\mathbb{Z}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "En remplaçant, on cherche $k$ tel que $(7k+1)^2 + (11k+1)^2 < 50$, soit $170k^2 + 36k - 48 < 0$. Par encadrement, la seule valeur entière possible est $k = 0$, d'où le couple unique $(1, 1)$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de l'équation est $\\Delta = 16 - 52 = -36 = (6i)^2$. Les solutions sont $z_1 = \\frac{4 - 6i}{2} = 2 - 3i$ et $z_2 = 2 + 3i$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $Z = \\frac{(2 + 3i)(1 + i)}{1 - i} = \\frac{-1 + 5i}{2} = -\\frac{1}{2} + \\frac{5}{2}i$. Le module est $|Z| = \\frac{\\sqrt{26}}{2}$."
+          },
+          {
+            "numero": "3.a)",
+            "texte": "Soit $a = e^{i\\theta}$. On calcule $\\frac{e^{i\\theta} + 1}{e^{i\\theta} - 1} = \\frac{e^{i\\theta/2}(e^{i\\theta/2} + e^{-i\\theta/2})}{e^{i\\theta/2}(e^{i\\theta/2} - e^{-i\\theta/2})} = \\frac{2\\cos(\\theta/2)}{2i\\sin(\\theta/2)} = -i \\cot(\\theta/2)$, qui est bien un nombre imaginaire pur."
+          },
+          {
+            "numero": "3.b)",
+            "texte": "Géométriquement, cela signifie que les droites $(MA)$ et $(MB)$ sont perpendiculaires, où $M$ est le point d'affixe $a$ sur le cercle trigonométrique, et $A$ et $B$ d'affixes $1$ et $-1$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "$\\lim_{x \\to -1^+} f(x) = +\\infty$ car le numérateur tend vers $1$ et le dénominateur tend vers $0$ par valeurs positives. La droite d'équation $x = -1$ est asymptote verticale."
+          },
+          {
+            "numero": "2.",
+            "texte": "$\\lim_{x \\to +\\infty} f(x) = +\\infty$ par quotient des termes de plus haut degré."
+          },
+          {
+            "numero": "3.",
+            "texte": "On écrit $f(x) = \\frac{(x+1)(x+2) + 1}{x+1} = x + 2 + \\frac{1}{x+1}$. Comme $\\lim_{x \\to +\\infty} \\frac{1}{x+1} = 0$, la droite $(\\Delta): y = x + 2$ est asymptote oblique en $+\\infty$."
+          },
+          {
+            "numero": "4.",
+            "texte": "La dérivée vaut $f'(x) = \\frac{(2x+3)(x+1) - (x^2+3x+3)}{(x+1)^2} = \\frac{x^2 + 2x}{(x+1)^2} = \\frac{x(x+2)}{(x+1)^2}$. Sur $]-1, +\\infty[$, $x+2 > 0$ et $(x+1)^2 > 0$, donc $f'(x)$ est du signe de $x$."
+          },
+          {
+            "numero": "5.",
+            "texte": "La fonction est décroissante sur $]-1, 0]$ et croissante sur $[0, +\\infty[$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T17:25:38"
+}

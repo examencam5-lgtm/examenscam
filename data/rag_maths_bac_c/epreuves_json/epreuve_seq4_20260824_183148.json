@@ -1,0 +1,171 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\2eb81ff1dec9494dafab88354913f77f_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, u, v)$. On considère le nombre complexe $z_0 = 1 + i\\sqrt{3}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le module et un argument de $z_0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire $z_0$ sous forme exponentielle.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer l'affixe $z_1$ de l'image du point $M_0$ d'affixe $z_0$ par la rotation $R$ de centre $O$ et d'angle $\\frac{\\pi}{6}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Préciser la nature et les éléments caractéristiques de la transformation réciproque de $R$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer l'ensemble des points $M$ d'affixe $z$ tels que $|z - 1 - i\\sqrt{3}| = 2$",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit la fonction $f$ définie sur $]0, +\\infty[$ par $f(x) = x - 1 - 2\\ln x$. On note $(C)$ sa courbe représentative dans un repère orthonormé $(O, I, J)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$. Interpréter graphiquement ce résultat.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variation de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet exactement deux solutions $\\alpha$ et $\\beta$ dans $]0, +\\infty[$, avec $\\alpha < \\beta$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $0.2 < \\alpha < 0.3$ et $3.5 < \\beta < 3.6$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + \\frac{2}{3}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n > 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente et calculer sa limite.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit la suite $(v_n)$ définie pour tout entier naturel $n$ par $v_n = u_n - 1$. Démontrer que $(v_n)$ est une suite géométrique.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère dans l'ensemble des entiers relatifs l'équation $(E) : 7x - 4y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de $(E)$ pour lesquelles $x$ et $y$ sont des multiples de $3$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le plus petit entier strictement positif $x_0$ solution de $(E)$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole souhaite optimiser le transport et la commercialisation de sa production annuelle de maïs. Pour cela, un technicien étudie l'évolution de la masse globale $M(t)$ en tonnes de la récolte en fonction du temps $t$ exprimé en années. Les données recueillies montrent que la fonction $M$ satisfait à une relation liée à une équation différentielle et que les coûts de transport $C(n)$ en milliers de francs CFA pour $n$ tonnes transportées dépendent de congruences arithmétiques. Le technicien dispose d'un budget initial de $4500$ milliers de francs CFA et doit respecter des contraintes logistiques strictes pour rentabiliser l'activité.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la masse minimale de maïs $M(t)$ que la coopérative doit récolter au bout de $3$ ans sachant que la fonction $M$ est solution de l'équation différentielle $M''(t) + 4M(t) = 0$ avec les conditions initiales $M(0) = 10$ et $M'(0) = 0$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le coût total de transport $C(n)$ pour une quantité de maïs fixée par la solution de la tâche 1, sachant que ce coût vérifie la relation de congruence $C(n) \neq 3$ (mod 5) et $C(n) \\in \\mathbb{N}$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Vérifier si le budget initial de la coopérative permet de couvrir les frais de transport et de production estimés, puis formuler une conclusion sur la rentabilité du projet.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T18:31:48"
+}

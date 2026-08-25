@@ -1,0 +1,155 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "Délégation Régionale de Extrême-Nord",
+    "etablissement": "Établissement",
+    "annee_scolaire": "2025-2026",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.5,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct (O; u, v). On considère l'équation (E) d'inconnue z dans l'ensemble C : z^{2} - (3 + i)z + 4 + 3i = 0.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le discriminant Delta de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer les racines carrées complexes du discriminant Delta.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "En déduire les solutions z_{1} et z_{2} de l'équation (E), sous forme algébrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Ecrire z_{1} et z_{2} sous forme exponentielle.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Placer les points images A et B de z_{1} et z_{2} dans le plan et calculer la distance AB.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan est muni d'un repère orthonormé (O; i, j). Soit f la fonction numérique définie sur l'intervalle ]0; +infty[ par f(x) = x - 1 + ln(x) / x.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de f en 0 par valeurs supérieures.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de f en +infty.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que la droite (D) d'équation y = x - 1 est asymptote oblique à la courbe (C) représentant f en +infty.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Etudier la position relative de la courbe (C) par rapport à son asymptote (D).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Calculer la dérivée f'(x) pour tout x de ]0; +infty[ et exprimer f'(x) à l'aide d'une fonction g dont on précisera l'expression.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Dresser le tableau de variations complet de la fonction f sur ]0; +infty[.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Tracer la courbe (C) et ses asymptotes dans le repère.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le but de cet exercice est d'étudier l'arithmétique de certains entiers naturels.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel n les restes de la division euclidienne de 3^{n} par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire le reste de la division euclidienne de 3^{2024} + 2 par 7.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Resoudre dans Z^{2} l'équation diophantienne (E'): 5x - 7y = 2.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que pour tout entier naturel n, le nombre d = PGCD(n + 2, 2n + 5) est un diviseur de 1.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire que les nombres n + 2 et 2n + 5 sont premiers entre eux pour tout entier n.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 5.0,
+        "exercices": null,
+        "situation_contexte": "Pour la cloture d'un festival culturel, un artisan souhaite fabriquer des structures métalliques ornamentales. Le modèle de base repose sur un nombre entier d'elements a lie par la relation arithmétique a^{2} + 2a - 3 \\equiv 0 (mod 5) avec a \\in [1; 10]. Pour l'assemblage electrique de l'atelier, l'intensité du courant principal z verifie une propriete complexe liee a une zone d'induction decrite par l'affixe z telle que le nombre complexe Z = (z - i) / (z + 2i) a un argument égal à pi / 4 + 2k\\pi. Enfin, pour transporter le materiel de decoration, l'artisan loue un vehicule dont le cout total de location C depend du nombre de caisses transportées selon un systeme lineaire fixe.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Determiner toutes les valeurs possibles de l'entier a verifiant la condition arithmétique de fabrication dans l'intervalle donné.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Determiner la nature exacte et l'equation cartesienne de l'ensemble des points M d'affixe z caracterisant la zone d'induction electrique.",
+            "bareme": 1.75
+          },
+          {
+            "numero": "3.",
+            "texte": "En deduire le nombre exact de caisses à transporter sachant que le cout total s'eleve à un multiple de a determine a la premiere tache.",
+            "bareme": 1.75
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T14:40:47"
+}

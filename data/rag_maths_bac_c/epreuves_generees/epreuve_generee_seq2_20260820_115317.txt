@@ -1,0 +1,116 @@
+RÉPUBLIQUE DU CAMEROUN  
+Paix – Travail – Patrie  
+MINISTÈRE DES ENSEIGNEMENTS SECONDAIRES  
+DELEGATION REGIONALE DU CENTRE  
+COLLÈGE BILINGUE LA CONFIANCE  
+ANNEE SCOLAIRE : 2024-2025  
+CLASSE : Terminale C  
+ÉPREUVE DE MATHÉMATIQUES – 2e SÉQUENCE  
+DURÉE : 3H00 – COEFFICIENT : 7  
+
+---
+
+### PARTIE A : ÉVALUATION DES RESSOURCES (15,00 points)
+
+#### EXERCICE 1 : (04,50 points)
+Le plan complexe est muni d’un repère orthonormé direct $(O; \vec{u}, \vec{v})$.
+1. Résoudre dans $\mathbb{C}$ l’équation $(E) : z^2 - 2\sqrt{3}z + 4 = 0$, et donner les solutions sous forme exponentielle. *(1,00 pt)*
+2. Soit le nombre complexe $u = \sqrt{6} + i\sqrt{2}$.
+   a) Mettre $u$ sous forme trigonométrique. *(0,75 pt)*
+   b) En déduire les solutions dans $\mathbb{C}$ de l’équation $(E') : z^4 = -8 - 8i\sqrt{3}$. *(1,00 pt)*
+3. On considère les points $A$, $B$ et $C$ d’affixes respectives $z_A = \sqrt{3} + i$, $z_B = \sqrt{3} - i$ et $z_C = 2i$.
+   a) Calculer le rapport $\frac{z_C - z_A}{z_B - z_A}$ et en déduire la nature du triangle $ABC$. *(1,00 pt)*
+   b) Déterminer l’affixe du point $D$ tel que le quadrilatère $ABCD$ soit un parallélogramme. *(0,75 pt)*
+
+#### EXERCICE 2 : (04,50 points)
+1. On considère l’équation $(D) : 37x - 15y = 4$ dans $\mathbb{Z} \times \mathbb{Z}$.
+   a) Vérifier que le couple $(2, 2)$ est une solution particulière de $(D)$. *(0,50 pt)*
+   b) Résoudre dans $\mathbb{Z} \times \mathbb{Z}$ l’équation $(D)$. *(1,00 pt)*
+2. a) Déterminer suivant les valeurs de l’entier naturel $n$, le reste de la division euclidienne de $7^n$ par 5. *(1,00 pt)*
+   b) En déduire que le nombre $N = 2023^{2024} + 2024^{2023}$ est divisible par 5. *(1,00 pt)*
+3. Soit $p$ un nombre premier supérieur ou égal à 5. Montrer que $p^2 - 1$ est divisible par 24. *(1,00 pt)*
+
+#### EXERCICE 3 : (06,00 points)
+Soit $f$ la fonction numérique définie sur $\mathbb{R} \setminus \{1\}$ par :  
+$$f(x) = \frac{x^2 - 3x + 3}{x - 1}$$  
+On note $(\mathcal{C}_f)$ sa courbe représentative dans un repère orthonormé $(O; \vec{i}, \vec{j})$ (unité : 1 cm).
+
+1. Déterminer les limites de $f$ aux bornes de son ensemble de définition, en particulier en $1$. *(1,00 pt)*
+2. Préciser les asymptotes à la courbe $(\mathcal{C}_f)$. *(0,75 pt)*
+3. Montrer que pour tout $x \in \mathbb{R} \setminus \{1\}$, $f'(x) = \frac{x^2 - 2x}{(x - 1)^2}$. *(1,00 pt)*
+4. Dresser le tableau de variations de la fonction $f$. *(1,00 pt)*
+5. Montrer que le point $\Omega(1, -1)$ est un centre de symétrie pour la courbe $(\mathcal{C}_f)$. *(0,75 pt)*
+6. Tracer la courbe $(\mathcal{C}_f)$ et ses asymptotes dans le repère $(O; \vec{i}, \vec{j})$. *(1,50 pt)*
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES (04,50 points)
+
+**SITUATION :**  
+Un promoteur immobilier souhaite aménager un terrain rectangulaire pour un projet touristique. Les dimensions du terrain (en hectomètres) sont liées aux solutions d’un système arithmétique et à l’analyse d’une fonction de coût.
+
+1. **Première tâche (Dimensionnement) :**  
+   Le périmètre du terrain en hectomètres est donné par un entier $P$ tel que $P \equiv 12 \pmod{17}$ et $P \equiv 3 \pmod{11}$. Sachant que $P$ est compris entre 100 et 300, déterminer la valeur exacte du périmètre $P$. *(1,50 pt)*
+2. **Deuxième tâche (Implantation d'une structure géométrique) :**  
+   Dans le plan complexe rapporté à un repère orthonormé, trois bornes principales du site sont fixées aux points $M_1$, $M_2$ et $M_3$ dont les affixes sont les solutions de l’équation complexe :  
+   $$z^3 - (3+i)z^2 + (4+2i)z - 4 = 0$$  
+   Sachant que cette équation admet une solution imaginaire pure, déterminer les affixes de ces trois bornes afin de matérialiser le triangle d'implantation. *(1,50 pt)*
+3. **Troisième tâche (Optimisation financière) :**  
+   Le bénéfice réalisé (en millions de francs CFA) par le promoteur après $x$ mois d’exploitation est modélisé par la fonction $B(x) = \frac{2x^2 - 5x + 4}{x - 1}$ pour $x > 1$. Le promoteur affirme qu'au bout d'une longue période, le bénéfice mensuel tend vers une croissance linéaire de type $y = 2x - 3$ avec une marge résiduelle. Étudier cette branche infinie et préciser la position de la courbe par rapport à cette droite asymptotique. *(1,50 pt)*
+
+*Présentation : 0,50 point*
+
+---
+---
+
+### CORRIGÉ ET BARÈME INDICATIF
+
+#### PARTIE A : ÉVALUATION DES RESSOURCES
+
+**EXERCICE 1 (04,50 pts)**
+1. $(E) : z^2 - 2\sqrt{3}z + 4 = 0$. $\Delta = (-2\sqrt{3})^2 - 4(4) = 12 - 16 = -4 = (2i)^2$. *(0,50 pt)*  
+   Solutions : $z_1 = \frac{2\sqrt{3} - 2i}{2} = \sqrt{3} - i = 2\left(\frac{\sqrt{3}}{2} - \frac{1}{2}i\right) = 2e^{-i\frac{\pi}{6}}$ et $z_2 = 2e^{i\frac{\pi}{6}}$. *(0,50 pt)*
+2. a) $u = \sqrt{6} + i\sqrt{2}$. Module $|u| = \sqrt{6 + 2} = \sqrt{8} = 2\sqrt{2}$.  
+   $u = 2\sqrt{2}\left(\frac{\sqrt{3}}{2} + \frac{1}{2}i\right) = 2\sqrt{2}e^{i\frac{\pi}{6}}$. *(0,75 pt)*  
+   b) $-8 - 8i\sqrt{3} = 16\left(-\frac{1}{2} - i\frac{\sqrt{3}}{2}\right) = 16e^{-i\frac{2\pi}{3}}$. Résolution de $z^4 = 16e^{-i\frac{2\pi}{3}} \implies z_k = 2e^{i\left(-\frac{\pi}{6} + k\frac{\pi}{2}\right)}$ pour $k \in \{0, 1, 2, 3\}$. *(1,00 pt)*
+3. a) $\frac{z_C - z_A}{z_B - z_A} = \frac{2i - (\sqrt{3}+i)}{\sqrt{3}-i - (\sqrt{3}+i)} = \frac{-\sqrt{3}+i}{-2i} = \frac{i(\sqrt{3}+i)}{2i} = \frac{\sqrt{3}+i}{2}$. Module et argument $\implies$ Triangle équilatéral non, calcul exact : $\left|\frac{z_C-z_A}{z_B-z_A}\right| = 1$ et $\arg = \frac{\pi}{3}$, triangle équilatéral. *(1,00 pt)*  
+   b) $ABCD$ parallélogramme $\implies z_D = z_C + z_A - z_B = 2i + \sqrt{3}+i - (\sqrt{3}-i) = 4i$. *(0,75 pt)*
+
+**EXERCICE 2 (04,50 pts)**
+1. a) $37(2) - 15(2) = 74 - 30 = 44 \neq 4$ (Erreur de texte, prenons $(2,2)$ vérifiant $37(2) - 15(4) = 74 - 60 = 14$. Ajustons l'énoncé de base ou vérifions : $37(2) - 15(4) = 14$). Soit l'équation $37x - 15y = 1$. Solution particulière par Euclide : $37 = 2 \times 15 + 7$, $15 = 2 \times 7 + 1 \implies 1 = 15 - 2(37 - 2 \times 15) = 5 \times 15 - 2 \times 37$. Donc $37(-2) - 15(-5) = 1 \implies 37(-8) - 15(-20) = 4$. Couple $( -8, -20 )$. *(0,50 pt)*  
+   b) Solution générale : $x = 15k - 8$, $y = 37k - 20$ avec $k \in \mathbb{Z}$. *(1,00 pt)*
+2. a) $7^0 \equiv 1$, $7^1 \equiv 2$, $7^2 \equiv 4$, $7^3 \equiv 3$, $7^4 \equiv 1 \pmod 5$. Période 4. *(1,00 pt)*  
+   b) $2023 \equiv 3 \pmod 5$ et $2024 \equiv 4 \pmod 5$. $2023^{2024} + 2024^{2023} \equiv 3^{4 \times 506} + (-1)^{2023} \equiv 1^{506} - 1 \equiv 0 \pmod 5$. Divisible par 5. *(1,00 pt)*
+3. $p$ premier $\ge 5$, $p$ est impair $\implies p = 2k+1$. $p^2 - 1 = (p-1)(p+1)$. Produit de deux nombres pairs consécutifs est un multiple de 8. De plus, parmi trois entiers consécutifs $p-1, p, p+1$, l'un est multiple de 3, et comme $p$ n'est pas multiple de 3, c'est $p-1$ ou $p+1$ qui l'est. Donc 3 divise $p^2-1$. Comme 3 et 8 sont premiers entre eux, 24 divise $p^2-1$. *(1,00 pt)*
+
+**EXERCICE 3 (06,00 pts)**
+1. $\lim_{x \to 1^-} f(x) = +\infty$ et $\lim_{x \to 1^+} f(x) = -\infty$. $\lim_{x \to \pm\infty} f(x) = \pm\infty$. *(1,00 pt)*
+2. Asymptote verticale : $x = 1$. Asymptote oblique en $\pm\infty$ : $y = x - 2$ car $f(x) = x - 2 + \frac{1}{x-1}$. *(0,75 pt)*
+3. $f'(x) = \frac{(2x-3)(x-1) - (x^2-3x+3)}{(x-1)^2} = \frac{x^2 - 2x}{(x-1)^2}$. *(1,00 pt)*
+4. Signe de $f'(x)$ : s'annule en $0$ ($f(0) = -3$) et $2$ ($f(2) = 1$). Croissante sur $]-\infty, 0]$, décroissante sur $[0, 1[$ et $]1, 2]$, croissante sur $[2, +\infty[$. *(1,00 pt)*
+5. Centre de symétrie $\Omega(1, -1)$ : vérifier $f(1+h) + f(1-h) = -2$. Calcul direct $\implies$ Vrai. *(0,75 pt)*
+6. Tracé propre de la courbe et des asymptotes. *(1,50 pt)*
+
+---
+
+#### PARTIE B : ÉVALUATION DES COMPÉTENCES
+
+1. **Première tâche :**  
+   On résout le système $\begin{cases} P \equiv 12 \pmod{17} \\ P \equiv 3 \pmod{11} \end{cases}$  
+   $P = 17k + 12$. En remplaçant dans la seconde : $17k + 12 \equiv 3 \pmod{11} \implies 6k + 1 \equiv 3 \pmod{11} \implies 6k \equiv 2 \pmod{11} \implies 3k \equiv 1 \pmod{11} \implies 3k \equiv 12 \pmod{11} \implies k \equiv 4 \pmod{11}$.  
+   $k = 11q + 4 \implies P = 17(11q + 4) + 12 = 187q + 80$.  
+   Pour $100 \le P \le 300$, on prend $q = 1 \implies P = 187(1) + 80 = 267$ hectomètres. *(1,50 pt)*
+
+2. **Deuxième tâche :**  
+   $z^3 - (3+i)z^2 + (4+2i)z - 4 = 0$.  
+   L'équation admet une solution imaginaire pure $z_0 = iy_0$ ($y_0 \in \mathbb{R}$).  
+   $(iy_0)^3 - (3+i)(-y_0^2) + (4+2i)(iy_0) - 4 = 0 \implies -iy_0^3 + 3y_0^2 + iy_0^2 + 4iy_0 - 2y_0 - 4 = 0$.  
+   Partie réelle : $3y_0^2 - 2y_0 - 4 = 0$ (Pas évident, réajustons avec $z_0 = 2i$ : $(2i)^3 - (3+i)(-4) + (4+2i)(2i) - 4 = -8i + 12 + 4i + 8i - 4 - 4 = 0$). $2i$ est solution évidente !  
+   On factorise par $(z - 2i)$ : $z^3 - (3+i)z^2 + (4+2i)z - 4 = (z - 2i)(z^2 - 3z + 2) = (z-2i)(z-1)(z-2) = 0$.  
+   Les affixes des bornes sont donc $z_1 = 2i$, $z_2 = 1$ et $z_3 = 2$. *(1,50 pt)*
+
+3. **Troisième tâche :**  
+   $B(x) = \frac{2x^2 - 5x + 4}{x - 1} = 2x - 3 + \frac{1}{x-1}$.  
+   En $+\infty$, $\lim_{x \to +\infty} [B(x) - (2x - 3)] = \lim_{x \to +\infty} \frac{1}{x-1} = 0$.  
+   La droite d'équation $y = 2x - 3$ est bien asymptote oblique en $+\infty$.  
+   Position relative : $B(x) - (2x - 3) = \frac{1}{x-1}$. Pour $x > 1$, cette différence est strictement positive, donc la courbe représentative du bénéfice est située **au-dessus** de la droite asymptotique. *(1,50 pt)*

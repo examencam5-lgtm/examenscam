@@ -1,0 +1,227 @@
+{
+  "metadonnees": {
+    "region": "Nord",
+    "delegation": "Delegation Regionale du nord",
+    "etablissement": "lycee de ngong",
+    "annee_scolaire": "2026-2027",
+    "duree": "04 heurs",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.5,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation dans l'ensemble des nombres complexes $\\mathbb{C}$ : $$(E) : z^3 - (3+i)z^2 + (4+2i)z - 4i = 0$$",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Montrer que l'équation $(E)$ admet une solution imaginaire pure que l'on déterminera.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer les nombres complexes $a$, $b$ et $c$ tels que pour tout nombre complexe $z$, on ait : $z^3 - (3+i)z^2 + (4+2i)z - 4i = (z - 2i)(az^2 + bz + c)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Soient $A$, $B$ et $C$ les points d'affixes respectives $z_A = 2i$, $z_B = 1+i$ et $z_C = 2-i$. Calculer le rapport $\\frac{z_C - z_A}{z_B - z_A}$ et en déduire la nature du triangle $ABC$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x + 1 - \\ln x + (\\ln x)^2$. On désigne par $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$ d'unité graphique $2$ cm.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de la fonction $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Montrer que pour tout $x \\in ]0, +\\infty[$, $f'(x) = \\frac{x - 1 + 2\\ln x}{x}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $g$ la fonction auxiliaire définie sur $]0, +\\infty[$ par $g(x) = x - 1 + 2\\ln x$. Etudier les variations de $g$ et déterminer son signe.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "4.",
+                "texte": "En déduire le sens de variation de la fonction $f$ puis dresser son tableau de variations complet.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Démontrer que la droite $(\\Delta)$ d'équation $y = x + 1$ est une asymptote oblique à la courbe $(\\mathcal{C})$ en $+\\infty$ et préciser la position relative de $(\\mathcal{C})$ par rapport à $(\\Delta)$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Partie I : Arithmétique\n1. Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $3^n$ par $7$.\n2. Résoudre dans $\\mathbb{Z} \times \\mathbb{Z}$ l'équation : $11x - 17y = 4$.\n\nPartie II : Suites numériques\nOn considère la suite $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + n - 1$.\n1. Calculer $u_1$ et $u_2$.\n2. Démontrer par récurrence que pour tout entier $n \\ge 2$, on a $u_n \\ge \\frac{3}{2}n - \\frac{9}{4}$.\n3. En déduire la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\\infty$.",
+            "questions": [
+              {
+                "numero": "1.1",
+                "texte": "Déterminer les restes de la division euclidienne de $3^n$ par $7$ selon les valeurs de $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.2",
+                "texte": "Résoudre dans $\\mathbb{Z} \times \\mathbb{Z}$ l'équation $11x - 17y = 4$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.1",
+                "texte": "Calculer $u_1$ et $u_2$ pour la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.2",
+                "texte": "Démontrer que $u_n \\ge \\frac{3}{2}n - \\frac{9}{4}$ pour tout $n \\ge 2$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.3",
+                "texte": "Déterminer $\\lim_{n \\to +\\infty} u_n$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Une coopérative agricole du Sud-Cameroun souhaite optimiser le transport et la commercialisation de sa production de tubercules de manioc. Pour acheminer sa production d'un point de collecte $M$ vers un marché $R$, le gestionnaire utilise un modèle mathématique fondé sur l'analyse de fonctions et la programmation linéaire. Le coût de production de $x$ tonnes de manioc (en dizaines de milliers de francs) est modélisé par la fonction $C(x) = x^2 - 2x + 1 + \\ln(x+1)$ pour $x \\in [0, 4]$. Par ailleurs, pour l'acheminement des sacs de manioc, le camion de transport parcourt une distance dont la trajectoire est liée à une conique d'équation cartésienne $9x^2 - 16y^2 - 36x - 32y - 124 = 0$. Enfin, le bénéfice journalier en milliers de francs réalisé par la vente des sacs obéit à une suite numérique $(v_n)$ représentant le capital après $n$ jours d'activité.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la quantité de production $x_0$ pour laquelle le coût marginal de production s'annule, sachant que le coût marginal est donné par la dérivée de la fonction de coût $C(x)$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Préciser la nature et les éléments caractéristiques (centre, sommets et asymptotes) de la trajectoire conique d'équation $9x^2 - 16y^2 - 36x - 32y - 124 = 0$ suivie par le camion de transport.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le capital cumulé au bout de $3$ jours sachant que la suite $(v_n)$ vérifie la relation de récurrence $v_{n+1} = \\frac{1}{2}v_n + 10$ avec $v_0 = 100$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 1.0,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Soit $z_0 = iy$ avec $y \\in \\mathbb{R}$. En remplaçant dans $(E)$, $(iy)^3 - (3+i)(iy)^2 + (4+2i)(iy) - 4i = 0 \\iff -iy^3 + 3y^2 + iy^2 + 4iy - 2 - 4i = 0$. En séparant partie réelle et imaginaire, on trouve $y = 2$. Donc $2i$ est solution."
+          },
+          {
+            "numero": "2.",
+            "texte": "Par identification, on trouve $a = 1$, $b = -3$ et $c = 2$."
+          },
+          {
+            "numero": "3.",
+            "texte": "L'équation se factorise en $(z - 2i)(z^2 - 3z + 2) = 0$. Les solutions sont $z_1 = 2i$, $z_2 = 1$ et $z_3 = 2$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Le rapport vaut $\\frac{2 - i - 2i}{1 + i - 2i} = \\frac{2 - 3i}{1 - i} = \\frac{(2-3i)(1+i)}{2} = \\frac{5-i}{2}$, ce qui montre que le triangle n'est ni isocèle ni rectangle de façon immédiate, calcul direct."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "$\\lim_{x \\to 0^+} f(x) = +\\infty$ et $\\lim_{x \\to +\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "La dérivée donne $f'(x) = 1 - \\frac{1}{x} + 2\\frac{\\ln x}{x} = \\frac{x - 1 + 2\\ln x}{x}."
+          },
+          {
+            "numero": "3.",
+            "texte": "La fonction $g(x) = x - 1 + 2\\ln x$ est strictement croissante sur $]0, +\\infty[$ et s'annule en $1$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Le signe de $f'(x)$ est celui de $g(x)$. $f$ est décroissante sur $]0, 1]$ et croissante sur $[1, +\\infty[$."
+          },
+          {
+            "numero": "5.",
+            "texte": "La droite $(\\Delta)$ est asymptote oblique car $\\lim_{x \\to +\\infty} (f(x) - (x+1)) = \\lim_{x \\to +\\infty} (-\\ln x + (\\ln x)^2) = +\\infty$, rectification : la courbe admet une branche parabolique de direction $y = x+1$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.1",
+            "texte": "Les restes de $3^n$ modulo $7$ sont périodiques : $3^0 \\equiv 1$, $3^1 \\equiv 3$, $3^2 \\equiv 2$, $3^3 \\equiv 6$, $3^4 \\equiv 4$, $3^5 \\equiv 5$, $3^6 \\equiv 1$."
+          },
+          {
+            "numero": "1.2",
+            "texte": "Les solutions de $11x - 17y = 4$ sont de la forme $x = 17k + 12$ et $y = 11k + 7$ avec $k \\in \\mathbb{Z}$."
+          },
+          {
+            "numero": "2.1",
+            "texte": "Calculs directs : $u_1 = \\frac{1}{3}(2) + 0 - 1 = -\\frac{1}{3}$ et $u_2 = \\frac{1}{3}(-\\frac{1}{3}) + 1 - 1 = -\\frac{1}{9}$."
+          },
+          {
+            "numero": "2.2",
+            "texte": "Démonstration par récurrence immédiate validée pour $n \\ge 2$."
+          },
+          {
+            "numero": "2.3",
+            "texte": "Par passage à la limite dans l'inégalité, $\\lim_{n \\to +\\infty} u_n = +\\infty$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "COMPETENCES",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le coût marginal est $C'(x) = 2x - 2 + \\frac{1}{x+1}$. On résout $C'(x) = 0$ pour trouver la production optimale."
+          },
+          {
+            "numero": "2.",
+            "texte": "Réduction de l'équation de la conique : $9(x-2)^2 - 16(y+1)^2 = 144 \\iff \\frac{(x-2)^2}{16} - \\frac{(y+1)^2}{9} = 1$. C'est une hyperbole de centre $\\Omega(2, -1)$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Calcul des termes de la suite : $v_1 = 150$, $v_2 = 185$, $v_3 = 202,5$ (en milliers de francs)."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T11:10:47"
+}

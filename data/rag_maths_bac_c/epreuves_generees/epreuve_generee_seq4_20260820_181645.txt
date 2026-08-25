@@ -1,0 +1,201 @@
+MINISTÈRE DES ENSEIGNEMENTS SECONDAIRES
+DEPARTEMENT DE MATHEMATIQUES
+EXAMEN : 4e SÉQUENCE - CLASSE : Tle C
+ÉPREUVE DE MATHÉMATIQUES
+DURÉE : 03H - COEFFICIENT : 07
+
+---
+
+### PARTIE A : ÉVALUATION DES RESSOURCES (15,5 points)
+
+#### EXERCICE 1 : (3,5 points)
+1. On considère l'équation dans $\mathbb{Z} \times \mathbb{Z}$ : $(E) : 17x - 24y = 5$.
+   a) Vérifier que le couple $(13, 9)$ est une solution particu­lière de $(E)$. $(0,5\text{pt})$
+   b) Résoudre dans $\mathbb{Z} \times \mathbb{Z}$ l'équation $(E)$. $(0,75\text{pt})$
+2. Soit $n$ un entier naturel. On pose $A_n = 2^{2n} + 2^n + 1$.
+   a) Montrer que si $n \equiv 1 \pmod 3$, alors $A_n \equiv 0 \pmod 7$. $(0,75\text{pt})$
+   b) Déterminer les restes de la division euclidienne de $2^n$ par $7$ suivant les valeurs de l'entier naturel $n$. $(1\text{pt})$
+   c) En déduire tous les entiers naturels $n$ tels que $7$ divise $A_n$. $(0,5\text{pt})$
+
+#### EXERCICE 2 : (4,0 points)
+Le plan complexe est rapporté à un repère orthonormé direct $(O, \vec{u}, \vec{v})$.
+1. Résoudre dans l'ensemble des nombres complexes $\mathbb{C}$ l'équation : $(z - 2)(z^2 - 4z + 8) = 0$. $(0,75\text{pt})$
+2. On considère les points $A$, $B$ et $C$ d'affixes respectives $z_A = 2$, $z_B = 2 + 2i$ et $z_C = 2 - 2i$.
+   a) Écrire $z_B$ et $z_C$ sous forme trigonométrique. $(0,5\text{pt})$
+   b) Placer les points $A$, $B$ et $C$ dans le repère $(O, \vec{u}, \vec{v})$. $(0,5\text{pt})$
+3. Soit $s$ la similitude plane directe de centre $A$, d'angle $\frac{\pi}{4}$ et de rapport $\sqrt{2}$.
+   a) Déterminer l'écriture complexe de $s$. $(0,75\text{pt})$
+   b) Déterminer l'affixe du point $D$, image du point $B$ par $s$. $(0,5\text{pt})$
+   c) Démontrer que le triangle $ABD$ est rectangle en $B$. $(1\text{pt})$
+
+#### EXERCICE 3 : (4,0 points)
+Soit $(u_n)_{n \in \mathbb{N}}$ la suite numérique définie par $u_0 = \frac{1}{2}$ et, pour tout entier naturel $n$, $u_{n+1} = \frac{3u_n}{1 + 2u_n}$.
+1. Calculer $u_1$ et $u_2$. $(0,5\text{pt})$
+2. Démontrer par récurrence que, pour tout entier naturel $n$, on a : $0 < u_n < 1$. $(1\text{pt})$
+3. Étudier le sens de variation de la suite $(u_n)$. $(0,75\text{pt})$
+4. On définit la suite $(v_n)_{n \in \mathbb{N}}$ par $v_n = \frac{1}{u_n} - 1$.
+   a) Démontrer que $(v_n)$ est une suite géométrique de raison $\frac{1}{3}$ dont on précisera le premier terme $v_0$. $(1\text{pt})$
+   b) Exprimer $v_n$ puis $u_n$ en fonction de $n$. $(0,5\text{pt})$
+   c) Déterminer la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\infty$. $(0,25\text{pt})$
+
+#### EXERCICE 4 : (4,0 points)
+Soit $f$ la fonction numérique de la variable réelle $x$ définie par $f(x) = x + 1 - xe^{-x}$ et $(\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \vec{i}, \vec{j})$ (unité graphique : $2\text{ cm}$).
+1. Déterminer l'ensemble de définition $D_f$ de $f$. $(0,25\text{pt})$
+2. Calculer les limites de $f$ aux bornes de $D_f$. $(0,75\text{pt})$
+3. Montrer que la droite $(\Delta)$ d'équation $y = x + 1$ est asymptote oblique à la courbe $(\mathcal{C})$ en $+\infty$ et préciser la position relative de $(\mathcal{C})$ par rapport à $(\Delta)$. $(0,75\text{pt})$
+4. Soit $f'$ la dérivée de $f$. Calculer $f'(x)$ et montrer que pour tout réel $x$, $f'(x) = (x-1)e^{-x} + 1$. *(On ne demande pas d'étudier le signe de $f'$)*. $(0,5\text{pt})$
+5. Soit $g$ la fonction définie sur $\mathbb{R}$ par $g(x) = f'(x)$.
+   a) Calculer les limites de $g$ en $-\infty$ et $+\infty$. $(0,5\text{pt})$
+   b) Dresser le tableau de variations de la fonction $g$. $(0,75\text{pt})$
+   c) En déduire que pour tout réel $x$, $f'(x) > 0$. $(0,5\text{pt})$
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES (4,0 points)
+
+**Situation-problème :**
+
+Dans le cadre de la foire-exposition scientifique de fin de trimestre, un club de génie mathématique de Terminale C du lycée de Mbalmayo souhaite concevoir un logo géant et sécuriser un réseau informatique. Le projet comporte trois tâches principales :
+
+1. **Conception du logo (Arithmétique et Nombres complexes) :**
+   Le contour du logo est basé sur un ensemble de points $M$ d'affixe $z$ tel que le nombre complexe $Z = \frac{z - 2i}{z + 1}$ soit un imaginaire pur. Pour calibrer les machines de découpe numérique, les élèves doivent déterminer la nature exacte de cet ensemble de points dans le plan complexe.
+
+2. **Optimisation d'un signal de transmission (Fonctions et Suites) :**
+   L'intensité d'un signal lumineux émis par une balise connectée est modélisée à l'instar de la fonction $f$ étudiée dans l'exercice 4 : $f(t) = t + 1 - te^{-t}$ (où $t \ge 0$ représente le temps en heures). Pour des raisons énergétiques, la balise doit être éteinte dès que l'intensité dépasse un seuil critique. Un technicien affirme que l'intensité est toujours strictement croissante et dépasse $2$ au bout de $2$ heures.
+
+3. **Sécurisation du réseau (Graphes) :**
+   Pour relier 5 serveurs informatiques $S_1, S_2, S_3, S_4, S_5$ du lycée, la matrice d'adjacence $M$ du réseau non orienté est donnée par :
+   $$M = \begin{pmatrix} 0 & 1 & 1 & 0 & 1 \\ 1 & 0 & 1 & 1 & 0 \\ 1 & 1 & 0 & 0 & 1 \\ 0 & 1 & 0 & 0 & 1 \\ 1 & 0 & 1 & 1 & 0 \end{pmatrix}$$
+   Le responsable informatique souhaite savoir s'il existe un câble permettant de relier tous les serveurs en passant par chaque liaison informatique une et une seule fois (chaîne eulérienne) pour une maintenance générale.
+
+**Tâches :**
+* **Tâche 1 :** Déterminer la nature exacte et les éléments caractéristiques de l'ensemble des points $M$ pour la découpe du logo. $(1,25\text{pt})$
+* **Tâche 2 :** Valider ou infirmer l'affirmation du technicien concernant l'intensité du signal lumineux à $t = 2$ heures. $(1,25\text{pt})$
+* **Tâche 3 :** Dire s'il est possible d'effectuer la maintenance en empruntant une chaîne eulérienne dans le réseau des serveurs, en justifiant la réponse à l'aide de la théorie des graphes. $(1,25\text{pt})$
+
+*Présentation : 0,5 point*
+
+---
+
+### CORRIGÉ DÉTAILLÉ ET BARÈME
+
+#### PARTIE A : ÉVALUATION DES RESSOURCES
+
+**Exercice 1 :** (3,5 pts)
+1. a) Vérifions que $(13, 9)$ est solution de $(E) : 17x - 24y = 5$ :
+   $17(13) - 24(9) = 221 - 216 = 5$. Vrai. **(0,5 pt)**
+   b) Résolution de $(E)$ :
+   On a $17(13) - 24(9) = 5$ et $17x - 24y = 5$.
+   Par soustraction : $17(x - 13) - 24(y - 9) = 0 \iff 17(x - 13) = 24(y - 9)$.
+   Comme $17$ et $24$ sont premiers entre eux, d'après le théorème de Gauss, $24$ divise $x - 13$.
+   Il existe donc un entier $k$ tel que $x - 13 = 24k \iff x = 24k + 13$.
+   En reportant, $17(24k) = 24(y - 9) \iff y - 9 = 17k \iff y = 17k + 9$.
+   L'ensemble des solutions est $\mathcal{S} = \{(24k + 13, 17k + 9) / k \in \mathbb{Z}\}$. **(0,75 pt)**
+2. a) Si $n \equiv 1 \pmod 3$, alors $n = 3k + 1$.
+   $2^3 \equiv 1 \pmod 7$. Donc $2^{2(3k+1)} + 2^{3k+1} + 1 = 4(8^k)^2 + 2(8^k) + 1 \equiv 4(1)^2 + 2(1) + 1 = 7 \equiv 0 \pmod 7$. **(0,75 pt)**
+   b) Restes de $2^n$ par $7$ :
+   $2^0 \equiv 1$, $2^1 \equiv 2$, $2^2 \equiv 4$, $2^3 \equiv 1 \pmod 7$. La période est $3$.
+   Si $n \equiv 0 [3]$, reste $1$ ; si $n \equiv 1 [3]$, reste $2$ ; si $n \equiv 2 [3]$, reste $4$. **(1 pt)**
+   c) $A_n = 2^{2n} + 2^n + 1 \equiv 0 \pmod 7$.
+   Posons $X = 2^n \pmod 7$. On a $X^2 + X + 1 \equiv 0 \pmod 7$.
+   En testant les valeurs de $X \in \{1, 2, 4\}$ :
+   - Si $X = 1$, $1+1+1=3 \not\equiv 0$.
+   - Si $X = 2$, $4+2+1=7 \equiv 0$. Donc $2^n \equiv 2 \pmod 7$, ce qui implique $n \equiv 1 \pmod 3$.
+   - Si $X = 4$, $16+4+1=21 \equiv 0$. Donc $2^n \equiv 4 \pmod 7$, ce qui implique $n \equiv 2 \pmod 3$.
+   Ainsi, $7$ divise $A_n$ pour $n \equiv 1 \pmod 3$ ou $n \equiv 2 \pmod 3$, c'est-à-dire pour tout $n$ non divisible par $3$. **(0,5 pt)**
+
+**Exercice 2 :** (4,0 pts)
+1. Résolution de $(z - 2)(z^2 - 4z + 8) = 0$ :
+   $z = 2$ ou $z^2 - 4z + 8 = 0$.
+   $\Delta = (-4)^2 - 4(1)(8) = 16 - 32 = -16 = (4i)^2$.
+   $z_1 = \frac{4 - 4i}{2} = 2 - 2i$ et $z_2 = 2 + 2i$.
+   $\mathcal{S} = \{2, 2+2i, 2-2i\}$. **(0,75 pt)**
+2. a) $z_B = 2 + 2i = 2\sqrt{2}\left(\frac{\sqrt{2}}{2} + i\frac{\sqrt{2}}{2}\right) = 2\sqrt{2}e^{i\frac{\pi}{4}}$.
+   $z_C = 2 - 2i = 2\sqrt{2}e^{-i\frac{\pi}{4}}$. **(0,5 pt)**
+   b) Placement des points : $A(2,0)$, $B(2,2)$, $C(2,-2)$. *(Figure claire attendue)*. **(0,5 pt)**
+3. a) Écriture complexe de $s$ (centre $A(2)$, angle $\frac{\pi}{4}$, rapport $\sqrt{2}$) :
+   $z' - z_A = \sqrt{2}e^{i\frac{\pi}{4}}(z - z_A) \iff z' - 2 = \sqrt{2}\left(\frac{\sqrt{2}}{2} + i\frac{\sqrt{2}}{2}\right)(z - 2) = (1 + i)(z - 2)$.
+   $z' = (1+i)z - 2 - 2i + 2 = (1+i)z - 2i$. **(0,75 pt)**
+   b) Affixe de $D = s(B)$ :
+   $z_D = (1+i)(2+2i) - 2i = 2 + 2i + 2i - 2 - 2i = 2i$. **(0,5 pt)**
+   c) Démontrons que $ABD$ est rectangle en $B$ :
+   Affixe de $\overrightarrow{BA} = z_A - z_B = 2 - (2+2i) = -2i$.
+   Affixe de $\overrightarrow{BD} = z_D - z_B = 2i - (2+2i) = -2$.
+   On calcule le produit scalaire ou le rapport complexe $\frac{z_A - z_B}{z_D - z_B} = \frac{-2i}{-2} = i$.
+   Argument égal à $\frac{\pi}{2}$, donc le triangle $ABD$ est rectangle isocèle en $B$. **(1 pt)**
+
+**Exercice 3 :** (4,0 pts)
+1. $u_0 = \frac{1}{2}$, $u_1 = \frac{3(1/2)}{1 + 2(1/2)} = \frac{3/2}{2} = \frac{3}{4}$.
+   $u_2 = \frac{3(3/4)}{1 + 2(3/4)} = \frac{9/4}{5/2} = \frac{9}{10}$. **(0,5 pt)**
+2. Par récurrence :
+   - Initialisation : $0 < u_0 = \frac{1}{2} < 1$, vrai.
+   - Hérédité : Supposons que pour un entier $n$, $0 < u_n < 1$.
+     $u_{n+1} = \frac{3u_n}{1 + 2u_n}$.
+     Comme $u_n > 0$, $3u_n > 0$ et $1 + 2u_n > 1 > 0$, donc $u_{n+1} > 0$.
+     De plus, $u_{n+1} - 1 = \frac{3u_n - 1 - 2u_n}{1 + 2u_n} = \frac{u_n - 1}{1 + 2u_n}$.
+     Comme $u_n < 1$, $u_n - 1 < 0$ et $1 + 2u_n > 0$, donc $u_{n+1} - 1 < 0 \iff u_{n+1} < 1$.
+     Conclusion : Pour tout $n \in \mathbb{N}$, $0 < u_n < 1$. **(1 pt)**
+3. Sens de variation :
+   $u_{n+1} - u_n = \frac{3u_n}{1 + 2u_n} - u_n = \frac{3u_n - u_n - 2u_n^2}{1 + 2u_n} = \frac{2u_n(1 - u_n)}{1 + 2u_n}$.
+   Puisque $0 < u_n < 1$, on a $u_n > 0$, $1 - u_n > 0$ et $1 + 2u_n > 0$.
+   Donc $u_{n+1} - u_n > 0$, la suite $(u_n)$ est strictement croissante. **(0,75 pt)**
+4. a) $v_n = \frac{1}{u_n} - 1$.
+   $v_{n+1} = \frac{1}{u_{n+1}} - 1 = \frac{1 + 2u_n}{3u_n} - 1 = \frac{1 + 2u_n - 3u_n}{3u_n} = \frac{1 - u_n}{3u_n} = \frac{1}{3}\left(\frac{1}{u_n} - 1\right) = \frac{1}{3}v_n$.
+   $(v_n)$ est géométrique de raison $q = \frac{1}{3}$ et de premier terme $v_0 = \frac{1}{u_0} - 1 = 2 - 1 = 1$. **(1 pt)**
+   b) $v_n = v_0 q^n = \left(\frac{1}{3}\right)^n$.
+   Comme $v_n = \frac{1}{u_n} - 1 \iff u_n = \frac{1}{v_n + 1}$, on a : $u_n = \frac{1}{\left(\frac{1}{3}\right)^n + 1} = \frac{3^n}{1 + 3^n}$. **(0,5 pt)**
+   c) $\lim_{n \to +\infty} 3^n = +\infty$, donc $\lim_{n \to +\infty} u_n = 1$. **(0,25 pt)**
+
+**Exercice 4 :** (4,0 pts)
+1. $D_f = \mathbb{R}$. **(0,25 pt)**
+2. Limites :
+   $\lim_{x \to -\infty} f(x) = \lim_{x \to -\infty} (x + 1 - xe^{-x}) = -\infty - \infty(+\infty) = -\infty$.
+   $\lim_{x \to +\infty} f(x) = \lim_{x \to +\infty} (x + 1 - \frac{x}{e^x}) = +\infty + 1 - 0 = +\infty$. **(0,75 pt)**
+3. Asymptote et position :
+   $f(x) - (x + 1) = -xe^{-x}$.
+   $\lim_{x \to +\infty} (-xe^{-x}) = 0$, donc la droite $(\Delta) : y = x + 1$ est asymptote à $(\mathcal{C})$ en $+\infty$.
+   Pour le signe de $f(x) - (x+1) = -xe^{-x}$ :
+   - Si $x < 0$, $-xe^{-x} > 0$, $(\mathcal{C})$ est au-dessus de $(\Delta)$.
+   - Si $x > 0$, $-xe^{-x} < 0$, $(\mathcal{C})$ est en dessous de $(\Delta)$. **(0,75 pt)**
+4. Dérivée :
+   $f'(x) = 1 - [1 \cdot e^{-x} + x(-e^{-x})] = 1 - e^{-x} + xe^{-x} = 1 + (x - 1)e^{-x}$. **(0,5 pt)**
+5. Étude de $g(x) = f'(x) = 1 + (x - 1)e^{-x}$ :
+   a) $\lim_{x \to -\infty} g(x) = \lim_{x \to -\infty} (1 + (x-1)e^{-x}) = 1 + (-\infty)(+\infty) = -\infty$.
+   $\lim_{x \to +\infty} g(x) = 1 + 0 = 1$. **(0,5 pt)**
+   b) $g'(x) = e^{-x} + (x-1)(-e^{-x}) = e^{-x}(1 - x + 1) = (2 - x)e^{-x}$.
+   Signe de $g'(x)$ : s'annule en $x = 2$ (positif sur $]-\infty, 2[$, négatif sur $]2, +\infty[$).
+   $g(2) = 1 + e^{-2} > 0$. Tableau de variations de $g$ : croissant de $-\infty$ à $1 + e^{-2}$, puis décroissant vers $1$. **(0,75 pt)**
+   c) Puisque $g$ est continue et admet un minimum sur $\mathbb{R}$ égal à $g(2) > 0$, alors pour tout $x \in \mathbb{R}$, $g(x) > 0$, c'est-à-dire $f'(x) > 0$. **(0,5 pt)**
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES
+
+* **Tâche 1 :** Nature et éléments caractéristiques de l'ensemble des points $M$.
+  Soit $z = x + iy$. $Z = \frac{x + iy - 2i}{x + iy + 1} = \frac{x + i(y - 2)}{(x + 1) + iy}$.
+  Pour que $Z$ soit un imaginaire pur, sa partie réelle doit être nulle (avec $z \neq -1$).
+  $\text{Re}(Z) = \frac{x(x+1) + y(y-2)}{(x+1)^2 + y^2} = 0 \iff x(x+1) + y(y-2) = 0$ (avec $(x, y) \neq (-1, 0)$).
+  $\iff x^2 + x + y^2 - 2y = 0 \iff \left(x + \frac{1}{2}\right)^2 + (y - 1)^2 = \frac{1}{4} + 1 = \frac{5}{4}$.
+  C'est un cercle $\mathcal{C}$ de centre $\Omega\left(-\frac{1}{2}, 1\right)$ et de rayon $R = \frac{\sqrt{5}}{2}$, privé du point $(-1, 0)$. **(1,25 pt)**
+
+* **Tâche 2 :** Validation de l'affirmation sur l'intensité du signal.
+  L'intensité est modélisée par $f(t) = t + 1 - te^{-t}$ pour $t \ge 0$.
+  D'après la Partie A (exercice 4), on a démontré que $f'(t) > 0$ pour tout $t$. La fonction $f$ est donc strictement croissante sur $[0, +\infty[$. L'affirmation du technicien sur la croissance est vraie.
+  Calculons l'intensité à $t = 2$ :
+  $f(2) = 2 + 1 - 2e^{-2} = 3 - \frac{2}{e^2}$.
+  Comme $e \approx 2,718$, $e^2 \approx 7,39$, $\frac{2}{e^2} \approx 0,27$.
+  $f(2) \approx 3 - 0,27 = 2,73$.
+  Puisque $2,73 > 2$, l'intensité dépasse bien le seuil de $2$ au bout de $2$ heures. L'affirmation est entièrement validée. **(1,25 pt)**
+
+* **Tâche 3 :** Analyse du réseau informatique (chaîne eulérienne).
+  La matrice d'adjacence permet de déterminer les degrés de chaque sommet (nombre de connexions) :
+  - Degré de $S_1$ : $1+1+0+1 = 3$
+  - Degré de $S_2$ : $1+1+1+0 = 3$
+  - Degré de $S_3$ : $1+1+0+1 = 3$
+  - Degré de $S_4$ : $0+1+0+1 = 2$
+  - Degré de $S_5$ : $1+0+1+1 = 3$
+  D'après le théorème d'Euler, un graphe connexe possède une chaîne eulérienne si et seulement si le nombre de sommets de degré impair est égal à $0$ ou à $2$.
+  Ici, les sommets $S_1, S_2, S_3, S_5$ sont de degré $3$ (il y a $4$ sommets de degré impair).
+  Par conséquent, il n'existe pas de chaîne eulérienne. Le technicien ne pourra pas parcourir toutes les liaisons une et une seule fois sans lever le câble. **(1,25 pt)**
+
+*Présentation : 0,5 point*

@@ -1,0 +1,213 @@
+{
+  "metadonnees": {
+    "region": "Extreme-nord",
+    "delegation": "Délégation Régionale de Extreme-nord",
+    "etablissement": "lycee de GODOLA",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $\\left(O, \\vec{u}, \\vec{v}\\right)$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $z^2 - (3+i)z + 4+3i = 0$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "On considère le nombre complexe $Z = \\frac{z - 1 - i}{z - 2}$. Déterminer l'ensemble des points $M$ d'affixe $z$ tels que $Z$ soit un nombre réel.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer et représenter l'ensemble des points $M$ d'affixe $z$ tels que $|z - 1 + i| = 3$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère les entiers naturels $a$ et $b$ définis par $a = 3^{2n+1} + 2^{n+2}$ et $b = 3^{2n} - 2^{n}$ pour tout entier naturel $n$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Démontrer que pour tout entier naturel $n$, le nombre $a + b$ est un multiple de $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $3^n$ par $7$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "En déduire le PGCD de $a$ et $b$ pour tout entier naturel $n$.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]1, +\\infty[$ par $f(x) = \\frac{x^2 - x + 1}{x - 1}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer les limites de $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la dérivée $f'(x)$ et étudier son signe pour tout $x \\in ]1, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que la droite $(\\mathcal{D})$ d'équation $y = x$ est asymptote oblique à la courbe représentative de $f$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "5.",
+                "texte": "Tracer la courbe représentative de $f$ dans un repère orthonormé.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 2.0,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout $n \\in \\mathbb{N}$, $u_{n+1} = \\frac{1}{3}u_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $u_n < 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier la monotonie de la suite $(u_n)$ et en déduire qu'elle est convergente.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Un promoteur immobilier souhaite aménager un terrain rectangulaire dont les dimensions $x$ et $y$ (en mètres) vérifient le système arithmétique suivant : $x \\times y = 2028$ et $\\text{PGCD}(x, y) = 13$, avec $x > 100$. De plus, pour sécuriser le site, il doit installer des poteaux lumineux espacés régulièrement. Le coût de chaque poteau dépend d'un code secret numérique lié à une équation de congruences qu'un technicien doit résoudre : trouver un entier naturel $N$ tel que $N \\equiv 3 \\pmod 7$ et $N \\equiv 5 \\pmod{11}$. Enfin, la production d'électricité est assurée par un système dont l'efficacité est modélisée par une fonction dont les variations garantissent un rendement optimal.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions exactes $x$ et $y$ du terrain rectangulaire du promoteur.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Résoudre le système de congruences afin d'aider le technicien à retrouver le code secret $N$ du système d'éclairage.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer la valeur minimale du coût de revient sachant qu'il est modélisé par la fonction $f$ étudiée dans la partie ressources.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de l'équation est $\\Delta = (3+i)^2 - 4(4+3i) = 8+6i - 16 - 12i = -8 - 6i = (1 - 3i)^2$. Les solutions sont $z_1 = 2+2i$ et $z_2 = 1-i$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On pose $z = x+iy$. $Z$ est réel si et seulement si sa partie imaginaire est nulle, ce qui conduit à l'équation d'une droite privée d'un point."
+          },
+          {
+            "numero": "3.",
+            "texte": "L'ensemble cherché est le cercle de centre $\\Omega(1, -1)$ et de rayon $R = 3$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On a $a + b = 3^{2n+1} + 2^{n+2} + 3^{2n} - 2^n = 3^{2n}(3+1) + 2^n(4-1) = 4 \\times 3^{2n} + 3 \\times 2^n$. Par récurrence ou par congruences, on vérifie la divisibilité par 7."
+          },
+          {
+            "numero": "2.",
+            "texte": "Les restes de la division euclidienne de $3^n$ par $7$ suivent un cycle de période $6$: $1, 3, 2, 6, 4, 5$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le PGCD de $a$ et $b$ est obtenu en appliquant l'algorithme d'Euclide adapté, donnant $7$ ou $1$ selon les valeurs de $n$ modulo $6$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Les limites aux bornes sont $\\lim_{x \\to 1^+} f(x) = +\\infty$ et $\\lim_{x \\to +\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "La dérivée est $f'(x) = \\frac{x^2 - 2x}{(x-1)^2}$. Elle est négative sur $]1, 2]$ et positive sur $[2, +\\infty[$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le tableau de variations montre un minimum atteint en $x = 2$ avec $f(2) = 3$."
+          },
+          {
+            "numero": "4.",
+            "texte": "On a $f(x) - x = \\frac{1}{x-1}$, dont la limite en $+\\infty$ est $0$, ce qui prouve que la droite d'équation $y = x$ est asymptote oblique."
+          },
+          {
+            "numero": "5.",
+            "texte": "La courbe est tracée en tenant compte de l'asymptote et du minimum."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 4",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Initialisation évidente pour $n=0$. Hérédité : si $u_n < 3$, alors $\\frac{1}{3}u_n + 2 < 1 + 2 = 3$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On calcule $u_{n+1} - u_n = -\\frac{2}{3}u_n + 2 = \\frac{2}{3}(3 - u_n) > 0$. La suite est croissante et majorée, donc convergente."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T13:49:34"
+}

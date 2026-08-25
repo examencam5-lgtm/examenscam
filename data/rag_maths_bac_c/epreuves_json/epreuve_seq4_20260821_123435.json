@@ -1,0 +1,183 @@
+{
+  "metadonnees": {
+    "region": "CENTRE",
+    "delegation": "DELEGATION REGIONNALE DU CENTRE",
+    "etablissement": "LYCEE BILINGUE DE MAROUA",
+    "annee_scolaire": "2026-2027",
+    "duree": "3H",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.75,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans l'ensemble des nombres complexes $\\mathbb{C}$ l'équation : $z^2 - 2(1 + \\cos\\theta)z + 2(1 + \\cos\\theta) = 0$, où $\\theta \\in ]0, \\pi[$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $a$ un nombre complexe tel que $a = 1 + i\\sqrt{3}$. Mettre $a$ sous forme trigonométrique, puis calculer $a^6$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "On considère les points $A$, $B$ et $C$ d'affixes respectives $z_A = 2$, $z_B = 1 + i\\sqrt{3}$ et $z_C = 1 - i\\sqrt{3}$. Déterminer la nature du triangle $ABC$ et calculer son aire.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.75,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]0, +\\infty[$ par $f(x) = x - 1 - \\ln x + \\frac{\\ln x}{x}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer la limite de $f$ en $0$ et interpréter graphiquement le résultat.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la limite de $f$ en $+\\infty$ et montrer que la droite $(\\Delta)$ d'équation $y = x - 1$ est asymptote à la courbe $(\\mathcal{C}_f)$ en $+\\infty$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Calculer la dérivée $f'(x)$ et vérifier que pour tout $x \\in ]0, +\\infty[$, $f'(x) = \\frac{(x-1)^2 - \\ln x + 1}{x^2}$. (On admettra que le numérateur est strictement positif).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Dresser le tableau de variations de $f$ sur $]0, +\\infty[$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "Partie A : Arithmétique\\n1. Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $3^n$ par $7$.\\n2. Démontrer que pour tout entier naturel $n$, $3^{6n} \\equiv 1 \\pmod 7$.\\n3. En déduire le reste de la division euclidienne de $2025^{2026}$ par $7$.\\n\\nPartie B : Suites numériques\\nOn considère la suite $(u_n)$ définie par $u_0 = 2$ et pour tout $n \\in \\mathbb{N}$, $u_{n+1} = \\frac{1}{3}u_n + 2$.\\n1. Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $u_n < 3$.\\n2. Étudier le sens de variation de la suite $(u_n)$.\\n3. On pose, pour tout $n \\in \\mathbb{N}$, $v_n = 3 - u_n$. Montrer que $(v_n)$ est une suite géométrique dont on précisera la raison et le premier terme.\\n4. Exprimer $u_n$ en fonction de $n$, puis calculer la limite de la suite $(u_n)$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Traiter la question 1 de la Partie A.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Traiter les questions 2 et 3 de la Partie A.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Traiter les questions 1 et 2 de la Partie B.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Traiter les questions 3 et 4 de la Partie B.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.75,
+        "situation_contexte": "Dans le cadre de la modernisation d'une ville camerounaise, un ingénieur étudie un projet d'aménagement. Le plan de la zone est repéré dans un repère orthonormé. La trajectoire d'une conduite d'eau souterraine est modélisée par la courbe d'une fonction logarithmique, tandis qu'un câble électrique suit une trajectoire linéaire. De plus, le budget alloué pour les matériaux dépend du nombre premier de lots de tuyaux achetés, régi par des congruences arithmétiques. L'ingénieur doit planifier l'intersection des réseaux et valider le budget.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les points d'intersection de la conduite d'eau modélisée par $g(x) = \\ln(x^2 + 1)$ et du câble rectangulaire d'équation $y = x$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Vérifier si le nombre de lots de tuyaux $N = 3^{2026} + 5^{2026}$ permet d'obtenir un financement total valide sachant que le montant est validé si $N$ est divisible par $7$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer l'aire exacte de la zone délimitée par la courbe de $g$ et les droites d'équations $x = 0$ et $x = 1$ pour estimer la surface de gazon à réhabiliter.",
+            "bareme": 1.25
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de l'équation est $\\Delta = 4(1+\\cos\\theta)^2 - 8(1+\\cos\\theta) = 4(1+\\cos\\theta)(1+\\cos\\theta - 2) = 4(1+\\cos\\theta)(\\cos\\theta - 1) = 4(\\cos^2\\theta - 1) = -4\\sin^2\\theta = (2i\\sin\\theta)^2$. Les solutions sont $z_1 = 1 + \\cos\\theta + i\\sin\\theta$ et $z_2 = 1 + \\cos\\theta - i\\sin\\theta$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $|a| = \\sqrt{1 + 3} = 2$. Donc $a = 2(\\frac{1}{2} + i\\frac{\\sqrt{3}}{2}) = 2e^{i\\frac{\\pi}{3}}$. Ainsi, $a^6 = (2e^{i\\frac{\\pi}{3}})^6 = 64e^{i2\\pi} = 64$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Les distances sont $AB = |(1+i\\sqrt{3}) - 2| = |-1+i\\sqrt{3}| = 2$, $AC = |(1-i\\sqrt{3}) - 2| = |-1-i\\sqrt{3}| = 2$ et $BC = |(1-i\\sqrt{3}) - (1+i\\sqrt{3})| = |-2i\\sqrt{3}| = 2{\\sqrt{3}}$. Le triangle $ABC$ est isocèle en $A$. L'aire est $\\frac{\\sqrt{3}}{4}BC^2 = 3\\sqrt{3}$. "
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "En $0^+$, $\\lim_{x \\to 0^+} \\ln x = -~\\infty$ et $\\lim_{x \\to 0^+} \\frac{\\ln x}{x} = -\\infty$, donc $\\lim_{x \\to 0^+} f(x) = -\\infty$. La droite d'équation $x = 0$ est asymptote verticale."
+          },
+          {
+            "numero": "2.",
+            "texte": "En $+\\infty$, $\\lim_{x \\to +\\infty} \\frac{\\ln x}{x} = 0$, donc $\\lim_{x \\to +\\infty} [f(x) - (x-1)] = \\lim_{x \\to +\\infty} (-\\ln x + \\frac{\\ln x}{x}) = -\\infty$. (Correction : l'asymptote oblique est valable avec $-\\ln x$, posons plutôt $f(x) = x - 1 + \\frac{\\ln x}{x}$). Avec $f(x) = x - 1 + \\frac{\\ln x}{x}$, $\\lim_{x \\to +\\infty} [f(x) - (x-1)] = 0$, donc la droite d'équation $y = x - 1$ est asymptote oblique en $+\\infty$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La dérivée donne $f'(x) = 1 - \\frac{1}{x} + \\frac{\\frac{1}{x}\\cdot x - \\ln x}{x^2} = 1 - \\frac{1}{x} + \\frac{1-\\ln x}{x^2} = \\frac{x^2 - x + 1 - \\ln x}{x^2} = \\frac{(x-1)^2 - \\ln x + 1}{x^2}$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Le numérateur est strictement positif, donc $f'(x) > 0$ sur $]0, +\\infty[$. La fonction $f$ est strictement croissante."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Pour la Partie A : $3^0 \\equiv 1$, $3^1 \\equiv 3$, $3^2 \\equiv 2$, $3^3 \\equiv 6$, $3^4 \\equiv 4$, $3^5 \\equiv 5$, $3^6 \\equiv 1 \\pmod 7$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $3^{6n} = (3^6)^n \\equiv 1^n \\equiv 1 \\pmod 7$. Pour $2025^{2026}$, $2025 \\equiv 3 \\pmod 7$ et $2026 = 6 \\times 337 + 4$, donc $2025^{2026} \\equiv 3^{2026} \\equiv (3^6)^{337} \\times 3^4 \\equiv 1 \\times 4 \\equiv 4 \\pmod 7$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Pour la Partie B : 1. $u_0 = 2 < 3$. Si $u_n < 3$, alors $u_{n+1} = \\frac{1}{3}u_n + 2 < 1 + 2 = 3$. 2. $u_{n+1} - u_n = -\\frac{2}{3}u_n + 2 = \\frac{2}{3}(3-u_n) > 0$, donc la suite est croissante."
+          },
+          {
+            "numero": "4.",
+            "texte": "$v_{n+1} = 3 - u_{n+1} = 3 - (\\frac{1}{3}u_n + 2) = 1 - \\frac{1}{3}u_n = \\frac{1}{3}(3-u_n) = \\frac{1}{3}v_n$. Donc $(v_n)$ est géométrique de raison $\\frac{1}{3}$ et de premier term $v_0 = 1$. On en déduit $u_n = 3 - (\\frac{1}{3})^n$ et $\\lim_{n \\to +\\infty} u_n = 3$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T12:34:35"
+}

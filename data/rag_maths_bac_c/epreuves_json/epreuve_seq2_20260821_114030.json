@@ -1,0 +1,141 @@
+{
+  "metadonnees": {
+    "region": "Centre",
+    "delegation": "centre",
+    "etablissement": "college jean tabi d'etoudi",
+    "annee_scolaire": "2026-2027",
+    "duree": "04 h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "L'espace est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère dans l'ensemble des nombres complexes $\\mathbb{C}$ l'équation $(E) : z^2 - (1 + 3i)z - 2 + 3i = 0$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer les nombres complexes $z_1$ et $z_2$ solutions de $(E)$, sachant que $z_1$ a une partie imaginaire strictement positive.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "On pose $Z = \\frac{z_1}{z_2}$. Écrire $Z$ sous forme trigonométrique, puis en déduire la valeur exacte de $\\cos\\left(\\frac{5\\pi}{12}\\right)$ et $\\sin\\left(\\frac{5\\pi}{12}\\right)$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $A$ et $B$ les points d'affixes respectives $z_1$ et $z_2$ dans le plan complexe. Déterminer la nature exacte du triangle $OAB$ et calculer son aire en $\\text{cm}^2$, l'unité graphique étant de $2\\text{ cm}$.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Dans l'ensemble des entiers relatifs $\\mathbb{Z}$, on considère l'équation $(E_1) : 17x - 29y = 4$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Vérifier que le couple $(15, 9)$ est une solution particulière de $(E_1)$, puis résoudre l'équation $(E_1)$ dans $\\mathbb{Z}^2$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, le nombre $A_n = 5^{2n} - 2^n$ est divisible par $7$ ou laisse un reste bien précis. Plus précisément, établir que $5^{2n} \\equiv 4^n \\pmod 7$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer tous les entiers naturels $n$ inférieurs à $50$ tels que $3^n + 2 \\equiv 0 \\pmod 7$.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $I = [0, 1]$ par $f(x) = \\frac{2x + 1}{x + 2}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Étudier les variations de la fonction $f$ sur $I$ et dresser son tableau de variations.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que $f(I) \\subset I$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "On définit la suite $(u_n)_{n \\in \\mathbb{N}}$ par $u_0 = 0$ et pour tout entier naturel $n$, $u_{n+1} = f(u_n)$. Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $0 \\leq u_n \\leq 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Établir que pour tout $x \\in [0, 1]$, on a $|f'(x)| \\leq \\frac{3}{4}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "En déduire que pour tout $n \\in \\mathbb{N}$, $|u_{n+1} - \\alpha| \\leq \\frac{3}{4}|u_n - \\alpha|$, où $\\alpha$ est la solution unique de l'équation $f(x) = x$ sur $[0, 1]$. Déterminer la limite de la suite $(u_n)_{n \\in \\mathbb{N}}$.",
+                "bareme": 2.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.7,
+        "situation_contexte": "Une coopérative agricole dans la région du Centre souhaite optimiser la gestion d'un terrain rectangulaire destiné à la culture maraîchère et sécuriser ses équipements. Le périmètre du terrain est délimité par l'ensemble des points $M$ d'affixe $z$ du plan complexe vérifiant $|z - 3i| + |z + 3i| = 10$. La coopérative dispose d'un capital représenté par la résolution d'un système d'équations arithmétiques pour l'achat des semences, et le coût de production journalier d'une quantité $x$ de tonnes de récolte est modélisé par une fonction numérique.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la nature géométrique exacte et une équation cartésienne de l'ensemble des points $M$ qui délimitent le terrain de la coopérative.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Résoudre dans $\\mathbb{Z}^2$ le système d'équations diophantiennes lié au budget d'achat des engrais : $\\left\\{ \\begin{matrix} 5x \\equiv 2 \\pmod 7 \\ 3y \\equiv 4 \\pmod 5 \\end{matrix}\\right.$ afin de trouver le nombre minimal de sacs commandés.",
+            "bareme": 1.6
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le bénéfice maximal ou le seuil de rentabilité sachant que la fonction de coût total est $C(x) = x^3 - 3x^2 + 12x$ pour $x \\in [0, 4]$ en centaines de milliers de francs CFA.",
+            "bareme": 1.6
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.3,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de l'équation est $\\Delta = (1+3i)^2 - 4(-2+3i) = 1 + 6i - 9 + 8 - 12i = -6i$. On cherche $\\delta = x + iy$ tel que $\\delta^2 = \\Delta$. On trouve $\\delta = \\sqrt{3} - i$ ou $-\\sqrt{3} + i$. Les solutions sont $z_1 = \\frac{1+3i + (\\sqrt{3}-i)}{2}$ et $z_2 = \\frac{1+3i - (\\sqrt{3}-i)}{2}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Après calcul, on exprime $Z = \\frac{z_1}{z_2}$ sous forme trigonométrique en utilisant les modules et arguments, puis on identifie les parties réelle et imaginaire pour trouver $\\cos\\left(\\frac{5\\pi}{12}\\right)$ et $\\sin\\left(\\frac{5\\pi}{12}\\right)$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le triangle $OAB$ est rectangle en $O$ avec des dimensions se déduisant des affixes de $z_1$ et $z_2$. L'aire est $\\mathcal{A} = \\frac{1}{2} OA \\times OB \\times (\\text{unité})^2$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T11:40:30"
+}

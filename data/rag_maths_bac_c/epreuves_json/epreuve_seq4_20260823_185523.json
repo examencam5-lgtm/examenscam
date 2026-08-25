@@ -1,0 +1,154 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\736599eda13c4b9b83dc2373e9850c0d_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, u, v)$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = 2iz + 1 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $z_A = 2 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que $f$ admet un unique point invariant $Omega$ dont on précisera l'affixe $omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Préciser la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'ensemble $(E)$ des points $M$ d'affixe $z$ tels que $|z' - omega| = 4$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $B$ le point d'affixe $z_B = 3i$. Calculer l'affixe du point $B_1$ image de $B$ par $f \\circ f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Démontrer que pour tout entier naturel $n$, l'affixe $z_n$ de l'image de $B$ par $f$ répétée $n$ fois vérifie une relation de récurrence simple, puis exprimer $z_n$ en fonction de $n$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère la fonction numérique $f$ définie sur $]0, +\\infty[$ par $f(x) = x + 1 - 2\\ln(x)$. On note $(C)$ sa courbe représentative dans un repère orthonormé $(O, I, J)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$ et préciser la branche infinie de $(C)$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet exactement deux solutions $alpha$ et $beta$ dans $]0, +\\infty[$, avec $0 < alpha < 1 < beta$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer le signe de $f(x)$ sur $]0, +\\infty[$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "1. Soit l'équation $(E) : 7x - 4y = 3$ où $(x, y) \\in \\mathbb{Z} \\times \\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer une solution particulière évidente de l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les restes de la division euclidienne de $3^n$ par $7$ suivant les valeurs de l'entier naturel $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le reste de la division euclidienne de $3^{2026} + 2$ par $7$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $n$ un entier naturel. Démontrer que $n^3 - n$ est divisible par $3$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer tous les entiers naturels $n$ tels que $n^3 + 2n \\equiv 0$ (mod 3).",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole spécialisée dans la production de maïs étudie l'évolution de son rendement annuel et la gestion d'un stock de fertilisant liquide. Le bénéfice annuel en millions de francs CFA réalisé par cette coopérative au cours des $n$ dernières années est modélisé par une suite numérique $(u_n)$ définie par $u_0 = 2$ et $u_{n+1} = \\frac{1}{2}u_n + 3$. Par ailleurs, la quantité de fertilisant restant dans la cuve principale est fonction du temps et suit une loi mathématique similaire. Pour sécuriser le transport de leur récolte vers un port fluvial distant, la coopérative utilise un camion dont la consommation en carburant est liée aux distances entre les différents entrepôts.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer l'expression de $u_n$ en fonction de $n$ et étudier la convergence de la suite $(u_n)$ afin d'estimer le bénéfice limite à long terme de la coopérative.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le montant total cumulé des bénéfices réalisés du rang $0$ au rang $5$ inclus pour planifier l'extension des entrepôts de stockage.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Justifier si la coopérative atteindra un bénéfice supérieur à $5$ millions de francs CFA à partir d'une certaine année donnée.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T18:55:23"
+}

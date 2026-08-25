@@ -1,0 +1,183 @@
+{
+  "metadonnees": {
+    "region": "ouest",
+    "delegation": "delegation regional de l'ouest",
+    "etablissement": "lycee de dsang",
+    "annee_scolaire": "2026-2027",
+    "duree": "04h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.8,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O; \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E) : 17x - 13y = 3$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $s$ la similitude plane directe de centre $\\Omega$ d'affixe $1 + i$, de rapport $2$ et d'angle $\\frac{\\pi}{3}$. Déterminer l'expression complexe de $s$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "On considère la suite de nombres complexes $(z_n)$ définie par $z_0 = 2$ et pour tout $n \\in \\mathbb{N}$, $z_{n+1} = (1 + i\\sqrt{3})z_n + 2 - i$. Exprimer $z_n$ en fonction de $n$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer l'ensemble des valeurs de l'entier naturel $n$ pour lesquelles l'affixe du point $z_n$ est un nombre réel.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]0, +\\infty[$ par $f(x) = x^2 - 2x + 1 - 3\\ln x$ et $(C)$ sa courbe représentative dans un repère orthonormé $(O; \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Montrer que pour tout $x \\in ]0, +\\infty[$, $f'(x) = \\frac{2(x-1)(x+1/2)}{x}$ (ou une forme factorisée équivalente) et dresser le tableau de variations de $f$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet exactement deux solutions $\\alpha$ et $\\beta$ dans $]0, +\\infty[$, avec $0 < \\alpha < 1 < \\beta$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Calculer l'aire en unités d'aire du domaine plan délimité par la courbe $(C)$, l'axe des abscisses et les droites d'équations $x = 1$ et $x = e$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.8,
+            "enonce_intro": "L'espace est rapporté à un repère orthonormé direct $(O; \\vec{i}, \\vec{j}, \\vec{k})$. On considère les vecteurs $\\vec{u}(1, -1, 2)$, $\\vec{v}(0, 2, 1)$ et l'espace vectoriel $E = \\mathbb{R}^3$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Soit $f$ l'endomorphisme de $E$ dont la matrice dans la base canonique est $M = \\begin{pmatrix} 1 & 0 & 1 \\\\ 2 & -1 & 1 \\\\ 0 & 1 & -1 \\end{pmatrix}$. Déterminer le noyau $\\ker(f)$ et l'image $\\text{Im}(f)$, en précisant une base pour chacun d'eux.",
+                "bareme": 2.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer le produit vectoriel $\\vec{w} = \\vec{u} \\land \\vec{v}$ et en déduire l'aire du triangle formé par les points $O$, $A(1, -1, 2)$ et $B(0, 2, 1)$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer l'équation cartésienne du plan $(P)$ passant par le point $C(1, 1, 1)$ et orthogonal au vecteur $\\vec{w}$.",
+                "bareme": 1.3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.7,
+        "situation_contexte": "Un ingénieur forestier gère une réserve naturelle. La croissance de la population de certaines espèces rares de mammifères dans cette réserve est modélisée par une suite numérique $(u_n)$ où $u_n$ représente le nombre de milliers d'individus l'année $2020 + n$. On a $u_0 = 1.5$ et pour tout $n \\in \\mathbb{N}$, $u_{n+1} = \\frac{4u_n}{u_n + 2}$. Par ailleurs, pour financer la protection de la réserve, l'ingénieur place une partie des fonds dans une institution financière où les intérêts et les remboursements utilisent des calculs de congruences. Enfin, la trajectoire d'un drone de surveillance est suivie dans un plan muni d'un repère complexe par l'équation de position $Z = \\frac{z - 2i}{z + 1 - i}$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Étudier la monotonie de la suite $(u_n)$ et prouver qu'elle converge vers une limite que l'on précisera.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le plus petit entier naturel $n$ à partir duquel la population dépassera $1.9$ milliers d'individus.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer l'ensemble des points $M$ d'affixe $z$ pour lesquels l'affixe du vecteur de surveillance $Z$ est un nombre imaginaire pur.",
+            "bareme": 1.7
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On résout $17x - 13y = 3$. Une solution particulière est évidente ou trouvée par l'algorithme d'Euclide : $(2, 1)$. L'ensemble des solutions est $\\{(13k + 2, 17k + 1) / k \\in \\mathbb{Z}\\}$.பிலோ"
+          },
+          {
+            "numero": "2.",
+            "texte": "L'expression complexe est $z' - \\omega = e^{i\\pi/3}(z - \\omega)$ avec $\\omega = 1+i$ et rapport $2$. On obtient $z' = (1 + i\\sqrt{3})(z - 1 - i) + 1 + i$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Par récurrence ou par changement de suite, on exprime $z_n$ en fonction de $n$ en utilisant la forme exponentielle de $1 + i\\sqrt{3}$."
+          },
+          {
+            "numero": "4.",
+            "texte": "L'affixe est réelle si sa partie imaginaire est nulle, ce qui conduit à une condition sur $n$ modulo un certain entier."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Domaine $]0, +\\infty[$. Limite en $0^+$ : $+\\infty$. Limite en $+\\infty$ : $+\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Dérivée $f'(x) = 2x - 2 - \\frac{3}{x} = \\frac{2x^2 - 2x - 3}{x}$, signe et variations établis."
+          },
+          {
+            "numero": "3.",
+            "texte": "Théorème des valeurs intermédiaires sur $]0, 1[$ et $]1, +\\infty[$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Calcul d'intégrale à l'aide d'une intégration par parties pour les termes en $\\ln x$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Résolution du système $MX = 0$ pour $\\ker(f)$ et analyse de l'image."
+          },
+          {
+            "numero": "2.",
+            "texte": "Calcul direct du produit vectoriel $\\vec{u} \\land \\vec{v} = (-3, -1, 2)$ et aire du triangle égale à $\\frac{1}{2}\\|\\vec{u} \\land \\vec{v}\\|$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Équation du plan : $-3x - y + 2z + d = 0$, et en remplaçant par $C(1, 1, 1)$, on trouve $-3 - 1 + 2 + d = 0 \\implies d = 2$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T11:16:09"
+}

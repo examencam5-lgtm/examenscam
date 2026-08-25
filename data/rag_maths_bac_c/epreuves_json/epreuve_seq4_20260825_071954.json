@@ -1,0 +1,164 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\e2331325377d4deaaaf9198960ab9ef6_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point $Ω$ invariant par $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Exprimer $z' - z_Ω$ en fonction de $z - z_Ω$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $A$ le point d'affixe $z_A = 3 + 2i$. Calculer l'affixe du point $A'$ image de $A$ par $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Déterminer l'ensemble $(D)$ des points $M$ d'affixe $z$ tels que $|z' - 2| = 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Montrer que pour tout nombre complexe $z$, on a $z' - i = i(z - i)$. En déduire l'ensemble $(C)$ des points $M$ tels que $z'$ soit un réel pur.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.c)",
+                "texte": "Préciser la nature géométrique de l'ensemble $(C)$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $g$ la fonction définie sur $]0, +\\infty[$ par $g(x) = x^2 - 1 + 2\\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les limites de $g$ aux bornes de son ensemble de définition.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la dérivée $g'(x)$ et étudier son signe sur $]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Dresser le tableau de variation de $g$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ sur $]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Vérifier que $0,5 < \\alpha < 0,6$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.c)",
+                "texte": "En déduire le signe de $g(x)$ suivant les valeurs de $x$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $f$ la fonction définie sur $]0, +\\infty[$ par $f(x) = x - 1 + \\frac{\\ln(x)}{x}$. Calculer la limite de $f$ en $0$ et en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer $f'(x)$ et montrer que $f'(x) = \\frac{g(x)}{x^2}$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'équation (E) dans $\\mathbb{Z} \\times \\mathbb{Z}$ : $7x - 4y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de l'équation (E).",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer, suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne par $5$ de $3^n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le reste de la division euclidienne par $5$ de $3^{2026} + 2^{2026}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Démontrer que pour tout entier naturel $n$, l'entier $n^5 - n$ est divisible par $5$.",
+                "bareme": 1.25
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Un jeune entrepreneur souhaite organiser la distribution de ses produits agricoles dans deux supermarchés situés dans différentes zones. Pour optimiser le transport, il étudie le réseau routier modélisé par un graphe et la gestion de ses stocks d'engrais chimiques soumis à des lois arithmétiques. Le coût total de l'opération dépend du nombre de tonnes de produits $x$ transportés et obéit à des contraintes de livraison exprimées par des équations diophantiennes.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre minimal de voyages nécessaires sachant que le nombre de tonnes $x$ et le nombre de camions $y$ vérifient la relation $7x - 4y = 3$, avec $x$ compris entre $10$ et $20$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le bénéfice réalisé par l'entrepreneur sachant qu'il est modélisé par une fonction $f(x) = x - 1 + \\frac{\\ln(x)}{x}$ pour $x = \\alpha$ tonnes, où $\\alpha$ est la solution de l'équation $x^2 - 1 + 2\\ln(x) = 0$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Justifier si l'entrepreneur peut respecter son délai de livraison sachant que le temps de parcours en heures est proportionnel à $3^{2026} + 2^{2026}$ modulo $5$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-25T07:19:54"
+}

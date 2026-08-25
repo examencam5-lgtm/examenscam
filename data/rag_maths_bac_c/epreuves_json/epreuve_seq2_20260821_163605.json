@@ -1,0 +1,201 @@
+{
+  "metadonnees": {
+    "region": "EXTREME-NORD",
+    "delegation": "Délégation Régionale de EXTREME-NORD",
+    "etablissement": "lycee bilingue de BOGO",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation $(E) : z^3 - (3+i)z^2 + (4+2i)z - 4 = 0$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Montrer que $(E)$ admet une solution imaginaire pure que l'on précisera.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer les nombres complexes $a$ et $b$ tels que pour tout nombre complexe $z$, on ait $z^3 - (3+i)z^2 + (4+2i)z - 4 = (z - 2i)(z^2 + az + b)$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans l'ensemble $\\mathbb{C}$ des nombres complexes l'équation $(E)$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "4.",
+                "texte": "Soient $A$, $B$ et $C$ les points d'affixes respectives $z_A = 2i$, $z_B = 1+i$ et $z_C = 2$. Calculer l'affixe du vecteur $\\overrightarrow{AB}$ et celle du vecteur $\\overrightarrow{AC}$, puis en déduire la nature du triangle $ABC$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'ensemble des entiers relatifs $\\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne de $3^n$ par $7$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "En déduire le reste de la division euclidienne de $A = 2023^{2024} + 2024^{2023}$ par $7$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{Z}^2$ l'équation $(E') : 11x - 17y = 4$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer les solutions $(x, y)$ de $(E')$ telles que $0 \\le x \\le 30$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "Soit $f$ la fonction numérique d'une variable réelle définie par $f(x) = x + 1 + \\sqrt{x^2 + 2x}$. On note $(C)$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer l'ensemble de définition $\\mathcal{D}_f$ de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer les limites de $f$ aux bornes de son ensemble de définition.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que la droite $(D_1)$ d'équation $y = 2x + 2$ est asymptote à $(C)$ en $+\\infty$, et que la droite $(D_2)$ d'équation $y = 0$ est asymptote à $(C)$ en $-\\infty$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Étudier la dérivabilité de $f$ en $x_0 = 0$ et en $x_1 = -2$, puis interpréter graphiquement les résultats.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Dresser le tableau de variations de $f$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Dans le cadre de l'aménagement d'un parc d'attractions, un ingénieur en mathématiques souhaite concevoir un système de sécurité basé sur des trajectoires complexes et des codes numériques. Les portes d'accès principales nécessitent la résolution de trois énigmes distinctes pour s'ouvrir :\n1. Le nombre de visiteurs quotidiens $N$ (en centaines) est déterminé par le plus grand diviseur commun et le plus petit multiple commun de deux codes secrets $a$ et $b$ vérifiant $PPCM(a, b) = 180$, $PGCD(a, b) = 15$ et $a + 30 = b$.\n2. La position de la caméra centrale de surveillance est repérée dans le plan complexe par un point $M$ d'affixe $z$ tel que le nombre complexe $Z = \\frac{z - 1}{z - i}$ soit un nombre réel.\n3. Le budget initial d'installation (en millions de francs) est calculé à l'aide de la somme des termes consécutifs d'une suite géométrique dont le premier terme est lié au nombre de portes et la raison au nombre de zones sécurisées.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les valeurs des codes secrets $a$ et $b$, puis en déduire le nombre de visiteurs quotidiens $N$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer et caractériser l'ensemble géométrique des points $M$ dont l'affixe $z$ vérifie que $Z$ est un nombre réel.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le budget initial d'installation sachant qu'il correspond à la somme des cinq premiers termes d'une suite géométrique de premier terme $u_0 = 2$ et de raison $q = 3$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Soit $z_0 = iy$ avec $y \\in \\mathbb{R}$. En remplaçant dans $(E)$, on trouve par identification que $z_0 = 2i$ est solution évidente."
+          },
+          {
+            "numero": "2.",
+            "texte": "Par division euclidienne ou par identification des coefficients, on obtient $a = -3$ et $b = 2$."
+          },
+          {
+            "numero": "3.",
+            "texte": "L'équation se factorise en $(z - 2i)(z^2 - 3z + 2) = 0$. Les solutions sont $z_1 = 2i$, $z_2 = 1$ et $z_3 = 2$."
+          },
+          {
+            "numero": "4.",
+            "texte": "On a $\\overrightarrow{AB}(1, 1-i)$ et $\\overrightarrow{AC}(2, -2i)$. Le triangle $ABC$ est rectangle isocèle en $A$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Pour $n \\equiv 0 \\pmod 6$, $3^n \\equiv 1 \\pmod 7$ ; pour $n \\equiv 1 \\pmod 6$, $3^n \\equiv 3 \\pmod 7$ ; pour $n \\equiv 2 \\pmod 6$, $3^n \\equiv 2 \\pmod 7$, etc."
+          },
+          {
+            "numero": "2.",
+            "texte": "On calcule les congruences de $2023$ et $2024$ modulo $7$, puis on applique les puissances pour trouver le reste final qui est égal à $5$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Une solution particulière évidente est $(x_0, y_0) = (4, 2)$. L'ensemble des solutions est l'ensemble des couples $(17k + 4, 11k + 2)$ avec $k \\in \\mathbb{Z}."
+          },
+          {
+            "numero": "4.",
+            "texte": "La condition $0 \\le 17k + 4 \\le 30$ donne $k = 0$, d'où l'unique solution $(4, 2)$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On résout $x^2 + 2x \\ge 0$, ce qui donne $\\mathcal{D}_f = ]-\\infty, -2] \\cup [0, +\\infty[$."
+          },
+          {
+            "numero": "2.",
+            "texte": "$\\lim_{x \\to +\\infty} f(x) = +\\infty$ et $\\lim_{x \\to -\\infty} f(x) = 0$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Calcul de la limite de $f(x) - (2x+2)$ en $+\\infty$ donne $0$, donc $(D_1)$ est asymptote. De même en $-\\infty$, $f(x)$ tend vers $0$."
+          },
+          {
+            "numero": "4.",
+            "texte": "La fonction n'est pas dérivable à droite en $0$ ni à gauche en $-2$ (tangentes verticales)."
+          },
+          {
+            "numero": "5.",
+            "texte": "Dressons le tableau de variations : $f$ est strictement croissante sur son domaine."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T16:36:05"
+}

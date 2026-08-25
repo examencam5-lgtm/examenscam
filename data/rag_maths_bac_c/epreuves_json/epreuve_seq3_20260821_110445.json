@@ -1,0 +1,231 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "Délégation Régionale de Extrême-Nord",
+    "etablissement": "Établissement",
+    "annee_scolaire": "2026-2027",
+    "duree": "4 heurs",
+    "coefficient": "7",
+    "bilingue": false
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui, à tout point $M$ d'affixe $z$, associe le point $M'$ d'affixe $z'$ définie par $z' = \\frac{z - 2}{z + i}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'ensemble des points $M$ pour lesquels $f(M)$ est un point de l'axe réel.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'ensemble des points $M$ pour lesquels $f(M)$ est un point de l'axe imaginaire pur.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $A$ le point d'affixe $2$ et $B$ le point d'affixe $-i$. Interpréter géométriquement le module et un argument de $z'$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "En déduire l'ensemble des points $M$ tels que $|z'| = 1$, puis l'ensemble des points $M$ tels que $\\arg(z') \\equiv \\frac{\\pi}{2} [\\pi]$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_n + 3$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n < 6$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier la monotonie de la suite $(u_n)$ et en déduire qu'elle est convergente.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "On définit la suite $(v_n)$ par $v_n = u_n - 6$ pour tout $n \\in \\mathbb{N}$. Démontrer que $(v_n)$ est une suite géométrique dont on précisera la raison et le premier terme.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Exprimer $u_n$ en fonction de $n$, puis calculer la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\\infty$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la fonction $g$ définie sur l'intervalle $]0, +\\infty[$ par $g(x) = x - 1 + \\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $g$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier le sens de variation de $g$ et dresser son tableau de variations.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ dans $]0, +\\infty[$ et vérifier que $\\alpha \\in [0.5, 1.5]$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer le signe de $g(x)$ suivant les valeurs de $x$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "Dans l'anneau $\\mathbb{Z}$, on considère l'équation (E) : $17x - 12y = 5$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de l'équation (E).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer les solutions de (E) telles que $x$ et $y$ soient multiples de $3$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "M. TCHANTCHOU gère une entreprise de production d'objets métalliques. Pour le transport de ses marchandises, il utilise deux types de véhicules. La distance totale à parcourir pour livrer un client est liée à la résolution d'un problème arithmétique et géométrique. Le bénéfice en dizaines de milliers de francs de l'entreprise est modélisé par une fonction numérique. De plus, pour un stockage optimal, la forme d'un réservoir est régie par des nombres complexes. Le nombre de pièces produites par jour, noté $n$, vérifie $17n \\equiv 5 \\pmod{12}$. Enfin, pour l'extension de son entrepôt, il doit verser un acompte calculé à l'aide de suites arithmétiques.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre minimal de pièces $n$ produites par jour sachant qu'il est compris entre $1$ et $50$, en utilisant l'équation arithmétique associée.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer la distance optimale de livraison sachant qu'elle correspond au module du nombre complexe $z'$ tel que $z' = \\frac{z - 2}{z + i}$ pour $z = 3 + 4i$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer le capital initial nécessaire pour l'extension de l'entrepôt sachant que la suite des versements mensuels est géométrique de premier terme $u_0 = 2$ millions et de raison $\\frac{1}{2}$, et calculer le total versé à long terme.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "Pour que $f(M)$ soit réel, il faut que $z' = \\overline{z'}$, ce qui conduit à l'ensemble des points $M$ privé de $-i$ sur une droite ou un cercle."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "Pour que $f(M)$ soit imaginaire pur, on utilise la condition $\\text{Re}(z') = 0 avec $z \\neq -i$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $|z'| = \\frac{AM}{BM}$ et $\\arg(z') = (\\vec{v}, \\overrightarrow{BM}) - (\\vec{v}, \\overrightarrow{AM}) \\pmod{2\\pi} = (\\overrightarrow{BM}, \\overrightarrow{AM}) \\pmod{2\\pi}."
+          },
+          {
+            "numero": "3.",
+            "texte": "L'ensemble des points $M$ tels que $|z'| = 1$ est la médiatrice du segment $[AB]$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Démonstration par récurrence : pour $n=0$, $u_0 = 2 < 6$. Si $u_n < 6$, alors $u_{n+1} = \\frac{1}{2}u_n + 3 < \\frac{1}{2}(6) + 3 = 6$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $u_{n+1} - u_n = -\\frac{1}{2}u_n + 3 = -\\frac{1}{2}(u_n - 6) > 0$, donc la suite est croissante et majorée par $6$, donc convergente."
+          },
+          {
+            "numero": "3.",
+            "texte": "$v_{n+1} = u_{n+1} - 6 = \\frac{1}{2}u_n - 3 = \\frac{1}{2}(u_n - 6) = \\frac{1}{2}v_n$. La suite $(v_n)$ est géométrique de raison $q = \\frac{1}{2}$ et de premier terme $v_0 = u_0 - 6 = -4$."
+          },
+          {
+            "numero": "4.",
+            "texte": "On en déduit $v_n = -4 \\left(\\frac{1}{2}\\right)^n$, soit $u_n = 6 - 4 \\left(\\frac{1}{2}\\right)^n$. La limite de $(u_n)$ quand $n$ tend vers $+\\infty$ est $6$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "$\\lim_{x \\to 0^+} g(x) = -\\infty$ et $\\lim_{x \\to +\\infty} g(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "La dérivée est $g'(x) = 1 + \\frac{1}{x} > 0$ sur $]0, +\\infty[$. La fonction $g$ est strictement croissante."
+          },
+          {
+            "numero": "3.",
+            "texte": "D'après le théorème des valeurs intermédiaires, $g$ étant continue et strictement croissante, l'équation $g(x) = 0$ admet une unique solution $\\alpha$."
+          },
+          {
+            "numero": "4.",
+            "texte": "$g(x) < 0$ pour $x \\in ]0, \\alpha[$ et $g(x) > 0$ pour $x \\in ]\\alpha, +\\infty[$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 4",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Pour $x=1$ et $y=1$, $17(1) - 12(1) = 5$. Le couple $(1, 1)$ est solution."
+          },
+          {
+            "numero": "2.",
+            "texte": "L'ensemble des solutions est l'ensemble des couples $(12k + 1, 17k + 1)$ avec $k \\in \\mathbb{Z}$."
+          },
+          {
+            "numero": "3.",
+            "texte": "On trouve les conditions sur $k$ pour que $12k+1$ et $17k+1$ soient des multiples de $3$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T11:04:45"
+}

@@ -1,0 +1,164 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\e5eaab37779145b8a040423b93229cac_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]0; +\\infty[$ par $f(x) = x - 2 + \\ln x$ et $(C_f)$ sa courbe représentative dans un repère orthonormé $(O; \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$ et interpréter graphiquement le résultat.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$ et déterminer la branche infinie de $(C_f)$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0; +\\infty[$ et étudier son signe.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations complet de $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans $]0; +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $\\alpha$ appartient à l'intervalle $[1; 2]$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "4.a)",
+                "texte": "Préciser le signe de $f(x)$ suivant les valeurs de $x$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "4.b)",
+                "texte": "Tracer la courbe $(C_f)$ et sa tangente au point d'abscisse $1$ dans le repère.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O; \\vec{u}, \\vec{v})$. On considère l'application $s$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ tel que $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer la nature et les éléments caractéristiques de l'application $s$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point invariant par $s$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $3x - 5y = 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer les entiers naturels $n$ tels que $2^n \\equiv 3$ (mod 5).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Déterminer le PGCD de $126$ et $45$, puis en déduire le PPCM de ces deux nombres.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Trouver tous les couples d'entiers $(a, b)$ tels que $PGCD(a, b) = 9$ et $a + b = 54$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 3$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_n + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n > 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On pose, pour tout entier naturel $n$, $v_n = u_n - 2$. Montrer que $(v_n)$ est une suite géométrique dont on précisera la raison et le premier terme.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $v_n$ puis $u_n$ en fonction de $n$, et calculer la limite de la suite $(u_n)$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "M. Talla est un entrepreneur qui gère une fabrique de jus naturels à Yaoundé. Pour le transport de sa production vers un point de vente, il étudie la rentabilité et la logistique. Le coût de production en milliers de francs CFA de $x$ centaines de litres de jus est modélisé par la fonction $C(x) = x^2 - 2\\ln(x + 1)$ pour $x \\in [0; 5]$. Par ailleurs, pour acheminer rapidement ses produits, il modélise le réseau routier à l'aide d'un graphe connexe pondéré où les sommets représentent des carrefours et les arêtes les durées en minutes entre ces carrefours. Le total des ventes dépend d'une quantité initiale liée à un paramètre statistique $x_0$ extrait d'une série mesurée sur les ventes des mois précédents, vérifiant $x_0 = 2$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le coût marginal de production lorsque M. Talla produit $3$ centaines de litres de jus, puis calculer la valeur exacte de ce coût pour $x = 3$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "À l'aide d'un algorithme approprié sur le graphe de transport, déterminer le chemin le plus court en termes de durée pour relier le point de production au point de vente, et donner cette durée minimale sachant que le point de départ est soumis à une contrainte de temps linéaire.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le bénéfice réalisé par M. Talla pour une production de $4$ centaines de litres si le prix de vente unitaire est fixé à $10$ milliers de francs CFA, et conclure sur la viabilité de cette production.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T14:06:46"
+}

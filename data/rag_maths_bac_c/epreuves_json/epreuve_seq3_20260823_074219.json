@@ -1,0 +1,181 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\6a6ccffec03a4815a52da26a0fa8cf95_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $0; u; v$. On considère l'application $f$ du plan dans lui-même qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $1 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "On considère l'équation $z^{2} - (3 + i)z + 2 + 2i = 0$. Montrer que le discriminant de cette équation est $\\Delta = (1 - i)^{2}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes $\\mathbb{C}$ cette équation.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Écrire sous forme trigonométrique le nombre complexe $z_{1} = 1 + i\\sqrt{3}$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire les formes algébrique et exponentielle du nombre complexe $z_{1}^{6}$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "On considère la fonction $f$ définie sur l'intervalle $0; +\\infty$ par $f(x) = x + 1 - \\ln x$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$ à droite.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$ et préciser la nature de la branche infinie en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée première $f'(x)$ pour tout $x \\in 0; +\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variations complet de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 3$ admet exactement deux solutions distinctes $\\alpha$ et $\\beta$ dans $0; +\\infty$ avec $\\alpha < \\beta$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $\\alpha \\in 0; 1$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit $(u_{n})$ la suite numérique définie par $u_{0} = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_{n} + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les termes $u_{1}$ et $u_{2}$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_{n} > 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout entier naturel $n$, $u_{n+1} - u_{n} = -\\frac{1}{2}(u_{n} - 2)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le sens de variation de la suite $(u_{n})$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On pose pour tout entier naturel $n$, $v_{n} = u_{n} - 2$. Montrer que $(v_{n})$ est une suite géométrique de raison $\\frac{1}{2}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $u_{n}$ en fonction de $n$ puis calculer la limite de la suite $(u_{n})$ lorsque $n$ tend vers $+\\infty$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère dans l'ensemble des entiers relatifs $\\mathbb{Z}$ l'équation $(E) : 7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer le reste de la division euclidienne de $7^{n}$ par $5$ pour tout entier naturel $n$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que $7^{2026} + 2$ est divisible par $5$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de la construction d'un complexe scolaire, un entrepreneur nommé Monsieur KAMGANG souhaite aménager un espace rectangulaire de détente pour les élèves. Les dimensions $x$ et $y$ en dizaines de mètres de cet espace vérifient l'équation $x^{2} - y^{2} = 16$ avec $x > y > 0$. Pour clôturer ce terrain, il achète du grillage dont le prix est lié au nombre complexe $Z = 3 + 4i$. Par ailleurs, la gestion financière de ce projet est modélisée par une suite numérique $(S_{n})$ représentant les dépenses cumulées en centaines de milliers de francs CFA au bout de $n$ mois, telle que $S_{n+1} = \\frac{1}{2}S_{n} + 1$ avec $S_{0} = 2$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les dimensions exactes $x$ et $y$ de l'espace de détente sachant que le périmètre total de la parcelle est lié au module du nombre complexe $Z = 3 + 4i$ multiplié par un facteur approprié.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le montant total des dépenses cumulées au bout de $3$ mois pour l'aménagement de ce site en utilisant la suite des dépenses $(S_{n})$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Estimer le seuil limite des dépenses cumulées de ce projet lorsque la durée des travaux s'indéfinit à long terme.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T07:42:19"
+}

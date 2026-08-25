@@ -1,0 +1,139 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\7c474db8e8d145aba43e8a2229c3d0da_final.png"
+  },
+  "contenu": {
+    "sequence": 6,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ du plan dans lui-même qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = (1 + i \\sqrt{3})z + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Préciser la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point $I$, invariant par $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Exprimer $x'$ et $y'$ en fonction de $x$ et $y$, où $z = x + iy$ et $z' = x' + iy'$_.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire une équation cartésienne de l'ensemble $(E)$ des points $M$ dont l'image par $f$ a une ordonnée nulle.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Reconnaître la nature géométrique de l'ensemble $(E)$ ainsi obtenu.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la fonction $g$ définie sur $]0, +\\infty[$ par $g(x) = x - \\ln(x)$. On note $(C)$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les limites de $g$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Étudier les variations de la fonction $g$ et dresser son tableau de variation.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Montrer que la droite $(D)$ d'équation $y = x$ est une asymptote oblique à la courbe $(C)$ en $+\\infty$, et préciser la position relative de $(C)$ et $(D)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Calculer à l'aide d'une intégration par parties l'intégrale $I = \\int_{1}^{e} \\ln(x) dx$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire l'aire du domaine plan délimité par la courbe $(C)$, l'axe des abscisses et les droites d'équations $x = 1$ et $x = e$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 6.0,
+            "enonce_intro": "Une urne contient 3 boules rouges, 2 boules vertes et 1 boule noire, toutes indiscernables au toucher. Un joueur tire simultanément et au hasard 3 boules de l'urne.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le nombre de tirages possibles.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la probabilité de l'événement $A$: \"obtenir exactement deux boules rouges\".",
+                "bareme": 1.25
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Calculer la probabilité de l'événement $B$: \"obtenir au moins une boule noire\".",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "On associe à chaque tirage un gain $X$ algébrique : gagner 1000 francs pour chaque boule rouge obtenue et perdre 2000 francs pour la boule noire obtenue. Déterminer la loi de probabilité de la variable aléatoire $X$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Calculer l'espérance mathématique de la variable aléatoire $X$.",
+                "bareme": 1.25
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Un entrepreneur souhaite aménager un terrain rectangulaire destiné à la culture maraîchère, d'une superficie totale de $120 \\text{ m}^2$. Pour sécuriser son investissement, il modélise la croissance d'une population de parasites menaçant ses cultures par une suite numérique $(u_n)$ définie par son premier terme $u_0 = 10$ et la relation de récurrence $u_{n+1} = \\frac{1}{2}u_n + 3$ pour tout entier naturel $n$. De plus, le coût d'irrigation journalier en milliers de francs est relié à une fonction de coût $C(t) = t e^{-t}$ où $t$ représente le temps en semaines.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer par un raisonnement par récurrence que pour tout entier naturel $n$, on a $u_n < 6$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Étudier la monotonie de la suite $(u_n)$ et en déduire sa convergence.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer la dépense totale cumulée en irrigation entre la semaine $t = 0$ et la semaine $t = 2$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-25T13:37:29"
+}

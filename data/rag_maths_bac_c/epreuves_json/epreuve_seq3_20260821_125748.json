@@ -1,0 +1,167 @@
+{
+  "metadonnees": {
+    "region": "ouest",
+    "delegation": "DELEGATION REGIONNALE De l'ouest",
+    "etablissement": "lycee classsique dsang",
+    "annee_scolaire": "2026-2027",
+    "duree": "4h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ définie par $z' = \\frac{z - 2i}{z + 1}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer l'ensemble de définition $\\mathcal{D}_f$ de l'application $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer l'ensemble des points $M$ d'affixe $z$ tels que $z'$ soit un nombre réel pur.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $A$ le point d'affixe $2i$ et $B$ le point d'affixe $-1$. Interpréter géométriquement le module et un argument de $z'$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer et construire l'ensemble des points $M$ tels que $|z'| = 1$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{2u_n + 3}{u_n + 2}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Montrer que pour tout entier naturel $n$, $u_n > \\sqrt{3}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier la monotonie de la suite $(u_n)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Établir que pour tout entier naturel $n$, $|u_{n+1} - \\sqrt{3}| \\le \\frac{1}{2+~\\sqrt{3}} |u_n - \\sqrt{3}|$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "En déduire la limite de la suite $(u_n)$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.0,
+            "enonce_intro": "On considère la fonction $g$ définie sur $]-1, 1[$ par $g(x) = \\ln\\left(\\frac{1+x}{1-x}\\right)$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Étudier la parité et les variations de $g$ sur $]-1, 1[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer les limites de $g$ aux bornes de son ensemble de définition.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que $g$ réalise une bijection de $]-1, 1[$ vers $\\mathbb{R}$ et expliciter sa bijection réciproque $g^{-1}$.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère l'équation $(E) : 17x - 24y = 5$ dans $\\mathbb{Z} \\times \\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer le PGCD de $17$ et $24$. Que peut-on en déduire quant à l'existence de solutions pour $(E)$ ?",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Trouver une solution particulière $(x_0, y_0)$ de l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Dans le cadre de l'organisation d'un festival international de mathématiques au Cameroun, un comité souhaite distribuer des kits comprenant des tablettes numériques et des livres scientifiques. Le nombre total de participants est compris entre $1500$ et $2000$. Si on regroupe les participants par paquets de $17$, il reste $5$ personnes. Si on les regroupe par paquets de $24$, il reste $12$ personnes. Par ailleurs, pour l'installation d'un réseau de communication entre deux sites $A$ et $B$ modélisés par des points du plan complexe, les ingénieurs utilisent des transformations géométriques basées sur les nombres complexes pour optimiser les signaux.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre exact de participants au festival.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Soit $z_A = 2 + 3i$ l'affixe du site $A$ et $z_B = 5 + 7i$ l'affixe du site $B$. Déterminer l'écriture complexe de la similitude directe $s$ de centre $A$, de rapport $2$ et d'angle $\\frac{\\pi}{3}$, puis trouver l'affixe du site $B'$ image de $B$ par $s$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer l'affixe du point d'intersection des signaux si la trajectoire est régie par l'équation complexe $2z + i\\bar{z} = 5 + i$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "L'expression $f(z)$ existe si et seulement si $z + 1 \\neq 0$, soit $z \\neq -1$. Ainsi, $\\mathcal{D}_f = \\mathbb{C} \\setminus \\{-1\\}$.낵"
+          },
+          {
+            "numero": "2.",
+            "texte": "On pose $z = x + iy$ avec $z \\neq -1$. On a $z' = \\frac{(x - 2i + iy)(x + 1 - iy)}{(x+1)^2 + y^2}$. En séparant partie réelle et partie nulle, $z'$ est imaginaire pur si et seulement si sa partie réelle est nulle, ce qui donne l'équation d'un cercle privé d'un point."
+          },
+          {
+            "numero": "3.",
+            "texte": "Géométriquement, $|z'| = \\frac{AM}{BM}$ et $\\arg(z') \\equiv (\\vec{BM}, \\vec{AM}) \\ [2\\pi]$."
+          },
+          {
+            "numero": "4.",
+            "texte": "|z'| = 1 $\\iff AM = BM$. L'ensemble cherché est la médiatrice du segment $[AB]$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T12:57:48"
+}

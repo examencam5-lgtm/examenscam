@@ -1,0 +1,159 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\00dc0424636f468eb27e5a075c822514_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $g$ la fonction définie sur $]0; +\\infty[$ par $g(x) = x^2 + 1 - \\ln x$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $g$ en $0$ et interpréter graphiquement.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $g$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $g'(x)$ pour tout $x \\in ]0; +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $g'(x)$ puis dresser le tableau de variation de $g$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Démontrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ sur $]0; +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $0.5 \\leq \\alpha \\leq 0.7$ et en déduire le signe de $g(x)$ sur $]0; +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Établir que $\\ln \\alpha = \\alpha^2 + 1$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation (E) d'inconnue complexe $z$ : $z^2 - (3+i)z + 2+2i = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le discriminant $\\Delta$ de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer une racine carrée complexe de $\\Delta$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation (E) et écrire les solutions sous forme algébrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $A$ et $B$ les points d'affixes respectives $z_A = 2$ et $z_B = 1+i$. Placer ces points dans le repère.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer le module et un argument de l'affixe du vecteur $\\vec{AB}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "4.",
+                "texte": "Caractérer l'ensemble des points $M$ d'affixe $z$ tels que $|z - 2| = |z - 1 - i|$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit (u_n) la suite définie par $u_0 = 3$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $u_n \\geq 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Démontrer que la suite $(u_n)$ est décroissante.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente et calculer sa limite.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On pose pour tout $n \\in \\mathbb{N}$, $v_n = u_n - 3$. Démontrer que $(v_n)$ est une suite géométrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $u_n$ en fonction de $n$.",
+                "bareme": 0.5
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Un entrepreneur souhaite optimiser la production de sa ferme située dans la région de l'Ouest. Le coût total de production de $x$ tonnes d'un certain engrais biologique, exprimé en millions de francs CFA, est modélisé par la fonction $f(x) = x - 1 + x e^{1-x}$ pour $x \\in [0; 3]$. Le prix de vente d'une tonne de cet engrais est fixé à 2 millions de francs CFA. L'entrepreneur réalise également une étude statistique sur l'efficacité de son personnel, modélisée par des variables arithmétiques et géométriques.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la quantité d'engrais $x_0$ en tonnes que l'entrepreneur doit produire pour que le bénéfice réalisé soit maximal, sachant que le bénéfice est la différence entre la recette totale et le coût total de production $f(x)$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le coût marginal de production exact lorsque la quantité produite est de 1 tonne, en utilisant la fonction dérivée de $f$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer la valeur seuil de production à partir de laquelle le coût de production dépasse la recette totale, justifiant ainsi la viabilité économique de l'entreprise sur l'intervalle $[0; 3]$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T08:04:11"
+}

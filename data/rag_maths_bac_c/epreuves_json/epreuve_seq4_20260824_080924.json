@@ -1,0 +1,139 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\330879018cb549109dd966ee960b7244_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ telle que $z' = i z + 2 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $z_A = 1$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer que $f$ admet un unique point invariant $I$ dont on précisera l'affixe $z_I$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Préciser la nature et les éléments caractéristiques de la transformation $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Donner l'expression de l'affixe $z''$ de l'image de $M'$ par la transformation réciproque $f^{-1}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer l'ensemble $(\\Delta)$ des points $M$ d'affixe $z$ tels que $|z' - i| = 3$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit $g$ la fonction numérique définie sur l'intervalle $]0, +\\infty[$ par $g(x) = x^2 - 1 - 2\\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $g$ en $0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $g$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $g'(x)$ pour tout $x \\in ]0, +\\infty[$ et étudier son signe.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations de la fonction $g$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Démontrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ dans $]0, +\\infty[$ et que $\\alpha \\in [1, 2]$.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "On considère l'ensemble des entiers naturels. Soit (E) l'équation d'inconnue $(x, y) \\in \\mathbb{Z} \\times \\mathbb{Z}$ : $7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les restes successifs de la division euclidienne de $3^n$ par $7$ suivant les valeurs de l'entier naturel $n$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le reste de la division euclidienne de $3^{2024}$ par $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer l'ensemble des entiers naturels $n$ tels que $3^n + 4 \\equiv 0$ (mod 7).",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans une coopérative agricole à Yaoundé, un gestionnaire étudie la rentabilité d'un projet de production de plants. Le bénéfice journalier en milliers de francs CFA est modélisé par une fonction $h$ dont la dérivée est liée à une fonction auxiliaire, et le nombre de plants produits par jour, noté $n$, est un entier vérifiant des contraintes arithmétiques de conditionnement en lots de $7$ ou de $5$ unités, garantissant un stock résiduel de $3$ unités par jour.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "En utilisant l'équation diophantienne $7x - 5y = 3$ résolue dans les ressources, déterminer le nombre minimal de lots de chaque type que le gestionnaire doit conditionner pour atteindre un stock journalier exact de $3$ unités.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Sachant que la variation du bénéfice journalier dépend d'un paramètre $\\alpha$ vérifiant $g(\\alpha) = 0$ où $g$ est la fonction définie par $g(x) = x^2 - 1 - 2\\ln(x)$, calculer la production exacte pour laquelle le bénéfice marginal s'annule, en justifiant à l'aide des variations de $g$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer si un cycle de production de $n = 2024$ jours permet d'atteindre un seuil de rentabilité congruent à $0$ modulo $7$ en exploitant les congruences de $3^n$ modulo $7$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T08:09:24"
+}

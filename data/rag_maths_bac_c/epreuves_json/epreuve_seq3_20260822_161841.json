@@ -1,0 +1,171 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "C:\\Users\\GENIUS ELECTRONICS\\examenscam\\data\\_tmp_entetes_upload\\entete_221d8e55665048eda5d31597d8f43828.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct (O, u, v). On considère l'application f qui à tout point M d'affixe z associe le point M' d'affixe z' définie par z' = \\frac{1}{2}(z + |z|).",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer l'affixe du point M' pour z = 3 - 4i.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Determiner l'ensemble des points M du plan tels que z' = z.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "On pose z = r e^{i \\theta} avec r > 0 et \\theta \\in ]-\\pi, \\pi]. Exprimer z' en fonction de r et de \\theta.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire l'ensemble des points M' lorsque M décrit le cercle de centre O et de rayon 2.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.c)",
+                "texte": "Caractériser géométriquement l'image de l'axe des abscisses privé de son origine par l'application f.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit (u_n) la suite numérique définie par u_0 = 2 et pour tout entier naturel n, u_{n+1} = \\frac{3u_n + 2}{u_n + 4}.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer u_1 et u_2.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel n, on a u_n > 1.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout entier naturel n, u_{n+1} - u_n = \\frac{(2 - u_n)(u_n + 1)}{u_n + 4}.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le sens de variation de la suite (u_n).",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que pour tout entier naturel n, on a |u_{n+1} - 2| \\leq \\frac{3}{5}|u_n - 2|.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire la limite de la suite (u_n) lorsque n tend vers l'infini.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit f la fonction numérique définie sur l'intervalle ]0, +\\infty[ par f(x) = x - 1 + \\ln(x).",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de f(x) en 0 et en +\\infty.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Etudier le sens de variation de f puis dresser son tableau de variations.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que l'équation f(x) = 0 admet une unique solution \\alpha dans l'intervalle ]0, +\\infty[.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Justifier que \\alpha appartient à l'intervalle [1, 2].",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.c)",
+                "texte": "Déterminer le signe de f(x) pour tout x strictement positif.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère dans l'ensemble des entiers relatifs \\mathbb{Z} l'équation (E) : 17x - 12y = 5.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Vérifier que le couple (1, 1) est une solution particulière de l'équation (E).",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Résoudre dans \\mathbb{Z} \\times \\mathbb{Z} l'équation (E).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit (x, y) une solution de (E). Montrer que x \\equiv 2 (mod 3).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer les solutions de (E) pour lesquelles x et y sont compris entre 0 et 20.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole souhaite répartir une production de 3600 sacs d'engrais et 2400 sacs de semences dans deux entrepôts A et B. Pour le transport, on utilise deux types de camions : des camions légers et des camions lourds. Un camion léger transporte 30 sacs d'engrais et 20 sacs de semences. Un camion lourd transporte 60 sacs d'engrais et 40 sacs de semences. Le coût de location d'un camion léger est de 50000 FCFA et celui d'un camion lourd est de 90000 FCFA. Par ailleurs, la gestion du carburant et des périodes de livraison dans ces entrepôts obéit à des contraintes arithmétiques où le nombre total de camions engagés vérifie une relation linéaire liant le nombre de camions légers x et de camions lourds y.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Traduire les contraintes de transport par un système d'inéquations, sachant que la coopérative doit acheminer au moins 3600 sacs d'engrais et 2400 sacs de semences.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le nombre de camions de chaque type à louer pour minimiser le coût total du transport.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le montant minimal correspondant de la location des camions pour acheminer l'ensemble des sacs.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T16:18:41"
+}

@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% block title %}Assistant Épreuves - ExamensCam{% endblock %}
+
+{% block content %}
+<section class="chat-page">
+  <div class="chat-header">
+    <div class="chat-avatar">AI</div>
+    <div>
+      <h1>Assistant Épreuves</h1>
+      <p class="chat-soustitre">Génère une épreuve inédite avec l'en-tête exacte de ton établissement</p>
+    </div>
+  </div>
+
+  <div class="chat-fenetre" id="chat-fenetre"></div>
+  <div class="chat-saisie" id="chat-saisie"></div>
+</section>
+
+<script>
+(function () {
+  const fenetre = document.getElementById('chat-fenetre');
+  const saisie = document.getElementById('chat-saisie');
+  // MISE A JOUR (24/08/2026) : 5e et 6e séquence ajoutées.
+  const ORDINAUX = { 1: '1ère', 2: '2e', 3: '3e', 4: '4e', 5: '5e', 6: '6e' };
+  const SEQUENCES_DISPONIBLES = [1, 2, 3, 4, 5, 6];
+
+  const etat = { sequence: null, jeton: null };
+
+  function ajouterMessageBot(texte) {
+    const b = document.createElement('div');
+    b.className = 'chat-bulle chat-bulle-bot';
+    b.textContent = texte;
+    fenetre.appendChild(b);
+    fenetre.scrollTop = fenetre.scrollHeight;
+  }
+
+  function ajouterMessageUtilisateur(texte) {
+    const b = document.createElement('div');
+    b.className = 'chat-bulle chat-bulle-user';
+    b.textContent = texte;
+    fenetre.appendChild(b);
+    fenetre.scrollTop = fenetre.scrollHeight;
+  }
+
+  function viderSaisie() { saisie.innerHTML = ''; }
+
+  function reinitialiser() {
+    etat.sequence = null;
+    etat.jeton = null;
+    fenetre.innerHTML = '';
+    demanderSequence();
+  }
+
+  // ═══ ÉTAPE 1 — Séquence ═══
+
+  function demanderSequence() {
+    viderSaisie();
+    ajouterMessageBot("Salut ! Je vais générer une épreuve inédite de Maths Terminale C. Pour quelle séquence ?");
+    const conteneur = document.createElement('div');
+    conteneur.className = 'chat-options';
+    SEQUENCES_DISPONIBLES.forEach(n => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chat-option-btn';
+      btn.textContent = `${ORDINAUX[n]} séquence`;
+      btn.addEventListener('click', () => {
+        etat.sequence = n;
+        ajouterMessageUtilisateur(`${ORDINAUX[n]} séquence`);
+        demanderUpload();
+      });
+      conteneur.appendChild(btn);
+    });
+    saisie.appendChild(conteneur);
+  }
+
+  // ═══ ÉTAPE 2 — Upload de l'exemple ═══
+
+  function demanderUpload() {
+    viderSaisie();
+    ajouterMessageBot(
+      "Envoie une épreuve de ton établissement (photo prise au téléphone, scan, ou PDF) -- " +
+      "je vais repérer son en-tête (logo compris) et te laisser corriger l'année, la séquence, etc. avant de l'utiliser."
+    );
+
+    const form = document.createElement('form');
+    form.className = 'chat-input-form';
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.jpg,.jpeg,.png,.heic,.webp';
+    input.required = true;
+
+    const btn = document.createElement('button');
+    btn.type = 'submit';
+    btn.className = 'btn';
+    btn.textContent = 'Envoyer';
+
+    form.appendChild(input);
+    form.appendChild(btn);
+    saisie.appendChild(form);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fichier = input.files[0];
+      if (!fichier) return;
+      ajouterMessageUtilisateur(`📎 ${fichier.name}`);
+      envoyerPourExtraction(fichier);
+    });
+  }
+
+  async function envoyerPourExtraction(fichier) {
+    viderSaisie();
+    const attente = document.createElement('p');
+    attente.className = 'chat-attente';
+    attente.textContent = "Lecture de l'en-tête en cours...";
+    saisie.appendChild(attente);
+
+    const donnees = new FormData();
+    donnees.append('exemple_entete', fichier);
+
+    try {
+      const reponseServeur = await fetch("{{ url_for('generateur_epreuves_extraire_entete') }}", {
+        method: 'POST',
+        body: donnees,
+      });
+      const resultat = await reponseServeur.json();
+
+      if (!resultat.ok) {
+        throw new Error(resultat.erreur || "Le document n'a pas pu être lu.");
+      }
+
+      etat.jeton = resultat.jeton;
+      afficherApercuEtFormulaire(resultat.champs || [], resultat.confiance);
+
+    } catch (erreur) {
+      viderSaisie();
+      ajouterMessageBot(erreur.message);
+      const btnReessayer = document.createElement('button');
+      btnReessayer.type = 'button';
+      btnReessayer.className = 'chat-option-btn';
+      btnReessayer.textContent = 'Réessayer avec un autre document';
+      btnReessayer.addEventListener('click', demanderUpload);
+      saisie.appendChild(btnReessayer);
+    }
+  }
+
+  // ═══ ÉTAPE 3 — Aperçu du cadrage + édition des champs ═══
+  // L'aperçu montre le crop D'ORIGINE (non personnalisé) -- juste pour
+  // vérifier que le logo et la mise en page sont bien capturés. Les
+  // valeurs éditées ci-dessous ne s'appliqueront sur l'image qu'au
+  // moment de la génération (voir lancerGeneration).
+
+  function afficherApercuEtFormulaire(champs, confiance) {
+    viderSaisie();
+
+    if (confiance === 'basse') {
+      ajouterMessageBot("Le document n'était pas très net -- vérifie bien l'aperçu ci-dessous et corrige les champs si besoin :");
+    } else {
+      ajouterMessageBot("Voici le cadrage de l'en-tête. Vérifie et corrige les champs si besoin, puis lance la génération :");
+    }
+
+    const img = document.createElement('img');
+    img.src = `{{ url_for('generateur_epreuves_apercu_entete', jeton='__JETON__') }}`.replace('__JETON__', etat.jeton);
+    img.alt = "Aperçu du cadrage de l'en-tête";
+    img.className = 'chat-apercu-image';
+    fenetre.appendChild(img);
+    fenetre.scrollTop = fenetre.scrollHeight;
+
+    const form = document.createElement('form');
+    form.className = 'chat-champs-form';
+
+    const inputsParLabel = {};
+
+    if (champs.length === 0) {
+      const note = document.createElement('p');
+      note.className = 'chat-note';
+      note.textContent = "Aucun champ modifiable détecté -- l'en-tête sera utilisée telle quelle.";
+      form.appendChild(note);
+    }
+
+    champs.forEach((champ, i) => {
+      const bloc = document.createElement('div');
+      bloc.className = 'chat-champ';
+
+      const label = document.createElement('label');
+      label.setAttribute('for', `champ-${i}`);
+      label.textContent = champ.label + (champ.boite ? '' : ' (non visible sur l\'image, texte seulement)');
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = `champ-${i}`;
+      input.value = champ.valeur || '';
+      input.className = 'chat-champ-input';
+
+      bloc.appendChild(label);
+      bloc.appendChild(input);
+      form.appendChild(bloc);
+
+      // Plusieurs champs peuvent partager le même label sur un
+      // document mal structuré -- on garde le dernier input trouvé
+      // pour ce label, cohérent avec la fusion faite côté serveur.
+      inputsParLabel[champ.label] = input;
+    });
+
+    const btnGenerer = document.createElement('button');
+    btnGenerer.type = 'submit';
+    btnGenerer.className = 'btn chat-option-principale';
+    btnGenerer.textContent = "Générer l'épreuve";
+    form.appendChild(btnGenerer);
+
+    const btnRefaire = document.createElement('button');
+    btnRefaire.type = 'button';
+    btnRefaire.className = 'chat-option-btn';
+    btnRefaire.textContent = 'Recommencer avec un autre document';
+    btnRefaire.addEventListener('click', () => {
+      ajouterMessageUtilisateur('Recommencer avec un autre document');
+      demanderUpload();
+    });
+    form.appendChild(btnRefaire);
+
+    saisie.appendChild(form);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const valeurs = {};
+      Object.keys(inputsParLabel).forEach(label => {
+        valeurs[label] = inputsParLabel[label].value;
+      });
+      ajouterMessageUtilisateur("Générer l'épreuve");
+      lancerGeneration(valeurs);
+    });
+  }
+
+  // ═══ ÉTAPE FINALE — Génération ═══
+
+  async function lancerGeneration(valeurs) {
+    viderSaisie();
+    const attente = document.createElement('p');
+    attente.className = 'chat-attente';
+    attente.textContent = 'Génération en cours (20 à 60 secondes) - ne ferme pas cette page.';
+    saisie.appendChild(attente);
+
+    try {
+      const reponseServeur = await fetch("{{ url_for('generateur_epreuves_generer') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sequence: etat.sequence, jeton: etat.jeton, valeurs: valeurs || {} }),
+      });
+
+      const typeContenu = reponseServeur.headers.get('Content-Type') || '';
+      if (!reponseServeur.ok || typeContenu.includes('application/json')) {
+        const resultat = await reponseServeur.json();
+        throw new Error(resultat.erreur || "La génération a échoué. Réessaie dans quelques minutes.");
+      }
+
+      const dispo = reponseServeur.headers.get('Content-Disposition') || '';
+      const correspondance = dispo.match(/filename="?([^"]+)"?/);
+      const nomFichier = correspondance ? correspondance[1] : 'epreuve.pdf';
+
+      const blob = await reponseServeur.blob();
+      const url = URL.createObjectURL(blob);
+      const lien = document.createElement('a');
+      lien.href = url;
+      lien.download = nomFichier;
+      document.body.appendChild(lien);
+      lien.click();
+      lien.remove();
+      URL.revokeObjectURL(url);
+
+      viderSaisie();
+      ajouterMessageBot("Voilà ! Le PDF a été téléchargé, avec l'en-tête personnalisée de ton établissement.");
+      const btnNouvelle = document.createElement('button');
+      btnNouvelle.type = 'button';
+      btnNouvelle.className = 'chat-option-btn';
+      btnNouvelle.textContent = 'Générer une autre épreuve';
+      btnNouvelle.addEventListener('click', reinitialiser);
+      saisie.appendChild(btnNouvelle);
+
+    } catch (erreur) {
+      viderSaisie();
+      ajouterMessageBot(erreur.message);
+      const btnReessayer = document.createElement('button');
+      btnReessayer.type = 'button';
+      btnReessayer.className = 'chat-option-btn';
+      btnReessayer.textContent = 'Réessayer';
+      btnReessayer.addEventListener('click', () => lancerGeneration(valeurs));
+      saisie.appendChild(btnReessayer);
+    }
+  }
+
+  demanderSequence();
+})();
+</script>
+{% endblock %}

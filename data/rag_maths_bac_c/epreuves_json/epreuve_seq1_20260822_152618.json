@@ -1,0 +1,160 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "DRLT / DDSM",
+    "etablissement": "COLLEGE POLYVALENT GEORGES SCHWAB",
+    "annee_scolaire": "2023-2024",
+    "duree": "4h",
+    "coefficient": "7",
+    "bilingue": false
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.85,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Les questions 1, 2 et 3 sont indépendantes. On considère l'ensemble des nombres complexes $\\mathbb{C}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $z^{2} - 4z + 13 = 0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions de cette équation sous forme trigonométrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les racines carrées du nombre complexe $3 - 4i$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $Z^{2} - (1+2i)Z - 3 + 3i = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $u = 1 + i\\sqrt{3}$. Mettre $u$ sous forme exponentielle.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire la forme algébrique de $u^{6}$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "L'exercice comporte deux parties indépendantes relatives à l'arithmétique.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $3^{n}$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire le reste de la division euclidienne du nombre $A = 3^{2025} + 3^{2026} + 3^{2027}$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Trouver tous les couples d'entiers relatifs $(x, y)$ vérifiant l'équation $5x - 7y = 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Démontrer que pour tout entier naturel $n$, le nombre $n^{5} - n$ est un multiple de 5.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.c)",
+                "texte": "Déterminer le plus grand commun diviseur de 1080 et 756 en utilisant l'algorithme d'Euclide.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.35,
+            "enonce_intro": "On considère la fonction numérique $f$ définie sur l'intervalle $]0; +\\infty[$ par $f(x) = x - 1 + \\frac{1 + \\ln x}{x}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f(x)$ lorsque $x$ tend vers 0 par valeurs supérieures.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f(x)$ lorsque $x$ tend vers $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que la droite $(D)$ d'équation $y = x - 1$ est asymptote oblique à la courbe représentative de $f$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Préciser la position relative de la courbe de $f$ et de la droite $(D)$ sur l'intervalle $]0; +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0; +\\infty[$ et montrer que $f'(x) = \\frac{x^{2} - \\ln x}{x^{2}}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "On admet que pour tout $x > 0$, $x^{2} - \\ln x > 0$. Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 0.85
+              },
+              {
+                "numero": "3.c)",
+                "texte": "Démontrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans l'intervalle $[0.2, 0.4]$.",
+                "bareme": 0.5
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.65,
+        "exercices": null,
+        "situation_contexte": "Un jeune entrepreneur, ingénieur en génie électrique, souhaite dimensionner l'installation d'un laboratoire informatique moderne à Yaoundé. Pour sécuriser les serveurs, il utilise un système de numération spécifique et des modélisations par nombres complexes. Le code secret d'accès au local technique est un nombre entier naturel $N$ de trois chiffres $a$, $b$ et $c$ (dans l'ordre du système décimal, $N = 100a + 10b + c$) qui vérifie un ensemble de contraintes arithmétiques. De plus, l'impédance complexe totale d'un circuit oscillant du serveur est représentée par un nombre complexe $Z$ lié au choix d'un paramètre réel $m$ tel que $Z = \\frac{m + i}{m - i}$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer l'ensemble des valeurs du paramètre réel $m$ pour lesquelles l'impédance complexe $Z$ est un nombre réel pur.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Sachant que les chiffres $a$, $b$ et $c$ du code $N$ vérifient le système de congruences $a \\equiv 2$ (mod 5), $b \\equiv 3$ (mod 7) et que $a + b + c \\equiv 0$ (mod 3), trouver la valeur minimale de ce code $N$ sachant de plus que $a$ est un chiffre non nul inférieur à 4.",
+            "bareme": 1.85
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le nombre total de câbles réseau que l'entrepreneur peut ranger sachant que ce nombre est le quotient exact de la division euclidienne de $N^{3} - N$ par 6, en utilisant les propriétés des nombres premiers.",
+            "bareme": 1.3
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T15:26:18"
+}

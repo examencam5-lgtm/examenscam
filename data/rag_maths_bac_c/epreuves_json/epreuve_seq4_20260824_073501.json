@@ -1,0 +1,171 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\273c7100d4af4562969dbcf970339129_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ définie par $z' = (1+i)z + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $1 - i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer que $f$ admet un unique point invariant $Omega$ dont on précisera l'affixe $\\omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Préciser la nature et les éléments caractéristiques de la transformation $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'ensemble $(D)$ des points $M$ d'affixe $z$ tels que $z'$ soit un nombre réel pur.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Calculer l'affixe du point $B$ antécédent du point $C$ d'affixe $3 + 4i$ par $f$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit $(u_n)$ la suite définie par $u_0 = 3$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n < 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Etudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On pose pour tout entier naturel $n$, $v_n = u_n - 3$. Démontrer que $(v_n)$ est une suite géométrique de raison $\\frac{1}{3}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $u_n$ en fonction de $n$ puis calculer la limite de la suite $(u_n)$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit $g$ la fonction définie sur $]0, +\\infty[$ par $g(x) = x^2 - 1 + 2\\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $g$ en $0$ et en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la dérivée $g'(x)$ pour tout $x \\in ]0, +\\infty[$ et étudier son signe.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Dresser le tableau de variation de la fonction $g$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Montrer que l'équation $g(x) = 0$ admet une unique solution $\\alpha$ dans $]0, +\\infty[$ et que $0.5 < \\alpha < 1.0$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer le signe de $g(x)$ suivant les valeurs de $x$ dans $]0, +\\infty[$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère dans l'ensemble des entiers relatifs $\\mathbb{Z}$ l'équation $(E) : 7x - 5y = 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de $(E)$ telles que $0 \\leq x \\leq 10$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le plus petit entier naturel $x$ solution de $(E)$ tel que $7x \\equiv 2$ (mod 5).",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Une coopérative agricole de la région de l'Ouest souhaite acheminer une production de maïs vers un marché situé dans une ville voisine. Le coût total de transport en milliers de francs CFA pour une quantité $x$ en tonnes de maïs transportée est modélisé par la fonction $f$ définie sur $]0, +\\infty[$ par $f(x) = x + 1 + \\frac{\\ln(x)}{x}$. La coopérative dispose d'un budget de $15$ milliers de francs CFA pour cette opération. Par ailleurs, pour l'acheminement, les camions utilisés consomment du carburant dont la quantité restante $R$ en litres après $n$ heures de trajet est liée au nombre entier $n$ par la relation arithmétique $R_n = 50 - 6n$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la quantité maximale de tonnes de maïs que la coopérative peut transporter sans dépasser son budget de $15$ milliers de francs CFA, sachant que le coût est donné par $f(x)$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le nombre d'heures de trajet au bout duquel le réservoir du camion sera totalement vide, c'est-à-dire $R_n = 0$ ou négatif.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "La coopérative réalise un bénéfice $B(x)$ en milliers de francs CFA défini par $B(x) = 10x - f(x)$ pour la quantité $x$ transportée. Déterminer la quantité de maïs $x$ à transporter pour que le bénéfice soit maximal.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T07:35:01"
+}

@@ -1,0 +1,134 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\b48fc415709a4316b94117e33d8aa09e_final.png"
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $n$ un entier naturel. On considère les nombres entiers $A_n = 3^{2n} + 2^{n-1}$ et $B_n = 3^{2n} - 2^{n-1}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le reste de la division euclidienne de $3^2$ par 7.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $3^{2n}$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $2^{n-1}$ par 7.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Démontrer alors que $A_n$ est divisible par 7 si et seulement si $n$ vérifie une condition à préciser.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que pour tout entier naturel $n$, le produit $A_n B_n$ est un multiple de 7.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation (E) d'inconnue complexe $z$ : $z^3 - (3+i)z^2 + (4+2i)z - 4 = 0$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Vérifier que le nombre complexe $z_0 = 2i$ est solution de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les nombres complexes $a$, $b$ et $c$ tels que pour tout nombre complexe $z$, on ait $z^3 - (3+i)z^2 + (4+2i)z - 4 = (z - 2i)(az^2 + bz + c).$",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $az^2 + bz + c = 0$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Ecrire sous forme trigonométrique chacune des solutions de l'équation (E).",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 1$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{2u_n + 3}{u_n + 4}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, on a $0 < u_n < 3$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout entier naturel $n$, on a $3 - u_{n+1} = \\frac{2(3 - u_n)}{u_n + 4}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que pour tout entier naturel $n$, on a $3 - u_n \\leq 3 \\times (\\frac{2}{5})^n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\\infty$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de la modernisation d'une coopérative agricole, le trésorier souhaite sécuriser l'accès au coffre-fort numérique et optimiser l'espace de stockage des récoltes. Le code d'accès au coffre est un nombre entier naturel $N$ à trois chiffres. Ce nombre $N$ s'écrit $xyz$ en base 7 et s'écrit $zyx$ en base 9, où $y$ est un chiffre pair strictement supérieur à 2. Par ailleurs, la coopérative dispose d'une parcelle rectangulaire dont l'aire en mètres carrés est égale au nombre $N$. La longueur $L$ et la largeur $l$ de cette parcelle, exprimées en mètres, vérifient la relation $L^2 - l^2 = 2800$ et le plus grand commun diviseur de $L$ et $l$ est égal au chiffre $y$ du code.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les valeurs possibles du chiffre $y$ puis trouver l'expression du nombre $N$ en fonction de $x$ et $z$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Retrouver le code secret exact $N$ du coffre-fort de la coopérative.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer les dimensions exactes $L$ et $l$ de la parcelle agricole rectangulaire.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T12:10:21"
+}

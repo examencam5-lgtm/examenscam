@@ -1,0 +1,176 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\a956a4f33aa74a988b1fa7000a1af12a_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère le nombre complexe $z_0 = 1 + i\\sqrt{3}$ et la transformation $f$ du plan qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ définie par $z' = e^{i \\frac{\\pi}{3}} z + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Écrire le nombre complexe $e^{i \\frac{\\pi}{3}}$ sous forme algébrique.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer la nature et les éléments caractéristiques de la transformation $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer l'affixe $z_1$ du point $M_1$ image de $O$ par $f$, puis l'affixe $z_2$ du point $M_2$ image de $M_1$ par $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Vérifier que $z_2 - z_1 = e^{i \\frac{\\pi}{3}} (z_1 - z_0)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $A$ le point d'affixe $z_A = \\sqrt{3} + i$. Calculer l'affixe du point $A'$ image de $A$ par $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Démontrer que le triangle $OAA'$ est isocèle en un point à préciser.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2} u_n + 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n < 6$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On définit la suite $(v_n)$ par $v_n = u_n - 6$ pour tout $n \\in \\mathbb{N}$. Démontrer que $(v_n)$ est une suite géométrique de raison $\\frac{1}{2}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $u_n$ en fonction de $n$, puis calculer la limite de la suite $(u_n)$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.0,
+            "enonce_intro": "Soit $p$ un nombre premier supérieur ou égal à $5$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Montrer que $p \\equiv 1$ (mod 3) ou $p \\equiv 2$ (mod 3).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire que $p^2 - 1$ est un multiple de 3.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Justifier que $p$ est impair, puis en déduire que $p^2 - 1$ est un multiple de 8.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Démontrer que $p^2 - 1$ est divisible par 24.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la fonction $g$ définie sur l'intervalle $]0, +\\infty[$ par $g(x) = x - 1 + \\ln x$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les limites de $g(x)$ aux bornes de son ensemble de définition.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Étudier les variations de la fonction $g$ et dresser son tableau de variations.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer $g(1)$ et en déduire le signe de $g(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $h$ la fonction définie sur $]0, +\\infty[$ par $h(x) = x \\ln x - x$. Calculer la dérivée de $h$ et vérifier que $h'(x) = \\ln x$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer l'intégrale $I = \\int_{1}^{e} \\ln x \\, dx$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de la modernisation d'un réseau de transport interurbain, une entreprise évalue la rentabilité d'une nouvelle ligne de bus reliant deux villes $A$ et $B$. Une étude statistique menée sur les premiers mois d'exploitation a permis de modéliser le bénéfice mensuel $y$ (en dizaines de milliers de francs CFA) en fonction du nombre de mois $x$ d'activité. Les recettes de l'entreprise sont gérées par un comité de gestion dont le nombre d'hommes $H$ et de femmes $F$ vérifie des contraintes arithmétiques strictes basées sur la répartition de primes mensuelles d'un montant total de $150\\,000$ FCFA, chaque homme recevant $10\\,000$ FCFA et chaque femme $15\\,000$ FCFA.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre exact d'hommes $H$ et de femmes $F$ composant le comité de gestion de l'entreprise.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Sachant que les données statistiques du bénéfice mensuel $y$ vérifient une relation de récurrence liée au nombre de mois $x$ telle que $y_{n+1} = \\frac{1}{2} y_n + 3$ avec $y_0 = 2$ (où $y_0$ représente le bénéfice initial en dizaines de milliers de francs), déterminer l'expression du bénéfice $y_n$ en fonction du nombre de mois $n$ et estimer vers quelle valeur limite ce bénéfice va se stabiliser.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Pour valider l'agrandissement de la station de bus, l'architecte doit s'assurer que le nombre total de mois $n$ nécessaire pour que le bénéfice dépasse $59\\,000$ FCFA (soit $5{,}9$ unités) est un multiple de 3. Justifier si cette condition arithmétique est vérifiée.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T07:50:33"
+}

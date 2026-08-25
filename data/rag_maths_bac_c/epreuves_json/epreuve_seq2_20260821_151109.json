@@ -1,0 +1,228 @@
+{
+  "metadonnees": {
+    "region": "OUEST",
+    "delegation": "DOUALA",
+    "etablissement": "EDEA",
+    "annee_scolaire": "2026-2027",
+    "duree": "3 heures",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 2,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère l'anneau $\\mathbb{Z}$ et l'ensemble des nombres complexes. Les parties A et B sont indépendantes.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le PGCD de $135$ et $84$ en utilisant l'algorithme d'Euclide.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire un couple d'entiers relatifs $(u, v)$ tel que $135u + 84v = 3$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.",
+                "texte": "Résoudre dans $\\mathbb{Z}$ l'équation $135x \\equiv 6 \\pmod{84}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, le nombre $S_n = 5^{2n} - 2^n$ est divisible par $7$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.b)",
+                "texte": "À l'aide des congruences modulo $11$, déterminer le reste de la division euclidienne de $3^{2024}$ par $11$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans l'ensemble $\\mathbb{C}$ des nombres complexes l'équation $z^2 - 4z + 8 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "On considère le polynôme $P$ défini par $P(z) = z^3 - (3+i)z^2 + (4+3i)z - 4i$. Vérifier que $i$ est racine de $P$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer les nombres complexes $a$ et $b$ tels que pour tout $z \\in \\mathbb{C}$, on ait $P(z) = (z - i)(z^2 + az + b)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Achève la résolution dans $\\mathbb{C}$ de l'équation $P(z) = 0$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "5.",
+                "texte": "Soit $A$, $B$ et $C$ les points d'affixes respectives $z_A = 2 - 2i$, $z_B = 2 + 2i$ et $z_C = i$. Déterminer la nature du triangle $ABC$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.5,
+            "enonce_intro": "Soit la fonction numérique $f$ d'une variable réelle définie par $f(x) = \\frac{x^2 - 3x + 3}{x - 1}$. On note $(C_f)$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer l'ensemble de définition $D_f$ de la fonction $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer les limites de $f$ aux bornes de $D_f$ et préciser les équations des asymptotes à $(C_f)$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que pour tout $x \\in D_f$, on a $f'(x) = \\frac{(x - 2)(x)}{ (x - 1)^2 }$ (préciser la forme exacte de la dérivée).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Montrer que le point $\\Omega(1, -1)$ est un centre de symétrie pour la courbe $(C_f)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Tracer la courbe $(C_f)$ et ses asymptotes dans le repère.",
+                "bareme": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Un entrepreneur camerounais, M. Fotso, souhaite investir dans l'aménagement d'un terrain rectangulaire et dans la production agricole. Les dimensions $a$ et $b$ (en mètres) de son terrain vérifient le système $\\begin{cases} a \\times b = 1872 \\\\ \\text{PPCM}(a, b) = 312 \\end{cases}$. Par ailleurs, le capital (en millions de FCFA) de son entreprise au cours des quatre dernières années de 2021 à 2024 est modélisé par une suite statistique liée à une fonction de coût. Enfin, pour sécuriser son entrepôt, il utilise un signal dont la fréquence est liée aux racines d'un nombre complexe.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Aider M. Fotso à déterminer les dimensions exactes $a$ et $b$ de son terrain rectangulaire.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le montant total de la clôture sachant que le mètre linéaire de grillage coûte $5000$ FCFA et que le périmètre du terrain est requis.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déterminer si le capital de l'entreprise atteindra $100$ millions de FCFA en 2026 en supposant une évolution linéaire basée sur les données de 2021 à 2024.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.a)",
+            "texte": "On applique l'algorithme d'Euclide : $135 = 84 \\times 1 + 51$, $84 = 51 \\times 1 + 33$, $51 = 33 \\times 1 + 18$, $33 = 18 \\times 1 + 15$, $18 = 15 \\times 1 + 3$, $15 = 3 \\times 5 + 0$. Le dernier reste non nul est $3$, donc $\\text{PGCD}(135, 84) = 3$."
+          },
+          {
+            "numero": "1.b)",
+            "texte": "En remuant les restes, on obtient $3 = 18 - 15 = 18 - (33 - 18) = 2(51 - 33) - 33 = 2(51) - 3(84 - 51) = 5(135 - 84) - 3(84) = 5(135) - 8(84)$. Le couple est $(5, -8)$."
+          },
+          {
+            "numero": "2.",
+            "texte": "L'équation $135x \\equiv 6 \\pmod{84}$ équivaut à $51x \\equiv 6 \\pmod{84}$, soit $17x \\equiv 2 \\pmod{28}$. En testant les classes modulo $28$, on trouve $x \\equiv 10 \\pmod{28}$."
+          },
+          {
+            "numero": "3.a)",
+            "texte": "Pour $n=0$, $S_0 = 5^0 - 2^0 = 0$ divisible par $7$. Supposons la propriété vraie au rang $n$. $S_{n+1} = 5^{2n+2} - 2^{n+1} = 25 \\times 5^{2n} - 2 \\times 2^n = 7 \\times 5^{2n} + 18(5^{2n} - 2^n) + 7 \\times 2^n$, qui est bien divisible par $7$."
+          },
+          {
+            "numero": "3.b)",
+            "texte": "On a $3^1 \\equiv 3$, $3^2 \\equiv 9 \\equiv -2$, $3^5 \\equiv 1 \\pmod{11}$. Comme $2024 = 5 \\times 404 + 4$, $3^{2024} \\equiv (3^5)^{404} \\times 3^4 \\equiv 1 \\times 81 \\equiv 4 \\pmod{11}$. Le reste est $4$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Pour $z^2 - 4z + 8 = 0$, le discriminant est $\\Delta = (-4)^2 - 4(1)(8) = 16 - 32 = -16 = (4i)^2$. Les solutions sont $z_1 = \\frac{4 - 4i}{2} = 2 - 2i$ et $z_2 = 2 + 2i$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On calcule $P(i) = i^3 - (3+i)(i)^2 + (4+3i)(i) - 4i = -i + (3+i) + 4i - 3 - 4i = 0$. Donc $i$ est racine de $P$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Par identification ou division euclidienne, on trouve $a = -3$ et $b = 4$, soit $P(z) = (z - i)(z^2 - 3z + 4)$."
+          },
+          {
+            "numero": "4.",
+            "texte": "L'équation $z^2 - 3z + 4 = 0$ a pour discriminant $\\Delta = 9 - 16 = -7 = (i\\sqrt{7})^2$. Les solutions sont $\\frac{3 \\pm i\\sqrt{7}}{2}$. L'ensemble des solutions est $\\{i, \\frac{3 + i\\sqrt{7}}{2}, \\frac{3 - i\\sqrt{7}}{2}\\}$."
+          },
+          {
+            "numero": "5.",
+            "texte": "On calcule les distances : $AB = |2+2i - (2-2i)| = |4i| = 4$, $AC = |i - (2-2i)| = |-2 + 3i| = \\sqrt{13}$, $BC = |i - (2+2i)| = |-2 - i| = \\sqrt{13}$. Le triangle $ABC$ est isocèle en $C$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "La fonction $f$ est définie si $x - 1 \\neq 0$, donc $D_f = \\mathbb{R} \\setminus \\{1\\}$.écrit sous forme d'intervalles : $]-\\infty, 1[ \\cup ]1, +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Les limites aux bornes donnent $\\lim_{x \\to 1^-} f(x) = +\\infty$ et $\\lim_{x \\to 1^+} f(x) = -\\infty$. La droite d'équation $x = 1$ est asymptote verticale. De plus, $f(x) = x - 2 + \\frac{1}{x-1}$, donc la droite d'équation $y = x - 2$ est asymptote oblique en $+\\infty$ et $-\\infty$."
+          },
+          {
+            "numero": "3.a)",
+            "texte": "La dérivée est $f'(x) = \\frac{(2x - 3)(x - 1) - (x^2 - 3x + 3)}{(x - 1)^2} = \\frac{x^2 - 2x}{(x - 1)^2} = \\frac{x(x - 2)}{(x - 1)^2}$."
+          },
+          {
+            "numero": "3.b)",
+            "texte": "Le signe de $f'(x)$ dépend de $x(x - 2)$. $f$ est croissante sur $]-\\infty, 0]$ et sur $[2, +\\infty[$, et décroissante sur $[0, 1[$ et $]1, 2]$."
+          },
+          {
+            "numero": "4.",
+            "texte": "On vérifie que $f(2-x) + f(x) = -2$, ce qui démontre que $\\Omega(1, -1)$ est centre de symétrie."
+          },
+          {
+            "numero": "5.",
+            "texte": "Tracé de la courbe et des asymptotes réalisé sur la copie d'évaluation."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T15:11:09"
+}

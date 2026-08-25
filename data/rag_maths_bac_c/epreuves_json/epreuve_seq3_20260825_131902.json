@@ -1,0 +1,154 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\cc1f5d7ebf864fbfb48fa0e47dfff67a_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation $E$: $z^{2} - 2z + 4 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer le discriminant de l'équation $E$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $E$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Donner la forme exponentielle des solutions de l'équation $E$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $A$ et $B$ les points d'affixes respectives $z_{A} = 1 + i\\sqrt{3}$ et $z_{B} = 1 - i\\sqrt{3}$. Préciser la nature du triangle $OAB$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer l'affixe du point $C$ tel que le quadrilatère $OACB$ soit un losange.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la suite numérique $(u_{n})$ définie par $u_{0} = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_{n} + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_{1}$ et $u_{2}$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_{n} > 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que pour tout entier naturel $n$, $u_{n+1} - 2 = \\frac{1}{2}(u_{n} - 2)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire la nature de la suite $(v_{n})$ définie pour tout entier naturel $n$ par $v_{n} = u_{n} - 2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Exprimer $v_{n}$ puis $u_{n}$ en fonction de $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer la limite de la suite $(u_{n})$ lorsque $n$ tend vers plus l'infini.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 6.0,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x - 1 + \\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de la fonction $f$ en $0$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de la fonction $f$ en plus l'infini.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée de la fonction $f$ pour tout $x$ appartenant à l'intervalle $]0, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de la dérivée et dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ sur l'intervalle $]0, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $\\alpha$ appartient à l'intervalle $[1, 2]$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer le signe de la fonction $f(x)$ suivant les valeurs de $x$ sur l'intervalle $]0, +\\infty[$.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans une localité, un entrepreneur souhaite optimiser la gestion de son stock de matières premières et la production de sa fabrique. Le coût total de production en milliers de francs est modélisé par une fonction $C(x) = x^{2} - 4x + 5 + \\ln(x)$ pour $x \\in [1, 5]$, où $x$ représente la quantité produite en tonnes. Par ailleurs, un phénomène périodique lié à l'approvisionnement suit une loi mathématique complexe où le nombre complexe $Z = (x + i)^{2}$ intervient pour analyser la stabilité des livraisons.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la quantité de production $x$ pour laquelle le coût marginal, représenté par la dérivée du coût total, s'annule sur l'intervalle $[1, 5]$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le nombre complexe $Z$ pour la valeur de production $x = 2$ tonnes et déterminer sa partie réelle ainsi que sa partie imaginaire.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le module et l'argument du nombre complexe $Z$ précédent afin d'évaluer l'indice de performance logistique de l'entreprise.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-25T13:19:02"
+}

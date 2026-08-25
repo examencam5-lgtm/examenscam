@@ -1,0 +1,156 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\5852d82f126746e1aec56e9de3489033_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "L'espace est rapporté à un repère orthonormé direct $(O, \\vec{i}, \\vec{j}, \\vec{k})$. On considère les points $A(1, 0, 2)$, $B(0, 1, 1)$, $C(2, 1, 0)$ et $D(1, 2, 3)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les composantes du vecteur produit vectoriel $\\vec{AB} \\wedge \\vec{AC}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire que les points $A$, $B$ et $C$ ne sont pas alignés, puis donner une équation cartésienne du plan $(ABC)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "Calculer la distance du point $D$ au plan $(ABC)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.d)",
+                "texte": "En déduire le volume du tétraèdre $ABCD$.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit $f$ la fonction définie sur $\\mathbb{R}$ par $f(x) = x + \\sqrt{x^{2} + 1}$. On note $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que la droite d'équation $y = 0$ est une asymptote oblique à $(\\mathcal{C})$ en $-\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout réel $x$ et étudier son signe.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations de $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que $f$ réalise une bijection de $\\mathbb{R}$ sur un intervalle $J$ à préciser.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Expliciter l'expression de la bijection réciproque $f^{-1}(x)$ pour tout $x \\in J$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit $E$ un espace vectoriel sur $\\mathbb{R}$ muni d'une base $\\mathcal{B} = (\\vec{u}, \\vec{v}, \\vec{w})$. Soit $f$ l'endomorphisme de $E$ défini par $f(\\vec{u}) = \\vec{u} + \\vec{v}$, $f(\\vec{v}) = \\vec{v} + \\vec{w}$ et $f(\\vec{w}) = \\vec{u} + \\vec{w}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Écrire la matrice $M$ de $f$ dans la base $\\mathcal{B}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer le noyau $\\ker(f)$ de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire la dimension de $\\ker(f)$ et dire si $f$ est injectif.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer la dimension de l'image $\\text{Im}(f)$ et conclure quant à la bijectivité de $f$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère dans $\\mathbb{Z}^{2}$ l'équation $(E) : 7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z}^{2}$ l'équation $(E)$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer tous les couples de solutions $(x, y)$ de $(E)$ tels que $0 \\leq x \\leq 10$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans une localité de la région du Sud, un groupement de planteurs souhaite acheminer des engrais vers un magasin de stockage central situé à équidistance de deux parcelles de culture. Pour optimiser le transport, un camion effectue des rotations régulières. Le nombre total de sacs d'engrais transportés par semaine est un entier $N$ tel que $N$ est solution de l'équation $3x - 4y = 1$ avec $x$ et $y$ représentant respectivement le nombre de voyages de petits et grands camions. De plus, le coût total en milliers de francs CFA pour l'achat de $N$ sacs est modélisé par une fonction numérique dépendant du nombre de semaines d'activité.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer les couples $(x, y)$ possibles du nombre de voyages sachant que $0 \\leq x \\leq 5$ pour identifier la quantité exacte de sacs transportés.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le montant total de la commande d'engrais sachant que le prix unitaire d'un sac est fixé à $10000$ FCFA.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Évaluer la rentabilité de l'opération en déterminant le nombre minimal de semaines pour que le bénéfice dépasse $500000$ FCFA, sachant que le bénéfice hebdomadaire net est proportionnel au nombre de sacs acheminés.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T07:50:49"
+}

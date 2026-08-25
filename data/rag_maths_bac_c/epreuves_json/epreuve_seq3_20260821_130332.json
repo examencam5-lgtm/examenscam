@@ -1,0 +1,210 @@
+{
+  "metadonnees": {
+    "region": "littoral",
+    "delegation": "DELEGATION REGIONNALE DU LITTORAL",
+    "etablissement": "LYCEE BILINGUE DE douala",
+    "annee_scolaire": "2026-2027",
+    "duree": "4h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation $(E) : z^2 - (1 + 2i)z - 2 + 2i = 0$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Montrer que le nombre complexe $z_0 = 1 + i$ est solution de l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer l'autre solution $z_1$ de l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $A$, $B$ et $C$ les points d'affixes respectives $z_A = 1 + i$, $z_B = i$ et $z_C = 2$. Calculer le rapport $\\frac{z_C - z_A}{z_B - z_A}$ et en déduire la nature du triangle $ABC$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Déterminer l'ensemble $(\\mathcal{C})$ des points $M$ d'affixe $z$ tels que $|z - 1 - i| = |z - 2|$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit la suite numérique $(u_n)_{n \\in \\mathbb{N}}$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + \\frac{2}{3}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n > 1$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Étudier la monotonie de la suite $(u_n)$ et en déduire qu'elle est convergente.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "On pose pour tout $n \\in \\mathbb{N}$, $v_n = u_n - 1$. Montrer que $(v_n)$ est une suite géométrique dont on précisera la raison et le premier terme.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Exprimer $u_n$ en fonction de $n$ puis calculer la limite de la suite $(u_n)$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 6.0,
+            "enonce_intro": "Soit la fonction $f$ définie sur $\\mathbb{R}$ par $f(x) = (x - 1)e^x + 1$. On note $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $f$ en $-\\infty$ et en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in \\mathbb{R}$, étudier son signe et dresser le tableau de variations de $f$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans $\\mathbb{R}$ et que $\\alpha \\in ]0, 1[$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Écrire l'équation de la tangente $(T)$ à la courbe $(\\mathcal{C})$ au point d'abscisse $0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Tracer la tangente $(T)$ et l'allure de la courbe $(\\mathcal{C})$ dans le repère.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Dans le cadre de l'aménagement d'un territoire rural, une coopérative agricole souhaite sécuriser deux zones de production situées aux points $A$ et $B$ d'affixes respectives $z_A = 3 + 2i$ et $z_B = -1 + 4i$ dans un plan muni d'un repère orthonormé $(O, \\vec{u}, \\vec{v})$ (unité : $1$ km). Un puits central de ravitaillement doit être creusé à un point $M$ dont la position est déterminée par des contraintes géométriques et arithmétiques. De plus, le gestionnaire de la coopérative gère un stock de $N$ plants d'arbres fruitiers qu'il souhaite répartir. Lorsqu'il les regroupe par lots de $11$, il reste $3$ plants, et lorsqu'il les regroupe par lots de $7$, il reste $5$ plants.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer l'affixe du point $M$ équidistant de $A$ et de $B$ sachant que $M$ appartient à l'axe des abscisses.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Résoudre dans $\\mathbb{Z}$ l'équation diophantienne traduisant la répartition des plants d'arbres : $11x - 7y = 2$, et en déduire le nombre minimal de plants $N$ sachant qu'il est compris entre $100$ et $200$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer la distance minimale du puits $M$ (trouvé à la tâche 1) à la ligne droite d'équation $3x - 4y + 5 = 0$ représentant une canalisation principale.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On calcule $z_0^2 - (1 + 2i)z_0 - 2 + 2i = (1+i)^2 - (1+2i)(1+i) - 2 + 2i = 2i - (1 + i + 2i - 2) - 2 + 2i = 2i - (-1 + 3i) - 2 + 2i = 2i + 1 - 3i - 2 + 2i = 0$. Donc $z_0$ est solution."
+          },
+          {
+            "numero": "2.",
+            "texte": "Le produit des racines est égal à $-2 + 2i$. Donc $z_0 \\times z_1 = -2 + 2i \\implies z_1 = \\frac{-2 + 2i}{1 + i} = \\frac{2(-1 + i)(1 - i)}{(1+i)(1-i)} = \\frac{2(2i)}{2} = 2i$."
+          },
+          {
+            "numero": "3.",
+            "texte": "On a $\\frac{z_C - z_A}{z_B - z_A} = \\frac{2 - (1 + i)}{i - (1 + i)} = \\frac{1 - i}{-1} = -1 + i$. Module : $|-1 + i| = \\sqrt{2}$. Le triangle n'est pas équilatéral, mais isocèle en $A$ car $|z_C - z_A| = |z_B - z_A| = \\sqrt{2}$."
+          },
+          {
+            "numero": "4.",
+            "texte": "L'égalité $|z - (1 + i)| = |z - 2|$ signifie que $AM = CM$ où $M$ a pour affixe $z$, $A(1+i)$ et $C(2, 0)$. L'ensemble $(\\mathcal{C})$ est donc la médiatrice du segment $[AC].$"
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "$u_1 = \\frac{1}{3}(2) + \\frac{2}{3} = \\frac{4}{3}$ et $u_2 = \\frac{1}{3}(\\frac{4}{3}) + \\frac{2}{3} = \\frac{4}{9} + \\frac{6}{9} = \\frac{10}{9}$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Démontrons par récurrence que $u_n > 1$ pour tout $n \\in \\mathbb{N}$. Initialisation : $u_0 = 2 > 1$, c'est vrai. Hérédité : Supposons que pour un entier $n$, $u_n > 1$. Alors $\\frac{1}{3}u_n > \\frac{1}{3} \\implies \\frac{1}{3}u_n + \\frac{2}{3} > 1$, donc $u_{n+1} > 1$. La propriété est donc vraie pour tout $n$."
+          },
+          {
+            "numero": "3.",
+            "texte": "On a $u_{n+1} - u_n = \\frac{1}{3}u_n + \\frac{2}{3} - u_n = -\\frac{2}{3}u_n + \\frac{2}{3} = -\\frac{2}{3}(u_n - 1)$. Comme $u_n > 1$, $u_{n+1} - u_n < 0$. La suite $(u_n)$ est décroissante. Étant minorée par $1$, elle converge."
+          },
+          {
+            "numero": "4.",
+            "texte": "$v_{n+1} = u_{n+1} - 1 = \\frac{1}{3}u_n + \\frac{2}{3} - 1 = \\frac{1}{3}u_n - \\frac{1}{3} = \\frac{1}{3}(u_n - 1) = \\frac{1}{3}v_n$. $(v_n)$ est une suite géométrique de raison $q = \\frac{1}{3}$ et de premier terme $v_0 = u_0 - 1 = 1$."
+          },
+          {
+            "numero": "5.",
+            "texte": "On a $v_n = v_0 q^n = \\left(\\frac{1}{3}\\right)^n$. Comme $u_n = v_n + 1$, $u_n = \\left(\\frac{1}{3}\\right)^n + 1$. $\\lim_{n \\to +\\infty} u_n = 1$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "En $-\\infty$ : $\\lim_{x \\to -\\infty} (x-1)e^x = 0$ (par croissances comparées), donc $\\lim_{x \\to -\\infty} f(x) = 1$. En $+\\infty$ : $\\lim_{x \\to +\\infty} (x-1) = +\\infty$ et $\\lim_{x \\to +\\infty} e^x = +\\infty$, donc $\\lim_{x \\to +\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Pour tout $x \\in \\mathbb{R}$, $f'(x) = 1 \\cdot e^x + (x - 1)e^x = x e^x$. Le signe de $f'(x)$ est celui de $x$ car $e^x > 0$. $f$ est décroissante sur $]-\\infty, 0]$ et croissante sur $[0, +\\infty[$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La fonction $f$ est continue et strictement croissante sur $[0, +\\infty[$ (et même sur $\\mathbb{R}$). $f(0) = 0 \\cdot e^0 + 1 = 0$ ? Non, $f(0) = (0-1)e^0 + 1 = -1 + 1 = 0$. Donc $\\alpha = 0$ est solution évidente. Plus rigoureusement sur $[0, 1]$, $f(0) = 0$ et $f(1) = 1 > 0$."
+          },
+          {
+            "numero": "4.",
+            "texte": "L'équation de la tangente en $0$ est $y = f'(0)(x - 0) + f(0)$. On a $f'(0) = 0$ et $f(0) = 0$, donc $(T) : y = 0$ (l'axe des abscisses)."
+          },
+          {
+            "numero": "5.",
+            "texte": "Tracé de la courbe et de la tangente réalisé selon les variations et limites."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T13:03:32"
+}

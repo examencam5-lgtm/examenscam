@@ -1,0 +1,147 @@
+MINESEC — DÉLÉGATION RÉGIONALE DU CENTRE
+LYCÉE BILINGUE DE YAOUNDÉ
+ANNÉE SCOLAIRE : 2024-2025
+CLASSE : TERMINALE C
+DÉPARTEMENT DE MATHÉMATIQUES
+EXAMEN : 1ère SÉQUENCE — ÉPREUVE DE MATHÉMATIQUES
+DURÉE : 4 HEURES — COEF : 7
+
+---
+
+### PARTIE A : ÉVALUATION DES RESSOURCES [14,5 points]
+
+#### EXERCICE 1 : Arithmétique et Congruences (3,5 points)
+1. Déterminer suivant les valeurs de l'entier naturel $n$, le reste de la division euclidienne de $5^n$ par 13. *(1 pt)*
+2. En déduire le reste de la division euclidienne de l'entier $S = 5^{2023} + 2^{2024} + 1$ par 13 (on précisera au préalable le comportement des puissances de 2 modulo 13). *(1,5 pt)*
+3. Résoudre dans $\mathbb{Z}^2$ l'équation diophantienne : $7x - 11y = 3$. *(1 pt)*
+
+#### EXERCICE 2 : Nombres Complexes (4 points)
+1. Résoudre dans $\mathbb{C}$ l'équation : $z^2 - 2z \cos\left(\frac{\pi}{5}\right) + 1 = 0$. *(1 pt)*
+2. On considère le nombre complexe $Z = \frac{1 + i\sqrt{3}}{1 + i}$.
+   a) Mettre $Z$ sous forme algébrique, puis sous forme trigonométrique. *(1,5 pt)*
+   b) En déduire les valeurs exactes de $\cos\left(\frac{5\pi}{12}\right)$ et $\sin\left(\frac{5\pi}{12}\right)$. *(1,5 pt)*
+
+#### EXERCICE 3 : Analyse - Fonctions Numériques (4 points)
+Soit $f$ la fonction définie sur $\mathbb{R} \setminus \{1\}$ par $f(x) = \frac{x^2 - 3x + 3}{x - 1}$ et soit $(\mathcal{C}_f)$ sa courbe représentative dans un repère orthonormé $(O, \vec{i}, \vec{j})$.
+1. Déterminer les limites de $f$ aux bornes de son ensemble de définition, puis préciser les asymptotes à $(\mathcal{C}_f)$. *(1,25 pt)*
+2. Déterminer les réels $a, b$ et $c$ tels que pour tout $x \in \mathbb{R} \setminus \{1\}$, $f(x) = ax + b + \frac{c}{x-1}$. *(0,75 pt)*
+3. Étudier les variations de $f$ et dresser son tableau de variations complet. *(1,25 pt)*
+4. Démontrer que l'équation $f(x) = 0$ n'admet aucune solution réelle. *(0,75 pt)*
+
+#### EXERCICE 4 : Suites Numériques (3 points)
+Soit $(u_n)_{n \in \mathbb{N}}$ la suite numérique définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \frac{2u_n + 3}{u_n + 4}$.
+1. Calculer $u_1$ et $u_2$. *(0,75 pt)*
+2. Démontrer par récurrence que pour tout entier naturel $n$, $1 < u_n \le 2$. *(1 pt)*
+3. Étudier la monotonie de la suite $(u_n)$. *(1,25 pt)*
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES [5 points]
+
+**Situation :**
+Un atelier artisanal de fabrication de pièces métalliques de précision à Bafoussam utilise un système de codage informatique strict pour sécuriser l'accès à son stock principal. Le code d'accès journalier est un nombre entier naturel $N$ dont l'écriture en base 8 est $\overline{a5b}_8$ (où $a$ et $b$ sont des chiffres en base 8, avec $a \neq 0$). Ce nombre $N$ est un multiple de 5 et de 7. 
+
+Par ailleurs, pour calibrer une nouvelle machine de découpe numérique, le technicien en chef doit paramétrer un signal complexe $Z$ qui est solution de l'équation du second degré dans $\mathbb{C}$ : 
+$$Z^2 - (3+i)Z + 2+2i = 0$$
+Enfin, la production hebdomadaire de l'atelier (en milliers de pièces) est indexée sur le module de la plus grande solution de cette équation.
+
+**Tâches :**
+1. Déterminer les chiffres $a$ et $b$ en base 8 permettant d'identifier le code d'accès $N$ du stock principal. *(2 pts)*
+2. Résoudre dans $\mathbb{C}$ l'équation de calibrage de la machine-outil et donner les formes trigonométriques des solutions obtenues. *(2,5 pts)*
+
+*Présentation : 0,5 pt*
+
+---
+---
+
+### CORRIGÉ DÉTAILLÉ ET BARÈME
+
+#### PARTIE A : ÉVALUATIONS DES RESSOURCES
+
+**Exercice 1 : Arithmétique (3,5 pts)**
+1. Étudions les restes de $5^n$ modulo 13 :
+   - $5^0 \equiv 1 \pmod{13}$
+   - $5^1 \equiv 5 \pmod{13}$
+   - $5^2 \equiv 25 \equiv 12 \equiv -1 \pmod{13}$
+   - $5^3 \equiv -5 \pmod{13}$
+   - $5^4 \equiv -25 \equiv 1 \pmod{13}$
+   *Bilan :* Le reste dépend de la classe de $n$ modulo 4 : si $n=4k$, reste 1 ; si $n=4k+1$, reste 5 ; si $n=4k+2$, reste 12 ; si $n=4k+3$, reste 8. *(1 pt)*
+2. Pour $S = 5^{2023} + 2^{2024} + 1$ :
+   - $2023 = 4 \times 505 + 3$, donc $5^{2023} \equiv 5^3 \equiv 8 \pmod{13}$.
+   - Pour les puissances de 2 : $2^1 \equiv 2, 2^2 \equiv 4, 2^3 \equiv 8, 2^4 \equiv 3, 2^5 \equiv 6, 2^6 \equiv 12 \equiv -1, \dots$ donc $2^{12} \equiv 1 \pmod{13}$.
+   - $2024 = 12 \times 168 + 8$, donc $2^{2024} \equiv 2^8 = (2^6) \times 2^2 \equiv (-1) \times 4 \equiv -4 \equiv 9 \pmod{13}$.
+   - Ainsi, $S \equiv 8 + 9 + 1 \equiv 18 \equiv 5 \pmod{13}$. Le reste est 5. *(1,5 pt)*
+3. Résolution de $7x - 11y = 3$ dans $\mathbb{Z}^2$ :
+   - Solution particulière évidente : $7(2) - 11(1) = 14 - 11 = 3$, donc $(x_0, y_0) = (2, 1)$.
+   - L'équation homogène est $7x = 11y$. Comme PGCD(7, 11) = 1, $x = 11k$ et $y = 7k$ ($k \in \mathbb{Z}$).
+   - Solution générale : $S = \{(11k + 2, 7k + 1) / k \in \mathbb{Z}\}$. *(1 pt)*
+
+**Exercice 2 : Nombres Complexes (4 pts)**
+1. $z^2 - 2z \cos(\frac{\pi}{5}) + 1 = 0$. 
+   $\Delta' = \cos^2(\frac{\pi}{5}) - 1 = -\sin^2(\frac{\pi}{5}) = (i \sin(\frac{\pi}{5}))^2$.
+   Les solutions sont $z_1 = \cos(\frac{\pi}{5}) + i\sin(\frac{\pi}{5}) = e^{i\pi/5}$ et $z_2 = e^{-i\pi/5}$. *(1 pt)*
+2. $Z = \frac{1 + i\sqrt{3}}{1 + i}$ :
+   a) Forme algébrique : $Z = \frac{(1+i\sqrt{3})(1-i)}{1^2 - i^2} = \frac{1 - i + i\sqrt{3} + \sqrt{3}}{2} = \frac{\sqrt{3}+1}{2} + i\frac{\sqrt{3}-1}{2}$.
+   Forme trigonométrique : $1+i\sqrt{3} = 2e^{i\pi/3}$ et $1+i = \sqrt{2}e^{i\pi/4}$.
+   $Z = \frac{2}{\sqrt{2}} e^{i(\pi/3 - \pi/4)} = \sqrt{2}e^{i\pi/12}$. *(1,5 pt)*
+   b) Par identification entre la forme algébrique et trigonométrique :
+   $Z = \sqrt{2}\left(\cos\left(\frac{\pi}{12}\right) + i\sin\left(\frac{\pi}{12}\right)\right)$.
+   Donc $\cos\left(\frac{\pi}{12}\right) = \frac{\sqrt{3}+1}{2\sqrt{2}} = \frac{\sqrt{6}+\sqrt{2}}{4}$ et $\sin\left(\frac{\pi}{12}\right) = \frac{\sqrt{6}-\sqrt{2}}{4}$. *(1,5 pt)*
+
+**Exercice 3 : Analyse - Fonctions (4 pts)**
+1. Limites aux bornes : $\lim_{x \to 1^-} f(x) = +\infty$ et $\lim_{x \to 1^+} f(x) = -\infty$ (Asymptote verticale $x=1$).
+   $\lim_{x \to \pm\infty} f(x) = \pm\infty$. *(1,25 pt)*
+2. $f(x) = ax + b + \frac{c}{x-1} = \frac{(ax+b)(x-1) + c}{x-1} = \frac{ax^2 + (b-a)x - b + c}{x-1}$.
+   Par identification avec $\frac{x^2 - 3x + 3}{x-1}$, on obtient $a=1$, $b-a = -3 \implies b = -2$, et $-b+c = 3 \implies c = 3 + (-2) = 1$.
+   Donc $f(x) = x - 2 + \frac{1}{x-1}$. La droite d'équation $y = x - 2$ est asymptote oblique en $\pm\infty$. *(0,75 pt)*
+3. Dérivée : $f'(x) = 1 - \frac{1}{(x-1)^2} = \frac{(x-1)^2 - 1}{(x-1)^2} = \frac{x(x-2)}{(x-1)^2}$.
+   $f'(x) = 0 \implies x = 0$ ou $x = 2$.
+   Signe de $f'$ : positif sur $]-\infty, 0[$ et $]2, +∞[$, négatif sur $]0, 1[$ et $]1, 2[$.
+   Variations : croissante sur $]-\infty, 0]$, décroissante sur $[0, 1[$ et $]1, 2]$, croissante sur $[2, +∞[$. *(1,25 pt)*
+4. $f(x) = 0 \implies x^2 - 3x + 3 = 0$. Le discriminant $\Delta = 9 - 12 = -3 <0$. Aucune solution réelle. *(0,75 pt)*
+
+**Exercice 4 : Suites Numériques (3 pts)**
+1. $u_0 = 2$, $u_1 = \frac{2(2)+3}{2+4} = \frac{7}{6}$, $u_2 = \frac{2(7/6)+3}{7/6 + 4} = \frac{11/3}{31/6} = \frac{22}{31}$. *(0,75 pt)*
+2. Récurrence : 
+   - Initialisation : $1 < u_0 = 2 \le 2$ (vrai).
+   - Hérédité : Supposons $1 < u_n \le 2$. Montrons que $1 < u_{n+1} \le 2$.
+     $u_{n+1} - 1 = \frac{2u_n + 3 - u_n - 4}{u_n + 4} = \frac{u_n - 1}{u_n + 4} > 0$ car $u_n > 1$.
+     $2 - u_{n+1} = 2 - \frac{2u_n + 3}{u_n + 4} = \frac{2u_n + 8 - 2u_n - 3}{u_n + 4} = \frac{5}{u_n + 4} > 0$.
+     Donc $1 < u_{n+1} \le 2$. Vrai pour tout $n$. *(1 pt)*
+3. Monotonie : $u_{n+1} - u_n = \frac{2u_n + 3 - u_n^2 - 4u_n}{u_n + 4} = \frac{-u_n^2 - 2u_n + 3}{u_n + 4} = \frac{-(u_n - 1)(u_n + 3)}{u_n + 4}$.
+   Puisque $u_n > 1$, $u_n - 1 > 0$ et $u_n + 3 > 0$, donc $u_{n+1} - u_n < 0$. La suite $(u_n)$ est strictement décroissante. *(1,25 pt)*
+
+---
+
+#### PARTIE B : ÉVALUATION DES COMPÉTENCES
+
+1. **Tâche 1 : Détermination du code d'accès $N$** *(2 pts)*
+   - $N = \overline{a5b}_8 = a \times 8^2 + 5 \times 8^1 + b \times 8^0 = 64a + 40 + b = 64a + b + 40$.
+   - $N$ est divisible par 5, donc son écriture décimale se termine par 0 ou 5. En base 8, $N \equiv b \pmod 5$. 
+   - $N$ est un multiple de 5 et 7, donc de $5 \times 7 = 35$ (car $\text{PGCD}(5,7)=1$).
+   - Testons les valeurs possibles de $a \in \{1, 2, \dots, 7\}$ et $b \ \{0, 1, \dots, 7\}$ :
+     Avec $N = 64a + b + 40$ multiple de 35 :
+     Si $a=2$, $N = 128 + 40 + b = 168 + b$. 168 est un multiple de 35 ? $168 = 35 \times 4 + 28$.
+     Si $a=3$, $N = 192 + 40 + b = 232 + b$. $232 = 35 \varkappa 6 + 22$.
+     Cherchons $35k - 40 = 64a + b$.
+     Par essais systématiques ou congruence modulo 35 : $64a + b \equiv -40 \equiv 30 \pmod{35}$.
+     En testant $a=2$ : $128 + b \equiv 30 \implies 23 + b \equiv 30 \implies b = 7$.
+     Vérifions pour $a=2, b=7$ : $N = 64(2) + 7 + 40 = 128 + 47 = 175$.
+     $175 = 35 \times 5$ (divisible par 5 et 7). Le code est donc $175$ (soit $\overline{257}_8$). *(2 pts)*
+
+2. **Tâche 2 : Résolution de l'équation de calibrage** *(2,5 pts)*
+   - Équation : $Z^2 - (3+i)Z + 2+2i = 0$.
+   - Calculons le discriminant $\Delta$ :
+     $\Delta = (3+i)^2 - 4(1)(2+2i) = (9 - 1 + 6i) - (8 + 8i) = 8 + 6i - 8 - 8i = -2i$.
+   - Cherchons une racine carrée de $\Delta = -2i$ sous la forme $\delta = x + iy$.
+     $\delta^2 = -2i \implies x^2 - y^2 + 2ixy = -2i \implies \begin{cases} x^2 - y^2 = 0 \\ 2xy = -2 \end{cases}$
+     Et $|\delta|^2 = |-2i| = 2 \implies x^2 + y^2 = 2$.
+     De $x^2 - y^2 = 0$, on tire $x = \pm y$. Comme $2xy = -2 < 0$, $x$ et $y$ sont de signes contraires, donc $x = -y$.
+     $2x^2 = 2 \implies x = 1$ ou $x = -1$.
+     D'où les deux racines carrées : $\delta_1 = 1 - i$ et $\delta_2 = -1 + i$.
+   - Les solutions de l'équation sont :
+     $Z_1 = \frac{(3+i) + (1-i)}{2} = \frac{4}{2} = 2$.
+     $Z_2 = \frac{(3+i) - (1-i)}{2} = \frac{2+2i}{2} = 1 + i$.
+   - Formes trigonométriques :
+     - Pour $Z_1 = 2$ : module 2, argument $0$. $Z_1 = 2(\cos 0 + i\sin 0)$.
+     - Pour $Z_2 = 1 + i$ : module $\sqrt{2}$, argument $\frac{\pi}{4}$. $Z_2 = \sqrt{2}\left(\cos\left(\frac{\pi}{4}\right) + i\sin\left(\frac{\pi}{4}\right)\right)$. *(2,5 pts)*

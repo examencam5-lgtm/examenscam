@@ -1,0 +1,181 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\5572fb009f4f45029c2703e8772e6091_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $O, u, v$. On considère les nombres complexes $z_1 = 2+2i$ et $z_2 = -1+i\\sqrt{3}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le module et un argument de $z_1$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer le module et un argument de $z_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Ecrire le quotient $\\frac{z_1}{z_2}$ sous forme algébrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Ecrire le quotient $\\frac{z_1}{z_2}$ sous forme trigonométrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "En déduire les valeurs exactes de $\\cos(\\frac{7\\pi}{12})$ et $\\sin(\\frac{7\\pi}{12})$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer l'ensemble des points $M$ d'affixe $z$ tels que $|z - z_1| = |z - z_2|$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit la suite numérique $u$ définie par $u_0 = 1$ et pour tout entier naturel $n$ par $u_{n+1} = \\frac{1}{3}u_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n < 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Etudier le sens de variation de la suite $u$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Justifier que la suite $u$ est convergente.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On définit la suite $v$ par $v_n = u_n - 3$ pour tout $n \\in \\mathbb{N}$. Montrer que $v$ est une suite géométrique dont on précisera la raison et le premier terme.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $u_n$ en fonction de $n$, puis calculer la limite de la suite $u$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $0, +\\infty$ par $f(x) = x - 1 - \\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$ par valeurs supérieures.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in 0, +\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Etudier le signe de $f'(x)$ et dresser le tableau de variations de $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Démontrer que l'équation $f(x) = 0$ admet exactement deux solutions dans $0, +\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire le signe de $f(x)$ suivant les valeurs de $x$.",
+                "bareme": 0.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère l'équation dans $\\mathbb{Z} \\times \\mathbb{Z}$ notée $E : 7x - 4y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $1, 1$ est une solution particulière de l'équation $E$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $E$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de $E$ telles que $x$ et $y$ soient des multiples de $3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit $n$ un entier naturel tel que $n \\equiv 2$ (mod 7). Déterminer le reste de la division euclidienne de $n^2$ par $7$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de la fête de la jeunesse, un club scientifique d'un lycée souhaite fabriquer une enseigne lumineuse dont la forme géométrique repose sur l'étude d'une fonction et d'une suite. Le coût de production global dépend d'un paramètre réel $m$ lié à une fonction de coût $f$ définie sur $\\mathbb{R}$ par $f(x) = (x-2)e^x + m$. Pour que le projet soit validé par l'administration, la fonction de coût doit admettre un minimum égal à un seuil critique fixé à $4$ milliers de francs. Par ailleurs, les organisateurs gèrent un stock de composants électroniques dont le nombre de pièces par semaine suit une suite arithmétique de premier terme $u_0 = 50$ et de raison $r = 15$. Le budget total alloué est calculé à partir de la valeur de $m$ et du nombre de pièces au bout de $10$ semaines.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la valeur du paramètre réel $m$ pour que le minimum de la fonction de coût $f$ sur $\\mathbb{R}$ soit égal à $4$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le nombre total de composants électroniques disponibles au bout de $10$ semaines d'activités.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "En déduire le montant total du budget alloué pour la fabrication de l'enseigne sachant que chaque composant coûte $2$ millénaires de francs augmentés de la valeur de $m$ trouvée à la tâche 1.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T07:40:17"
+}

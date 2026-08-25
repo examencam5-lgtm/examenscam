@@ -1,0 +1,149 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\a0fc42c9cc89439e883abb70c52a7ad7_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, u, v)$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ définie par $z' = 2iz + 1 - i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer l'affixe du point $A'$ image du point $A$ d'affixe $1 + i$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Montrer que $f$ admet un unique point invariant $\\Omega$ dont on précisera l'affixe $\\omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Exprimer $z' - \\omega$ en fonction de $z - \\omega$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Déterminer l'ensemble $(E)$ des points $M$ d'affixe $z$ tels que $z'$ est un nombre réel pur.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer l'aire de la portion du plan délimitée par cet ensemble $(E)$ et les axes de coordonnées.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $g$ la fonction définie sur $]0, +\\infty[$ par $g(x) = x^2 - 1 - 2\\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $g$ aux bornes de son ensemble de définition.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $g'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $g'(x)$ et dresser le tableau de variation de $g$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $g(x) = 0$ admet exactement deux solutions sur $]0, +\\infty[$, notées $1$ et $\\alpha$, avec $\\alpha \\in [1.8, 2.2]$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.a)",
+                "texte": "Déterminer le signe de $g(x)$ sur $]0, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.b)",
+                "texte": "En déduire que pour tout $x \\in ]0, 1[ \\cup ]1, \\alpha[$, on a $2\\ln(x) < x^2 - 1$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'ensemble des entiers relatifs et l'équation $(E) : 7x - 4y = 3$, où $(x, y) \\in \\mathbb{Z} \\times \\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $n$ un entier naturel. Déterminer les restes de la division euclidienne de $7^n$ par $4$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire suivant les valeurs de l'entier $n$ le reste de la division euclidienne de $7^n + 2n$ par $4$.",
+                "bareme": 1.25
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que pour tout entier naturel $n$, le nombre $7^n - 1$ est divisible par $3$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Un promoteur immobilier souhaite aménager un terrain rectangulaire dont les dimensions dépendent d'un paramètre réel $x$. Pour optimiser l'espace, le coût total de viabilisation en millions de francs CFA est modélisé par une fonction numérique liée aux résultats d'une étude statistique menée sur les quatre trimestres précédents, où les dépenses trimestrielles $x_i$ et les bénéfices $y_i$ sont en progression. Le promoteur dispose d'un budget initial fixe et souhaite déterminer le seuil de rentabilité de son investissement.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer l'expression explicite du coût total de viabilisation en fonction du paramètre $x$ en résolvant l'équation diophantienne associée aux dépenses de l'entreprise.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer le bénéfice prévisionnel maximal que le promoteur peut réaliser en étudiant les variations de la fonction de profit sur l'intervalle des valeurs admissibles.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Conclure en précisant si le promoteur peut achever son projet sans dépasser son budget initial de $15$ millions de francs CFA.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T11:23:17"
+}

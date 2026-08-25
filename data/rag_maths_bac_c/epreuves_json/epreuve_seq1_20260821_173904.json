@@ -1,0 +1,174 @@
+{
+  "metadonnees": {
+    "region": "extreme-nord",
+    "delegation": "Délégation Régionale de extreme-nord",
+    "etablissement": "lycee bilingue de garoua",
+    "annee_scolaire": "2026-2027",
+    "duree": "04",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 1,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.5,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.5,
+            "enonce_intro": "Les questions de cette partie sont indépendantes.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Soit $n$ un entier naturel. Déterminer suivant les valeurs de $n$ le reste de la division euclidienne de $3^n$ par $7$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, le nombre $2^{3n} - 1$ est un multiple de $7$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Résoudre dans $\\mathbb{Z}^2$ l'équation $(E) : 11x - 17y = 4$.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans l'ensemble des nombres complexes $\\mathbb{C}$ l'équation : $z^2 - 2\\sqrt{3}z + 4 = 0$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "On considère les points $A$, $B$ et $C$ d'affixes respectives $z_A = \\sqrt{3} + i$, $z_B = \\sqrt{3} - i$ et $z_C = 2i$. Écrire $z_A$ et $z_C$ sous forme trigonométrique.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Déterminer la nature du triangle $ABC$ et calculer son aire en unités d'aire.",
+                "bareme": 2.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit $f$ la fonction numérique d'une variable réelle définie par $f(x) = \\frac{x^2 - 3x + 3}{x - 1}$. On note $(C_f)$ sa courbe représentative dans un repère orthogonal.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Déterminer l'ensemble de définition $D_f$ de la fonction $f$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer les limites de $f$ aux bornes de $D_f$ et préciser les asymptotes à la courbe $(C_f)$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in D_f$ et montrer que $f'(x) = \\frac{(x - 2)(x)}{...}$ (simplifier l'expression pour obtenir $f'(x) = \\frac{x^2 - 2x}{(x-1)^2}$).",
+                "bareme": 1.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 5.0,
+        "situation_contexte": "M. Tientcheu possède un champ rectangulaire dont les dimensions $L$ (longueur) et $l$ (largeur) en dizaines de mètres sont des nombres entiers. Pour sécuriser son domaine, il souhaite installer des clôtures spéciales dont le coût dépend de la résolution de certains problèmes arithmétiques et géométriques. De plus, il investit dans la production de deux types de cultures dont le rendement journalier est modélisé par des fonctions numériques. La longueur $L$ est la solution de l'équation $11x \\equiv 7 \\pmod{17}$ comprise entre $1$ et $20$, et la largeur $l$ est le module de l'affixe d'un nombre complexe lié à la production.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la longueur $L$ du champ de M. Tientcheu en résolvant l'équation congruencielle $11x \\equiv 7 \\pmod{17}$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer la largeur $l$ sachant qu'elle correspond au module du nombre complexe $Z = (1 + i\\sqrt{3})^2$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer l'aire exacte du champ de M. Tientcheu et déterminer le coût total de la clôture si le mètre linéaire coûte $1500$ francs.",
+            "bareme": 2.0
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On calcule les premières puissances de $3$ modulo $7$ : $3^0 \\equiv 1$, $3^1 \\equiv 3$, $3^2 \\equiv 2$, $3^3 \\equiv 6$, $3^4 \\equiv 4$, $3^5 \\equiv 5$, $3^6 \\equiv 1$ [7]. Le reste est périodique de période $6$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Pour $n=0$, $2^0 - 1 = 0$ (divisible par $7$). Supposons que $2^{3k} - 1 = 7q$. Alors $2^{3(k+1)} - 1 = 2^{3k} \\times 8 - 1 = 8(2^{3k}-1) + 7 = 8(7q) + 7 = 7(8q+1)$, ce qui est divisible par $7$."
+          },
+          {
+            "numero": "3.",
+            "texte": "L'équation $11x - 17y = 4$ admet des solutions car $\\text{PGCD}(11, 17) = 1$. Une solution particulière est $(x_0, y_0) = (9, 5)$. L'ensemble des solutions est $\\{(17k + 9, 11k + 5) \\mid k \\in \\mathbb{Z}\\}."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant est $\\Delta = (2\\sqrt{3})^2 - 4(4) = 12 - 16 = -4 = (2i)^2$. Les solutions sont $z_1 = \\sqrt{3} - i$ et $z_2 = \\sqrt{3} + i$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Pour $z_A = \\sqrt{3} + i$, son module est $|z_A| = \\sqrt{3 + 1} = 2$. Donc $z_A = 2(\\cos(\\frac{\\pi}{6}) + i\\sin(\\frac{\\pi}{6}))$. Pour $z_C = 2i$, son module est $2$ et $z_C = 2(\\cos(\\frac{\\pi}{2}) + i\\sin(\\frac{\\pi}{2}))$"
+          },
+          {
+            "numero": "3.",
+            "texte": "Les distances sont $AB = 2$, $AC = 2$ et $BC = 2\\sqrt{3}$. Le triangle $ABC$ est isocèle en $C$. Son aire est $\\frac{1}{2} \\times BC \\times \\text{hauteur} = \\sqrt{3}$ unités d'aire."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "L'ensemble de définition est $D_f = \\mathbb{R} \\setminus \\{1\\}$. "
+          },
+          {
+            "numero": "2.",
+            "texte": "Les limites aux bornes donnent $\\lim_{x \\to 1^-} f(x) = +\\infty$ et $\\lim_{x \\to 1^+} f(x) = -\\infty$. La droite d'équation $x = 1$ est asymptote verticale."
+          },
+          {
+            "numero": "3.",
+            "texte": "La dérivée est $f'(x) = \\frac{(2x-3)(x-1) - (x^2-3x+3)}{(x-1)^2} = \\frac{x^2 - 2x}{(x-1)^2}$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Le signe de $f'(x)$ dépend de $x^2 - 2x$. $f$ est croissante sur $]-\\infty, 0]$ et $[2, +\\infty[$, et décroissante sur $[0, 1[$ et $]1, 2]$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T17:39:04"
+}

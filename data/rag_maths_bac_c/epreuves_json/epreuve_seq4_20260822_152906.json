@@ -1,0 +1,165 @@
+{
+  "metadonnees": {
+    "region": "Centre",
+    "delegation": "Délégation Régionale du Centre",
+    "etablissement": "COLLEGE PRIVE MONGO BETI",
+    "annee_scolaire": "2026-2027",
+    "duree": "4 h",
+    "coefficient": "07",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 14.8,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation (E) d'inconnue complexe z : $z^{2} - 2z + 5 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes $\\mathbb{C}$ l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions de (E) sous forme trigonométrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit A et B les points d'affixes respectives $z_{A} = 1 + 2i$ et $z_{B} = 1 - 2i$. Placer ces points et déterminer l'affixe du vecteur $\\vec{AB}$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Soit C le point d'affixe $z_{C} = 3 + 4i$. Calculer le rapport $\\frac{z_{C} - z_{A}}{z_{B} - z_{A}}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.c)",
+                "texte": "En déduire la nature exacte du triangle ABC.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Déterminer l'écriture complexe de la rotation r de centre A et d'angle $\\frac{\\pi}{2}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Calculer l'affixe du point D, image de C par la rotation r.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit f la fonction numérique définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x - 1 - 2\\ln x$. On désigne par $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, I, J)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de f en $0$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de f en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Étudier le signe de $f'(x)$ et dresser le tableau de variation de f.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet exactement deux solutions $\\alpha$ et $\\beta$ dans $]0, +\\infty[$ avec $\\alpha < \\beta$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Justifier que $0.5 \\leq \\alpha \\leq 0.6$ et $3.5 \\leq \\beta \\leq 3.6$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "4.",
+                "texte": "Tracer la courbe $(\\mathcal{C})$ dans le repère $(O, I, J)$ en précisant ses branches infinies.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.8,
+            "enonce_intro": "On considère l'équation (E) d'inconnue $(x, y)in \\mathbb{Z} \\times \\mathbb{Z}$ : $7x - 4y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de (E).",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de (E) telles que $x$ et $y$ vérifient $x \\equiv 2$ (mod 4).",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit n un entier naturel. Déterminer le reste de la division euclidienne de $7^{n}$ par 4.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire le reste de la division euclidienne de $7^{2026} + 2$ par 4.",
+                "bareme": 1.05
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.7,
+        "exercices": null,
+        "situation_contexte": "Un entrepreneur souhaite optimiser le transport de ses marchandises entre différents entrepôts répartis dans une zone industrielle. Le coût du carburant et la durée des trajets sont modélisés à l'aide d'un graphe pondéré et d'une suite arithmético-géométrique représentant l'évolution de son stock mensuel exprimé en tonnes. Le stock initial au mois de janvier est de $u_{0} = 10$ tonnes et obéit à la relation de récurrence $u_{n+1} = \\frac{1}{2}u_{n} + 3$ pour tout entier naturel n.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Calculer les stocks aux mois de février et de mars ($u_{1}$ et $u_{2}$). En déduire la quantité totale de marchandises gérée sur ces trois premiers mois.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "À l'aide d'une suite auxiliaire explicite, exprimer le stock $u_{n}$ en fonction de n, puis déterminer la limite de ce stock sur le long terme pour évaluer la viabilité du stockage.",
+            "bareme": 1.6
+          },
+          {
+            "numero": "3.",
+            "texte": "L'entrepreneur doit acheminer ce stock limite vers un entrepôt central en un temps optimal en utilisant les données de son graphe de livraison. Déterminer le chemin le plus court garantissant une livraison avant épuisement du stock.",
+            "bareme": 1.6
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T15:29:06"
+}

@@ -1,0 +1,139 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\fd16cddac2f3469d98ae24d44fffccda_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 5.0,
+            "enonce_intro": "Le plan complexe est muni d'un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'application $f$ qui à tout point $M$ d'affixe $z$ associe le point $M'$ d'affixe $z'$ définie par $z' = (1 + i\\sqrt{3})z + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer la nature et les éléments caractéristiques de l'application $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer l'affixe du point $A'$ image par $f$ du point $A$ d'affixe $z_A = -1 + i\\sqrt{3}$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Montrer que $f$ admet un unique point invariant $I$ dont on précisera l'affixe $z_I$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Exprimer $z' - z_I$ en fonction de $z - z_I$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3)",
+                "texte": "Soit $(E)$ l'ensemble des points $M$ d'affixe $z$ tels que $|z - z_I| = 4$. Déterminer la nature et les éléments caractéristiques de $(E)$, puis son image $(E')$ par $f$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 5.0,
+            "enonce_intro": "Soit la fonction $g$ définie sur l'intervalle $]0, +\\infty[$ par $g(x) = x^2 - 1 - 2\\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $g$ en $0$ et la limite de $g$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Etudier le sens de variation de $g$ et dresser son tableau de variation sur $]0, +\\infty[$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.c)",
+                "texte": "En déduire le signe de $g(x)$ pour tout $x$ de l'intervalle $]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $h$ la fonction définie sur $]0, +\\infty[$ par $h(x) = x \\ln(x) - x$. Calculer la dérivée de $h$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire la primitive $G$ de la fonction $g$ sur $]0, +\\infty[$ qui s'annule en $1$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 5.0,
+            "enonce_intro": "On considère l'équation (E) dans $\\mathbb{Z} \\times \\mathbb{Z}$ : $7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer tous les couples de solutions $(x, y)$ de (E) tels que $0 \\leq x \\leq 10$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Soit $n$ un entier naturel. Déterminer le reste de la division euclidienne de $7^n$ par $5$ suivant les valeurs de $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "En déduire que $7^{2026} - 3$ est divisible par $5$.",
+                "bareme": 0.5
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de l'extension de ses activités économiques à Douala, un promoteur immobilier souhaite aménager un terrain rectangulaire. Pour sécuriser le site, il installe un système de comptage dont le nombre d'agents de sécurité embauchés chaque année suit une évolution particulière. De plus, les données statistiques des bénéfices enregistrés en millions de francs CFA au cours des quatre premières années sont modélisées par une série statistique $(x_i, y_i)$. Le coût total des travaux dépend directement du nombre total d'agents et des bénéfices prévisionnels.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "À l'aide de la méthode des moindres carrés appliquée aux quatre premières années, déterminer l'équation de la droite de régression de $y$ en $x$ permettant d'estimer le bénéfice à la cinquième année.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Le nombre d'agents $u_n$ à l'année $n$ est défini par une suite récurrente liée aux bénéfices estimés. Sachant que $u_0 = 2$ et $u_{n+1} = \\frac{1}{2}u_n + 1$, déterminer l'expression de $u_n$ en fonction de $n$ et étudier sa convergence pour anticiper la gestion du personnel.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Le promoteur dispose d'un budget initial de $15$ millions de francs CFA. En utilisant le résultat de la limite de la suite $(u_n)$ et les prévisions de bénéfices, déduire si le budget est suffisant pour couvrir l'ensemble des charges salariales à long terme.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T08:15:30"
+}

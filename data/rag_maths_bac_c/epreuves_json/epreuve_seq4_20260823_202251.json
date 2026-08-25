@@ -1,0 +1,166 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\c8cb78fddd974dcfa3e9851b0d6f6ac0_final.png"
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère l'équation dans $\\mathbb{C}$ : $(E) : z^{2} - 2z + 5 = 0$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Écrire les solutions sous forme trigonométrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Soit $A$ et $B$ les points d'affixes respectives $z_{A} = 1 + 2i$ et $z_{B} = 1 - 2i$. Placer ces points dans le repère.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'affixe du point $C$ tel que le triangle $OAC$ soit équilatéral direct.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.c)",
+                "texte": "Calculer le module et un argument de l'affixe de $C$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 3.5,
+            "enonce_intro": "Soit la suite numérique $(u_{n})$ définie sur $\\mathbb{N}$ par $u_{0} = 0$ et pour tout entier naturel $n$, $u_{n+1} = \\sqrt{2u_{n} + 3}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Démontrer par récurrence que pour tout $n \\in \\mathbb{N}$, $0 \\leq u_{n} \\leq 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Étudier le sens de variation de la suite $(u_{n})$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.c)",
+                "texte": "En déduire que la suite $(u_{n})$ est convergente et préciser sa limite.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer le plus petit entier $n_{0}$ tel que $3 - u_{n} \\leq 10^{-2}$ pour tout $n \\geq n_{0}$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.5,
+            "enonce_intro": "Soit la fonction $f$ définie sur $]0, +\\infty[$ par $f(x) = x - 1 + \\frac{1 + \\ln x}{x}$ et soit $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$ et interpréter graphiquement le résultat.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Démontrer que la droite $(\\Delta)$ d'équation $y = x - 1$ est asymptote à la courbe $(\\mathcal{C})$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Préciser la position relative de $(\\mathcal{C})$ par rapport à $(\\Delta)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Dresser le tableau de variations complet de la fonction $f$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère l'équation $(E) : 7x - 4y = 3$ où $(x, y) \\in \\mathbb{Z} \\times \\mathbb{Z}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(1, 1)$ est une solution particulière de l'équation $(E)$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer les solutions de $(E)$ telles que $x \\equiv 2$ (mod 4).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire le plus petit entier naturel $x$ vérifiant cette condition.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "M. Fotso gère une entreprise de production à Bafoussam. Le bénéfice mensuel en millions de francs CFA de son entreprise, pour $x$ centaines de produits vendus, est modélisé par la fonction $f$ définie par $f(x) = x - 1 + \\frac{1 + \\ln x}{x}$. Pour sécuriser ses investissements, il place une partie de son capital dans un fonds dont la valeur au bout de $n$ mois est dictée par la suite numérique $(u_{n})$ définie par $u_{0} = 0$ et $u_{n+1} = \\sqrt{2u_{n} + 3}$. De plus, pour l'acheminement de ses marchandises vers un partenaire à Yaoundé, il doit résoudre un système d'identification basé sur les solutions de l'équation diophantienne $7x - 4y = 3$.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer le nombre minimal de centaines de produits que M. Fotso doit vendre afin que son bénéfice mensuel dépasse 2 millions de francs CFA, en s'appuyant sur l'étude de la fonction $f$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer la valeur du capital de M. Fotso au bout de 3 mois de placement en utilisant la suite $(u_{n})$, et estimer si ce capital atteint la limite théorique de 3 millions de francs CFA fixée par la banque.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Trouver le couple de codes $(x, y)$ pour l'acheminement sécurisé des marchandises, sachant que ces codes vérifient l'équation $7x - 4y = 3$ avec la contrainte $x \\equiv 2$ (mod 4).",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-23T20:22:51"
+}

@@ -1,0 +1,171 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "C:\\Users\\GENIUS ELECTRONICS\\examenscam\\data\\_tmp_entetes_upload\\entete_10b9307e854b433984f35dfc83a94d9b.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, u, v)$. On considère les nombres complexes $z_1 = \\sqrt{3} + i$ et $z_2 = 1 + i\\sqrt{3}$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Mettre le nombre complexe $z_1$ sous forme exponentielle.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Mettre le nombre complexe $z_2$ sous forme exponentielle.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer le quotient $Z = \\frac{z_1}{z_2}$ et donner son écriture algébrique.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Donner la forme exponentielle du nombre complexe $Z$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.a)",
+                "texte": "En déduire les valeurs exactes de $\\cos(\\frac{\\pi}{12})$ et $\\sin(\\frac{\\pi}{12})$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Déterminer l'ensemble des points $M$ d'affixe $z$ tels que $|z - z_1| = |z - z_2|$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère l'équation $(E)$ d'inconnue entière $x$ : $5x \\equiv 2$ (mod 7).",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer le reste de la division euclidienne par 7 des premières puissances de 5 pour les exposants de 0 à 6.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "1.b)",
+                "texte": "En déduire une solution particulière de l'équation $(E)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z}$ l'équation $(E)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer l'ensemble des solutions de $(E)$ qui appartiennent à l'intervalle $[-10, 10]$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la suite numérique $(u_n)_{n \\in \\mathbb{N}}$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{3}u_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer les termes $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, on a $u_n < 3$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "3.a)",
+                "texte": "On pose pour tout entier naturel $n$, $v_n = u_n - 3$. Démontrer que $(v_n)$ est une suite géométrique de raison $\\frac{1}{3}$ et préciser son premier terme.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.b)",
+                "texte": "Exprimer $u_n$ en fonction de $n$ puis calculer la limite de la suite $(u_n)$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "Soit la fonction $f$ définie sur l'intervalle $]0, +\\infty[$ par $f(x) = x - 1 - \\ln(x)$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer la limite de $f$ en $0$ par valeurs supérieures.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer la limite de $f$ en $+\\infty$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in ]0, +\\infty[$ et étudier son signe.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations de la fonction $f$ sur $]0, +\\infty[$ et en déduire le signe de $f(x)$ pour tout $x > 0$.",
+                "bareme": 0.75
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans une exploitation agricole moderne au Cameroun, un producteur souhaite optimiser la construction de bassins de stockage d'eau et l'organisation de ses récoltes. Pour cela, le plan de l'exploitation est muni d'un repère orthonormé $(O, u, v)$ où l'unité est le mètre. Le périmètre d'un premier bassin circulaire est défini par un nombre complexe $z$ vérifiant une relation géométrique, et la production annuelle en tonnes d'un fruit sur $n$ années suit une suite arithmético-géométrique similaire à $(u_n)$. Le producteur utilise un capital initial $S_0 = 2$ millions de francs CFA pour financer son projet.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer l'ensemble des points $M$ d'affixe $z$ représentant les positions possibles des bornes du bassin telles que $|z - 1 - i| = 2$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Le producteur modélise l'évolution de son capital par la suite $(S_n)$ définie par $S_{n+1} = \\frac{1}{3}S_n + 2$ en millions de francs CFA. Calculer le capital disponible au bout de 2 ans.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Estimer vers quelle limite tendra le capital de ce producteur à long terme et préciser si ce montant dépasse 2,8 millions de francs CFA.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-22T16:42:34"
+}

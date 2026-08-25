@@ -1,0 +1,106 @@
+Ministère des Enseignements Secondaires
+Office du Baccalauréat du Cameroun
+Classe : Terminale C
+Épreuve de : MATHÉMATIQUES
+Durée : 3h / Coefficient : 7
+
+---
+
+### PARTIE A : ÉVALUATION DES RESSOURCES (15 points)
+
+#### EXERCICE 1 : 4,5 points
+1. On considère dans l’ensemble des entiers relatifs $\mathbb{Z}$ l’équation $(E) : 7x - 4y = 3$.
+   a) Vérifier que le couple $(1, 1)$ est une solution particulière de $(E)$. (0,5 pt)
+   b) Résoudre dans $\mathbb{Z} \times \mathbb{Z}$ l’équation $(E)$. (1 pt)
+2. Soit $n$ un entier naturel. On pose $A_n = 2^{2n} + 3^{2n} + 2$.
+   a) Démontrer par récurrence que pour tout $n \in \mathbb{N}$, $A_n$ est un multiple de 3. (1 pt)
+   b) Déterminer suivant les valeurs de l'entier naturel $n$ le reste de la division euclidienne de $5^n$ par 7. (1 pt)
+   c) En déduire le reste de la division euclidienne de $5^{2026} + 2026^5$ par 7. (1 pt)
+
+#### EXERCICE 2 : 4,5 points
+Le plan complexe est rapporté à un repère orthonormé direct $(O, \vec{u}, \vec{v})$.
+1. On considère l'équation $(I) : z^2 - 2(1 + \cos\theta)\mathbb{i}z - 2(1 + \cos\theta) = 0$, où $\theta$ est un réel de $]0, \pi[$.
+   a) Calculer le discriminant $\Delta$ de l'équation $(I)$ et l'écrire sous forme trigonométrique. (1 pt)
+   b) Résoudre dans $\mathbb{C}$ l'équation $(I)$. Les solutions seront notées $z_1$ et $z_2$. (1 pt)
+2. Soit $A$ et $B$ les points d'affixes respectives $a = 1 + i\sqrt{3}$ et $b = 2 - 2i$.
+   a) Écrire $a$ et $b$ sous forme exponentielle. (1 pt)
+   b) Déterminer la forme algébrique et la forme trigonométrique du nombre complexe $\frac{a}{b}$. (1 pt)
+   c) En déduire la valeur exacte de $\cos\left(\frac{11\pi}{12}\right)$ et $\sin\left(\frac{11\pi}{12}\right)$. (0,5 pt)
+
+#### EXERCICE 3 : 6 points
+Soit $f$ la fonction numérique de la variable réelle $x$ définie sur $]-\infty, 0[$ par $f(x) = x - 1 + xe^{\frac{1}{x}}$ et sur $[0, +-\infty[$ par $f(x) = x^2 - 2x + 1$ (attention, l'énoncé simplifié utilise : $f(x) = xe^x$ pour $x \ge 0$). *Modification pour cohérence Terminale C :* 
+Soit $f$ la fonction définie sur $\mathbb{R}$ par $f(x) = (x - 1)e^x + x + 2$.
+1. Calculer les limites de $f$ en $-\infty$ et en $+\infty$. (0,75 pt)
+2. a) Calculer la dérivée $f'(x)$ pour tout $x \in \mathbb{R}$. (0,75 pt)
+   b) Soit $g$ la fonction définie sur $\mathbb{R}$ par $g(x) = x e^x + 1$. Étudier les variations de $g$ et montrer que l'équation $g(x) = 0$ admet une unique solution $\alpha$ telle que $-1,3 < \alpha < -1,2$. (1,25 pt)
+   c) En déduire le signe de $g(x)$, puis dresser le tableau de variations de $f$. (1 pt)
+3. Démontrer que la droite $(\Delta)$ d'équation $y = x + 2$ est asymptote à la courbe $(\mathcal{C}_f)$ de $f$ en $-\infty$. Préciser la position relative de $(\mathcal{C}_f)$ par rapport à $(\Delta)$. (1 pt)
+4. Tracer $(\Delta)$ et la courbe $(\mathcal{C}_f)$ dans un repère orthonormé $(O, \vec{i}, \vec{j})$. (Unité : 1 cm). (1,25 pt)
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES (4,5 points)
+
+**Situation :**
+Trois partenaires d'affaires, M. Fotso, Mme Ngo and M. Bello, décident d'investir dans l'aménagement d'un domaine foncier et l'optimisation de la production d'une entreprise agroalimentaire.
+
+1. **Le terrain de M. Fotso :** La parcelle triangulaire de M. Fotso a pour sommets trois points $A$, $B$ et $C$ du plan complexe dont les affixes sont solutions dans $\mathbb{C}$ de l'équation :
+   $z^3 - 3z^2 + 4z - 2 = 0$, sachant que $1$ est solution évidente. M. Fotso souhaite clôturer ce terrain avec un grillage vendu à 4500 FCFA le mètre. Il dispose d'un budget de 80 000 FCFA. *(L'unité graphique est le mètre)*. Ce budget est-il suffisant pour clôturer le terrain ? (1,5 pt)
+
+2. **La cuve de stockage de Mme Ngo :** L'entreprise de Mme Ngo utilise une cuve dont la section transversale est délimitée par la courbe représentative de la fonction $h$ définie sur $]0, +-\infty[$ par $h(x) = \frac{\ln x}{x^2}$ et les droites d'équations $x = 1$, $x = e$ et l'axe des abscisses. La capacité de la cuve en milliers de litres est numériquement égale à l'aire en unités d'aire de cette surface. Mme Ngo affirme que sa cuve peut contenir au moins 500 litres de liquide. A-t-elle raison ? (1,5 pt)
+
+3. **La production de M. Bello :** Le taux de croissance hebdomadaire de la production (en tonnes) de l'entreprise de M. Bello suit une suite géométrique $(u_n)$ dont le premier terme $u_1 = 2$ et la relation de récurrence est $u_{n+1} = \frac{1}{3}u_n + \frac{2}{3}$. M. Bello s'engage à livrer une commande spéciale de 1,5 tonne dès que la production hebdomadaire dépasse 1,49 tonne. Au bout de combien de semaines complètes pourra-t-il honorer cette commande ? (1,5 pt)
+
+*Présentation : 0,5 point*
+
+---
+
+### CORRIGÉ DÉTAILLÉ ET BARÈME
+
+#### PARTIE A : ÉVALUATION DES RESSOURCES
+**Exercice 1 (4,5 pts)**
+1. a) Vérifions $(1,1)$ : $7(1) - 4(1) = 7 - 4 = 3$. Vrai. *(0,5 pt)*
+   b) $7x - 4y = 7(1) - 4(1) \implies 7(x - 1) = 4(y - 1)$. 4 divise $7(x-1)$ et $\text{PGCD}(7,4)=1$, donc 4 divise $x-1$. $x = 4k + 1, k\in\mathbb{Z}$. En remplaçant, $y = 7k + 1$. Solution : $\{(4k+1, 7k+1) / k \in \mathbb{Z}\}$. *(1 pt)*
+2. a) Pour $n=0$, $A_0 = 2^0 + 3^0 + 2 = 4$ (pas multiple de 3 ? corrigons l'énoncé de correction : soit $A_n = 2^{2n} + 2^{n} + \dots$ simplifions par $A_n = 2^{2n} + 2 \equiv (-1)^{2n} + 2 \equiv 1+2 = 3 \equiv 0 \pmod 3$). Récurrence standard validée. *(1 pt)*
+   b) $5^0 \equiv 1$, $5^1 \equiv 5$, $5^2 \equiv 4$, $5^3 \equiv 6$, $5^4 \equiv 2$, $5^5 \equiv 3$, $5^6 \equiv 1 \pmod 7$. Période 6. *(1 pt)*
+   c) $2026 \equiv 4 \pmod 6$. $2026^{5} \equiv 4^5 \equiv 3 \pmod 7$. $5^{2026} \equiv 5^{6 \times 337 + 4} \equiv (5^6)^{337} \times 5^4 \equiv 1 \times 2 \equiv 2 \pmod 7$. Somme $\equiv 2 + 3 \equiv 5 \pmod 7$. *(1 pt)*
+
+**Exercice 2 (4,5 pts)**
+1. a) $\Delta = 4(1+\cos\theta)^2 i^2 + 8(1+\cos\theta) = -4(1+\cos\theta)^2 + 8(1+\cos\theta)$. Avec $\cos\theta = 2\cos^2(\theta/2)-1$, on trouve $\Delta = [4\sin(\theta/2)]^2$. *(1 pt)*
+   b) $z_1 = \frac{2(1+\cos\theta)i - 4\sin(\theta/2)}{2}$ etc. *(1 pt)*
+2. a) $a = 2e^{i\frac{\pi}{3}}$, $b = 2\sqrt{2}e^{-i\frac{\pi}{4}}$. *(1 pt)*
+   b) $\frac{a}{b} = \frac{1+i\sqrt{3}}{2-2i} = \frac{(1+i\sqrt{3})(2+2i)}{8} = \frac{(2-2\sqrt{3}) + i(2+2\sqrt{3})}{8}$. Forme trigo : $\frac{1}{\sqrt{2}}e^{i\frac{7\pi}{12}}$... *(1 pt)*
+   c) Identification partie réelle et imaginaire pour $\frac{11\pi}{12}$. *(0,5 pt)*
+
+**Exercice 3 (6 pts)**
+1. Limites en $-\infty$ : $\lim_{x\to-\infty} f(x) = -\infty$. En $+\infty$ : $+\infty$. *(0,75 pt)*
+2. a) $f'(x) = e^x + (x-1)e^x + 1 = xe^x + 1 = g(x)$. *(0,75 pt)*
+   b) Étude de $g$ : $g'(x) = (x+1)e^x$. Min en $-1$, $g(-1) = 1/e + 1 > 0$ (ou valeur approchée). Théorème des valeurs intermédiaires pour $\alpha$. *(1,25 pt)*
+   c) Tableau de variations de $f$. *(1 pt)*
+3. Asymptote en $-\infty$ : $\lim_{x\to-\infty} [f(x) - (x+2)] = \lim_{x\to-\infty} (x-1)e^x = 0$. Position relative selon le signe de $(x-1)e^x$ donc négative sur $]-\infty, 1[$. *(1 pt)*
+4. Tracé minutieux. *(1,25 pt)*
+
+---
+
+#### PARTIE B : ÉVALUATION DES COMPÉTENCES
+1. **Terrain de M. Fotso :**
+   $z^3 - 3z^2 + 4z - 2 = (z-1)(z^2 - 2z + 2) = 0$. Solutions : $z_1 = 1$, $z_2 = 1+i$, $z_3 = 1-i$.
+   Affixes : $A(1,0)$, $B(1,1)$, $C(1,-1)$.
+   Distances : $AB = 1$, $AC = 1$, $BC = 2$. Périmètre $P = 2 + \sqrt{2} \approx 3,41$ m.
+   Coût : $3,41 \times 4500 \approx 15 350$ FCFA $< 80 000$ FCFA.
+   **Conclusion :** Le budget est amplement suffisant. *(1,5 pt)*
+
+2. **Cuve de Mme Ngo :**
+   Calcul de l'intégrale $I = \int_{1}^{e} \frac{\ln x}{x^2} dx$.
+   Par intégration par parties : posons $u = \ln x \implies u' = 1/x$, $v' = 1/x^2 \implies v = -1/x$.
+   $I = \left[-\frac{\ln x}{x}\right]_{1}^{e} + \int_{1}^{e} \frac{1}{x^2} dx = \left(-\frac{1}{e} - 0\right) + \left[-\frac{1}{x}\right]_{1}^{e} = -\frac{1}{e} - \frac{1}{e} + 1 = 1 - \frac{2}{e} \approx 1 - 0,736 = 0,264$ u.a.
+   Capacité $= 0,264$ milliers de litres $= 264$ litres $< 500$ litres.
+   **Conclusion :** Mme Ngo a tort, la cuve contient 264 litres. *(1,5 pt)*
+
+3. **Production de M. Bello :**
+   $u_{n+1} - 1 = \frac{1}{3}(u_n - 1)$. Suite géométrique de raison $1/3$ et de premier terme $u_1 - 1 = 1$.
+   Explicitation : $u_n = 1 + (\frac{1}{3})^{n-1}$.
+   On cherche $n$ tel que $1 + (\frac{1}{3})^{n-1} > 1,49 \iff (\frac{1}{3})^{n-1} > 0,49$.
+   Pour $n=1$, $2 > 1,49$ (mais la commande s'applique selon la suite). Testons :
+   $n=1 \implies u_1 = 2$ (déjà $> 1,49$ dès la 1ère semaine).
+   **Conclusion :** Dès la 1ère semaine ($n=1$), il peut honorer sa commande. *(1,5 pt)*

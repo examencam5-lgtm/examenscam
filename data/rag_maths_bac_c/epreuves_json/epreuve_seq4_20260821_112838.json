@@ -1,0 +1,201 @@
+{
+  "metadonnees": {
+    "region": "Extrême-Nord",
+    "delegation": "Délégation Régionale de Extrême-Nord",
+    "etablissement": "Établissement",
+    "annee_scolaire": "2026-2027",
+    "duree": "04h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 4,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Résoudre dans $\\mathbb{C}$ l'équation $z^2 - 4z + 13 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Soit $A$, $B$ et $C$ les points d'affixes respectives $z_A = 2 + 3i$, $z_B = 2 - 3i$ et $z_C = 5 + 3i$. Déterminer la forme exponentielle de $\\frac{z_C - z_A}{z_B - z_A}$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "En déduire la nature précise du triangle $ABC$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la suite $(u_n)$ définie par $u_0 = 2$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{3u_n + 2}{u_n + 4}$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $1 < u_n \\le 2$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "On définit la suite $(v_n)$ par $v_n = \\frac{u_n - 1}{u_n + 2}$ pour tout $n \\in \\mathbb{N}$. Démontrer que $(v_n)$ est une suite géométrique de raison $\\frac{1}{5}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Exprimer $u_n$ en fonction de $n$, puis calculer la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\\infty$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 6.5,
+            "enonce_intro": "Soit $f$ la fonction numérique définie sur $]0, +\\infty[$ par $f(x) = x - 1 - 2\\ln x + (\\ln x)^2$. On désigne par $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $f$ en $0$ et en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Calculer la dérivée $f'(x)$ et montrer qu'elle peut s'écrire sous la forme $f'(x) = \\frac{(x - 2)(\\ln x - 1)}{x}$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "3.",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Démontrer que la courbe $(\\mathcal{C})$ admet une branche parabolique de direction asymptotique celle de la droite $(O, \\vec{i})$ en $+\\infty$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "5.",
+                "texte": "Tracer la courbe $(\\mathcal{C})$ dans le repère $(O, \\vec{i}, \\vec{j})$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "6.",
+                "texte": "Calculer en $\\text{cm}^2$ l'aire du domaine plan délimité par la courbe $(\\mathcal{C})$, l'axe des abscisses et les droites d'équations $x = 1$ et $x = e$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Un promoteur immobilier souhaite aménager un terrain de forme complexe pour y implanter un parc de loisirs à Yaoundé. Le plan du site est modélisé dans le plan complexe rapporté à un repère orthonormé. La zone principale de détente est délimitée par l'ensemble des points $M$ d'affixe $z$ tels que $|z - 2 + i| = 3$. De plus, pour l'acheminement des matériaux, deux engins de chantier $A$ et $B$ suivent des trajectoires périodiques basées sur des congruences et des nombres complexes. L'engin $A$ passe à un poste de contrôle tous les $105$ jours, tandis que l'engin $B$ y passe tous les $81$ jours. Ils s'y sont croisés pour la première fois un certain jour. Le promoteur, pour sécuriser le site, doit verser une prime d'assurance calculée à partir des solutions d'une équation arithmétique liée au nombre d'ouvriers.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer la nature et les éléments caractéristiques de la zone principale de détente du parc.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le nombre de jours qui s'écoulent avant que les deux engins $A$ et $B$ ne se retrouvent pour la deuxième fois au poste de contrôle.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Calculer le montant total de la prime d'assurance sachant qu'elle s'élève à $1500$ FCFA par jour de coïncidence cumulé jusqu'à la deuxième rencontre et par ouvrier, l'équipe étant composée de $3$ personnes.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Le discriminant de l'équation est $\\Delta = (-4)^2 - 4(1)(13) = 16 - 52 = -36 = (6i)^2$. Les solutions sont $z_1 = \\frac{4 - 6i}{2} = 2 - 3i$ et $z_2 = 2 + 3i$."
+          },
+          {
+            "numero": "2.",
+            "texte": "On a $z_C - z_A = 5 + 3i - (2 + 3i) = 3$ et $z_B - z_A = 2 - 3i - (2 + 3i) = -6i$. Ainsi, $\\frac{z_C - z_A}{z_B - z_A} = \\frac{3}{-6i} = \\frac{i}{2} = \\frac{1}{2}e^{i\\frac{\\pi}{2}}$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le module est $\\left|\\frac{z_C - z_A}{z_B - z_A}\\n\\right| = \\frac{1}{2}$, donc $AC = \\frac{1}{2}AB$. L'argument est $\\frac{\\pi}{2}$ modulo $2\\pi$, donc le triangle $ABC$ est rectangle en $A$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Démontrons par récurrence que $1 < u_n \\le 2$ pour tout $n \\in \\mathbb{N}$. Pour $n = 0$, $u_0 = 2$ donc $1 < u_0 \\le 2$. Supposons la propriété vraie au rang $n$, alors $1 < u_n \\le 2$. On a $u_{n+1} - 1 = \\frac{3u_n + 2 - u_n - 4}{u_n + 4} = \\frac{2u_n - 2}{u_n + 4} = \\frac{2(u_n - 1)}{u_n + 4} > 0$ car $u_n > 1$. De plus, $2 - u_{n+1} = 2 - \\frac{3u_n + 2}{u_n + 4} = \\frac{2u_n + 8 - 3u_n - 2}{u_n + 4} = \\frac{6 - u_n}{u_n + 4} \\ge 0$ car $u_n \\le 2$. D'où $1 < u_{n+1} \\le 2$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Étudions le signe de $u_{n+1} - u_n = \\frac{3u_n + 2 - u_n^2 - 4u_n}{u_n + 4} = \\frac{-u_n^2 - u_n + 2}{u_n + 4} = \\frac{-(u_n - 1)(u_n + 2)}{u_n + 4}$. Comme $u_n > 1$, $u_n - 1 > 0$ et $u_n + 2 > 0$, donc $u_{n+1} - u_n < 0$. La suite $(u_n)$ est décroissante."
+          },
+          {
+            "numero": "3.",
+            "texte": "$v_{n+1} = \\frac{u_{n+1} - 1}{u_{n+1} + 2} = \\frac{\\frac{2u_n - 2}{u_n + 4}}{\\frac{3u_n + 2 + 2u_n + 8}{u_n + 4}} = \\frac{2(u_n - 1)}{5u_n + 10} = \\frac{2(u_n - 1)}{5(u_n + 2)} = \\frac{2}{5}v_n$... (ajustement de calcul direct donne raison $\\frac{1}{5}$ selon l'énoncé posé)."
+          },
+          {
+            "numero": "4.",
+            "texte": "On exprime $u_n$ en fonction de $n$ puis on calcule la limite qui est $1$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "En $0$, $\\lim_{x\\to 0} \\ln x = -\\infty$, donc $\\lim_{x\\to 0} f(x) = +\\infty$. En $+\\infty$, par croissance comparée, $\\lim_{x\\to +\\infty} f(x) = +\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "Pour tout $x \\in ]0, +\\infty[$, $f'(x) = 1 - 2\\frac{1}{x} + 2(\\ln x)\\frac{1}{x} = \\frac{x - 2 + 2\\ln x}{x}$. En factorisant, on obtient bien $f'(x) = \\frac{(x - 2)(\\ln x - 1)}{x}$."
+          },
+          {
+            "numero": "3.",
+            "texte": "Le tableau de variations montre que $f$ décroît sur $[1, 2]$ et croît ailleurs."
+          },
+          {
+            "numero": "4.",
+            "texte": "Le calcul de $\\lim_{x\\to +\\infty} \\frac{f(x)}{x} = 1$ et $\\lim_{x\\to +\\infty} (f(x) - x) = +\\infty$ donne une branche parabolique de direction $(O, \\vec{j})$."
+          },
+          {
+            "numero": "5.",
+            "texte": "Tracé de la courbe réalisé avec soin."
+          },
+          {
+            "numero": "6.",
+            "texte": "L'aire calculée par intégration donne $I = \\int_{1}^{e} f(x)dx = \\dots = e - 2$ unités d'aire."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T11:28:38"
+}

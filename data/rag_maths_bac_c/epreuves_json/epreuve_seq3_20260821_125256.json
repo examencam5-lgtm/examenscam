@@ -1,0 +1,226 @@
+{
+  "metadonnees": {
+    "region": "ouest",
+    "delegation": "DELEGATION REGIONNALE De l'ouest",
+    "etablissement": "lycee classsique dsang",
+    "annee_scolaire": "2026-2027",
+    "duree": "4h",
+    "coefficient": "7",
+    "bilingue": true
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère la suite de nombres complexes $(z_n)$ définie par $z_0 = 1$ et, pour tout entier naturel $n$, $z_{n+1} = \\left(\\frac{1}{2} + \\frac{\\sqrt{3}}{2}i\\right)z_n + 2$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Écrire le nombre complexe $\\frac{1}{2} + \\frac{\\sqrt{3}}{2}i$ sous forme exponentielle.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Déterminer le nombre complexe $b$ tel que la relation de récurrence s'écrive $z_{n+1} - b = \\left(\\frac{1}{2} + \\frac{\\sqrt{3}}{2}i\\right)(z_n - b)$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire l'expression de $z_n$ en fonction de $n$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Pour tout entier naturel $n$, on pose $A_n$ le point d'affixe $z_n$. Déterminer la limite de la distance $OA_n$ lorsque $n$ tend vers $+\\infty$.",
+                "bareme": 1.5
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.0,
+            "enonce_intro": "Soit $f$ la fonction définie sur $\\mathbb{R}$ par $f(x) = x e^{-x} + 1$. On note $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé $(O, \\vec{i}, \\vec{j})$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Calculer les limites de $f$ en $-\\infty$ et en $+\\infty$. Préciser l'asymptote à $(\\mathcal{C})$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Étudier les variations de $f$ et dresser son tableau de variations sur $\\mathbb{R}$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une unique solution $\\alpha$ dans $\\mathbb{R}$, et vérifier que $\\alpha \\in [-2, -1]$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "4.",
+                "texte": "Tracer la courbe $(\\mathcal{C})$ dans le repère $(O, \\vec{i}, \\vec{j})$ (unité graphique : $2$ cm).",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "L'espace est rapporté à un repère orthonormé direct $(O, \\vec{i}, \\vec{j}, \\vec{k})$. On considère les points $A(1, 0, -1)$, $B(0, 2, 3)$ et $C(-1, 1, 2)$.",
+            "questions": [
+              {
+                "numero": "1.",
+                "texte": "Montrer que les points $A$, $B$ et $C$ déterminent un plan que l'on notera $(\\mathcal{P})$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.",
+                "texte": "Établir qu'une équation cartésienne du plan $(\\mathcal{P})$ est $3x + y - z - 4 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "3.",
+                "texte": "Soit $\\Delta$ la droite passant par le point $D(2, 1, 1)$ et orthogonale au plan $(\\mathcal{P})$. Donner un système d'équations paramétriques de la droite $\\Delta$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "4.",
+                "texte": "Calculer la distance du point $D$ au plan $(\\mathcal{P})$.",
+                "bareme": 0.75
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.5,
+            "enonce_intro": "1. Démontrer par récurrence que pour tout entier naturel $n \\geq 1$, $7^n - 1$ est un multiple de $6$.",
+            "questions": [
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation $(E) : 5x - 7y = 2$.",
+                "bareme": 1.5
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Déterminer les solutions de $(E)$ telles que $0 \\leq x \\leq 10$.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "situation_contexte": "Une coopérative agricole souhaite optimiser le transport de sa production répartie sur deux sites situés dans des zones représentées par des coordonnées géographiques. Pour sécuriser ses transactions financières, la coopérative utilise un système de codage basé sur des suites numériques et des nombres complexes. Le bénéfice mensuel (en millions de francs CFA) de cette coopérative au cours des $n$ premiers mois d'exercice est modélisé par une suite $(u_n)$ définie par son premier terme $u_0 = 2$ et la relation de récurrence $u_{n+1} = \\frac{1}{3}u_n + 4$. De plus, pour l'acheminement du matériel, la position de deux camions de livraison au même instant $t$ dans le plan complexe est donnée par des affixes vérifiant des congruences et des relations géométriques. Le trésorier cherche à évaluer l'évolution à long terme de ce bénéfice et à planifier un investissement lorsque le bénéfice dépassera un certain seuil.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer l'expression de $u_n$ en fonction de $n$ et calculer la limite de la suite $(u_n)$ lorsque $n$ tend vers $+\\infty$.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Déterminer le nombre minimal de mois à partir duquel le bénéfice mensuel dépasse $5$ millions de francs CFA.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Le plan complexe étant muni d'un repère orthonormé, deux stations relais $S_1$ et $S_2$ ont pour affixes respectives $z_1 = 3 + 4i$ et $z_2 = -1 + i$. Calculer l'affixe du point $M$ équidistant de $S_1$ et $S_2$ tel que le triangle $MS_1S_2$ soit isocèle en $M$ avec une orientation spécifique définie par une rotation d'angle $\\frac{\\pi}{3}$.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5,
+    "corrige": [
+      {
+        "exercice_titre": "EXERCICE 1",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "On a $\\frac{1}{2} + \\frac{\\sqrt{3}}{2}i = e^{i\\frac{\\pi}{3}}$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "On cherche $b$ tel que $b = \\left(\\frac{1}{2} + \\frac{\\sqrt{3}}{2}i\\right)b + 2$, soit $b\\left(1 - e^{i\\frac{\\pi}{3}}\\right) = 2$. On trouve $b = 1 - i\\sqrt{3}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "La suite $(z_n - b)$ est géométrique de raison $e^{i\\frac{\\pi}{3}}$, donc $z_n = (1 - i\\sqrt{3})\\left(e^{i\\frac{\\pi}{3}}\\right)^n + 1 - i\\sqrt{3} = 2e^{-i\\frac{\\pi}{3}} e^{i\\frac{n\\pi}{3}} + 2e^{-i\\frac{\\pi}{3}}$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La distance $OA_n = |z_n|$ oscille périodiquement et ne converge pas vers une limite unique car le module de la raison est égal à $1$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 2",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "$\\lim_{x \\to -\\infty} f(x) = -\\infty$ et $\\lim_{x \\to +\\infty} f(x) = 1$. La droite d'équation $y = 1$ est asymptote horizontale à $(\\mathcal{C})$ en $+\\infty$."
+          },
+          {
+            "numero": "2.",
+            "texte": "La dérivée est $f'(x) = (1 - x)e^{-x}$. Elle est positive sur $(-\\infty, 1]$ et négative sur $[1, +\\infty)$."
+          },
+          {
+            "numero": "3.",
+            "texte": "La fonction $f$ est continue et strictement croissante sur $(-\\infty, 1]$, changeant de signe, d'où l'unicité de $\\alpha$."
+          },
+          {
+            "numero": "4.",
+            "texte": "Traçage de la courbe avec les tangentes horizontales et l'asymptote."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 3",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Les vecteurs $\\vec{AB}(-1, 2, 4)$ et $\\vec{AC}(-2, 1, 3)$ ne sont pas colinéaires, donc $A$, $B$ et $C$ déterminent un plan."
+          },
+          {
+            "numero": "2.",
+            "texte": "Le vecteur normal $\\vec{n} = \\vec{AB} \\wedge \\vec{AC} = (2, -5, 3)$ conduit à l'équation cartésienne après vérification des coordonnées des points."
+          },
+          {
+            "numero": "3.",
+            "texte": "La droite $\\Delta$ a pour système paramétrique : $\\begin{cases} x = 2 + 3t \\ y = 1 + t \\ z = 1 - t \\end{cases}, t \\in \\mathbb{R}$."
+          },
+          {
+            "numero": "4.",
+            "texte": "La distance est $d(D, \\mathcal{P}) = \\frac{|3(2) + 1 - 1 - 4|}{\\sqrt{3^2 + 1^2 + (-1)^2}} = \\frac{2}{\\sqrt{11}}$."
+          }
+        ]
+      },
+      {
+        "exercice_titre": "EXERCICE 4",
+        "reponses": [
+          {
+            "numero": "1.",
+            "texte": "Initialisation évidente pour $n=1$. Hérédité basée sur $7^{n+1}-1 = 7(7^n-1) + 6$, qui est un multiple de $6$."
+          },
+          {
+            "numero": "2.a)",
+            "texte": "Une solution particulière est $(3, 1)$. L'ensemble des solutions est l'ensemble des couples $(5k + 3, 7k + 1)$ avec $k \\in \\mathbb{Z}$."
+          },
+          {
+            "numero": "2.b)",
+            "texte": "Pour $0 \\leq 5k + 3 \\leq 10$, on obtient $k = 0$, d'où l'unique solution $(3, 1)$."
+          }
+        ]
+      }
+    ]
+  },
+  "genere_le": "2026-08-21T12:52:56"
+}

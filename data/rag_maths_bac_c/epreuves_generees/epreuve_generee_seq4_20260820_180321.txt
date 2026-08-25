@@ -1,0 +1,139 @@
+MINISTÈRE DES ENSEIGNEMENTS SECONDAIRES
+OFFICE DES EXAMENS / DÉPARTEMENT DE MATHÉMATIQUES
+ANNÉE SCOLAIRE : 2025-2026
+ÉPREUVE : MATHÉMATIQUES — CLASSE : TERMINALE C — SÉQUENCE : N°4
+DURÉE : 04 HEURES — COEFFICIENT : 7
+
+---
+
+*La qualité de la rédaction, la clarté des raisonnements et le soin apportés à la copie entreront pour une part importante dans l’appréciation de la copie. L'utilisation de toute calculatrice non programmable est autorisée.*
+
+---
+
+### PARTIE A : ÉVALUATION DES RESSOURCES (15 points)
+
+#### Exercice 1 : Arithmétique et Nombres Complexes (5 points)
+
+**A/ Arithmétique dans $\mathbb{Z}$ (2,5 points)**
+1. Déterminer tous les couples d'entiers naturels $(a, b)$ tels que : 
+   $$\begin{cases} pgcd(a, b) = 6 \\ ppcm(a, b) = 360 \end{cases}$$ (1,25 pt)
+2. Soit $n$ un entier relatif. Démontrer que $n^3 - n$ est toujours divisible par 6. (0,75 pt)
+3. Résoudre dans $\mathbb{Z} \times \mathbb{Z}$ l'équation diophantienne : $7x - 12y = 5$. (0,5 pt)
+
+**B/ Nombres complexes (2,5 points)**
+Le plan complexe est muni d'un repère orthonormé direct $(O, \vec{u}, \vec{v})$.
+1. Résoudre dans $\mathbb{C}$ l'équation : $z^2 - 2\sqrt{3}z + 4 = 0$. (0,75 pt)
+2. On considère les points $A$, $B$ et $C$ d'affixes respectives : 
+   $z_A = \sqrt{3} + i$, $z_B = \sqrt{3} - i$ et $z_C = 2i$.
+   a) Écrire $z_A$ et $z_C$ sous forme trigonométrique. (0,75 pt)
+   b) Démontrer que le triangle $ABC$ est isocèle en $C$ et déterminer la nature précise du triangle $OAB$. (1,0 pt)
+
+---
+
+#### Exercice 2 : Algèbre Linéaire et Géométrie dans l'Espace (5 points)
+
+**A/ Algèbre linéaire (2,5 points)**
+Soit $E$ un $\mathbb{R}$-espace vectoriel de dimension 3 dont une base est $\mathcal{B} = (\vec{e}_1, \vec{e}_2, \vec{e}_3)$. 
+Soit $f$ l'endomorphisme de $E$ dont la matrice dans la base $\mathcal{B}$ est donnée par :
+$$M = \begin{pmatrix} 1 & -1 & 1 \\ 0 & 2 & -1 \\ 1 & 1 & 0 \end{pmatrix}$$
+1. Déterminer une base du noyau de $f$, noté $\ker(f)$. (1,0 pt)
+2. Déterminer une base de l'image de $f$, notée $\text{Im}(f)$. (1,0 pt)
+3. L'endomorphisme $f$ est-il un automorphisme de $E$ ? Justifier. (0,5 pt)
+
+**B/ Géométrie dans l'espace (2,5 points)**
+L'espace est rapporté à un repère orthonormé direct $(O, \vec{i}, \vec{j}, \vec{k})$. 
+On considère le plan $(P)$ d'équation $2x - y + 2z - 5 = 0$ et la droite $(\Delta)$ passant par le point $A(1, 2, -1)$ et de vecteur directeur $\vec{u}\begin{pmatrix} 2 \\ -1 \\ 1 \end{pmatrix}$.
+1. Donner une représentation paramétrique de la droite $(\Delta)$. (0,5 pt)
+2. Démontrer que la droite $(\Delta)$ et le plan $(P)$ sont sécants, et déterminer les coordonnées de leur point d'intersection $H$. (1,0 pt)
+3. Calculer la distance du point $A$ au plan $(P)$. (0,5 pt)
+4. Déterminer une équation cartésienne de la sphère $(S)$ de centre $A$ et tangente au plan $(P)$. (0,5 pt)
+
+---
+
+<h4>Exercice 3 : Analyse - Fonctions et Suites Numériques (5 points)</h4>
+
+**A/ Étude de fonction et suite associée (3,0 points)**
+Soit $f$ la fonction définie sur $I = [0, ++\infty[$ par : $f(x) = x e^{-x} + 1$.
+1. Étudier les variations de $f$ sur $[0, +\infty[$ et dresser son tableau de variations. (1,0 pt)
+2. Montrer que l'équation $f(x) = x$ admet une unique solution $\alpha$ dans l'intervalle $[1, 2]$. (0,75 pt)
+3. On considère la suite $(u_n)$ définie par $u_0 = 1$ et pour tout $n \in \mathbb{N}$, $u_{n+1} = f(u_n)$.
+   a) Montrer que pour tout $n \in \mathbb{N}$, $1 \le u_n \le 2$. (0,75 pt)
+   b) Établir que pour tout $x \in [1, 2]$, $|f'(x)| \le \frac{1}{e}$. En déduire que $|u_{n+1} - \alpha| \le \frac{1}{e} |u_n - \alpha|$. (0,5 pt)
+
+**B/ Fonction Logarithme (2,0 points)**
+Soit $g$ la fonction définie sur $]0, +\infty[$ par $g(x) = 2x - 1 - \ln x$.
+1. Étudier les limites de $g$ aux bornes de son ensemble de définition. (0,75 pt)
+2. Calculer $g'(x)$, étudier son signe et dresser le tableau de variations de $g$. (0,75 pt)
+3. En déduire le signe de $g(x)$ pour tout $x \in ]0, +\infty[$. (0,5 pt)
+
+---
+
+### PARTIE B : ÉVALUATION DES COMPÉTENCES (4,5 points)
+
+**Situation-problème :**
+
+Dans le cadre de la modernisation d'une commune rurale, un maire souhaite implanter un complexe agro-industriel. Le projet nécessite l'acheminement optimal de l'eau et de l'énergie électrique. 
+
+1. **Réseau de canalisation :** Le plan topographique de la zone est muni d'un repère orthonormé. Le trajet principal d'une canalisation est modélisé par une courbe représentative d'une fonction exponentielle. Un ingénieur pose la condition que le coût de maintenance $C(x)$ (en millions de FCFA) en fonction du débit $x$ (en milliers de litres par seconde) est régi par la fonction $f$ étudiée à l'exercice 3 (Partie A) : $C(x) = x e^{-x} + 1$. Le maire dispose d'un budget strict de $1,5$ million de FCFA pour la maintenance initiale. Déterminer si le débit $x$ peut atteindre la valeur de la solution $\alpha$ sans dépasser le budget alloué. *(2,0 pts)*
+
+2. **Optimisation logistique :** Pour l'acheminement des intrants agricoles, des camions doivent transporter des engrais conditionnés dans des sacs de masses identiques. Le nombre total $N$ de sacs disponibles dans un entrepôt vérifie les conditions arithmétiques suivantes : divisé par $7$, il reste $3$ ; divisé par $12$, il reste $5$. De plus, $N$ est compris entre $400$ et $600$. Le gestionnaire de l'entrepôt affirme qu'il peut répartir exactement ces sacs dans des camions pouvant contenir chacun $84$ sacs sans aucun reste. A-t-il raison ? Justifier par une démarche arithmétique rigoureuse. *(2,0 pts)*
+
+*Présentation : 0,5 pt*
+
+---
+---
+
+### CORRIGÉ INDICATIF ET BARÈME DÉTAILLÉ
+
+#### PARTIE A : ÉVALUATION DES RESSOURCES (15 points)
+
+**Exercice 1 (5 pts)**
+*   **A/1.** On a $pgcd(a,b)=6 \implies a=6a', b=6b'$ avec $pgcd(a',b')=1$. $ppcm(a,b)=6a'b'=360 \implies a'b'=60$. Les diviseurs de 60 premiers entre eux sont : $(1,60), (3,20), (4,15), (5,12)$.
+    *   Couples $(a,b)$ : $(6, 360), (18, 120), (24, 90), (30, 72)$ et leurs symétriques. *(1,25 pt)*
+*   **A/2.** $n^3-n = n(n-1)(n+1)$. Produit de 3 entiers consécutifs, donc divisible par 2 et par 3. Comme $\pgcd(2,3)=1$, il est divisible par 6. *(0,75 pt)*
+*   **A/3.** $7x - 12y = 5$. Solution particulière évidente : $x=1, y=0 \implies 7(1)-12(0)=5$. 
+    *   Solution générale : $x = 12k + 1$, $y = 7k + 1$ avec $k \in \mathbb{Z}$. *(0,5 pt)*
+*   **B/1.** $z^2 - 2\sqrt{3}z + 4 = 0$. $\Delta = (-2\sqrt{3})^2 - 4(1)(4) = 12 - 16 = -4 = (2i)^2$. 
+    *   Solutions : $z_1 = \frac{2\sqrt{3} - 2i}{2} = \sqrt{3} - i$ et $z_2 = \sqrt{3} + i$. *(0,75 pt)*
+*   **B/2.a)** $|z_A| = \sqrt{3+1} = 2$. $z_A = 2(\frac{\sqrt{3}}{2} + \frac{1}{2}i) = 2(\cos\frac{\pi}{6} + i\sin\frac{\pi}{6})$. 
+    *   $|z_C| = 2$, $z_C = 2i = 2(\cos\frac{\pi}{2} + i\sin\frac{\pi}{2})$. *(0,75 pt)*
+*   **B/2.b)** $CA = |z_A - z_C| = |\sqrt{3} - i - 2i| = |\sqrt{3} - 3i| = \sqrt{3+9} = \sqrt{12} = 2\sqrt{3}$. 
+    *   $CB = |z_B - z_C| = |\sqrt{3} - i - 2i| = 2\sqrt{3}$. Donc $CA = CB$, $ABC$ est isocèle en $C$. 
+    *   $OA = |z_A| = 2$, $OB = |z_B| = 2$, $AB = |z_B - z_A| = |-2i| = 2$. Le triangle $OAB$ est équilatéral. *(1,0 pt)*
+
+**Exercice 2 (5 pts)**
+*   **A/1.** $\ker(f) \implies M \begin{pmatrix} x \\ y \\ z \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix} \implies \begin{cases} x - y + z = 0 \\ 2y - z = 0 \\ x + y = 0 \end{cases} \implies x = -y, z = 2y$. Base de $\ker(f) : \vec{u}(-1, 1, 2)$. *(1,0 pt)*
+*   **A/2.** $\dim(\text{Im}(f)) = 3 - \dim(\ker(f)) = 3 - 1 = 2$. On prend deux vecteurs colinéaires non liés issus des colonnes de $M$, par exemple $(1,0,1)^T$ et $(-1,2,1)^T$. *(1,0 pt)*
+*   **A/3.** $\ker(f) \neq \{\vec{0}\}$ donc $f$ n'est pas injectif, ce n'est donc pas un automorphisme. *(0,5 pt)*
+*   **B/1.** $(\Delta) : \begin{cases} x = 1 + 2t \\ y = 2 - t \\ z = -1 + t \end{cases}, t \in \mathbb{R}$. *(0,5 pt)*
+*   **B/2.** Injection dans $(P) : 2(1+2t) - (2-t) + 2(-1+t) - 5 = 0 \implies 2 + 4t - 2 + t - 2 + 2t - 5 = 0 \implies 7t - 7 = 0 \implies t = 1$. 
+    *   Coordonnées de $H(3, 1, 0)$. *(1,0 pt)*
+*   **B/3.** $d(A, (P)) = \frac{|2(1) - 1(2) + 2(-1) - 5|}{\sqrt{2^2 + (-1)^2 + 2^2}} = \frac{|2 - 2 - 2 - 5|}{\sqrt{9}} = \frac{|-7|}{3} = \frac{7}{3}$. *(0,5 pt)*
+*   **B/4.** Rayon $R = d(A, (P)) = \frac{7}{3}$. Équation de $(S) : (x-1)^2 + (y-2)^2 + (z+1)^2 = \frac{49}{9}$. *(0,5 pt)*
+
+**Exercice 3 (5 pts)**
+*   **A/1.** $f'(x) = e^{-x} - x e^{-x} = (1-x)e^{-x}$. Sur $[0, 1[$, $f' > 0$ ; sur $]1, +\infty[$, $f' < 0$. Maximum en $1$ égal à $e^{-1} + 1$. Limite en $+\infty$ est $1$. *(1,0 pt)*
+*   **A/2.** Soit $h(x) = f(x) - x$. $h(1) = e^{-1} > 0$ et $h(2) = 2e^{-2} - 1 < 0$. $h$ est continue, strictement décroissante sur $[1,2]$, d'après le TVI, il existe un unique $\alpha \in [1,2]$ tq $f(\alpha)=\alpha$. *(0,75 pt)*
+*   **A/3.a)** Par récurrence : $u_0 = 1 \in [1,2]$. Si $1 \le u_n \le 2$, alors $f(2) \le f(u_n) \le f(1) \implies 1 \le 2e^{-2}+1 \le u_{n+1} \le e^{-1}+1 \le 2$. *(0,75 pt)*
+*   **A/3.b)** Pour $x \in [1,2]$, $f'(x) = (x-1)e^{-x}$ (en valeur absolue). Max sur $[1,2]$ atteint en $1$ ou $2$, $|f'(x)| \le 1/e$. Inégalité des accroissements finis donne le résultat. *(0,5 pt)*
+*   **B/1.** $g(x) = 2x - 1 - \ln x$. $\lim_{x \to 0^+} g(x) = +\infty$ et $\lim_{x \to +\infty} g(x) = +\infty$. *(0,75 pt)*
+*   **B/2.** $g'(x) = 2 - \frac{1}{x} = \frac{2x-1}{x}$. S'annule en $1/2$. Décroissante sur $]0, 1/2]$, croissante sur $[1/2, +\infty[$. *(0,75 pt)*
+*   **B/3.** Le minimum est $g(1/2) = 2(1/2) - 1 - \ln(1/2) = \ln 2 > 0$. Donc pour tout $x > 0$, $g(x) > 0$. *(0,5 pt)*
+
+---
+
+#### PARTIE B : ÉVALUATION DES COMPÉTENCES (4,5 points)
+
+1. **Réseau de canalisation :** Le coût de maintenance est $C(\alpha) = \alpha e^{-\alpha} + 1$. Or, d'après l'étude de la fonction $f$, on a vu que pour $\alpha \in [1, 2]$, la valeur maximale de $f$ est inférieure ou égale à $e^{-1} + 1 \approx 1,368$ millions de FCFA. Comme le maire dispose de $1,5$ million de FCFA ($1,368 < 1,5$), le coût de maintenance respecte strictement le budget alloué. Le débit $\alpha$ est donc tout à fait gérable. *(2,0 pts)*
+2. **Optimisation logistique :** Soit $N$ le nombre de sacs. Les conditions se traduisent par :
+   $$\begin{cases} N \equiv 3 \pmod 7 \\ N \equiv 5 \pmod{12} \end{cases}$$
+   De la première, $N = 7k + 3$. En substituant dans la seconde : $7k + 3 \equiv 5 \pmod{12} \implies 7k \equiv 2 \pmod{12}$. 
+   En multipliant par $7$ ($7 \times 7 = 49 \equiv 1 \pmod{12}$), on obtient $k \equiv 14 \equiv 2 \pmod{12}$. 
+   Ainsi, $k = 12q + 2$, d'où $N = 7(12q + 2) + 3 = 84q + 17$. 
+   On a la condition $400 \le N \le 600 \implies 400 \le 84q + 17 \le 600 \implies 383 \le 84q \le 583 \implies 4,55 \le q \le 6,94$. 
+   Comme $q$ est entier, $q \in \{5, 6\}$. 
+   - Si $q = 5$, $N = 84(5) + 17 = 437$.
+   - Si $q = 6$, $N = 84(6) + 17 = 521$.
+   Dans les deux cas possibles ($437$ ou $521$), si on divise par $84$, il reste un reste de $17$ sacs. Le gestionnaire **n'a donc pas raison**, car la division par $84$ ne se fait pas sans reste (le reste est de $17$). *(2,0 pts)*
+
+*Présentation : 0,5 pt*

@@ -1,0 +1,151 @@
+{
+  "metadonnees": {
+    "chemin_image_entete": "data\\_tmp_entetes_upload\\ec5cdfcdacf246369c9cffaf24aa81b2_final.png"
+  },
+  "contenu": {
+    "sequence": 3,
+    "parties": [
+      {
+        "type_partie": "ressources",
+        "bareme_points": 15.0,
+        "exercices": [
+          {
+            "titre": "EXERCICE 1",
+            "bareme_points": 4.0,
+            "enonce_intro": "Le plan complexe est rapporté à un repère orthonormé direct $(O, \\vec{u}, \\vec{v})$. On considère les nombres complexes $z_1 = 2+2i$ et $z_2 = \\sqrt{3}-i$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Écrire $z_1$ et $z_2$ sous forme exponentielle.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Calculer le quotient $\\frac{z_1}{z_2}$ sous forme algébrique puis sous forme trigonométrique.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Résoudre dans l'ensemble des nombres complexes l'équation $z^2 - 4z + 8 = 0$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Placer dans le repère les points images $A$, $B$ et $C$ d'affixes respectives $z_1$, $z_2$ et l'une des solutions de l'équation précédente.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 2",
+            "bareme_points": 4.5,
+            "enonce_intro": "On considère la fonction $f$ définie sur l'intervalle $0; +\\infty$ par $f(x) = x - 1 + \\frac{\\ln(x)}{x}$. On note $(\\mathcal{C})$ sa courbe représentative dans un repère orthonormé.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Déterminer la limite de $f$ en $0^+$. Interpréter graphiquement le résultat.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Déterminer la limite de $f$ en $+\\infty$ et montrer que la droite $(\\Delta)$ d'équation $y = x - 1$ est asymptote à $(\\mathcal{C})$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Calculer la dérivée $f'(x)$ pour tout $x \\in 0; +\\infty$ et exprimer $f'(x)$ à l'aide d'une fonction auxiliaire $g$ que l'on précisera.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.b)",
+                "texte": "Dresser le tableau de variations de la fonction $f$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "3.",
+                "texte": "Montrer que l'équation $f(x) = 0$ admet une solution unique $\\alpha$ sur l'intervalle $1; 2$.",
+                "bareme": 1.0
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 3",
+            "bareme_points": 3.5,
+            "enonce_intro": "On considère la suite numérique $(u_n)$ définie par $u_0 = 3$ et pour tout entier naturel $n$, $u_{n+1} = \\frac{1}{2}u_n + 1$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Calculer $u_1$ et $u_2$.",
+                "bareme": 0.5
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Démontrer par récurrence que pour tout entier naturel $n$, $u_n > 2$.",
+                "bareme": 1.0
+              },
+              {
+                "numero": "2.a)",
+                "texte": "Étudier le sens de variation de la suite $(u_n)$.",
+                "bareme": 0.75
+              },
+              {
+                "numero": "2.b)",
+                "texte": "En déduire que la suite $(u_n)$ est convergente et calculer sa limite.",
+                "bareme": 1.25
+              }
+            ]
+          },
+          {
+            "titre": "EXERCICE 4",
+            "bareme_points": 3.0,
+            "enonce_intro": "On considère l'équation (E) dans $\\mathbb{Z} \\times \\mathbb{Z}$ définie par $7x - 5y = 3$.",
+            "questions": [
+              {
+                "numero": "1.a)",
+                "texte": "Vérifier que le couple $(4, 5)$ est une solution particulière de l'équation (E).",
+                "bareme": 0.75
+              },
+              {
+                "numero": "1.b)",
+                "texte": "Résoudre dans $\\mathbb{Z} \\times \\mathbb{Z}$ l'équation (E).",
+                "bareme": 1.25
+              },
+              {
+                "numero": "2.",
+                "texte": "Déterminer les solutions de (E) pour lesquelles $x$ et $y$ sont des multiples de 3.",
+                "bareme": 1.0
+              }
+            ]
+          }
+        ],
+        "situation_contexte": null,
+        "taches": null
+      },
+      {
+        "type_partie": "competences",
+        "bareme_points": 4.5,
+        "exercices": null,
+        "situation_contexte": "Dans le cadre de l'extension d'un réseau électrique rural, une coopérative agricole utilise un transformateur dont le fonctionnement est régi par un nombre complexe et une suite de charges énergétiques. Un technicien relève un paramètre initial lié à un nombre complexe $z_0 = 3+4i$ et étudie l'évolution de la puissance transmise modélisée par une suite arithmético-géométrique. La coopérative dispose d'un budget global de 500 000 francs et doit répartir l'achat de câbles et de compteurs dont les coûts unitaires dépendent de solutions d'équations arithmétiques.",
+        "taches": [
+          {
+            "numero": "1.",
+            "texte": "Déterminer sous forme algébrique l'affixe du point $z_1$ représentant l'état du transformateur après une transformation définie par $z_1 = z_0 - 2 + i$ et calculer son module.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "2.",
+            "texte": "Calculer la puissance au bout de la troisième période sachant que la suite des puissances $(P_n)$ vérifie $P_{n+1} = \\frac{1}{2}P_n + 50$ avec $P_0 = 100$ kW.",
+            "bareme": 1.5
+          },
+          {
+            "numero": "3.",
+            "texte": "Déduire le nombre maximal de compteurs achetés si le prix unitaire est solution de l'équation $7x - 5y = 3$ avec un montant total engagé de 45 000 francs.",
+            "bareme": 1.5
+          }
+        ]
+      }
+    ],
+    "presentation_points": 0.5
+  },
+  "genere_le": "2026-08-24T12:04:13"
+}
