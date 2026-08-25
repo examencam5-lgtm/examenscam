@@ -74,23 +74,24 @@ from datetime import datetime
 
 from google.genai import types
 
-try:
+if __package__:
+    # Chargé comme membre du package scripts/ (import normal depuis
+    # app.py, generer_epreuve_json.py, etc.) -- import relatif garanti
+    # correct dans ce cas, aucune raison de retomber sur un fallback.
     from .schema_epreuve import EpreuveGeneree
     from .valider_epreuve import valider_epreuve_generee
     from .extraire_entete_personnalisable import extraire_entete, ExtractionEnteteEchouee
     from .personnaliser_entete import personnaliser_entete_image, decouper_a_la_fraction
     from .gemini_client import construire_clients, generer_avec_fallback, MODELE_PAR_DEFAUT
-except ImportError:
-    # Import relatif impossible -> ce fichier est lancé directement en
-    # CLI (python generer_epreuve_json.py), pas importé comme membre
-    # du package scripts -- on retombe sur l'import absolu, qui marche
-    # dans ce cas car le dossier scripts/ est alors sur sys.path.
+else:
+    # Lancé directement (python generer_epreuve_json.py) -- __package__
+    # vaut "" ou None, le dossier scripts/ est alors sur sys.path,
+    # l'import absolu fonctionne.
     from schema_epreuve import EpreuveGeneree
     from valider_epreuve import valider_epreuve_generee
     from extraire_entete_personnalisable import extraire_entete, ExtractionEnteteEchouee
     from personnaliser_entete import personnaliser_entete_image, decouper_a_la_fraction
     from gemini_client import construire_clients, generer_avec_fallback, MODELE_PAR_DEFAUT
-
 DOSSIER_ENTETES_FINALES = Path("data/rag_maths_bac_c/entetes_personnalisees")
 
 DB_PATH = Path("data/rag_maths_bac_c/rag.db")
