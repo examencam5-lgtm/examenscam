@@ -2,7 +2,7 @@
 """
 Validation du contenu généré par Gemini, AVANT écriture du fichier
 JSON final -- point d'insertion identifié lors de la revue du
-22/08/2026 pour éviter que quatre failles connues n'atteignent le PDF
+22/08/2026 pour éviter que des failles connues n'atteignent le PDF
 livré à un prof :
 
   1. LaTeX hors du sous-ensemble supporté par matplotlib.mathtext
@@ -12,6 +12,9 @@ livré à un prof :
      barème de l'exercice/partie, ou total général != 20)
   4. Méta-commentaire du modèle qui fuite dans le contenu livré
      (ex: "Correction contextuelle : ajustons la valeur cible...")
+  5. (EXTENSION du 26/08/2026) Question réservée à une série (C ou E)
+     incompatible avec la série demandée pour un Examen officiel --
+     voir detecter_serie_incorrecte() ci-dessous.
 
 Ce module ne CORRIGE rien -- il détecte et fait échouer la validation
 pour déclencher une nouvelle tentative de génération (voir
@@ -175,17 +178,57 @@ def valider_baremes(contenu: dict) -> list[str]:
     return problemes
 
 
-def valider_epreuve_generee(contenu: dict) -> tuple[bool, list[str]]:
+def detecter_serie_incorrecte(contenu: dict, serie_demandee: str) -> list[str]:
+    """Uniquement pertinent pour un Examen officiel (Bac), où certaines
+    questions peuvent être réservées à une série précise (ex: une
+    question de spécialité propre à la série C, absente en série E --
+    voir les sujets 2020/2021 qui contiennent des blocs 'Série C
+    uniquement' / 'Série E uniquement').
+
+    Rejette toute question dont serie_applicable ne correspond ni à
+    la série demandée par le prof, ni à 'toutes' -- ex: si le prof
+    demande une épreuve Série E et que Gemini a quand même inclus une
+    question marquée serie_applicable='C', c'est une violation directe
+    du format officiel MINESEC, pas une variante de style acceptable.
+
+    N'est appelé par valider_epreuve_generee() que si serie_demandee
+    est fourni (donc jamais pour une épreuve de séquence, où la notion
+    de série n'existe pas)."""
+    problemes = []
+    for partie in contenu.get("parties", []):
+        for exercice in partie.get("exercices") or []:
+            titre_ex = exercice.get("titre", "exercice_sans_titre")
+            for q in exercice.get("questions") or []:
+                serie_q = q.get("serie_applicable", "toutes")
+                if serie_q not in ("toutes", serie_demandee):
+                    problemes.append(
+                        f"[{titre_ex}.{q.get('numero')}] serie_applicable='{serie_q}' "
+                        f"incompatible avec la série demandée ('{serie_demandee}') -- "
+                        f"cette question ne devrait pas apparaître dans cette épreuve"
+                    )
+    return problemes
+
+
+def valider_epreuve_generee(contenu: dict, serie_demandee: str | None = None) -> tuple[bool, list[str]]:
     """Point d'entrée unique, appelé depuis generer_epreuve_json.py
     juste après le parsing JSON, avant l'écriture du fichier.
 
+    `serie_demandee` : uniquement fourni pour un Examen officiel
+    (type_document='Examen') -- déclenche le contrôle supplémentaire
+    detecter_serie_incorrecte(). Reste None pour une épreuve de
+    séquence normale, où la notion de série n'existe pas -- dans ce
+    cas ce contrôle est entièrement absent, comportement identique à
+    avant cette extension.
+
     Retourne (ok, liste_des_problemes). ok=False si AU MOINS un
-    problème est détecté, dans n'importe laquelle des quatre
-    catégories -- l'appelant doit alors redéclencher une génération
-    plutôt qu'écrire ce contenu."""
+    problème est détecté, dans n'importe laquelle des catégories --
+    l'appelant doit alors redéclencher une génération plutôt qu'écrire
+    ce contenu."""
     problemes = []
     problemes += detecter_latex_interdit(contenu)
     problemes += detecter_latex_non_encadre(contenu)
     problemes += detecter_fuite_meta(contenu)
     problemes += valider_baremes(contenu)
+    if serie_demandee:
+        problemes += detecter_serie_incorrecte(contenu, serie_demandee)
     return (len(problemes) == 0, problemes)

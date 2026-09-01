@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% block title %}Mon compte · ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  .compte-wrap { max-width: 460px; margin: 56px auto 48px; padding: 0 20px; }
+  .compte-eyebrow {
+    font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .compte-title {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600;
+    letter-spacing: -0.01em; color: var(--ink); margin-bottom: 20px;
+  }
+
+  .fiche {
+    border: 1px solid var(--line); border-radius: 20px; padding: 22px 24px;
+    margin-bottom: 32px;
+  }
+  .fiche-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .fiche-badge {
+    font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 600;
+    letter-spacing: 0.02em; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px;
+  }
+  .fiche-meta {
+    font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .compte-section { margin-bottom: 28px; }
+  .compte-section-titre {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink);
+    padding-bottom: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--line);
+  }
+  .compte-row { display: flex; gap: 12px; }
+  .compte-row .compte-field { flex: 1; }
+  .compte-label {
+    display: block; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.02em; color: var(--ink-soft); margin: 0 4px 6px;
+  }
+  .compte-field { margin-bottom: 14px; }
+  .compte-input, .compte-select {
+    width: 100%; padding: 12px 18px; border: 1px solid var(--line); border-radius: 999px;
+    font-family: 'Source Serif 4', serif; font-size: 15px; color: var(--ink); background: var(--surface);
+    outline: none; box-sizing: border-box; transition: border-color 0.15s ease;
+    appearance: none; -webkit-appearance: none;
+  }
+  .compte-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.4' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 18px center;
+  }
+  .compte-input:focus, .compte-select:focus { border-color: var(--ink-soft); }
+  .compte-btn {
+    padding: 12px 26px; border: none; border-radius: 999px; background: var(--ink);
+    color: var(--surface); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px;
+    cursor: pointer; transition: opacity 0.15s ease;
+  }
+  .compte-btn:hover { opacity: 0.88; }
+  .compte-btn-secondaire {
+    padding: 12px 26px; border: 1px solid var(--line); border-radius: 999px; background: transparent;
+    color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
+
+  .compte-message {
+    font-size: 12.5px; text-align: left; margin-bottom: 16px; line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+  }
+  .compte-message.erreur { color: #B33; }
+  .compte-message.succes { color: #2A7A4A; }
+
+  #groupe-serie { display: none; }
+
+  /* MODIFIÉ (29/08/2026) : Retour au site / Se déconnecter passent de
+     liens texte soulignés à de vrais boutons pilule, dans le même
+     esprit visuel que .compte-btn ("Enregistrer le profil") -- la
+     page ne doit pas mélanger deux styles d'action différents pour
+     des actions de même importance visuelle. `text-decoration:none`
+     est nécessaire car ce sont toujours des balises <a>, qui
+     sous-lignent par défaut. */
+  .compte-bas {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
+    gap: 12px; flex-wrap: wrap;
+  }
+  .compte-bas .compte-btn,
+  .compte-bas .compte-btn-secondaire {
+    text-decoration: none;
+    display: inline-block;
+  }
+</style>
+
+<div class="compte-wrap">
+  <p class="compte-eyebrow">ExamensCam</p>
+  <h1 class="compte-title">Bonjour, {{ eleve.nom.split(' ')[0] }}</h1>
+
+  <div class="fiche">
+    <div class="fiche-badges">
+      <span class="fiche-badge">{{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}</span>
+      {% if eleve.classe %}<span class="fiche-badge">{{ eleve.classe }}</span>{% endif %}
+    </div>
+    <p class="fiche-meta">
+      Identifiant : {{ eleve.identifiant }}<br>
+      {% if eleve.messages_ce_mois %}
+      {{ eleve.messages_ce_mois }} message{{ 's' if eleve.messages_ce_mois > 1 else '' }} envoyé{{ 's' if eleve.messages_ce_mois > 1 else '' }} à l'assistant ce mois-ci.
+      {% endif %}
+    </p>
+  </div>
+
+  {% if succes %}<p class="compte-message succes">{{ succes }}</p>{% endif %}
+  {% if erreur %}<p class="compte-message erreur">{{ erreur }}</p>{% endif %}
+
+  <form method="POST" class="compte-section">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="action" value="profil">
+
+    <p class="compte-section-titre">Mon profil</p>
+
+    <div class="compte-field">
+      <label class="compte-label" for="nom">Nom complet</label>
+      <input type="text" id="nom" name="nom" class="compte-input"
+             value="{{ eleve.nom }}" autocomplete="name" maxlength="100" required>
+    </div>
+
+    <div class="compte-row">
+      <div class="compte-field">
+        <label class="compte-label" for="niveau">Niveau</label>
+        <select id="niveau" name="niveau" class="compte-select" required
+                onchange="basculerSerie(this.value)">
+          {% for n in niveaux %}
+          <option value="{{ n }}" {{ 'selected' if eleve.niveau == n }}>{{ n }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="compte-field" id="groupe-serie">
+        <label class="compte-label" for="serie">Série</label>
+        <select id="serie" name="serie" class="compte-select">
+          <option value="">—</option>
+          {% for s in series %}
+          <option value="{{ s }}" {{ 'selected' if eleve.serie == s }}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="compte-field">
+      <label class="compte-label" for="classe">Classe <span style="font-weight:400;">(facultatif)</span></label>
+      <input type="text" id="classe" name="classe" class="compte-input"
+             value="{{ eleve.classe or '' }}" placeholder="ex. Tle C" maxlength="40">
+    </div>
+
+    <button type="submit" class="compte-btn">Enregistrer le profil</button>
+  </form>
+
+  <form method="POST" class="compte-section">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="action" value="mot_de_passe">
+
+    <p class="compte-section-titre">Mot de passe</p>
+
+    <div class="compte-field">
+      <label class="compte-label" for="ancien_mot_de_passe">Mot de passe actuel</label>
+      <input type="password" id="ancien_mot_de_passe" name="ancien_mot_de_passe" class="compte-input"
+             autocomplete="current-password" required>
+    </div>
+
+    <div class="compte-field">
+      <label class="compte-label" for="nouveau_mot_de_passe">Nouveau mot de passe</label>
+      <input type="password" id="nouveau_mot_de_passe" name="nouveau_mot_de_passe" class="compte-input"
+             autocomplete="new-password" minlength="8" required>
+    </div>
+
+    <button type="submit" class="compte-btn-secondaire">Changer le mot de passe</button>
+  </form>
+
+  <div class="compte-bas">
+    <a href="/" class="compte-btn-secondaire">← Retour au site</a>
+    <a href="/deconnexion" class="compte-btn-secondaire">Se déconnecter</a>
+  </div>
+</div>
+
+<script>
+  function basculerSerie(niveau) {
+    var groupe = document.getElementById('groupe-serie');
+    var champSerie = document.getElementById('serie');
+    var estBepc = (niveau === 'BEPC');
+    groupe.style.display = estBepc ? 'none' : 'block';
+    champSerie.required = !estBepc;
+  }
+  basculerSerie(document.getElementById('niveau').value);
+</script>
+{% endblock %}

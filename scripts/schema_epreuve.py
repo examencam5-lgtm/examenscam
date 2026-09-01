@@ -29,6 +29,29 @@ chiffrée calculée en Python, voir calculer_repartition_bareme() dans
 generer_epreuve_json.py) -- elle suggérait "généralement 0.5" comme
 une option parmi d'autres. Reformulée pour que le modèle comprenne
 que ce n'est pas à lui de choisir cette valeur.
+
+EXTENSION du 26/08/2026 -- Examens officiels (Baccalauréat) :
+Jusqu'ici ce schéma ne couvrait que les épreuves de séquence interne
+d'établissement. Deux ajouts, chacun avec une valeur par défaut qui ne
+change RIEN au comportement existant pour les épreuves de séquence :
+
+  1. EpreuveGeneree.type_document ('Sequence' par défaut) -- permet de
+     distinguer un Examen officiel MINESEC d'une épreuve de séquence
+     normale. Alimente rag.db (colonne type_document déjà existante,
+     valeur 'examen' déjà utilisée pour la classification du corpus
+     scrapé -- voir Scrape_rag_maths_tc.py) et sert de garde dans
+     construire_prompt() / valider_epreuve.py.
+  2. Question.serie_applicable ('toutes' par défaut) -- les vrais
+     sujets de Bac C/E observés (sessions 2019-2025) contiennent
+     parfois des questions réservées à une série précise (ex: bloc
+     "Série C exclusivement" / "Série E exclusivement" vu dans les
+     sujets 2020 et 2021). Cette notion n'existe pas pour une épreuve
+     de séquence, d'où le défaut 'toutes' qui la rend invisible sauf
+     si explicitement utilisée.
+
+Ces deux champs sont ignorés par le rendu PDF et par la logique de
+séquence existante tant que type_document reste 'Sequence' -- aucune
+migration de comportement pour l'usage actuel.
 """
 
 from pydantic import BaseModel, Field
@@ -66,6 +89,16 @@ class Question(BaseModel):
     bareme: float = Field(
         description="Barème en points de cette sous-question uniquement (ex: 0.25, 0.5, 0.75, 1.0). "
                      "Ne dépasse JAMAIS 1.5 point pour une seule sous-question."
+    )
+    serie_applicable: Literal["C", "E", "toutes"] = Field(
+        default="toutes",
+        description="Uniquement pertinent si l'épreuve est un Examen officiel (Bac) -- laisser "
+                     "'toutes' pour une épreuve de séquence normale, où cette notion n'existe pas. "
+                     "Mettre 'C' ou 'E' UNIQUEMENT si cette question est explicitement réservée à "
+                     "une série précise (ex: une question de spécialité mathématique propre à la "
+                     "série C, absente en série E). La quasi-totalité des questions d'un Examen "
+                     "officiel restent 'toutes' (communes aux deux séries) -- ne marque une "
+                     "question 'C' ou 'E' que si le contenu mathématique lui-même l'exige."
     )
 
 
@@ -131,7 +164,20 @@ class Partie(BaseModel):
 
 
 class EpreuveGeneree(BaseModel):
-    sequence: int = Field(description="Numéro de séquence (1 à 4).")
+    sequence: int = Field(
+        description="Numéro de séquence (1 à 6) si type_document='Sequence'. Sans objet pour un "
+                     "Examen officiel (mettre 0 dans ce cas -- ce champ n'est pas utilisé dans le "
+                     "rendu ni la validation d'un Examen)."
+    )
+    type_document: Literal["Sequence", "Examen"] = Field(
+        default="Sequence",
+        description="'Examen' UNIQUEMENT si cette épreuve est un vrai sujet de Baccalauréat "
+                     "officiel MINESEC (session complète, 4 heures, barème 20 points réparti selon "
+                     "la répartition obligatoire donnée dans le prompt). 'Sequence' pour toute "
+                     "évaluation interne d'établissement (devoir de séquence normal). Ne choisis "
+                     "jamais cette valeur toi-même : elle est imposée par le contexte de génération "
+                     "donné dans le prompt, recopie-la telle quelle."
+    )
     parties: list[Partie] = Field(
         description="Exactement 2 éléments : une partie type_partie='ressources' puis une partie "
                      "type_partie='competences', dans cet ordre."

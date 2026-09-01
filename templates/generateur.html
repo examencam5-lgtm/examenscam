@@ -23,7 +23,18 @@
   const ORDINAUX = { 1: '1ère', 2: '2e', 3: '3e', 4: '4e', 5: '5e', 6: '6e' };
   const SEQUENCES_DISPONIBLES = [1, 2, 3, 4, 5, 6];
 
-  const etat = { sequence: null, jeton: null };
+  // MISE A JOUR (26/08/2026) : extension au type "Examen officiel"
+  // (Baccalauréat) en plus des épreuves de séquence -- voir
+  // schema_epreuve.py (champ type_document) et generer_epreuve_json.py.
+  // Un Examen officiel n'a pas de numéro de séquence (il couvre
+  // l'année entière) mais nécessite en revanche une série (C ou E),
+  // notion qui n'existe pas pour une épreuve de séquence normale.
+  const SERIES_DISPONIBLES = [
+    { valeur: 'C', label: 'Série C' },
+    { valeur: 'E', label: 'Série E' },
+  ];
+
+  const etat = { typeDocument: null, sequence: null, serie: null, jeton: null };
 
   function ajouterMessageBot(texte) {
     const b = document.createElement('div');
@@ -44,17 +55,53 @@
   function viderSaisie() { saisie.innerHTML = ''; }
 
   function reinitialiser() {
+    etat.typeDocument = null;
     etat.sequence = null;
+    etat.serie = null;
     etat.jeton = null;
     fenetre.innerHTML = '';
-    demanderSequence();
+    demanderTypeDocument();
   }
 
-  // ═══ ÉTAPE 1 — Séquence ═══
+  // ═══ ÉTAPE 0 — Type de document (Séquence ou Examen officiel) ═══
+
+  function demanderTypeDocument() {
+    viderSaisie();
+    ajouterMessageBot("Salut ! Je vais générer une épreuve inédite de Maths Terminale C. Quel type d'épreuve ?");
+
+    const conteneur = document.createElement('div');
+    conteneur.className = 'chat-options';
+
+    const btnSequence = document.createElement('button');
+    btnSequence.type = 'button';
+    btnSequence.className = 'chat-option-btn';
+    btnSequence.textContent = 'Épreuve de séquence';
+    btnSequence.addEventListener('click', () => {
+      etat.typeDocument = 'Sequence';
+      ajouterMessageUtilisateur('Épreuve de séquence');
+      demanderSequence();
+    });
+
+    const btnExamen = document.createElement('button');
+    btnExamen.type = 'button';
+    btnExamen.className = 'chat-option-btn';
+    btnExamen.textContent = 'Examen officiel (Baccalauréat)';
+    btnExamen.addEventListener('click', () => {
+      etat.typeDocument = 'Examen';
+      ajouterMessageUtilisateur('Examen officiel (Baccalauréat)');
+      demanderSerie();
+    });
+
+    conteneur.appendChild(btnSequence);
+    conteneur.appendChild(btnExamen);
+    saisie.appendChild(conteneur);
+  }
+
+  // ═══ ÉTAPE 1a — Séquence (uniquement si typeDocument === 'Sequence') ═══
 
   function demanderSequence() {
     viderSaisie();
-    ajouterMessageBot("Salut ! Je vais générer une épreuve inédite de Maths Terminale C. Pour quelle séquence ?");
+    ajouterMessageBot("Pour quelle séquence ?");
     const conteneur = document.createElement('div');
     conteneur.className = 'chat-options';
     SEQUENCES_DISPONIBLES.forEach(n => {
@@ -65,6 +112,32 @@
       btn.addEventListener('click', () => {
         etat.sequence = n;
         ajouterMessageUtilisateur(`${ORDINAUX[n]} séquence`);
+        demanderUpload();
+      });
+      conteneur.appendChild(btn);
+    });
+    saisie.appendChild(conteneur);
+  }
+
+  // ═══ ÉTAPE 1b — Série (uniquement si typeDocument === 'Examen') ═══
+  // Un Examen officiel MINESEC distingue Série C et Série E -- coefficient,
+  // durée et parfois certaines questions diffèrent selon la série (voir
+  // COEFFICIENT_EXAMEN dans generer_epreuve_json.py). Cette notion
+  // n'existe pas pour une épreuve de séquence normale.
+
+  function demanderSerie() {
+    viderSaisie();
+    ajouterMessageBot("Pour quelle série ?");
+    const conteneur = document.createElement('div');
+    conteneur.className = 'chat-options';
+    SERIES_DISPONIBLES.forEach(({ valeur, label }) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chat-option-btn';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        etat.serie = valeur;
+        ajouterMessageUtilisateur(label);
         demanderUpload();
       });
       conteneur.appendChild(btn);
@@ -240,10 +313,25 @@
     saisie.appendChild(attente);
 
     try {
+      const corpsRequete = {
+        type_document: etat.typeDocument,
+        jeton: etat.jeton,
+        valeurs: valeurs || {},
+      };
+      // sequence uniquement pertinent pour une épreuve de séquence ;
+      // serie uniquement pertinent pour un Examen officiel -- voir
+      // generer_epreuve_json() côté serveur, qui exige l'un ou l'autre
+      // selon type_document plutôt que d'accepter les deux en silence.
+      if (etat.typeDocument === 'Sequence') {
+        corpsRequete.sequence = etat.sequence;
+      } else if (etat.typeDocument === 'Examen') {
+        corpsRequete.serie = etat.serie;
+      }
+
       const reponseServeur = await fetch("{{ url_for('generateur_epreuves_generer') }}", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sequence: etat.sequence, jeton: etat.jeton, valeurs: valeurs || {} }),
+        body: JSON.stringify(corpsRequete),
       });
 
       const typeContenu = reponseServeur.headers.get('Content-Type') || '';
@@ -287,7 +375,7 @@
     }
   }
 
-  demanderSequence();
+  demanderTypeDocument();
 })();
 </script>
 {% endblock %}

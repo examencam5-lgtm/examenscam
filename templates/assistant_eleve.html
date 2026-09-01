@@ -1,0 +1,1322 @@
+{% extends "base.html" %}
+{% block title %}Assistant Élève - ExamensCam{% endblock %}
+
+{# Page plein écran type appli -- la barre de recherche et le footer
+   du site n'ont pas leur place ici, voir les blocks ajoutés dans
+   base.html (27/08/2026). Toutes les autres pages du site gardent
+   leur comportement par défaut, inchangé. #}
+{% block navbar %}{% endblock %}
+{% block barre_recherche %}{% endblock %}
+{% block pied_de_page %}{% endblock %}
+
+{% block body_class %}page-app-plein-ecran{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+<style>
+  body.page-app-plein-ecran {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ═══ MISE EN PAGE GÉNÉRALE -- plein écran sous la navbar ═══ */
+  .assistant-layout {
+    display: flex;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ═══ BARRE LATÉRALE ═══ */
+  .assistant-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: var(--ec-line-soft, #F8FAFC);
+    border-right: 1px solid var(--ec-line, #E2E8F0);
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    overflow-y: auto;
+  }
+
+  .sidebar-marque {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.3rem 0.5rem 1rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--ec-line, #E2E8F0);
+    margin-bottom: 0.6rem;
+  }
+
+  .sidebar-marque img { width: 24px; height: 24px; }
+
+  .sidebar-marque span {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ec-ink, #0F172A);
+  }
+
+  .sidebar-nav-site {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
+    border-bottom: 1px solid var(--ec-line, #E2E8F0);
+  }
+
+  .sidebar-nav-site a {
+    display: block;
+    padding: 0.45rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ec-ink-soft, #64748B);
+    text-decoration: none;
+  }
+
+  .sidebar-nav-site a:hover {
+    background: var(--ec-accent-soft, #F1F5F9);
+    color: var(--ec-ink, #0F172A);
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--ec-ink, #0F172A);
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .sidebar-item:hover {
+    background: var(--ec-accent-soft, #F1F5F9);
+    color: var(--ec-accent, #2563EB);
+  }
+
+  .sidebar-item:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .sidebar-item:disabled:hover {
+    background: transparent;
+    color: var(--ec-ink, #0F172A);
+  }
+
+  .sidebar-item-nouvelle {
+    border: 1.5px solid var(--ec-line, #E2E8F0);
+    background: var(--ec-surface, #fff);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-icone { font-size: 1rem; flex-shrink: 0; }
+
+  .sidebar-separateur {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ec-ink-soft, #64748B);
+    padding: 0.9rem 0.8rem 0.3rem;
+  }
+
+  /* NOUVEAU (choix de matière, 29/08/2026) -- liste de chips
+     compacte pour la sidebar, distincte des .chip-option du panneau
+     de génération (celles-ci vivent en permanence dans la sidebar,
+     pas dans un panneau flottant temporaire). */
+  .sidebar-matieres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0.2rem 0.8rem 0.6rem;
+  }
+
+  .chip-matiere {
+    padding: 0.35rem 0.7rem;
+    border: 1.5px solid var(--ec-line, #E2E8F0);
+    border-radius: 20px;
+    background: var(--ec-surface, #fff);
+    color: var(--ec-ink-soft, #64748B);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .chip-matiere:hover {
+    border-color: var(--ec-accent, #2563EB);
+    color: var(--ec-accent, #2563EB);
+  }
+
+  .chip-matiere.actif {
+    background: var(--ec-accent, #2563EB);
+    border-color: var(--ec-accent, #2563EB);
+    color: #fff;
+  }
+
+  /* NOUVEAU (comptes élèves) -- bloc compte fixé en bas de la
+     sidebar via margin-top:auto (le conteneur parent est déjà en
+     display:flex; flex-direction:column). */
+  .sidebar-compte {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--ec-line, #E2E8F0);
+  }
+
+  .sidebar-compte-lien {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    padding: 0.3rem 0.4rem;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+
+  .sidebar-compte-lien:hover { background: var(--ec-accent-soft, #F1F5F9); }
+
+  .sidebar-compte-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--ec-accent, #2563EB);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .sidebar-compte-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  .sidebar-compte-nom {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ec-ink, #0F172A);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-compte-niveau {
+    font-size: 0.72rem;
+    color: var(--ec-ink-soft, #64748B);
+  }
+
+  .sidebar-compte-deco {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--ec-ink-soft, #64748B);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .sidebar-compte-deco:hover { background: #FEE2E2; color: #B33; }
+
+  /* ═══ COLONNE DE CONVERSATION ═══ */
+  .assistant-page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  .assistant-header-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.2rem 0 1rem;
+    border-bottom: 1px solid var(--ec-line, #E2E8F0);
+    margin-bottom: 0.4rem;
+  }
+
+  .assistant-header-inline h1 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .assistant-header-sous {
+    margin: 2px 0 0;
+    font-size: 0.78rem;
+    color: var(--ec-ink-soft, #64748B);
+  }
+
+  .assistant-fenetre {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    min-height: 0;
+  }
+
+  .msg { display: flex; gap: 0.75rem; max-width: 100%; }
+
+  .msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .msg-bot .msg-avatar { background: var(--ec-accent, #2563EB); color: #fff; }
+
+  .msg-bot-corps {
+    color: var(--ec-ink, #0F172A);
+    max-width: 88%;
+  }
+
+  .msg-bot-corps h3 { font-size: 1.05rem; margin: 0.8rem 0 0.35rem; }
+  .msg-bot-corps h3:first-child { margin-top: 0; }
+  .msg-bot-corps p { margin: 0.45rem 0; }
+  .msg-bot-corps ul, .msg-bot-corps ol { margin: 0.45rem 0; padding-left: 1.3rem; }
+  .msg-bot-corps code { background: var(--ec-line-soft, #F8FAFC); padding: 0.1em 0.35em; border-radius: 4px; }
+  .msg-bot-corps strong { font-weight: 700; }
+
+  .msg-user { justify-content: flex-end; }
+
+  .msg-user-bulle {
+    background: var(--ec-accent-soft, #F1F5F9);
+    color: var(--ec-ink, #0F172A);
+    padding: 0.6rem 0.95rem;
+    border-radius: 14px;
+    border-bottom-right-radius: 4px;
+    max-width: 82%;
+  }
+
+  .msg-attente .msg-avatar {
+    animation: respirer 1.6s ease-in-out infinite;
+  }
+
+  @keyframes respirer {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.12); opacity: 0.75; }
+  }
+
+  .indicateur-reflexion {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .points-typing {
+    display: flex;
+    gap: 4px;
+  }
+
+  .points-typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ec-accent, #2563EB);
+    opacity: 0.5;
+    animation: rebond 1.1s ease-in-out infinite;
+  }
+
+  .points-typing span:nth-child(2) { animation-delay: 0.15s; }
+  .points-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes rebond {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  .texte-progression {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--ec-ink-soft, #64748B);
+    animation: fondu 0.3s ease;
+  }
+
+  @keyframes fondu {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .barre-progression {
+    margin-top: 0.6rem;
+    height: 4px;
+    width: 100%;
+    max-width: 260px;
+    border-radius: 4px;
+    background: var(--ec-line-soft, #F8FAFC);
+    overflow: hidden;
+  }
+
+  .barre-progression::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 40%;
+    background: var(--ec-accent, #2563EB);
+    border-radius: 4px;
+    animation: glisser 1.4s ease-in-out infinite;
+  }
+
+  @keyframes glisser {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+  }
+
+  .assistant-saisie {
+    flex-shrink: 0;
+    padding: 0.75rem 0 1.25rem;
+    position: relative;
+  }
+
+  .assistant-input-form {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ec-surface, #fff);
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 26px;
+    padding: 0.4rem 0.4rem 0.4rem 0.5rem;
+  }
+
+  .assistant-input-form:focus-within {
+    border-color: var(--ec-accent, #2563EB);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .assistant-input-form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0.5rem 0.6rem;
+    background: transparent;
+    color: var(--ec-ink, #0F172A);
+    min-width: 0;
+  }
+
+  .btn-envoyer {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--ec-accent, #2563EB);
+    color: #fff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-envoyer:disabled { opacity: 0.4; cursor: default; }
+
+  .panneau-generer {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--ec-surface, #fff);
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 16px;
+    padding: 0.9rem 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .panneau-generer p {
+    margin: 0 0 0.6rem;
+    font-size: 0.85rem;
+    color: var(--ec-ink-soft, #64748B);
+  }
+
+  .panneau-generer-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .chip-option {
+    padding: 0.5rem 0.9rem;
+    border: 1.5px solid var(--ec-accent, #2563EB);
+    border-radius: 20px;
+    background: var(--ec-surface, #fff);
+    color: var(--ec-accent, #2563EB);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .chip-option:hover { background: var(--ec-accent, #2563EB); color: #fff; }
+  .chip-option.principale { background: var(--ec-accent, #2563EB); color: #fff; }
+
+  .liste-resultats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0.5rem;
+    max-width: 100%;
+  }
+
+  .carte-resultat {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--ec-surface, #fff);
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 14px;
+    padding: 0.75rem 0.9rem;
+    text-decoration: none;
+    color: var(--ec-ink, #0F172A);
+    transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+  }
+
+  .carte-resultat:hover {
+    border-color: var(--ec-accent, #2563EB);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .carte-resultat-titre {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .carte-resultat-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .carte-resultat-badge.officiel {
+    background: var(--ec-accent-soft, #F1F5F9);
+    color: var(--ec-accent, #2563EB);
+  }
+
+  .carte-resultat-badge.externe {
+    background: var(--ec-line-soft, #F8FAFC);
+    color: var(--ec-ink-soft, #64748B);
+  }
+
+  .assistant-hamburger {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 60;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ec-surface, #fff);
+    border: 1px solid var(--ec-line, #E2E8F0);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--ec-ink, #0F172A);
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    z-index: 40;
+  }
+
+  .sidebar-backdrop.visible { display: block; }
+
+  .curseur-streaming {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--ec-accent, #2563EB);
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: clignoter 0.8s step-end infinite;
+  }
+
+  @keyframes clignoter {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @media (max-width: 760px) {
+    .assistant-hamburger { display: flex; }
+
+    .assistant-layout { height: 100dvh; }
+
+    .assistant-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100dvh;
+      width: 270px;
+      max-width: 82vw;
+      transform: translateX(-100%);
+      transition: transform 0.22s ease;
+      z-index: 50;
+      box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+    }
+
+    .assistant-sidebar.ouverte { transform: translateX(0); }
+
+    .sidebar-item { width: 100%; white-space: normal; }
+
+    .assistant-page { padding: 0 0.85rem; height: 100dvh; }
+    .msg-bot-corps { max-width: 92%; }
+    .msg-user-bulle { max-width: 90%; }
+  }
+</style>
+
+<button type="button" class="assistant-hamburger" id="btn-sidebar-toggle" aria-label="Ouvrir le menu">☰</button>
+
+<div class="assistant-layout">
+  <aside class="assistant-sidebar" id="assistant-sidebar">
+    <a href="/" class="sidebar-marque">
+      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="ExamensCam">
+      <span>ExamensCam</span>
+    </a>
+
+        <nav class="sidebar-nav-site">
+      {% if eleve %}
+        {% if eleve.niveau == 'BEPC' %}
+          <a href="{{ url_for('bepc') }}" class="actif">BEPC</a>
+        {% elif eleve.niveau == 'Probatoire' %}
+          <a href="{{ url_for('probatoire_serie', serie=eleve.serie) if eleve.serie else url_for('probatoire') }}" class="actif">Probatoire{% if eleve.serie %} {{ eleve.serie }}{% endif %}</a>
+        {% elif eleve.niveau == 'BAC' %}
+          <a href="{{ url_for('bac_serie', serie=eleve.serie) if eleve.serie else url_for('bac') }}" class="actif">BAC{% if eleve.serie %} {{ eleve.serie }}{% endif %}</a>
+        {% endif %}
+      {% else %}
+        <a href="/bepc" class="{{ 'actif' if 'bepc' in request.path|lower else '' }}">BEPC</a>
+        <a href="/probatoire" class="{{ 'actif' if 'probatoire' in request.path|lower else '' }}">Probatoire</a>
+        <a href="/bac" class="{{ 'actif' if 'bac' in request.path|lower else '' }}">BAC</a>
+      {% endif %}
+      <a href="/a-propos" class="{{ 'actif' if 'a-propos' in request.path|lower else '' }}">À propos</a>
+      <a href="/conditions" class="{{ 'actif' if 'conditions' in request.path|lower else '' }}">Conditions</a>
+    </nav>
+
+    <button type="button" class="sidebar-item sidebar-item-nouvelle" id="btn-nouvelle-conversation">
+      <span class="sidebar-icone">＋</span> Nouvelle conversation
+    </button>
+
+    {% if not mode_demo and matieres_dispo %}
+    <div class="sidebar-separateur">Matière</div>
+    <div class="sidebar-matieres" id="sidebar-matieres">
+      {% for m in matieres_dispo %}
+      <button type="button" class="chip-matiere" data-matiere="{{ m }}">{{ m }}</button>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="sidebar-separateur">Générer</div>
+    <button type="button" class="sidebar-item" id="btn-sidebar-examen"
+            {% if not disponible %}disabled title="Bientôt disponible pour ta série"{% endif %}>
+      <span class="sidebar-icone">🎓</span> Examen officiel (Bac blanc)
+    </button>
+    <button type="button" class="sidebar-item" id="btn-sidebar-sequence"
+            {% if not disponible %}disabled title="Bientôt disponible pour ta série"{% endif %}>
+      <span class="sidebar-icone">📝</span> Épreuve de séquence
+    </button>
+
+    <div class="sidebar-separateur">Consulter</div>
+    <button type="button" class="sidebar-item" id="btn-sidebar-parcourir">
+      <span class="sidebar-icone">📚</span> Parcourir les épreuves
+    </button>
+
+    {% if eleve %}
+    <div class="sidebar-compte">
+      <a href="/mon-compte" class="sidebar-compte-lien">
+        <div class="sidebar-compte-avatar">{{ eleve.nom[0]|upper }}</div>
+        <div class="sidebar-compte-info">
+          <span class="sidebar-compte-nom">{{ eleve.nom }}</span>
+          <span class="sidebar-compte-niveau">{{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}</span>
+        </div>
+      </a>
+      <a href="/deconnexion" class="sidebar-compte-deco" title="Se déconnecter">⏻</a>
+    </div>
+    {% else %}
+    <div class="sidebar-compte">
+      <a href="{{ url_for('connexion') }}" class="sidebar-compte-lien" style="justify-content:center;">
+        <span class="sidebar-compte-nom">Se connecter</span>
+      </a>
+    </div>
+    {% endif %}
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <section class="assistant-page">
+    <div class="assistant-fenetre" id="assistant-fenetre">
+      <div class="assistant-header-inline">
+        <div class="avatar-petit">E</div>
+        <div>
+          <h1>Assistant Élève</h1>
+          <p class="assistant-header-sous">
+            {% if eleve %}Salut {{ eleve.nom.split(' ')[0] }} 👋 — {{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}{% else %}Mode découverte -- connecte-toi pour une expérience personnalisée{% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="assistant-saisie" id="assistant-saisie">
+      {% if mode_demo %}
+      <a href="{{ url_for('connexion') }}" class="assistant-input-form" style="text-decoration:none; justify-content:center; color:var(--ec-accent,#2563EB); font-weight:600;">
+        🔒 Connecte-toi pour poser tes questions
+      </a>
+      {% else %}
+      <form class="assistant-input-form" id="form-saisie">
+        <input type="text" id="input-question" placeholder="Écris ta question..." autocomplete="off" required>
+        <button type="submit" class="btn-envoyer" id="btn-envoyer" aria-label="Envoyer">➤</button>
+      </form>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<script>
+(function () {
+  const fenetre = document.getElementById('assistant-fenetre');
+  const saisie = document.getElementById('assistant-saisie');
+  const sidebar = document.getElementById('assistant-sidebar');
+  const form = document.getElementById('form-saisie');
+  const input = document.getElementById('input-question');
+  const btnEnvoyer = document.getElementById('btn-envoyer');
+
+  const MODE_DEMO = {{ mode_demo | tojson }};
+
+  const ELEVE = {
+    prenom: {{ (eleve.nom.split(' ')[0] if eleve else 'invité') | tojson }},
+    niveau: {{ (eleve.niveau if eleve else '') | tojson }},
+    serie: {{ (eleve.serie if eleve else '') | tojson }},
+    disponible: {{ disponible | tojson }}
+  };
+
+  // NOUVEAU (choix de matière, 29/08/2026) -- matières que le chat
+  // peut réellement discuter pour le niveau/série de l'élève (voir
+  // scripts/chat_scope.py, injectées par app.py). Vide en mode démo
+  // ou si le niveau/série de l'élève n'est pas encore couvert.
+  const MATIERES_DISPO = {{ matieres_dispo | tojson }};
+
+  const etat = { historique: [], enAttente: false, panneauOuvert: false, matiere: null };
+
+  // NOUVEAU (choix de matière, 29/08/2026) -- "Mathematiques" en
+  // priorité si disponible (matière historique, RAG réel), sinon la
+  // première matière de la liste. null si aucune matière couverte
+  // (cas "bientôt disponible", déjà géré par ELEVE.disponible).
+  if (MATIERES_DISPO.length) {
+    etat.matiere = MATIERES_DISPO.includes('Mathematiques') ? 'Mathematiques' : MATIERES_DISPO[0];
+  }
+
+  function genererMessageAccueil() {
+    if (MODE_DEMO) {
+      return `Salut ! Je suis l'assistant ExamensCam. Connecte-toi pour discuter de tes cours, générer des épreuves inédites, et retrouver les annales de ton niveau -- ou parcours déjà les épreuves disponibles avec le menu à gauche.`;
+    }
+    if (!etat.matiere) {
+      return `Salut ${ELEVE.prenom} ! Le programme de ${ELEVE.niveau}${ELEVE.serie ? ' ' + ELEVE.serie : ''} arrive bientôt sur l'assistant. En attendant, tu peux quand même me demander de retrouver une épreuve existante, ou utiliser le menu à gauche pour la parcourir.`;
+    }
+    return `Salut ${ELEVE.prenom} ! On discute de ${etat.matiere} (${ELEVE.niveau}${ELEVE.serie ? ' ' + ELEVE.serie : ''}) -- pose ta question, demande-moi une épreuve existante, ou change de matière à gauche quand tu veux.`;
+  }
+
+  function rendreReponseAssistant(conteneur, texte) {
+    conteneur.innerHTML = marked.parse(texte);
+    if (window.renderMathInElement) {
+      renderMathInElement(conteneur, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false },
+        ],
+        throwOnError: false,
+      });
+    }
+  }
+
+  function ajouterMessageUtilisateur(texte) {
+    const ligne = document.createElement('div');
+    ligne.className = 'msg msg-user';
+    const bulle = document.createElement('div');
+    bulle.className = 'msg-user-bulle';
+    bulle.textContent = texte;
+    ligne.appendChild(bulle);
+    fenetre.appendChild(ligne);
+    fenetre.scrollTop = fenetre.scrollHeight;
+  }
+
+  function ajouterMessageAssistant(texte, enAttente) {
+    const ligne = document.createElement('div');
+    ligne.className = 'msg msg-bot' + (enAttente ? ' msg-attente' : '');
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.textContent = 'E';
+    const corps = document.createElement('div');
+    corps.className = 'msg-bot-corps';
+
+    if (enAttente) {
+      corps.innerHTML = `
+        <div class="indicateur-reflexion">
+          <div class="points-typing"><span></span><span></span><span></span></div>
+          <span class="texte-progression">Je réfléchis...</span>
+        </div>`;
+
+      const phrases = ['Je réfléchis...', 'Je vérifie le calcul...', 'Je prépare la réponse...'];
+      let i = 0;
+      const spanTexte = corps.querySelector('.texte-progression');
+      ligne._intervalReflexion = setInterval(() => {
+        i = (i + 1) % phrases.length;
+        spanTexte.style.animation = 'none';
+        spanTexte.offsetHeight;
+        spanTexte.textContent = phrases[i];
+        spanTexte.style.animation = 'fondu 0.3s ease';
+      }, 2200);
+    } else {
+      rendreReponseAssistant(corps, texte);
+    }
+
+    ligne.appendChild(avatar);
+    ligne.appendChild(corps);
+    fenetre.appendChild(ligne);
+    fenetre.scrollTop = fenetre.scrollHeight;
+    return ligne;
+  }
+
+  function retirerLigneAttente(ligne) {
+    if (ligne._intervalReflexion) clearInterval(ligne._intervalReflexion);
+    ligne.remove();
+  }
+
+  function ajouterCarteResultats(intro, resultats) {
+    const ligne = document.createElement('div');
+    ligne.className = 'msg msg-bot';
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.textContent = 'E';
+
+    const corps = document.createElement('div');
+    corps.className = 'msg-bot-corps';
+
+    const p = document.createElement('p');
+    p.textContent = intro;
+    corps.appendChild(p);
+
+    const liste = document.createElement('div');
+    liste.className = 'liste-resultats';
+
+    resultats.forEach(r => {
+      const carte = document.createElement('a');
+      carte.className = 'carte-resultat';
+      carte.href = r.destination;
+
+      const titre = document.createElement('span');
+      titre.className = 'carte-resultat-titre';
+      titre.textContent = r.libelle;
+
+      const badge = document.createElement('span');
+      const estOfficiel = r.type_source === 'officiel';
+      badge.className = 'carte-resultat-badge ' + (estOfficiel ? 'officiel' : 'externe');
+      badge.textContent = estOfficiel ? 'Officiel' : 'Externe';
+
+      carte.appendChild(titre);
+      carte.appendChild(badge);
+      liste.appendChild(carte);
+    });
+
+    corps.appendChild(liste);
+    ligne.appendChild(avatar);
+    ligne.appendChild(corps);
+    fenetre.appendChild(ligne);
+    fenetre.scrollTop = fenetre.scrollHeight;
+    return ligne;
+  }
+
+  async function envoyerMessage(texte) {
+    ajouterMessageUtilisateur(texte);
+    etat.enAttente = true;
+    btnEnvoyer.disabled = true;
+
+    const ligneAttente = ajouterMessageAssistant('', true, texte);
+
+    try {
+      const reponseServeur = await fetch("{{ url_for('assistant_eleve_repondre') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // MODIFIÉ (choix de matière, 29/08/2026) : niveau/série/matière
+        // envoyés à chaque message -- voir scripts/chat_scope.py côté
+        // serveur pour la vérification et le choix de mode (RAG/générique).
+        body: JSON.stringify({
+          question: texte,
+          historique: etat.historique,
+          niveau: ELEVE.niveau,
+          serie: ELEVE.serie,
+          matiere: etat.matiere,
+        }),
+      });
+
+      const typeContenu = reponseServeur.headers.get('Content-Type') || '';
+
+      if (!typeContenu.includes('text/event-stream')) {
+        const resultat = await reponseServeur.json();
+        retirerLigneAttente(ligneAttente);
+        if (!reponseServeur.ok) {
+          throw new Error(resultat.erreur || "Une erreur est survenue.");
+        }
+        let texteReponsePourHistorique;
+        if (resultat.type === 'resultats') {
+          ajouterCarteResultats(resultat.intro, resultat.resultats);
+          texteReponsePourHistorique = resultat.intro;
+        } else {
+          ajouterMessageAssistant(resultat.reponse, false);
+          texteReponsePourHistorique = resultat.reponse;
+        }
+        etat.historique.push({ role: 'user', content: texte });
+        etat.historique.push({ role: 'assistant', content: texteReponsePourHistorique });
+        return;
+      }
+
+      if (ligneAttente._intervalReflexion) {
+        clearInterval(ligneAttente._intervalReflexion);
+        ligneAttente._intervalReflexion = null;
+      }
+      ligneAttente.classList.remove('msg-attente');
+      const corps = ligneAttente.querySelector('.msg-bot-corps');
+      corps.innerHTML = '';
+      const curseur = document.createElement('span');
+      curseur.className = 'curseur-streaming';
+      corps.appendChild(curseur);
+
+      const lecteur = reponseServeur.body.getReader();
+      const decodeur = new TextDecoder();
+      let tampon = '';
+      let texteAccumule = '';
+      let erreurRecue = null;
+
+      while (true) {
+        const { done, value } = await lecteur.read();
+        if (done) break;
+        tampon += decodeur.decode(value, { stream: true });
+
+        const evenements = tampon.split('\n\n');
+        tampon = evenements.pop();
+
+        for (const evenementBrut of evenements) {
+          if (!evenementBrut.startsWith('data: ')) continue;
+          const evenement = JSON.parse(evenementBrut.slice(6));
+
+          if (evenement.type === 'morceau') {
+            texteAccumule += evenement.texte;
+            corps.textContent = texteAccumule;
+            corps.appendChild(curseur);
+            fenetre.scrollTop = fenetre.scrollHeight;
+          } else if (evenement.type === 'erreur') {
+            erreurRecue = evenement.texte;
+          } else if (evenement.type === 'fin') {
+            texteAccumule = evenement.texte_complet;
+          }
+        }
+      }
+
+      curseur.remove();
+      rendreReponseAssistant(corps, texteAccumule || erreurRecue || "Je n'ai pas pu générer de réponse.");
+      if (erreurRecue && texteAccumule) {
+        const noteErreur = document.createElement('p');
+        noteErreur.style.cssText = 'font-size:0.82rem;color:var(--ec-ink-soft,#64748B);font-style:italic;margin-top:0.4rem;';
+        noteErreur.textContent = erreurRecue;
+        corps.appendChild(noteErreur);
+      }
+
+      etat.historique.push({ role: 'user', content: texte });
+      etat.historique.push({ role: 'assistant', content: texteAccumule });
+
+    } catch (erreur) {
+      retirerLigneAttente(ligneAttente);
+      ajouterMessageAssistant(erreur.message || "Je n'arrive pas à répondre pour l'instant, réessaie dans un instant.", false);
+    } finally {
+      etat.enAttente = false;
+      btnEnvoyer.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const texte = input.value.trim();
+    if (!texte || etat.enAttente) return;
+    input.value = '';
+    fermerPanneauGenerer();
+    envoyerMessage(texte);
+  });
+
+  function fermerPanneauGenerer() {
+    const existant = document.getElementById('panneau-generer');
+    if (existant) existant.remove();
+    etat.panneauOuvert = false;
+  }
+
+  function ouvrirPanneauVide() {
+    fermerPanneauGenerer();
+    const panneau = document.createElement('div');
+    panneau.className = 'panneau-generer';
+    panneau.id = 'panneau-generer';
+    saisie.appendChild(panneau);
+    etat.panneauOuvert = true;
+    return panneau;
+  }
+
+  function afficherChoixSequence() {
+    const panneau = document.getElementById('panneau-generer');
+    if (!panneau) return;
+    panneau.innerHTML = '';
+
+    const texte = document.createElement('p');
+    texte.textContent = 'Pour quelle séquence ?';
+    panneau.appendChild(texte);
+
+    const options = document.createElement('div');
+    options.className = 'panneau-generer-options';
+    const ordinaux = { 1: '1ère', 2: '2e', 3: '3e', 4: '4e', 5: '5e', 6: '6e' };
+    [1, 2, 3, 4, 5, 6].forEach(n => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-option';
+      btn.textContent = `${ordinaux[n]} séquence`;
+      btn.addEventListener('click', () => {
+        fermerPanneauGenerer();
+        lancerGeneration({ type_document: 'Sequence', sequence: n }, `Génère-moi une épreuve de la ${ordinaux[n]} séquence`);
+      });
+      options.appendChild(btn);
+    });
+    panneau.appendChild(options);
+  }
+
+  async function afficherChoixNiveau() {
+    const panneau = document.getElementById('panneau-generer');
+    if (!panneau) return;
+    panneau.innerHTML = '<p>Chargement...</p>';
+
+    const reponse = await fetch("{{ url_for('chat_niveaux') }}");
+    const { niveaux } = await reponse.json();
+
+    panneau.innerHTML = '';
+    const texte = document.createElement('p');
+    texte.textContent = 'Quel niveau ?';
+    panneau.appendChild(texte);
+
+    const options = document.createElement('div');
+    options.className = 'panneau-generer-options';
+    niveaux.forEach(niveau => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-option';
+      btn.textContent = niveau;
+      btn.addEventListener('click', () => afficherChoixSerie(niveau));
+      options.appendChild(btn);
+    });
+    panneau.appendChild(options);
+  }
+
+  async function afficherChoixSerie(niveau) {
+    const panneau = document.getElementById('panneau-generer');
+    if (!panneau) return;
+    panneau.innerHTML = '<p>Chargement...</p>';
+
+    const reponse = await fetch(`{{ url_for('chat_series') }}?niveau=${encodeURIComponent(niveau)}`);
+    const { series } = await reponse.json();
+
+    if (!series || series.length === 0) {
+      afficherChoixMatiere(niveau, null);
+      return;
+    }
+
+    panneau.innerHTML = '';
+    const texte = document.createElement('p');
+    texte.textContent = 'Quelle série ?';
+    panneau.appendChild(texte);
+
+    const options = document.createElement('div');
+    options.className = 'panneau-generer-options';
+    series.forEach(serie => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-option';
+      btn.textContent = serie;
+      btn.addEventListener('click', () => afficherChoixMatiere(niveau, serie));
+      options.appendChild(btn);
+    });
+    panneau.appendChild(options);
+  }
+
+  async function afficherChoixMatiere(niveau, serie) {
+    const panneau = document.getElementById('panneau-generer');
+    if (!panneau) return;
+    panneau.innerHTML = '<p>Chargement...</p>';
+
+    const params = new URLSearchParams({ niveau });
+    if (serie) params.set('serie', serie);
+    const reponse = await fetch(`{{ url_for('chat_matieres') }}?${params}`);
+    const { matieres } = await reponse.json();
+
+    panneau.innerHTML = '';
+    const texte = document.createElement('p');
+    texte.textContent = matieres.length ? 'Quelle matière ?' : "Aucune matière indexée pour l'instant.";
+    panneau.appendChild(texte);
+
+    const options = document.createElement('div');
+    options.className = 'panneau-generer-options';
+    matieres.forEach(matiere => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-option';
+      btn.textContent = matiere;
+      btn.addEventListener('click', () => lancerParcourir(niveau, serie, matiere));
+      options.appendChild(btn);
+    });
+    panneau.appendChild(options);
+
+    if (!MODE_DEMO && ELEVE.niveau && niveau === ELEVE.niveau) {
+      const btnAutre = document.createElement('button');
+      btnAutre.type = 'button';
+      btnAutre.className = 'chip-option';
+      btnAutre.textContent = 'Voir un autre niveau';
+      btnAutre.addEventListener('click', afficherChoixNiveau);
+      panneau.appendChild(document.createElement('br'));
+      panneau.appendChild(btnAutre);
+    }
+  }
+    async function lancerParcourir(niveau, serie, matiere) {
+    fermerPanneauGenerer();
+
+  
+    const libelleDemande = serie
+      ? `Parcourir : ${niveau} ${serie} - ${matiere}`
+      : `Parcourir : ${niveau} - ${matiere}`;
+    ajouterMessageUtilisateur(libelleDemande);
+    const ligneAttente = ajouterMessageAssistant('', true);
+
+    try {
+      const params = new URLSearchParams({ niveau, matiere });
+      if (serie) params.set('serie', serie);
+      const reponseServeur = await fetch(`{{ url_for('chat_parcourir_route') }}?${params}`);
+      const { resultats, erreur } = await reponseServeur.json();
+      retirerLigneAttente(ligneAttente);
+
+      if (erreur) throw new Error(erreur);
+
+      if (!resultats || resultats.length === 0) {
+        ajouterMessageAssistant("Je n'ai encore rien d'indexé pour cette combinaison. Essaie une autre matière ou série.", false);
+        return;
+      }
+
+      ajouterCarteResultats("Voici ce que j'ai trouvé :", resultats);
+
+    } catch (erreur) {
+      retirerLigneAttente(ligneAttente);
+      ajouterMessageAssistant(erreur.message || "Une erreur est survenue.", false);
+    }
+  }
+
+  async function lancerGeneration(params, libelleUtilisateur) {
+    ajouterMessageUtilisateur(libelleUtilisateur);
+    const ligneAttente = ajouterMessageAssistant('', true);
+    const corpsAttente = ligneAttente.querySelector('.msg-bot-corps');
+    corpsAttente.innerHTML = `
+      <div class="indicateur-reflexion">
+        <div class="points-typing"><span></span><span></span><span></span></div>
+        <span class="texte-progression">Construction de l'énoncé...</span>
+      </div>
+      <div class="barre-progression"></div>`;
+
+    const etapesGeneration = [
+      "Construction de l'énoncé...",
+      "Mise en page des exercices...",
+      "Vérification du barème...",
+      "Finalisation du PDF..."
+    ];
+    let etapeIdx = 0;
+    const spanEtape = corpsAttente.querySelector('.texte-progression');
+    ligneAttente._intervalReflexion = setInterval(() => {
+      etapeIdx = (etapeIdx + 1) % etapesGeneration.length;
+      spanEtape.style.animation = 'none';
+      spanEtape.offsetHeight;
+      spanEtape.textContent = etapesGeneration[etapeIdx];
+      spanEtape.style.animation = 'fondu 0.3s ease';
+    }, 4000);
+
+    try {
+      const reponseServeur = await fetch("{{ url_for('assistant_eleve_generer') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+      });
+
+      const typeContenu = reponseServeur.headers.get('Content-Type') || '';
+      if (!reponseServeur.ok || typeContenu.includes('application/json')) {
+        const resultat = await reponseServeur.json();
+        throw new Error(resultat.erreur || "La génération a échoué. Réessaie dans quelques minutes.");
+      }
+
+      const dispo = reponseServeur.headers.get('Content-Disposition') || '';
+      const correspondance = dispo.match(/filename="?([^"]+)"?/);
+      const nomFichier = correspondance ? correspondance[1] : 'epreuve.pdf';
+
+      const blob = await reponseServeur.blob();
+      const url = URL.createObjectURL(blob);
+      const lien = document.createElement('a');
+      lien.href = url;
+      lien.download = nomFichier;
+      document.body.appendChild(lien);
+      lien.click();
+      lien.remove();
+      URL.revokeObjectURL(url);
+
+      retirerLigneAttente(ligneAttente);
+      ajouterMessageAssistant("Voilà ton épreuve, elle vient d'être téléchargée. Bon courage pour la révision !", false);
+
+    } catch (erreur) {
+      retirerLigneAttente(ligneAttente);
+      ajouterMessageAssistant(erreur.message, false);
+    }
+  }
+
+  const btnSidebarToggle = document.getElementById('btn-sidebar-toggle');
+  const backdrop = document.getElementById('sidebar-backdrop');
+
+  function ouvrirSidebar() {
+    sidebar.classList.add('ouverte');
+    backdrop.classList.add('visible');
+  }
+
+  function fermerSidebar() {
+    sidebar.classList.remove('ouverte');
+    backdrop.classList.remove('visible');
+  }
+
+  btnSidebarToggle.addEventListener('click', () => {
+    if (sidebar.classList.contains('ouverte')) fermerSidebar();
+    else ouvrirSidebar();
+  });
+
+  backdrop.addEventListener('click', fermerSidebar);
+
+  document.getElementById('btn-nouvelle-conversation').addEventListener('click', () => {
+    fermerPanneauGenerer();
+    fermerSidebar();
+    etat.historique = [];
+    fenetre.innerHTML = '';
+    ajouterMessageAssistant(genererMessageAccueil(), false);
+    input.value = '';
+    input.focus();
+  });
+
+  document.getElementById('btn-sidebar-examen').addEventListener('click', () => {
+    fermerPanneauGenerer();
+    fermerSidebar();
+    lancerGeneration({ type_document: 'Examen', serie: 'C' }, 'Génère-moi un Examen officiel (Bac blanc)');
+  });
+
+  document.getElementById('btn-sidebar-sequence').addEventListener('click', () => {
+    fermerSidebar();
+    ouvrirPanneauVide();
+    afficherChoixSequence();
+  });
+
+  document.getElementById('btn-sidebar-parcourir').addEventListener('click', () => {
+    fermerSidebar();
+    ouvrirPanneauVide();
+    if (!MODE_DEMO && ELEVE.niveau) {
+      afficherChoixMatiere(ELEVE.niveau, ELEVE.serie || null);
+    } else {
+      afficherChoixNiveau();
+    }
+  });
+
+  // NOUVEAU (choix de matière, 29/08/2026) -- clic sur une chip de
+  // matière dans la sidebar : change etat.matiere, redémarre la
+  // conversation (nouveau sujet = nouveau contexte, on ne mélange pas
+  // les matières dans le même historique envoyé au modèle), met à
+  // jour l'état visuel actif des chips.
+  const conteneurMatieres = document.getElementById('sidebar-matieres');
+  if (conteneurMatieres) {
+    function marquerChipActive() {
+      conteneurMatieres.querySelectorAll('.chip-matiere').forEach(chip => {
+        chip.classList.toggle('actif', chip.dataset.matiere === etat.matiere);
+      });
+    }
+
+    conteneurMatieres.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip-matiere');
+      if (!chip || chip.dataset.matiere === etat.matiere) return;
+
+      etat.matiere = chip.dataset.matiere;
+      marquerChipActive();
+      fermerPanneauGenerer();
+      fermerSidebar();
+      etat.historique = [];
+      fenetre.innerHTML = '';
+      ajouterMessageAssistant(genererMessageAccueil(), false);
+    });
+
+    marquerChipActive();
+  }
+
+  document.addEventListener('click', (e) => {
+    const chemin = e.composedPath();
+    if (etat.panneauOuvert && !chemin.includes(saisie) && !chemin.includes(sidebar)) {
+      fermerPanneauGenerer();
+    }
+  });
+
+  ajouterMessageAssistant(genererMessageAccueil(), false);
+  input.focus();
+})();
+</script>
+{% endblock %}

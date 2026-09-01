@@ -130,6 +130,21 @@
       font-weight: 600;
     }
 
+    /* NOUVEAU (29/08/2026, nav personnalisée) : badge du niveau/série
+       de l'élève connecté, visuellement distinct d'un simple lien --
+       signale "ceci, c'est TOI", pas juste une entrée de menu parmi
+       d'autres. */
+    .nav-links a.scope-perso {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .nav-links a.scope-perso:hover {
+      color: var(--accent);
+    }
+
     .hamburger {
       display: flex;
       align-items: center;
@@ -183,6 +198,11 @@
       font-weight: 600;
       background: var(--accent-soft);
       border-radius: 6px;
+    }
+
+    .mobile-menu a.scope-perso {
+      color: var(--accent);
+      font-weight: 700;
     }
 
     @media (min-width: 640px) {
@@ -243,10 +263,35 @@
   {% block extra_head %}{% endblock %}
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
   {% set path_lower = request.path|lower %}
 
+  {#
+    NOUVEAU (29/08/2026, nav personnalisée) : `eleve_nav` vient du
+    context processor inject_globals() dans app.py -- None si personne
+    n'est connecté (nav générique, comportement identique à avant).
+    Si un élève est connecté, on calcule ICI le lien et le libellé de
+    SON niveau/série, une seule fois, réutilisés dans la nav desktop
+    ET le menu mobile juste en dessous (pas de duplication de logique
+    Jinja entre les deux).
+  #}
+  {% set lien_scope = None %}
+  {% set libelle_scope = None %}
+  {% if eleve_nav %}
+    {% if eleve_nav.niveau == 'BEPC' %}
+      {% set lien_scope = url_for('bepc') %}
+      {% set libelle_scope = 'BEPC' %}
+    {% elif eleve_nav.niveau == 'Probatoire' %}
+      {% set lien_scope = url_for('probatoire_serie', serie=eleve_nav.serie) if eleve_nav.serie else url_for('probatoire') %}
+      {% set libelle_scope = 'Probatoire ' + eleve_nav.serie if eleve_nav.serie else 'Probatoire' %}
+    {% elif eleve_nav.niveau == 'BAC' %}
+      {% set lien_scope = url_for('bac_serie', serie=eleve_nav.serie) if eleve_nav.serie else url_for('bac') %}
+      {% set libelle_scope = 'BAC ' + eleve_nav.serie if eleve_nav.serie else 'BAC' %}
+    {% endif %}
+  {% endif %}
+
+  {% block navbar %}
   <nav class="navbar">
     <div class="navbar-inner">
       <a href="/" class="navbar-brand">
@@ -255,10 +300,22 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">Accueil</a></li>
-        <li><a href="/bepc" class="{{ 'active' if 'bepc' in path_lower else '' }}">BEPC</a></li>
-        <li><a href="/probatoire" class="{{ 'active' if 'probatoire' in path_lower else '' }}">Probatoire</a></li>
-        <li><a href="/bac" class="{{ 'active' if 'bac' in path_lower else '' }}">BAC</a></li>
+        <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">Assistant</a></li>
+        {% if eleve_nav %}
+          {# Élève connecté : SON niveau/série uniquement, pas le choix
+             générique -- voir scope_eleve_autorise() côté serveur pour
+             la garde d'accès réelle, ceci n'est que l'affichage. #}
+          {% if lien_scope %}
+          <li><a href="{{ lien_scope }}" class="scope-perso {{ 'active' if path_lower.startswith(lien_scope|lower) else '' }}">{{ libelle_scope }}</a></li>
+          {% endif %}
+          <li><a href="/mon-compte" class="{{ 'active' if 'mon-compte' in path_lower else '' }}">Mon compte</a></li>
+        {% else %}
+          {# Visiteur non connecté : catalogue complet, comportement
+             identique à avant cette extension. #}
+          <li><a href="/bepc" class="{{ 'active' if 'bepc' in path_lower else '' }}">BEPC</a></li>
+          <li><a href="/probatoire" class="{{ 'active' if 'probatoire' in path_lower else '' }}">Probatoire</a></li>
+          <li><a href="/bac" class="{{ 'active' if 'bac' in path_lower else '' }}">BAC</a></li>
+        {% endif %}
         <li><a href="/a-propos" class="{{ 'active' if 'a-propos' in path_lower else '' }}">À propos</a></li>
         <li><a href="/conditions" class="{{ 'active' if 'conditions' in path_lower else '' }}">Conditions</a></li>
       </ul>
@@ -269,34 +326,49 @@
     </div>
 
     <div class="mobile-menu" id="mobile-menu">
-      <a href="/" class="{{ 'active' if request.path == '/' else '' }}">Accueil</a>
-      <a href="/bepc" class="{{ 'active' if 'bepc' in path_lower else '' }}">BEPC</a>
-      <a href="/probatoire" class="{{ 'active' if 'probatoire' in path_lower else '' }}">Probatoire</a>
-      <a href="/bac" class="{{ 'active' if 'bac' in path_lower else '' }}">BAC</a>
+      <a href="/" class="{{ 'active' if request.path == '/' else '' }}">Assistant</a>
+      {% if eleve_nav %}
+        {% if lien_scope %}
+        <a href="{{ lien_scope }}" class="scope-perso {{ 'active' if path_lower.startswith(lien_scope|lower) else '' }}">{{ libelle_scope }}</a>
+        {% endif %}
+        <a href="/mon-compte" class="{{ 'active' if 'mon-compte' in path_lower else '' }}">Mon compte</a>
+      {% else %}
+        <a href="/bepc" class="{{ 'active' if 'bepc' in path_lower else '' }}">BEPC</a>
+        <a href="/probatoire" class="{{ 'active' if 'probatoire' in path_lower else '' }}">Probatoire</a>
+        <a href="/bac" class="{{ 'active' if 'bac' in path_lower else '' }}">BAC</a>
+      {% endif %}
       <a href="/a-propos" class="{{ 'active' if 'a-propos' in path_lower else '' }}">À propos</a>
       <a href="/conditions" class="{{ 'active' if 'conditions' in path_lower else '' }}">Conditions d'utilisation</a>
     </div>
   </nav>
+  {% endblock %}
 
-  {% include '_recherche.html' ignore missing %}
+  {% block barre_recherche %}{% include '_recherche.html' ignore missing %}{% endblock %}
 
   <main>
     {% block content %}{% endblock %}
   </main>
 
+  {% block pied_de_page %}
   <footer>
     <div class="footer-inner">
       <div class="footer-links">
-        <a href="/">Accueil</a>
+        <a href="/">Assistant</a>
+        {% if eleve_nav and lien_scope %}
+        <a href="{{ lien_scope }}">{{ libelle_scope }}</a>
+        <a href="/mon-compte">Mon compte</a>
+        {% else %}
         <a href="/bepc">BEPC</a>
         <a href="/probatoire">Probatoire</a>
         <a href="/bac">BAC</a>
+        {% endif %}
         <a href="/a-propos">À propos</a>
         <a href="/conditions">Conditions d'utilisation</a>
       </div>
       <p class="footer-copy">Cameroun · Annales officielles MINESEC</p>
     </div>
   </footer>
+  {% endblock %}
 
   <script>
     var btn = document.getElementById('hamburger');

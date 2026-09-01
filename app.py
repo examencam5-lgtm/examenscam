@@ -12,17 +12,21 @@ load_dotenv()
 from flask import send_file
 from scripts.generer_epreuve_json import generer_epreuve_json
 from scripts.construire_pdf_officiel import construire_pdf
+from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream
 from scripts.extraire_entete_personnalisable import (
     extraire_entete_pour_upload, personnaliser_et_decouper, generer_apercu_brut,
     supprimer_extraction_temporaire, ExtractionEnteteEchouee, EnteteSourceIncomplete,
     DOSSIER_ENTETES_TMP, nettoyer_entetes_expirees,
 )
+from scripts.chat_bac_officiel import detecter_demande_exercice_bac, obtenir_exercice_bac, formuler_reponse_exercice_bac
+from scripts.chat_intent_epreuve import detecter_demande_epreuve, chercher_epreuves, preparer_resultats_epreuves
+from scripts.metadonnees_defaut import metadonnees_defaut_eleve
 import tempfile
 
 
 from flask import (
     Flask, render_template, redirect, request, abort, jsonify,
-    g, session,
+    g, session, Response, url_for
 )
 
 from database_carrefour import get_carrefour
@@ -44,6 +48,24 @@ from analytics import (
     stats_sources, stats_nouveaux_vs_recurrents, stats_duree_sessions,
     stats_journal_recherches, stats_journal_clics, stats_parcours_session,
 )
+from database_eleves import (
+    create_table as create_table_eleves, creer_compte, verifier_identifiants,
+    marquer_connexion, get_eleve_par_id, modifier_profil, changer_mot_de_passe,
+    incrementer_usage_mensuel, login_identifiant_bloque, enregistrer_echec_identifiant,
+    reinitialiser_echecs_identifiant, minutes_avant_deblocage_identifiant,
+    NIVEAUX_VALIDES as NIVEAUX_VALIDES_ELEVES, SERIES_VALIDES as SERIES_VALIDES_ELEVES,
+)
+# MODIFIÉ (29/08/2026, extension multi-matières) : import de
+# matiere_disponible_pour et matieres_disponibles en plus des 2
+# fonctions déjà utilisées -- chat_disponible_pour et
+# message_indisponible gardent leur usage EXACT d'avant (génération
+# PDF, toujours Mathématiques), voir scripts/chat_scope.py.
+from scripts.chat_scope import (
+    chat_disponible_pour, message_indisponible,
+    matiere_disponible_pour, matieres_disponibles,
+)
+from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves
+from database_matieres import get_toutes_matieres
 
 creer_table_evenements()
 app = Flask(__name__)
@@ -51,11 +73,6 @@ app = Flask(__name__)
 # ═══════════════════════════════════════════════════════
 # CONFIGURATION & SECURITE
 # ═══════════════════════════════════════════════════════
-# Aucun fallback en dur pour les secrets. Un fallback visible dans le
-# code (meme "juste pour le dev") devient un mot de passe public des
-# qu'il finit sur GitHub. Si la variable d'env manque sur Render, le
-# site DOIT refuser de demarrer plutot que de tourner avec un secret
-# devine par n'importe qui.
 _SECRET_KEY = os.environ.get('SECRET_KEY')
 _ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN')
 _DEBUG = os.environ.get('DEBUG', 'False') == 'True'
@@ -77,15 +94,6 @@ app.config.update(
     SECRET_KEY=_SECRET_KEY,
     DEBUG=_DEBUG,
     ADMIN_TOKEN=_ADMIN_TOKEN,
-    # Cookies de session -- protection du cookie admin_connecte.
-    # SESSION_COOKIE_SECURE=True force le cookie a n'etre envoye que
-    # sur HTTPS. Render sert le site en HTTPS, donc True en prod.
-    # Mais en local (python app.py sur http://127.0.0.1, jamais
-    # HTTPS), un navigateur refuse d'envoyer un cookie Secure sur une
-    # connexion non chiffree -- le login semblerait "ne pas retenir"
-    # la connexion. On desactive donc cette protection uniquement
-    # quand DEBUG est actif (donc uniquement en local, jamais sur
-    # Render ou DEBUG doit rester False).
     SESSION_COOKIE_SECURE=not _DEBUG,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
@@ -93,6 +101,9 @@ app.config.update(
 
 with app.app_context():
     create_table()
+with app.app_context():
+    create_table()
+    create_table_eleves()          # <-- AJOUT
 
 ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
@@ -126,26 +137,24 @@ def get_matieres_fallback(niveau, serie=None):
 
 @app.context_processor
 def inject_globals():
-    return {'site_nom': 'ExamensCam'}
+    eleve_nav = None
+    eleve_id = session.get('eleve_id')
+    if eleve_id:
+        eleve_nav = get_eleve_par_id(eleve_id)
+        if not eleve_nav:
+            session.pop('eleve_id', None)
+    return {'site_nom': 'ExamensCam', 'eleve_nav': eleve_nav}
 
 
 # ═══════════════════════════════════════════════════════
-# RATE-LIMITING LOGIN ADMIN — en memoire, pas de dependance externe
+# RATE-LIMITING LOGIN ADMIN
 # ═══════════════════════════════════════════════════════
-# Structure : { ip: [timestamp_echec_1, timestamp_echec_2, ...] }
-# Au-dela de MAX_TENTATIVES echecs dans la fenetre glissante de
-# FENETRE_BLOCAGE_SEC, l'IP est bloquee jusqu'a expiration du plus
-# ancien echec de la fenetre. Limite connue et acceptee : ce compteur
-# se remet a zero si Render redemarre le process (redeploy, reveil
-# apres veille sur le free tier) -- compromis correct pour un site
-# mono-instance, pas une solution entreprise.
 _TENTATIVES_LOGIN = {}
 MAX_TENTATIVES = 5
 FENETRE_BLOCAGE_SEC = 15 * 60
 
 
 def _ip_client():
-    # Render est derriere un proxy -- X-Forwarded-For contient la vraie IP.
     xff = request.headers.get('X-Forwarded-For', '')
     if xff:
         return xff.split(',')[0].strip()
@@ -173,27 +182,12 @@ def _minutes_avant_deblocage(ip: str) -> int:
 
 
 # ═══════════════════════════════════════════════════════
-# RATE-LIMITING GLOBAL — routes publiques a fort volume
+# RATE-LIMITING GLOBAL
 # ═══════════════════════════════════════════════════════
-# Different du rate-limiting login (qui bloque apres des ECHECS).
-# Ici on limite simplement le NOMBRE de requetes par IP dans une
-# fenetre glissante, peu importe si elles reussissent -- protege
-# /api/search et /api/log-clic contre le spam/bot qui saturerait le
-# service Render (free tier, ressources limitees) ou gonflerait
-# artificiellement les tables evenements/recherches_infructueuses.
-#
-# Le debounce cote client (_recherche.html, 200ms) limite deja le
-# trafic normal a environ 5 req/sec max pendant une frappe active --
-# les limites ci-dessous sont largement au-dessus de cet usage
-# normal, pour ne jamais gener un vrai visiteur qui tape vite.
 _REQUETES_PAR_IP = {}
 
 
 def _rate_limit_depasse(cle: str, max_requetes: int, fenetre_sec: int) -> bool:
-    """
-    cle = ip + nom de route, pour que /api/search et /api/log-clic
-    aient chacune leur propre compteur independant par IP.
-    """
     maintenant = time.time()
     requetes = [t for t in _REQUETES_PAR_IP.get(cle, []) if maintenant - t < fenetre_sec]
     requetes.append(maintenant)
@@ -202,10 +196,6 @@ def _rate_limit_depasse(cle: str, max_requetes: int, fenetre_sec: int) -> bool:
 
 
 def limiter_debit(max_requetes: int, fenetre_sec: int):
-    """
-    Decorateur a poser sur une route Flask. Renvoie 429 (Too Many
-    Requests) si l'IP appelante depasse max_requetes dans fenetre_sec.
-    """
     def decorateur(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -252,8 +242,40 @@ def _apres_requete(response):
 # ROUTES PRINCIPALES
 # ══════════════════════════════════════════
 
+# MODIFIÉ (29/08/2026, extension multi-matières) : calcule aussi
+# `matieres_dispo` -- liste des matières que le chat peut réellement
+# discuter pour le niveau/série de l'élève (RAG ou générique, voir
+# chat_scope.matieres_disponibles). `disponible` NE CHANGE PAS de
+# sens : il reste spécifique à Mathématiques/génération PDF (voir
+# chat_scope.chat_disponible_pour) -- ne pas le confondre avec
+# `matieres_dispo`.
 @app.route('/')
 def index():
+    eleve = None
+    eleve_id = session.get('eleve_id')
+    if eleve_id:
+        eleve = get_eleve_par_id(eleve_id)
+        if not eleve:
+            session.pop('eleve_id', None)
+
+    if eleve:
+        disponible = chat_disponible_pour(eleve['niveau'], eleve['serie'])
+        matieres_dispo = matieres_disponibles(eleve['niveau'], eleve['serie'])
+    else:
+        disponible = True  # mode démo -- le vrai scope est de toute façon imposé côté serveur
+        matieres_dispo = []
+
+    return render_template(
+        'assistant_eleve.html',
+        eleve=eleve,
+        disponible=disponible,
+        mode_demo=(eleve is None),
+        matieres_dispo=matieres_dispo,
+    )
+
+
+@app.route('/decouvrir')
+def decouvrir():
     stats = get_stats()
     derniere_maj = get_derniere_maj()
     return render_template(
@@ -276,33 +298,76 @@ def a_propos():
 def confidentialite():
     return render_template('confidentialite.html')
 
+def scope_eleve_autorise(niveau, serie=None):
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return True
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        return True
+    if eleve['niveau'] != niveau:
+        return False
+    if serie is not None and eleve.get('serie') and eleve['serie'] != serie:
+        return False
+    return True
+
+
+def rediriger_hors_scope():
+    return redirect(url_for('index'))
+
+
 @app.route('/bepc')
 def bepc():
+    if not scope_eleve_autorise('BEPC'):
+        return rediriger_hors_scope()
     return render_template('niveau.html', niveau='BEPC', serie=None,
                            matieres=get_matieres_fallback('BEPC'))
 
+
 @app.route('/probatoire')
 def probatoire():
+    eleve_id = session.get('eleve_id')
+    if eleve_id:
+        eleve = get_eleve_par_id(eleve_id)
+        if eleve:
+            if eleve['niveau'] != 'Probatoire':
+                return rediriger_hors_scope()
+            if eleve.get('serie'):
+                return redirect(url_for('probatoire_serie', serie=eleve['serie']))
     return render_template('probatoire_series.html')
+
 
 @app.route('/probatoire/<serie>')
 def probatoire_serie(serie):
     if serie not in SERIES_VALIDES:
         abort(404)
+    if not scope_eleve_autorise('Probatoire', serie):
+        return rediriger_hors_scope()
     return render_template('niveau.html', niveau='Probatoire', serie=serie,
                            matieres=get_matieres_fallback('Probatoire', serie))
 
+
 @app.route('/bac')
 def bac():
+    eleve_id = session.get('eleve_id')
+    if eleve_id:
+        eleve = get_eleve_par_id(eleve_id)
+        if eleve:
+            if eleve['niveau'] != 'BAC':
+                return rediriger_hors_scope()
+            if eleve.get('serie'):
+                return redirect(url_for('bac_serie', serie=eleve['serie']))
     return render_template('bac_series.html')
+
 
 @app.route('/bac/<serie>')
 def bac_serie(serie):
     if serie not in SERIES_VALIDES:
         abort(404)
+    if not scope_eleve_autorise('BAC', serie):
+        return rediriger_hors_scope()
     return render_template('niveau.html', niveau='BAC', serie=serie,
                            matieres=get_matieres_fallback('BAC', serie))
-
 # ══════════════════════════════════════════
 # PAGE CHOIX : ÉNONCÉ OU CORRIGÉ
 # ══════════════════════════════════════════
@@ -414,15 +479,11 @@ def acces_interdit(e):
 
 @app.errorhandler(500)
 def erreur_serveur(e):
-    # La stack trace complete part dans les logs Render (comportement
-    # normal de Flask, utile pour diagnostiquer) -- mais on ne renvoie
-    # jamais ce detail au visiteur, meme si DEBUG passait a True par
-    # accident un jour. Page generique uniquement, aucune info technique.
     app.logger.error(f"Erreur serveur non geree: {e}")
     return render_template('500.html'), 500
 
 # ═══════════════════════════════════════
-# CARREFOUR (2 branches V1 : officiel + établissements)
+# CARREFOUR
 # ═══════════════════════════════════════
 @app.route('/carrefour/<niveau>/<matiere>')
 def carrefour_niveau(niveau, matiere):
@@ -521,6 +582,27 @@ def admin_requis(f):
         return f(*args, **kwargs)
     return wrapper
 
+def eleve_requis(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        eleve_id = session.get('eleve_id')
+        if not eleve_id:
+            return redirect('/connexion')
+        eleve = get_eleve_par_id(eleve_id)
+        if not eleve:
+            session.pop('eleve_id', None)
+            return redirect('/connexion')
+        g.eleve = eleve
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@app.context_processor
+def inject_eleve():
+    eleve_id = session.get('eleve_id')
+    eleve = get_eleve_par_id(eleve_id) if eleve_id else None
+    return {'eleve_connecte': eleve}
+
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -534,13 +616,6 @@ def admin_login():
         bloque = True
         minutes_restantes = _minutes_avant_deblocage(ip)
     elif request.method == 'POST':
-        # Protection CSRF : le token soumis doit correspondre exactement
-        # a celui genere pour CETTE session au moment de l'affichage du
-        # formulaire. Un site tiers essayant de forcer une soumission
-        # depuis le navigateur d'un visiteur n'a aucun moyen de connaitre
-        # ce token -- la requete est rejetee sans meme verifier le mot
-        # de passe. Comparaison via secrets.compare_digest pour eviter
-        # une fuite d'information par timing attack.
         token_soumis = request.form.get('csrf_token', '')
         token_attendu = session.get('csrf_token', '')
         if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
@@ -560,9 +635,6 @@ def admin_login():
                     bloque = True
                     minutes_restantes = _minutes_avant_deblocage(ip)
 
-    # Nouveau token a chaque affichage du formulaire (GET, ou apres un
-    # echec en POST) -- un token ne doit jamais etre reutilisable
-    # indefiniment.
     session['csrf_token'] = secrets.token_urlsafe(32)
 
     return render_template('admin_login.html', erreur=erreur, bloque=bloque,
@@ -619,30 +691,91 @@ def admin_parcours(session_id):
         jours=jours,
     )
 
+
+@app.route('/inscription', methods=['GET', 'POST'])
+def inscription():
+    erreur = None
+    if request.method == 'POST':
+        token_soumis = request.form.get('csrf_token', '')
+        token_attendu = session.get('csrf_token_inscription', '')
+        if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
+            erreur = "Session expirée, réessaie."
+        else:
+            identifiant = request.form.get('identifiant', '').strip()
+            mot_de_passe = request.form.get('mot_de_passe', '')
+            nom = request.form.get('nom', '').strip()
+            niveau = request.form.get('niveau', '')
+            serie = request.form.get('serie') or None
+            classe = request.form.get('classe', '').strip() or None
+            email = request.form.get('email', '').strip() or None
+            telephone = request.form.get('telephone', '').strip() or None
+
+            eleve_id, erreur = creer_compte(
+                identifiant, mot_de_passe, nom, niveau, serie, classe, email, telephone
+            )
+            if eleve_id:
+                session.pop('csrf_token_inscription', None)
+                session['eleve_id'] = eleve_id
+                marquer_connexion(eleve_id)
+                return redirect('/mon-compte')
+
+    session['csrf_token_inscription'] = secrets.token_urlsafe(32)
+    return render_template(
+        'inscription.html', erreur=erreur,
+        csrf_token=session['csrf_token_inscription'],
+        niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
+    )
+
+
+@app.route('/connexion', methods=['GET', 'POST'])
+def connexion():
+    erreur = None
+    bloque = False
+    minutes_restantes = 0
+
+    if request.method == 'POST':
+        identifiant = request.form.get('identifiant', '').strip()
+        token_soumis = request.form.get('csrf_token', '')
+        token_attendu = session.get('csrf_token_connexion', '')
+
+        if login_identifiant_bloque(identifiant):
+            bloque = True
+            minutes_restantes = minutes_avant_deblocage_identifiant(identifiant)
+        elif not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
+            erreur = "Session expirée, réessaie."
+        else:
+            mot_de_passe = request.form.get('mot_de_passe', '')
+            eleve = verifier_identifiants(identifiant, mot_de_passe)
+            if eleve:
+                reinitialiser_echecs_identifiant(identifiant)
+                session.pop('csrf_token_connexion', None)
+                session['eleve_id'] = eleve['id']
+                marquer_connexion(eleve['id'])
+                return redirect('/mon-compte')
+            else:
+                enregistrer_echec_identifiant(identifiant)
+                erreur = "Identifiant ou mot de passe incorrect."
+                if login_identifiant_bloque(identifiant):
+                    bloque = True
+                    minutes_restantes = minutes_avant_deblocage_identifiant(identifiant)
+
+    session['csrf_token_connexion'] = secrets.token_urlsafe(32)
+    return render_template(
+        'connexion.html', erreur=erreur, bloque=bloque,
+        minutes_restantes=minutes_restantes,
+        csrf_token=session['csrf_token_connexion'],
+    )
+
+
+@app.route('/deconnexion')
+def deconnexion():
+    session.pop('eleve_id', None)
+    return redirect('/')
+
 # ═══════════════════════════════════════
 # GÉNÉRATEUR D'ÉPREUVES (RAG Maths BAC C)
 # ═══════════════════════════════════════
-# Rate-limit STRICT et volontairement different de celui de
-# /api/search : chaque generation coute un vrai appel Gemini (donc
-# de l'argent / du quota), contrairement a une recherche. 2
-# generations / 10 min / IP suffit largement pour un usage legitime
-# et bloque un script qui spammerait le bouton.
-#
-# Flux en 2 requetes :
-#   1. POST extraire-entete : upload -> extraction Gemini (page complete
-#      + fraction de decoupe + champs avec positions, stockes sous un
-#      jeton) -> renvoie les champs pour que le prof les edite.
-#   2. POST generer : jeton + valeurs editees -> PERSONNALISE reellement
-#      l'image (recouvre chaque champ modifie et reecrit la nouvelle
-#      valeur au meme endroit, voir personnaliser_et_decouper) -> genere
-#      l'epreuve -> construit le PDF -> le renvoie.
-#
-# Jeton = uuid4 hex nu (32 caracteres), jamais un nom de fichier fourni
-# par le client -- protection anti path-traversal, comme partout
-# ailleurs sur ce site.
 MOTIF_JETON_VALIDE = re.compile(r'^[0-9a-f]{32}$')
-
-
 @app.route('/generateur-epreuves')
 def generateur_epreuves():
     return render_template('generateur.html', erreur=None)
@@ -665,10 +798,6 @@ def generateur_epreuves_extraire_entete():
     try:
         jeton, confiance, champs = extraire_entete_pour_upload(chemin_tmp)
     except EnteteSourceIncomplete as e:
-        # Cas distinct de ExtractionEnteteEchouee : le HAUT de l'en-tête
-        # est déjà coupé dans la photo elle-même -- aucun recadrage ne
-        # peut réparer ça. Le front doit distinguer ce cas (message
-        # "reprends la photo") d'un simple échec technique.
         app.logger.info(f"Photo d'en-tête incomplète (haut coupé) : {e}")
         return jsonify({'ok': False, 'erreur': str(e), 'code': 'haut_tronque'})
     except ExtractionEnteteEchouee as e:
@@ -676,10 +805,6 @@ def generateur_epreuves_extraire_entete():
         return jsonify({'ok': False, 'erreur': str(e)})
     finally:
         chemin_tmp.unlink(missing_ok=True)
-    # champs = [{label, valeur, boite (ou null)}, ...] -- le front
-    # construit un formulaire pré-rempli, un input par champ, avec un
-    # avertissement si boite est null (édition possible mais non
-    # visible sur l'image, voir personnaliser_entete_image).
     return jsonify({'ok': True, 'jeton': jeton, 'confiance': confiance, 'champs': champs})
 
 
@@ -699,20 +824,29 @@ def generateur_epreuves_apercu_entete(jeton):
 def generateur_epreuves_generer():
     payload = request.get_json(silent=True) or {}
 
-    try:
-        sequence = int(payload.get('sequence'))
-    except (TypeError, ValueError):
-        return jsonify({'erreur': 'Séquence invalide.'}), 400
-    if sequence not in (1, 2, 3, 4, 5, 6):
-        return jsonify({'erreur': 'Séquence invalide.'}), 400
+    type_document = payload.get('type_document') or 'Sequence'
+    if type_document not in ('Sequence', 'Examen'):
+        return jsonify({'erreur': 'Type de document invalide.'}), 400
+
+    sequence = 0
+    serie = None
+
+    if type_document == 'Sequence':
+        try:
+            sequence = int(payload.get('sequence'))
+        except (TypeError, ValueError):
+            return jsonify({'erreur': 'Séquence invalide.'}), 400
+        if sequence not in (1, 2, 3, 4, 5, 6):
+            return jsonify({'erreur': 'Séquence invalide.'}), 400
+    else:  # type_document == 'Examen'
+        serie = payload.get('serie')
+        if serie not in ('C', 'E'):
+            return jsonify({'erreur': "Série invalide ou manquante ('C' ou 'E') pour un Examen officiel."}), 400
 
     jeton = payload.get('jeton', '')
     if not MOTIF_JETON_VALIDE.match(jeton):
         return jsonify({'erreur': "En-tête manquante ou invalide -- réuploade un exemple."}), 400
 
-    # { label: nouvelle_valeur } -- construit par generateur.html à
-    # partir du formulaire pré-rempli avec les `champs` reçus à
-    # l'étape précédente. Un label absent = valeur d'origine gardée.
     valeurs_editees = payload.get('valeurs') or {}
     if not isinstance(valeurs_editees, dict):
         valeurs_editees = {}
@@ -725,10 +859,14 @@ def generateur_epreuves_generer():
     metadonnees = {'chemin_image_entete': str(chemin_entete)}
 
     try:
-        chemin_json = generer_epreuve_json(sequence, metadonnees, contexte_regional=contexte_regional)
+        chemin_json = generer_epreuve_json(
+            sequence, metadonnees, contexte_regional=contexte_regional,
+            type_document=type_document, serie=serie,
+        )
         chemin_pdf = construire_pdf(chemin_json)
     except RuntimeError as e:
-        app.logger.error(f"Échec génération épreuve (séquence {sequence}): {e}")
+        cible = f"Examen série {serie}" if type_document == 'Examen' else f"séquence {sequence}"
+        app.logger.error(f"Échec génération épreuve ({cible}): {e}")
         return jsonify({'erreur': "La génération a échoué. Réessaie dans quelques minutes."}), 500
     finally:
         supprimer_extraction_temporaire(jeton)
@@ -736,5 +874,226 @@ def generateur_epreuves_generer():
     return send_file(chemin_pdf, as_attachment=True, download_name=chemin_pdf.name)
 
 
+# ═══════════════════════════════════════
+# ASSISTANT ÉLÈVE (chat conversationnel)
+# ═══════════════════════════════════════
+LIMITE_HISTORIQUE_TOURS = 12
+
+@app.route('/assistant-eleve')
+def assistant_eleve():
+    return redirect(url_for('index'))
+
+
+# CORRECTIF (29/08/2026) : l'ancienne version avait deux décorateurs
+# @app.route identiques empilés sur cette fonction (copier-coller) --
+# inoffensif en pratique mais source de confusion. Un seul décorateur.
+#
+# MODIFIÉ (29/08/2026, extension multi-matières) : la matière choisie
+# par l'élève dans la sidebar (voir assistant_eleve.html, nouvelle
+# section "Matière") est lue dans le payload et vérifiée via
+# chat_scope.matiere_disponible_pour() -- remplace l'ancien contrôle
+# qui ne vérifiait que le niveau/série (chat_disponible_pour reste
+# réservé à la génération PDF désormais, voir chat_scope.py).
+@app.route('/assistant-eleve/repondre', methods=['POST'])
+@limiter_debit(max_requetes=15, fenetre_sec=600)
+def assistant_eleve_repondre():
+    payload = request.get_json(silent=True) or {}
+
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi pour utiliser l'assistant.", 'code': 'non_connecte'}), 401
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        session.pop('eleve_id', None)
+        return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
+
+    question = (payload.get('question') or '').strip()
+    if not question:
+        return jsonify({'erreur': "Message vide."}), 400
+    if len(question) > 2000:
+        return jsonify({'erreur': "Message trop long."}), 400
+
+    # NOUVEAU (29/08/2026, extension multi-matières) : défaut
+    # "Mathematiques" si le front n'envoie pas encore ce champ (vieux
+    # cache navigateur, etc.) -- rétrocompatible. Un seul contrôle
+    # (matiere_disponible_pour) couvre à la fois "niveau/série pas
+    # actif" et "matière pas couverte pour cette série".
+    matiere = (payload.get('matiere') or 'Mathematiques').strip()
+    if not matiere_disponible_pour(eleve['niveau'], eleve['serie'], matiere):
+        return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
+
+    historique_brut = payload.get('historique') or []
+    if not isinstance(historique_brut, list):
+        historique_brut = []
+
+    historique = []
+    for tour in historique_brut[-LIMITE_HISTORIQUE_TOURS:]:
+        if not isinstance(tour, dict):
+            continue
+        role = tour.get('role')
+        contenu = tour.get('content')
+        if role in ('user', 'assistant') and isinstance(contenu, str) and contenu.strip():
+            historique.append({'role': role, 'content': contenu.strip()})
+
+    if detecter_demande_epreuve(question):
+        resultat_recherche = chercher_epreuves(question)
+        return jsonify(preparer_resultats_epreuves(resultat_recherche))
+    criteres_bac = detecter_demande_exercice_bac(question)
+    if criteres_bac is not None:
+        exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'])
+        texte_bac = formuler_reponse_exercice_bac(exercice, criteres_bac['annee'], criteres_bac['numero'])
+        return jsonify({'reponse': texte_bac})
+
+    # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
+    # choisisse le bon mode (RAG Maths vs générique), voir chat_scope.py.
+    def flux_evenements():
+        texte_complet = []
+        try:
+            for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere):
+                texte_complet.append(morceau)
+                yield f"data: {json.dumps({'type': 'morceau', 'texte': morceau})}\n\n"
+        except RuntimeError as e:
+            app.logger.error(f"Échec réponse assistant élève (stream) : {e}")
+            message_erreur = "Je n'arrive pas à continuer, réessaie dans un instant."
+            yield f"data: {json.dumps({'type': 'erreur', 'texte': message_erreur})}\n\n"
+            return
+
+        incrementer_usage_mensuel(eleve_id)
+        yield f"data: {json.dumps({'type': 'fin', 'texte_complet': ''.join(texte_complet)})}\n\n"
+
+    return Response(
+        flux_evenements(),
+        mimetype='text/event-stream',
+        headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
+    )
+
+
+@app.route('/assistant-eleve/generer', methods=['POST'])
+def assistant_eleve_generer():
+    payload = request.get_json(silent=True) or {}
+
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi pour utiliser l'assistant.", 'code': 'non_connecte'}), 401
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        session.pop('eleve_id', None)
+        return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
+    # Génération de PDF -- reste Mathématiques uniquement, donc
+    # chat_disponible_pour(niveau, serie) à 2 arguments reste le bon
+    # contrôle ici, INCHANGÉ.
+    if not chat_disponible_pour(eleve['niveau'], eleve['serie']):
+        return jsonify({'erreur': message_indisponible(eleve['niveau'], eleve['serie']), 'code': 'niveau_indisponible'}), 403
+
+    type_document = payload.get('type_document') or 'Examen'
+    if type_document not in ('Sequence', 'Examen'):
+        return jsonify({'erreur': 'Type de document invalide.'}), 400
+
+    sequence = 0
+    serie = None
+
+    if type_document == 'Sequence':
+        try:
+            sequence = int(payload.get('sequence'))
+        except (TypeError, ValueError):
+            return jsonify({'erreur': 'Séquence invalide.'}), 400
+        if sequence not in (1, 2, 3, 4, 5, 6):
+            return jsonify({'erreur': 'Séquence invalide.'}), 400
+    else:  # Examen -- scope actuel du chat élève : série C par défaut
+        serie = payload.get('serie') or 'C'
+        if serie not in ('C', 'E'):
+            return jsonify({'erreur': "Série invalide ('C' ou 'E')."}), 400
+
+    metadonnees = metadonnees_defaut_eleve(type_document, serie)
+
+    try:
+        chemin_json = generer_epreuve_json(
+            sequence, metadonnees,
+            type_document=type_document, serie=serie,
+        )
+        chemin_pdf = construire_pdf(chemin_json)
+    except RuntimeError as e:
+        cible = f"Examen série {serie}" if type_document == 'Examen' else f"séquence {sequence}"
+        app.logger.error(f"Échec génération épreuve élève ({cible}): {e}")
+        return jsonify({'erreur': "La génération a échoué. Réessaie dans quelques minutes."}), 500
+
+    incrementer_usage_mensuel(eleve_id)
+
+    return send_file(chemin_pdf, as_attachment=True, download_name=chemin_pdf.name)
+
+
+@app.route('/chat/niveaux')
+def chat_niveaux():
+    return jsonify({'niveaux': get_niveaux()})
+
+
+@app.route('/chat/series')
+def chat_series():
+    niveau = request.args.get('niveau', '')
+    return jsonify({'series': get_series(niveau)})
+
+
+@app.route('/chat/matieres')
+def chat_matieres():
+    niveau = request.args.get('niveau', '')
+    serie = request.args.get('serie') or None
+    if not niveau:
+        return jsonify({'erreur': 'Niveau requis.'}), 400
+    return jsonify({'matieres': get_toutes_matieres(niveau, serie)})
+
+
+@app.route('/chat/parcourir')
+def chat_parcourir_route():
+    niveau = request.args.get('niveau', '')
+    matiere = request.args.get('matiere', '')
+    serie = request.args.get('serie') or None
+    if not niveau or not matiere:
+        return jsonify({'erreur': 'Niveau et matière requis.'}), 400
+    resultats = lister_epreuves(niveau, matiere, serie)
+    return jsonify({'resultats': resultats})
+
+@app.route('/mon-compte', methods=['GET', 'POST'])
+@eleve_requis
+def mon_compte():
+    erreur = None
+    succes = None
+
+    if request.method == 'POST':
+        token_soumis = request.form.get('csrf_token', '')
+        token_attendu = session.get('csrf_token_mon_compte', '')
+        if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
+            erreur = "Session expirée, réessaie."
+        else:
+            action = request.form.get('action')
+            if action == 'profil':
+                erreur = modifier_profil(
+                    g.eleve['id'],
+                    nom=request.form.get('nom'),
+                    niveau=request.form.get('niveau'),
+                    serie=request.form.get('serie') or None,
+                    classe=request.form.get('classe'),
+                )
+                if not erreur:
+                    succes = "Profil mis à jour."
+                    g.eleve = get_eleve_par_id(g.eleve['id'])
+            elif action == 'mot_de_passe':
+                erreur = changer_mot_de_passe(
+                    g.eleve['id'],
+                    request.form.get('ancien_mot_de_passe', ''),
+                    request.form.get('nouveau_mot_de_passe', ''),
+                )
+                if not erreur:
+                    succes = "Mot de passe changé."
+
+            session['csrf_token_mon_compte'] = secrets.token_urlsafe(32)
+
+    if 'csrf_token_mon_compte' not in session:
+        session['csrf_token_mon_compte'] = secrets.token_urlsafe(32)
+
+    return render_template(
+        'mon_compte.html', eleve=g.eleve, erreur=erreur, succes=succes,
+        niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
+        csrf_token=session['csrf_token_mon_compte'],
+    )
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
