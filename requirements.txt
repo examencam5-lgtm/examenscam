@@ -28,3 +28,4 @@ beautifulsoup4==4.15.0
 python-dotenv==1.2.3
 google-genai==2.18.1
 matplotlib
+huggingface_hub>=0.30.0
