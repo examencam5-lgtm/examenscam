@@ -24,9 +24,13 @@
   /* ═══ MISE EN PAGE GÉNÉRALE -- plein écran sous la navbar ═══ */
   .assistant-layout {
     display: flex;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   /* ═══ BARRE LATÉRALE ═══ */
@@ -247,16 +251,21 @@
 
   .sidebar-compte-deco:hover { background: #FEE2E2; color: #B33; }
 
-  /* ═══ COLONNE DE CONVERSATION ═══ */
+  /* ═══ COLONNE DE CONVERSATION ═══
+     Largeur fluide : la conversation utilise tout l'espace disponible.
+     Sur mobile, elle prend 100% de la largeur sans provoquer de débordement. */
   .assistant-page {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 1 1 auto;
+    width: 100%;
     min-width: 0;
     height: 100%;
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 0 1.25rem;
+    max-width: none;
+    margin: 0;
+    padding: 0 2rem;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .assistant-header-inline {
@@ -281,18 +290,30 @@
   }
 
   .assistant-fenetre {
-    flex: 1;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 1.5rem 0 1rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     font-size: 1.02rem;
     line-height: 1.7;
-    min-height: 0;
+    box-sizing: border-box;
   }
 
-  .msg { display: flex; gap: 0.75rem; max-width: 100%; }
+  /* Chaque message doit pouvoir rétrécir dans le conteneur flex. */
+  .msg {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
 
   .msg-avatar {
     width: 28px;
@@ -311,7 +332,42 @@
 
   .msg-bot-corps {
     color: var(--ec-ink, #0F172A);
-    max-width: 88%;
+    flex: 1 1 auto;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* Les longues formules restent lisibles : seul le bloc mathématique
+     défile horizontalement, jamais toute l'application. */
+  .msg-bot-corps .katex-display {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.15rem 0 0.35rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .msg-bot-corps .katex-display > .katex {
+    display: inline-block;
+    min-width: max-content;
+  }
+
+  /* Évite qu'une formule inline exceptionnelle fasse élargir la page. */
+  .msg-bot-corps p,
+  .msg-bot-corps li,
+  .msg-bot-corps h1,
+  .msg-bot-corps h2,
+  .msg-bot-corps h3,
+  .msg-bot-corps h4,
+  .msg-bot-corps blockquote {
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .msg-bot-corps h3 { font-size: 1.05rem; margin: 0.8rem 0 0.35rem; }
@@ -330,6 +386,9 @@
     border-radius: 14px;
     border-bottom-right-radius: 4px;
     max-width: 82%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
   }
 
   .msg-attente .msg-avatar {
@@ -496,7 +555,10 @@
     flex-direction: column;
     gap: 8px;
     margin-top: 0.5rem;
+    width: 100%;
     max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .carte-resultat {
@@ -520,9 +582,12 @@
   }
 
   .carte-resultat-titre {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: 0.88rem;
     font-weight: 600;
     line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 
   .carte-resultat-badge {
@@ -592,7 +657,12 @@
   @media (max-width: 760px) {
     .assistant-hamburger { display: flex; }
 
-    .assistant-layout { height: 100dvh; }
+    .assistant-layout {
+      width: 100%;
+      max-width: 100%;
+      height: 100dvh;
+      min-width: 0;
+    }
 
     .assistant-sidebar {
       position: fixed;
@@ -605,15 +675,221 @@
       transition: transform 0.22s ease;
       z-index: 50;
       box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+      box-sizing: border-box;
     }
 
     .assistant-sidebar.ouverte { transform: translateX(0); }
 
     .sidebar-item { width: 100%; white-space: normal; }
 
-    .assistant-page { padding: 0 0.85rem; height: 100dvh; }
-    .msg-bot-corps { max-width: 92%; }
+    .assistant-page {
+      width: 100%;
+      max-width: 100%;
+      height: 100dvh;
+      min-width: 0;
+      padding: 0 0.75rem;
+      box-sizing: border-box;
+    }
+
+    .assistant-fenetre {
+      width: 100%;
+      max-width: 100%;
+      padding-top: 1rem;
+      gap: 1.15rem;
+    }
+
+    .msg {
+      width: 100%;
+      max-width: 100%;
+      gap: 0.55rem;
+    }
+
+    .msg-bot-corps {
+      max-width: none;
+      flex: 1 1 auto;
+    }
+
     .msg-user-bulle { max-width: 90%; }
+
+    .assistant-header-inline {
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .assistant-header-inline > div:last-child {
+      min-width: 0;
+    }
+
+    .assistant-header-sous {
+      overflow-wrap: anywhere;
+    }
+
+    .assistant-input-form {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .assistant-page { padding: 0 0.55rem; }
+    .assistant-fenetre { font-size: 1rem; }
+    .msg-avatar { width: 26px; height: 26px; }
+    .msg-user-bulle { max-width: 92%; }
+    .assistant-saisie { padding-bottom: 0.75rem; }
+  }
+
+
+  /* ═══════════════════════════════════════════════════════════════
+     INTERFACE TYPE IA MODERNE — inspiration de la capture fournie
+     La colonne principale occupe tout l'espace disponible après la
+     sidebar. Le contenu reste lisible et centré, sans largeur fixe
+     imposée à toute l'application.
+     ═══════════════════════════════════════════════════════════════ */
+  .assistant-layout {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .assistant-sidebar {
+    width: 220px;
+    flex: 0 0 220px;
+    box-sizing: border-box;
+  }
+
+  .assistant-page {
+    flex: 1 1 auto;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .assistant-fenetre {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    overflow-x: hidden;
+    padding: 1.25rem clamp(1rem, 5vw, 5rem) 1.5rem;
+    box-sizing: border-box;
+  }
+
+  /* Les messages ont une vraie largeur de lecture, mais la page
+     elle-même reste pleine largeur comme les interfaces IA modernes. */
+  .assistant-fenetre > .msg {
+    width: 100%;
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .assistant-fenetre > .assistant-header-inline {
+    width: 100%;
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .msg-bot-corps {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .msg-user-bulle {
+    max-width: min(82%, 760px);
+  }
+
+  /* Zone de saisie large, centrée comme dans les interfaces IA. */
+  .assistant-saisie {
+    width: 100%;
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .assistant-input-form {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Empêche les éléments flex internes de créer un débordement. */
+  .assistant-fenetre,
+  .msg,
+  .msg > *,
+  .msg-bot-corps,
+  .liste-resultats,
+  .carte-resultat {
+    min-width: 0;
+  }
+
+  /* Les cartes longues doivent se comprimer au lieu de pousser
+     horizontalement la page. */
+  .carte-resultat {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .carte-resultat-titre {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 760px) {
+    .assistant-sidebar {
+      width: 270px;
+      flex-basis: auto;
+    }
+
+    .assistant-page {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      padding: 0;
+    }
+
+    .assistant-fenetre {
+      width: 100%;
+      padding: 0.85rem 0.75rem 1rem;
+      gap: 1.15rem;
+    }
+
+    .assistant-fenetre > .msg,
+    .assistant-fenetre > .assistant-header-inline {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .msg-user-bulle {
+      max-width: 90%;
+    }
+
+    .assistant-saisie {
+      width: 100%;
+      max-width: 100%;
+      padding: 0.65rem 0.75rem 0.75rem;
+      box-sizing: border-box;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .assistant-fenetre {
+      padding-left: 0.55rem;
+      padding-right: 0.55rem;
+    }
+
+    .assistant-saisie {
+      padding-left: 0.55rem;
+      padding-right: 0.55rem;
+    }
   }
 </style>
 
