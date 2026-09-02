@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Assistant Élève - ExamensCam{% endblock %}
 
-{# Page plein écran type appli -- la barre de recherche et le footer
-   du site n'ont pas leur place ici, voir les blocks ajoutés dans
-   base.html (27/08/2026). Toutes les autres pages du site gardent
-   leur comportement par défaut, inchangé. #}
 {% block navbar %}{% endblock %}
 {% block barre_recherche %}{% endblock %}
 {% block pied_de_page %}{% endblock %}
@@ -15,13 +11,18 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 
 <style>
+  :root {
+    --tuteur-header-h: 56px;
+    --tuteur-content-max: 900px;
+  }
+
   body.page-app-plein-ecran {
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+    background: var(--ec-surface, #fff);
   }
 
-  /* ═══ MISE EN PAGE GÉNÉRALE -- plein écran sous la navbar ═══ */
   .assistant-layout {
     display: flex;
     width: 100%;
@@ -31,60 +32,72 @@
     height: 100dvh;
     overflow: hidden;
     box-sizing: border-box;
+    background: var(--ec-surface, #fff);
   }
 
-  /* ═══ BARRE LATÉRALE ═══ */
+  /* =========================
+     SIDEBAR DESKTOP
+     ========================= */
   .assistant-sidebar {
-    width: 250px;
-    flex-shrink: 0;
+    width: 232px;
+    flex: 0 0 232px;
+    min-width: 0;
     background: var(--ec-line-soft, #F8FAFC);
     border-right: 1px solid var(--ec-line, #E2E8F0);
-    padding: 1rem 0.75rem;
+    padding: 0.9rem 0.7rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.25rem;
     overflow-y: auto;
+    box-sizing: border-box;
+    z-index: 50;
   }
 
   .sidebar-marque {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0.3rem 0.5rem 1rem;
+    padding: 0.35rem 0.55rem 0.9rem;
     text-decoration: none;
     border-bottom: 1px solid var(--ec-line, #E2E8F0);
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.45rem;
   }
 
-  .sidebar-marque img { width: 24px; height: 24px; }
+  .sidebar-marque img {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+  }
 
   .sidebar-marque span {
     font-family: 'Inter', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 750;
     color: var(--ec-ink, #0F172A);
+    letter-spacing: -0.01em;
   }
 
   .sidebar-nav-site {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
-    padding-bottom: 0.6rem;
-    margin-bottom: 0.4rem;
+    gap: 0.08rem;
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.3rem;
     border-bottom: 1px solid var(--ec-line, #E2E8F0);
   }
 
   .sidebar-nav-site a {
     display: block;
-    padding: 0.45rem 0.8rem;
+    padding: 0.42rem 0.75rem;
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: 0.83rem;
     font-weight: 500;
     color: var(--ec-ink-soft, #64748B);
     text-decoration: none;
   }
 
-  .sidebar-nav-site a:hover {
+  .sidebar-nav-site a:hover,
+  .sidebar-nav-site a.actif {
     background: var(--ec-accent-soft, #F1F5F9);
     color: var(--ec-ink, #0F172A);
   }
@@ -92,13 +105,13 @@
   .sidebar-item {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.65rem 0.8rem;
-    border-radius: 10px;
+    gap: 0.62rem;
+    padding: 0.62rem 0.75rem;
+    border-radius: 9px;
     border: none;
     background: transparent;
     color: var(--ec-ink, #0F172A);
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     font-weight: 600;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
@@ -123,40 +136,61 @@
   }
 
   .sidebar-item-nouvelle {
-    border: 1.5px solid var(--ec-line, #E2E8F0);
+    border: 1px solid var(--ec-line, #E2E8F0);
     background: var(--ec-surface, #fff);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
   }
 
-  .sidebar-icone { font-size: 1rem; flex-shrink: 0; }
+  .sidebar-icone {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    color: currentColor;
+  }
+
+  .sidebar-icone svg,
+  .sidebar-compte-deco svg,
+  .assistant-hamburger svg,
+  .header-action svg,
+  .composer-action svg,
+  .btn-envoyer svg,
+  .demo-lock-icon {
+    display: block;
+    width: 17px;
+    height: 17px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
   .sidebar-separateur {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-size: 0.67rem;
+    font-weight: 750;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--ec-ink-soft, #64748B);
-    padding: 0.9rem 0.8rem 0.3rem;
+    padding: 0.75rem 0.75rem 0.28rem;
   }
 
-  /* NOUVEAU (choix de matière, 29/08/2026) -- liste de chips
-     compacte pour la sidebar, distincte des .chip-option du panneau
-     de génération (celles-ci vivent en permanence dans la sidebar,
-     pas dans un panneau flottant temporaire). */
   .sidebar-matieres {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    padding: 0.2rem 0.8rem 0.6rem;
+    gap: 5px;
+    padding: 0.15rem 0.7rem 0.45rem;
   }
 
   .chip-matiere {
-    padding: 0.35rem 0.7rem;
-    border: 1.5px solid var(--ec-line, #E2E8F0);
-    border-radius: 20px;
+    padding: 0.32rem 0.62rem;
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 999px;
     background: var(--ec-surface, #fff);
     color: var(--ec-ink-soft, #64748B);
-    font-size: 0.8rem;
+    font-size: 0.76rem;
     font-weight: 600;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
@@ -174,15 +208,12 @@
     color: #fff;
   }
 
-  /* NOUVEAU (comptes élèves) -- bloc compte fixé en bas de la
-     sidebar via margin-top:auto (le conteneur parent est déjà en
-     display:flex; flex-direction:column). */
   .sidebar-compte {
     margin-top: auto;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding-top: 0.7rem;
+    gap: 0.45rem;
+    padding-top: 0.65rem;
     border-top: 1px solid var(--ec-line, #E2E8F0);
   }
 
@@ -193,12 +224,13 @@
     flex: 1;
     min-width: 0;
     text-decoration: none;
-    padding: 0.3rem 0.4rem;
+    padding: 0.3rem 0.35rem;
     border-radius: 8px;
-    transition: background 0.15s;
   }
 
-  .sidebar-compte-lien:hover { background: var(--ec-accent-soft, #F1F5F9); }
+  .sidebar-compte-lien:hover {
+    background: var(--ec-accent-soft, #F1F5F9);
+  }
 
   .sidebar-compte-avatar {
     width: 30px;
@@ -209,9 +241,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
-    font-weight: 700;
-    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 750;
+    flex: 0 0 30px;
   }
 
   .sidebar-compte-info {
@@ -222,8 +254,8 @@
   }
 
   .sidebar-compte-nom {
-    font-size: 0.82rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 650;
     color: var(--ec-ink, #0F172A);
     white-space: nowrap;
     overflow: hidden;
@@ -231,64 +263,113 @@
   }
 
   .sidebar-compte-niveau {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--ec-ink-soft, #64748B);
   }
 
   .sidebar-compte-deco {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
     color: var(--ec-ink-soft, #64748B);
     text-decoration: none;
-    font-size: 0.95rem;
-    transition: background 0.15s, color 0.15s;
   }
 
-  .sidebar-compte-deco:hover { background: #FEE2E2; color: #B33; }
+  .sidebar-compte-deco:hover {
+    background: #FEE2E2;
+    color: #B33;
+  }
 
-  /* ═══ COLONNE DE CONVERSATION ═══
-     Largeur fluide : la conversation utilise tout l'espace disponible.
-     Sur mobile, elle prend 100% de la largeur sans provoquer de débordement. */
+  /* =========================
+     COLONNE PRINCIPALE
+     ========================= */
   .assistant-page {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
-    width: 100%;
+    width: auto;
     min-width: 0;
+    min-height: 0;
     height: 100%;
-    max-width: none;
     margin: 0;
-    padding: 0 2rem;
+    padding: 0;
     box-sizing: border-box;
     overflow: hidden;
   }
 
-  .assistant-header-inline {
+  .assistant-topbar {
+    height: var(--tuteur-header-h);
+    min-height: var(--tuteur-header-h);
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.2rem 0 1rem;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0 1rem;
     border-bottom: 1px solid var(--ec-line, #E2E8F0);
-    margin-bottom: 0.4rem;
+    background: rgba(255,255,255,0.96);
+    box-sizing: border-box;
+    z-index: 20;
   }
 
-  .assistant-header-inline h1 {
-    font-size: 1rem;
+  .assistant-topbar-identite {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .assistant-topbar-titre {
     margin: 0;
-    font-weight: 600;
+    font-size: 0.94rem;
+    line-height: 1.15;
+    font-weight: 700;
+    color: var(--ec-ink, #0F172A);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .assistant-header-sous {
+  .assistant-topbar-contexte {
     margin: 2px 0 0;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--ec-ink-soft, #64748B);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
+  .header-action,
+  .assistant-hamburger {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--ec-ink-soft, #64748B);
+    cursor: pointer;
+  }
+
+  .header-action:hover,
+  .assistant-hamburger:hover {
+    background: var(--ec-line-soft, #F8FAFC);
+    color: var(--ec-ink, #0F172A);
+  }
+
+  .assistant-hamburger {
+    display: none;
+  }
+
+  /* =========================
+     CONVERSATION
+     ========================= */
   .assistant-fenetre {
     flex: 1 1 auto;
     width: 100%;
@@ -296,44 +377,113 @@
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 1.5rem 0 1rem;
+    padding: 1.5rem clamp(1rem, 5vw, 4.5rem) 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    font-size: 1.02rem;
+    gap: 1.35rem;
+    font-size: 1rem;
     line-height: 1.7;
     box-sizing: border-box;
+    scroll-behavior: smooth;
   }
 
-  /* Chaque message doit pouvoir rétrécir dans le conteneur flex. */
+  .assistant-fenetre > .msg,
+  .assistant-fenetre > .assistant-welcome {
+    width: 100%;
+    max-width: var(--tuteur-content-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .assistant-welcome {
+    padding: 1rem 0 0.25rem;
+  }
+
+  .welcome-kicker {
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    color: var(--ec-accent, #2563EB);
+    margin-bottom: 0.55rem;
+  }
+
+  .welcome-title {
+    margin: 0 0 0.55rem;
+    font-size: clamp(1.55rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--ec-ink, #0F172A);
+  }
+
+  .welcome-context {
+    margin: 0;
+    max-width: 680px;
+    color: var(--ec-ink-soft, #64748B);
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .welcome-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-top: 1.25rem;
+    max-width: 680px;
+  }
+
+  .welcome-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    min-height: 48px;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 11px;
+    background: var(--ec-surface, #fff);
+    color: var(--ec-ink, #0F172A);
+    font: 600 0.86rem/1.25 'Inter', sans-serif;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  }
+
+  .welcome-action:hover {
+    border-color: var(--ec-accent, #2563EB);
+    background: var(--ec-accent-soft, #F1F5F9);
+    transform: translateY(-1px);
+  }
+
+  .welcome-action svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--ec-ink-soft, #64748B);
+  }
+
   .msg {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.7rem;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
   }
 
-  .msg-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem;
-    font-weight: 700;
-    margin-top: 2px;
+  .msg-bot {
+    align-items: flex-start;
   }
-
-  .msg-bot .msg-avatar { background: var(--ec-accent, #2563EB); color: #fff; }
 
   .msg-bot-corps {
     color: var(--ec-ink, #0F172A);
     flex: 1 1 auto;
-    width: auto;
+    width: 100%;
     max-width: none;
     min-width: 0;
     box-sizing: border-box;
@@ -341,8 +491,20 @@
     word-break: normal;
   }
 
-  /* Les longues formules restent lisibles : seul le bloc mathématique
-     défile horizontalement, jamais toute l'application. */
+  .msg-bot-corps::before {
+    content: "Tuteur ExamensCam";
+    display: block;
+    margin-bottom: 0.22rem;
+    color: var(--ec-ink-soft, #64748B);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .msg-bot .msg-avatar {
+    display: none;
+  }
+
   .msg-bot-corps .katex-display {
     max-width: 100%;
     margin-left: 0;
@@ -358,34 +520,58 @@
     min-width: max-content;
   }
 
-  /* Évite qu'une formule inline exceptionnelle fasse élargir la page. */
   .msg-bot-corps p,
   .msg-bot-corps li,
   .msg-bot-corps h1,
   .msg-bot-corps h2,
   .msg-bot-corps h3,
   .msg-bot-corps h4,
-  .msg-bot-corps blockquote {
+  .msg-bot-corps blockquote,
+  .msg-bot-corps pre {
     max-width: 100%;
     overflow-wrap: anywhere;
   }
 
-  .msg-bot-corps h3 { font-size: 1.05rem; margin: 0.8rem 0 0.35rem; }
-  .msg-bot-corps h3:first-child { margin-top: 0; }
-  .msg-bot-corps p { margin: 0.45rem 0; }
-  .msg-bot-corps ul, .msg-bot-corps ol { margin: 0.45rem 0; padding-left: 1.3rem; }
-  .msg-bot-corps code { background: var(--ec-line-soft, #F8FAFC); padding: 0.1em 0.35em; border-radius: 4px; }
-  .msg-bot-corps strong { font-weight: 700; }
+  .msg-bot-corps h3 {
+    font-size: 1.04rem;
+    margin: 0.8rem 0 0.35rem;
+  }
 
-  .msg-user { justify-content: flex-end; }
+  .msg-bot-corps h3:first-child {
+    margin-top: 0;
+  }
+
+  .msg-bot-corps p {
+    margin: 0.45rem 0;
+  }
+
+  .msg-bot-corps ul,
+  .msg-bot-corps ol {
+    margin: 0.45rem 0;
+    padding-left: 1.25rem;
+  }
+
+  .msg-bot-corps code {
+    background: var(--ec-line-soft, #F8FAFC);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+
+  .msg-bot-corps strong {
+    font-weight: 700;
+  }
+
+  .msg-user {
+    justify-content: flex-end;
+  }
 
   .msg-user-bulle {
     background: var(--ec-accent-soft, #F1F5F9);
     color: var(--ec-ink, #0F172A);
-    padding: 0.6rem 0.95rem;
+    padding: 0.62rem 0.9rem;
     border-radius: 14px;
-    border-bottom-right-radius: 4px;
-    max-width: 82%;
+    border-bottom-right-radius: 5px;
+    max-width: min(78%, 720px);
     min-width: 0;
     overflow-wrap: anywhere;
     box-sizing: border-box;
@@ -412,8 +598,8 @@
   }
 
   .points-typing span {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: var(--ec-accent, #2563EB);
     opacity: 0.5;
@@ -429,8 +615,7 @@
   }
 
   .texte-progression {
-    font-size: 0.9rem;
-    font-style: italic;
+    font-size: 0.86rem;
     color: var(--ec-ink-soft, #64748B);
     animation: fondu 0.3s ease;
   }
@@ -441,8 +626,8 @@
   }
 
   .barre-progression {
-    margin-top: 0.6rem;
-    height: 4px;
+    margin-top: 0.55rem;
+    height: 3px;
     width: 100%;
     max-width: 260px;
     border-radius: 4px;
@@ -465,100 +650,14 @@
     100% { transform: translateX(350%); }
   }
 
-  .assistant-saisie {
-    flex-shrink: 0;
-    padding: 0.75rem 0 1.25rem;
-    position: relative;
-  }
-
-  .assistant-input-form {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: var(--ec-surface, #fff);
-    border: 1px solid var(--ec-line, #E2E8F0);
-    border-radius: 26px;
-    padding: 0.4rem 0.4rem 0.4rem 0.5rem;
-  }
-
-  .assistant-input-form:focus-within {
-    border-color: var(--ec-accent, #2563EB);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
-
-  .assistant-input-form input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 1rem;
-    padding: 0.5rem 0.6rem;
-    background: transparent;
-    color: var(--ec-ink, #0F172A);
-    min-width: 0;
-  }
-
-  .btn-envoyer {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: var(--ec-accent, #2563EB);
-    color: #fff;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-
-  .btn-envoyer:disabled { opacity: 0.4; cursor: default; }
-
-  .panneau-generer {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background: var(--ec-surface, #fff);
-    border: 1px solid var(--ec-line, #E2E8F0);
-    border-radius: 16px;
-    padding: 0.9rem 1rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  }
-
-  .panneau-generer p {
-    margin: 0 0 0.6rem;
-    font-size: 0.85rem;
-    color: var(--ec-ink-soft, #64748B);
-  }
-
-  .panneau-generer-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
-  .chip-option {
-    padding: 0.5rem 0.9rem;
-    border: 1.5px solid var(--ec-accent, #2563EB);
-    border-radius: 20px;
-    background: var(--ec-surface, #fff);
-    color: var(--ec-accent, #2563EB);
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .chip-option:hover { background: var(--ec-accent, #2563EB); color: #fff; }
-  .chip-option.principale { background: var(--ec-accent, #2563EB); color: #fff; }
-
   .liste-resultats {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 0.5rem;
+    gap: 7px;
+    margin-top: 0.55rem;
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    box-sizing: border-box;
   }
 
   .carte-resultat {
@@ -568,35 +667,34 @@
     gap: 10px;
     background: var(--ec-surface, #fff);
     border: 1px solid var(--ec-line, #E2E8F0);
-    border-radius: 14px;
-    padding: 0.75rem 0.9rem;
+    border-radius: 11px;
+    padding: 0.7rem 0.82rem;
     text-decoration: none;
     color: var(--ec-ink, #0F172A);
-    transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+    transition: box-shadow 0.15s, border-color 0.15s;
   }
 
   .carte-resultat:hover {
     border-color: var(--ec-accent, #2563EB);
-    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
-    transform: translateY(-1px);
+    box-shadow: 0 3px 9px rgba(37, 99, 235, 0.07);
   }
 
   .carte-resultat-titre {
     flex: 1 1 auto;
     min-width: 0;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 600;
     line-height: 1.4;
     overflow-wrap: anywhere;
   }
 
   .carte-resultat-badge {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 700;
-    padding: 2px 8px;
+    padding: 2px 7px;
     border-radius: 999px;
     white-space: nowrap;
-    flex-shrink: 0;
+    flex: 0 0 auto;
     margin-top: 2px;
   }
 
@@ -610,34 +708,201 @@
     color: var(--ec-ink-soft, #64748B);
   }
 
-  .assistant-hamburger {
-    display: none;
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    z-index: 60;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  .assistant-saisie {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: var(--tuteur-content-max);
+    margin: 0 auto;
+    padding: 0.65rem 1rem max(0.8rem, env(safe-area-inset-bottom));
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .assistant-input-form {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     background: var(--ec-surface, #fff);
-    border: 1px solid var(--ec-line, #E2E8F0);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid var(--ec-line, #CBD5E1);
+    border-radius: 17px;
+    padding: 0.35rem 0.4rem;
+    box-sizing: border-box;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.045);
+  }
+
+  .assistant-input-form:focus-within {
+    border-color: var(--ec-accent, #2563EB);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+  }
+
+  .composer-action {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 0;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--ec-ink-soft, #64748B);
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
     cursor: pointer;
+  }
+
+  .composer-action:hover,
+  .composer-action[aria-expanded="true"] {
+    background: var(--ec-line-soft, #F8FAFC);
     color: var(--ec-ink, #0F172A);
   }
 
-  .sidebar-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.4);
-    z-index: 40;
+  .assistant-input-form input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    border: none;
+    outline: none;
+    font: 400 0.98rem/1.4 'Inter', sans-serif;
+    padding: 0.55rem 0.3rem;
+    background: transparent;
+    color: var(--ec-ink, #0F172A);
   }
 
-  .sidebar-backdrop.visible { display: block; }
+  .assistant-input-form input::placeholder {
+    color: #94A3B8;
+  }
+
+  .btn-envoyer {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 11px;
+    border: none;
+    background: var(--ec-accent, #2563EB);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .btn-envoyer:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-envoyer:disabled {
+    opacity: 0.35;
+    cursor: default;
+    transform: none;
+  }
+
+  .composer-note {
+    margin: 0.4rem 0 0;
+    text-align: center;
+    font-size: 0.68rem;
+    color: #94A3B8;
+  }
+
+  .panneau-ajouter {
+    position: absolute;
+    left: 0.85rem;
+    bottom: calc(100% + 8px);
+    width: min(230px, calc(100vw - 1.7rem));
+    padding: 0.5rem;
+    background: var(--ec-surface, #fff);
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 13px;
+    box-shadow: 0 10px 28px rgba(15,23,42,0.11);
+    z-index: 30;
+  }
+
+  .panneau-ajouter-titre {
+    padding: 0.35rem 0.45rem 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 750;
+    color: var(--ec-ink-soft, #64748B);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ajouter-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    padding: 0.58rem 0.45rem;
+    color: var(--ec-ink, #0F172A);
+    font: 600 0.82rem/1.2 'Inter', sans-serif;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .ajouter-option:hover {
+    background: var(--ec-line-soft, #F8FAFC);
+  }
+
+  .ajouter-option:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .ajouter-option svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: 0 0 16px;
+  }
+
+  .panneau-generer {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--ec-surface, #fff);
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 14px;
+    padding: 0.85rem 0.9rem;
+    box-shadow: 0 10px 28px rgba(15,23,42,0.1);
+    z-index: 30;
+  }
+
+  .panneau-generer p {
+    margin: 0 0 0.55rem;
+    font-size: 0.82rem;
+    color: var(--ec-ink-soft, #64748B);
+  }
+
+  .panneau-generer-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .chip-option {
+    padding: 0.47rem 0.75rem;
+    border: 1px solid var(--ec-line, #E2E8F0);
+    border-radius: 999px;
+    background: var(--ec-surface, #fff);
+    color: var(--ec-ink, #0F172A);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .chip-option:hover,
+  .chip-option.principale {
+    border-color: var(--ec-accent, #2563EB);
+    color: var(--ec-accent, #2563EB);
+    background: var(--ec-accent-soft, #F1F5F9);
+  }
 
   .curseur-streaming {
     display: inline-block;
@@ -654,246 +919,171 @@
     51%, 100% { opacity: 0; }
   }
 
-  @media (max-width: 760px) {
-    .assistant-hamburger { display: flex; }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.38);
+    z-index: 40;
+  }
 
+  /* =========================
+     MOBILE
+     ========================= */
+  @media (max-width: 760px) {
     .assistant-layout {
-      width: 100%;
-      max-width: 100%;
       height: 100dvh;
-      min-width: 0;
     }
 
     .assistant-sidebar {
       position: fixed;
       top: 0;
       left: 0;
+      width: min(280px, 84vw);
       height: 100dvh;
-      width: 270px;
-      max-width: 82vw;
-      transform: translateX(-100%);
+      transform: translateX(-102%);
       transition: transform 0.22s ease;
+      box-shadow: 5px 0 24px rgba(15,23,42,0.12);
       z-index: 50;
-      box-shadow: 2px 0 20px rgba(0,0,0,0.15);
-      box-sizing: border-box;
     }
 
-    .assistant-sidebar.ouverte { transform: translateX(0); }
-
-    .sidebar-item { width: 100%; white-space: normal; }
-
-    .assistant-page {
-      width: 100%;
-      max-width: 100%;
-      height: 100dvh;
-      min-width: 0;
-      padding: 0 0.75rem;
-      box-sizing: border-box;
+    .assistant-sidebar.ouverte {
+      transform: translateX(0);
     }
 
-    .assistant-fenetre {
-      width: 100%;
-      max-width: 100%;
-      padding-top: 1rem;
-      gap: 1.15rem;
+    .sidebar-backdrop.visible {
+      display: block;
     }
 
-    .msg {
-      width: 100%;
-      max-width: 100%;
-      gap: 0.55rem;
+    .assistant-hamburger {
+      display: flex;
     }
 
-    .msg-bot-corps {
-      max-width: none;
+    .assistant-topbar {
+      padding: 0 0.55rem;
+      height: 56px;
+      min-height: 56px;
+    }
+
+    .assistant-topbar-identite {
       flex: 1 1 auto;
+      justify-content: center;
     }
 
-    .msg-user-bulle { max-width: 90%; }
-
-    .assistant-header-inline {
-      max-width: 100%;
-      min-width: 0;
+    .assistant-topbar-titre {
+      font-size: 0.9rem;
     }
 
-    .assistant-header-inline > div:last-child {
-      min-width: 0;
+    .assistant-topbar-contexte {
+      font-size: 0.68rem;
     }
 
-    .assistant-header-sous {
-      overflow-wrap: anywhere;
-    }
-
-    .assistant-input-form {
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-  }
-
-  @media (max-width: 420px) {
-    .assistant-page { padding: 0 0.55rem; }
-    .assistant-fenetre { font-size: 1rem; }
-    .msg-avatar { width: 26px; height: 26px; }
-    .msg-user-bulle { max-width: 92%; }
-    .assistant-saisie { padding-bottom: 0.75rem; }
-  }
-
-
-  /* ═══════════════════════════════════════════════════════════════
-     INTERFACE TYPE IA MODERNE — inspiration de la capture fournie
-     La colonne principale occupe tout l'espace disponible après la
-     sidebar. Le contenu reste lisible et centré, sans largeur fixe
-     imposée à toute l'application.
-     ═══════════════════════════════════════════════════════════════ */
-  .assistant-layout {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-
-  .assistant-sidebar {
-    width: 220px;
-    flex: 0 0 220px;
-    box-sizing: border-box;
-  }
-
-  .assistant-page {
-    flex: 1 1 auto;
-    width: auto;
-    max-width: none;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  .assistant-fenetre {
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-    overflow-x: hidden;
-    padding: 1.25rem clamp(1rem, 5vw, 5rem) 1.5rem;
-    box-sizing: border-box;
-  }
-
-  /* Les messages ont une vraie largeur de lecture, mais la page
-     elle-même reste pleine largeur comme les interfaces IA modernes. */
-  .assistant-fenetre > .msg {
-    width: 100%;
-    max-width: 920px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .assistant-fenetre > .assistant-header-inline {
-    width: 100%;
-    max-width: 920px;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
-  }
-
-  .msg-bot-corps {
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-  }
-
-  .msg-user-bulle {
-    max-width: min(82%, 760px);
-  }
-
-  /* Zone de saisie large, centrée comme dans les interfaces IA. */
-  .assistant-saisie {
-    width: 100%;
-    max-width: 920px;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .assistant-input-form {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Empêche les éléments flex internes de créer un débordement. */
-  .assistant-fenetre,
-  .msg,
-  .msg > *,
-  .msg-bot-corps,
-  .liste-resultats,
-  .carte-resultat {
-    min-width: 0;
-  }
-
-  /* Les cartes longues doivent se comprimer au lieu de pousser
-     horizontalement la page. */
-  .carte-resultat {
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .carte-resultat-titre {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  @media (max-width: 760px) {
-    .assistant-sidebar {
-      width: 270px;
-      flex-basis: auto;
-    }
-
-    .assistant-page {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      padding: 0;
+    .assistant-topbar .header-action {
+      visibility: hidden;
     }
 
     .assistant-fenetre {
-      width: 100%;
-      padding: 0.85rem 0.75rem 1rem;
-      gap: 1.15rem;
+      padding: 1.1rem 0.85rem 1rem;
+      gap: 1.25rem;
+      font-size: 0.98rem;
     }
 
-    .assistant-fenetre > .msg,
-    .assistant-fenetre > .assistant-header-inline {
-      width: 100%;
-      max-width: 100%;
+    .assistant-welcome {
+      padding-top: 0.7rem;
+    }
+
+    .welcome-title {
+      font-size: 1.55rem;
+    }
+
+    .welcome-context {
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .welcome-actions {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+
+    .welcome-action {
+      min-height: 46px;
+      padding: 0.65rem 0.78rem;
     }
 
     .msg-user-bulle {
-      max-width: 90%;
+      max-width: 88%;
     }
 
     .assistant-saisie {
-      width: 100%;
-      max-width: 100%;
-      padding: 0.65rem 0.75rem 0.75rem;
-      box-sizing: border-box;
+      max-width: none;
+      padding: 0.55rem 0.65rem max(0.65rem, env(safe-area-inset-bottom));
+    }
+
+    .assistant-input-form {
+      min-height: 58px;
+      border-radius: 16px;
+    }
+
+    .composer-action,
+    .btn-envoyer {
+      width: 38px;
+      height: 38px;
+      flex-basis: 38px;
+    }
+
+    .composer-note {
+      font-size: 0.64rem;
+    }
+
+    .panneau-generer {
+      left: 0.65rem;
+      right: 0.65rem;
     }
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 380px) {
     .assistant-fenetre {
-      padding-left: 0.55rem;
-      padding-right: 0.55rem;
+      padding-left: 0.68rem;
+      padding-right: 0.68rem;
     }
 
-    .assistant-saisie {
-      padding-left: 0.55rem;
-      padding-right: 0.55rem;
+    .welcome-title {
+      font-size: 1.42rem;
+    }
+
+    .assistant-topbar-titre {
+      font-size: 0.84rem;
+    }
+
+    .assistant-topbar-contexte {
+      max-width: 145px;
+    }
+
+    .assistant-input-form input {
+      font-size: 0.92rem;
+    }
+
+    .msg-user-bulle {
+      max-width: 92%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 </style>
 
-<button type="button" class="assistant-hamburger" id="btn-sidebar-toggle" aria-label="Ouvrir le menu">☰</button>
+<button type="button" class="assistant-hamburger" id="btn-sidebar-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
 
 <div class="assistant-layout">
   <aside class="assistant-sidebar" id="assistant-sidebar">
@@ -902,7 +1092,7 @@
       <span>ExamensCam</span>
     </a>
 
-        <nav class="sidebar-nav-site">
+    <nav class="sidebar-nav-site">
       {% if eleve %}
         {% if eleve.niveau == 'BEPC' %}
           <a href="{{ url_for('bepc') }}" class="actif">BEPC</a>
@@ -916,16 +1106,16 @@
         <a href="/probatoire" class="{{ 'actif' if 'probatoire' in request.path|lower else '' }}">Probatoire</a>
         <a href="/bac" class="{{ 'actif' if 'bac' in request.path|lower else '' }}">BAC</a>
       {% endif %}
-      <a href="/a-propos" class="{{ 'actif' if 'a-propos' in request.path|lower else '' }}">À propos</a>
+      <a href="/a-propos" class="{{ 'actif' if 'a-propos' in request.path|lower else '' }}">A propos</a>
       <a href="/conditions" class="{{ 'actif' if 'conditions' in request.path|lower else '' }}">Conditions</a>
     </nav>
 
     <button type="button" class="sidebar-item sidebar-item-nouvelle" id="btn-nouvelle-conversation">
-      <span class="sidebar-icone">＋</span> Nouvelle conversation
+      <span class="sidebar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span> Nouvelle conversation
     </button>
 
     {% if not mode_demo and matieres_dispo %}
-    <div class="sidebar-separateur">Matière</div>
+    <div class="sidebar-separateur">Matiere</div>
     <div class="sidebar-matieres" id="sidebar-matieres">
       {% for m in matieres_dispo %}
       <button type="button" class="chip-matiere" data-matiere="{{ m }}">{{ m }}</button>
@@ -933,19 +1123,19 @@
     </div>
     {% endif %}
 
-    <div class="sidebar-separateur">Générer</div>
+    <div class="sidebar-separateur">Generer</div>
     <button type="button" class="sidebar-item" id="btn-sidebar-examen"
-            {% if not disponible %}disabled title="Bientôt disponible pour ta série"{% endif %}>
-      <span class="sidebar-icone">🎓</span> Examen officiel (Bac blanc)
+            {% if not disponible %}disabled title="Bientot disponible pour ta serie"{% endif %}>
+      <span class="sidebar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5V6.8a1.8 1.8 0 0 1 1.8-1.8h12.4A1.8 1.8 0 0 1 20 6.8v12.7"/><path d="M4 18.5c1.2-.8 2.7-1.1 4.2-.8l3.8.8 3.8-.8c1.5-.3 3 0 4.2.8"/><path d="M8 9h8M8 12h6"/></svg></span> Bac blanc
     </button>
     <button type="button" class="sidebar-item" id="btn-sidebar-sequence"
-            {% if not disponible %}disabled title="Bientôt disponible pour ta série"{% endif %}>
-      <span class="sidebar-icone">📝</span> Épreuve de séquence
+            {% if not disponible %}disabled title="Bientot disponible pour ta serie"{% endif %}>
+      <span class="sidebar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v5h4M8 13h8M8 16h6"/></svg></span> Epreuve de sequence
     </button>
 
     <div class="sidebar-separateur">Consulter</div>
     <button type="button" class="sidebar-item" id="btn-sidebar-parcourir">
-      <span class="sidebar-icone">📚</span> Parcourir les épreuves
+      <span class="sidebar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M4 5.5v15M8 7h8M8 10h8"/></svg></span> Parcourir les epreuves
     </button>
 
     {% if eleve %}
@@ -957,7 +1147,7 @@
           <span class="sidebar-compte-niveau">{{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}</span>
         </div>
       </a>
-      <a href="/deconnexion" class="sidebar-compte-deco" title="Se déconnecter">⏻</a>
+      <a href="/deconnexion" class="sidebar-compte-deco" title="Se deconnecter" aria-label="Se deconnecter"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 3v8"/><path d="M7.5 5.8a8 8 0 1 0 9 0" fill="none"/></svg></a>
     </div>
     {% else %}
     <div class="sidebar-compte">
@@ -971,28 +1161,79 @@
   <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
   <section class="assistant-page">
-    <div class="assistant-fenetre" id="assistant-fenetre">
-      <div class="assistant-header-inline">
-        <div class="avatar-petit">E</div>
-        <div>
-          <h1>Assistant Élève</h1>
-          <p class="assistant-header-sous">
-            {% if eleve %}Salut {{ eleve.nom.split(' ')[0] }} 👋 — {{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}{% else %}Mode découverte -- connecte-toi pour une expérience personnalisée{% endif %}
+    <header class="assistant-topbar">
+      <div class="assistant-topbar-identite">
+        <button type="button" class="assistant-hamburger" id="btn-sidebar-toggle-mobile"
+                aria-label="Ouvrir le menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+
+        <div style="min-width:0;">
+          <h1 class="assistant-topbar-titre">Tuteur ExamensCam</h1>
+          <p class="assistant-topbar-contexte">
+            {% if eleve %}{{ eleve.niveau }}{% if eleve.serie %} · {{ eleve.serie }}{% endif %}{% else %}Espace d'accompagnement{% endif %}
           </p>
         </div>
       </div>
-    </div>
+
+      <button type="button" class="header-action" id="btn-header-menu"
+              aria-label="Options de la conversation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+      </button>
+    </header>
+
+    <div class="assistant-fenetre" id="assistant-fenetre"></div>
 
     <div class="assistant-saisie" id="assistant-saisie">
       {% if mode_demo %}
-      <a href="{{ url_for('connexion') }}" class="assistant-input-form" style="text-decoration:none; justify-content:center; color:var(--ec-accent,#2563EB); font-weight:600;">
-        🔒 Connecte-toi pour poser tes questions
+      <a href="{{ url_for('connexion') }}" class="assistant-input-form"
+         style="text-decoration:none; justify-content:center; color:var(--ec-accent,#2563EB); font-weight:600;">
+        <svg class="demo-lock-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="5" y="10" width="14" height="10" rx="2"/>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+        Connecte-toi pour poser tes questions
       </a>
       {% else %}
+      <div class="panneau-ajouter" id="panneau-ajouter" hidden>
+        <div class="panneau-ajouter-titre">Ajouter</div>
+
+        <button type="button" class="ajouter-option" id="btn-ajouter-epreuve">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v5h4M8 13h8M8 16h6"/></svg>
+          <span>Epreuve</span>
+        </button>
+
+        <button type="button" class="ajouter-option" disabled title="Bientot disponible">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4z"/><circle cx="12" cy="13.5" r="3"/><path d="M8 7l1.2-2h5.6L16 7"/></svg>
+          <span>Photo</span>
+        </button>
+
+        <button type="button" class="ajouter-option" disabled title="Bientot disponible">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 13h6M9 16h5"/></svg>
+          <span>Document</span>
+        </button>
+      </div>
+
       <form class="assistant-input-form" id="form-saisie">
-        <input type="text" id="input-question" placeholder="Écris ta question..." autocomplete="off" required>
-        <button type="submit" class="btn-envoyer" id="btn-envoyer" aria-label="Envoyer">➤</button>
+        <button type="button" class="composer-action" id="btn-ajouter"
+                aria-label="Ajouter" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+
+        <input type="text" id="input-question"
+               placeholder="Ecris ta question..."
+               autocomplete="off" required>
+
+        <button type="submit" class="btn-envoyer" id="btn-envoyer"
+                aria-label="Envoyer" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4l16 8-16 8 3-8z"/>
+            <path d="M7 12h13"/>
+          </svg>
+        </button>
       </form>
+
+      <p class="composer-note">ExamensCam · un accompagnement adapte a ton niveau</p>
       {% endif %}
     </div>
   </section>
@@ -1010,42 +1251,189 @@
   const form = document.getElementById('form-saisie');
   const input = document.getElementById('input-question');
   const btnEnvoyer = document.getElementById('btn-envoyer');
+  const btnAjouter = document.getElementById('btn-ajouter');
+  const panneauAjouter = document.getElementById('panneau-ajouter');
+  const btnAjouterEpreuve = document.getElementById('btn-ajouter-epreuve');
+  const btnHeaderMenu = document.getElementById('btn-header-menu');
+  const btnSidebarToggleMobile = document.getElementById('btn-sidebar-toggle-mobile');
 
   const MODE_DEMO = {{ mode_demo | tojson }};
 
   const ELEVE = {
-    prenom: {{ (eleve.nom.split(' ')[0] if eleve else 'invité') | tojson }},
+    prenom: {{ (eleve.nom.split(' ')[0] if eleve else 'invite') | tojson }},
     niveau: {{ (eleve.niveau if eleve else '') | tojson }},
     serie: {{ (eleve.serie if eleve else '') | tojson }},
     disponible: {{ disponible | tojson }}
   };
 
-  // NOUVEAU (choix de matière, 29/08/2026) -- matières que le chat
-  // peut réellement discuter pour le niveau/série de l'élève (voir
-  // scripts/chat_scope.py, injectées par app.py). Vide en mode démo
-  // ou si le niveau/série de l'élève n'est pas encore couvert.
   const MATIERES_DISPO = {{ matieres_dispo | tojson }};
 
-  const etat = { historique: [], enAttente: false, panneauOuvert: false, matiere: null };
+  const etat = {
+    historique: [],
+    enAttente: false,
+    panneauOuvert: false,
+    matiere: null,
+    chargementHistorique: false
+  };
 
-  // NOUVEAU (choix de matière, 29/08/2026) -- "Mathematiques" en
-  // priorité si disponible (matière historique, RAG réel), sinon la
-  // première matière de la liste. null si aucune matière couverte
-  // (cas "bientôt disponible", déjà géré par ELEVE.disponible).
   if (MATIERES_DISPO.length) {
     etat.matiere = MATIERES_DISPO.includes('Mathematiques') ? 'Mathematiques' : MATIERES_DISPO[0];
   }
 
+  // ============================================================
+  // MESSAGE D'ACCUEIL
+  // ============================================================
   function genererMessageAccueil() {
     if (MODE_DEMO) {
-      return `Salut ! Je suis l'assistant ExamensCam. Connecte-toi pour discuter de tes cours, générer des épreuves inédites, et retrouver les annales de ton niveau -- ou parcours déjà les épreuves disponibles avec le menu à gauche.`;
+      return "Bienvenue dans votre espace ExamensCam. Vous pouvez decouvrir l'interface, parcourir les epreuves disponibles et voir comment fonctionne l'accompagnement. Connectez-vous pour poser vos propres questions et beneficier d'un suivi adapte a votre niveau.";
     }
+
     if (!etat.matiere) {
-      return `Salut ${ELEVE.prenom} ! Le programme de ${ELEVE.niveau}${ELEVE.serie ? ' ' + ELEVE.serie : ''} arrive bientôt sur l'assistant. En attendant, tu peux quand même me demander de retrouver une épreuve existante, ou utiliser le menu à gauche pour la parcourir.`;
+      return "Bonjour " + ELEVE.prenom + ". Votre espace " + ELEVE.niveau + (ELEVE.serie ? ' ' + ELEVE.serie : '') + " est pret. Certaines matieres ne sont pas encore disponibles ici. Vous pouvez parcourir les epreuves proposees et commencer a travailler avec celles qui sont deja disponibles.";
     }
-    return `Salut ${ELEVE.prenom} ! On discute de ${etat.matiere} (${ELEVE.niveau}${ELEVE.serie ? ' ' + ELEVE.serie : ''}) -- pose ta question, demande-moi une épreuve existante, ou change de matière à gauche quand tu veux.`;
+
+    return "Bonjour " + ELEVE.prenom + ". Vous travaillez actuellement en " + etat.matiere + ", " + ELEVE.niveau + (ELEVE.serie ? ' ' + ELEVE.serie : '') + ". Je suis votre tuteur ExamensCam. Que voulez-vous faire aujourd'hui ?";
   }
 
+  // ============================================================
+  // AFFICHAGE DE L'ACCUEIL
+  // ============================================================
+  function afficherAccueil() {
+    const ancienAccueil = document.getElementById('assistant-welcome');
+    if (ancienAccueil) ancienAccueil.remove();
+
+    const accueil = document.createElement('section');
+    accueil.className = 'assistant-welcome';
+    accueil.id = 'assistant-welcome';
+
+    const kicker = document.createElement('div');
+    kicker.className = 'welcome-kicker';
+    kicker.textContent = etat.matiere || 'Accompagnement scolaire';
+
+    const titre = document.createElement('h2');
+    titre.className = 'welcome-title';
+    titre.textContent = 'Bonjour ' + ELEVE.prenom + '.';
+
+    const contexte = document.createElement('p');
+    contexte.className = 'welcome-context';
+    contexte.textContent = genererMessageAccueil().replace('Bonjour ' + ELEVE.prenom + '. ', '');
+
+    const actions = document.createElement('div');
+    actions.className = 'welcome-actions';
+
+    // 1. Rechercher un exercice des annales officielles
+    const actionAnnales = document.createElement('button');
+    actionAnnales.type = 'button';
+    actionAnnales.className = 'welcome-action';
+    actionAnnales.innerHTML = '<span>Rechercher un exercice des annales officielles</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M4 5.5v15M8 7h8M8 10h6"/></svg>';
+    actionAnnales.addEventListener('click', function() {
+      commencerAvecTexte('Je cherche un exercice des annales officielles.');
+    });
+    actions.appendChild(actionAnnales);
+
+    // 2. Generer une epreuve de bac blanc
+    const actionBacBlanc = document.createElement('button');
+    actionBacBlanc.type = 'button';
+    actionBacBlanc.className = 'welcome-action';
+    actionBacBlanc.innerHTML = '<span>Generer une epreuve de bac blanc</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5V6.8a1.8 1.8 0 0 1 1.8-1.8h12.4A1.8 1.8 0 0 1 20 6.8v12.7"/><path d="M4 18.5c1.2-.8 2.7-1.1 4.2-.8l3.8.8 3.8-.8c1.5-.3 3 0 4.2.8"/><path d="M8 9h8M8 12h6"/></svg>';
+    actionBacBlanc.addEventListener('click', function() {
+      if (ELEVE.disponible) {
+        lancerGeneration({ type_document: 'Examen', serie: 'C' }, 'Generer une epreuve de bac blanc.');
+      } else {
+        ajouterMessageAssistant("La generation d'epreuves de bac blanc n'est pas encore disponible pour votre serie. Revenez bientot !", false);
+      }
+    });
+    actions.appendChild(actionBacBlanc);
+
+    // 3. Generer une epreuve de sequence
+    const actionSequence = document.createElement('button');
+    actionSequence.type = 'button';
+    actionSequence.className = 'welcome-action';
+    actionSequence.innerHTML = '<span>Generer une epreuve de sequence</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v5h4M8 13h8M8 16h6"/></svg>';
+    actionSequence.addEventListener('click', function() {
+      if (ELEVE.disponible) {
+        ouvrirPanneauVide();
+        afficherChoixSequence();
+      } else {
+        ajouterMessageAssistant("La generation d'epreuves de sequence n'est pas encore disponible pour votre serie. Revenez bientot !", false);
+      }
+    });
+    actions.appendChild(actionSequence);
+
+    // 4. Parcourir les epreuves de differents lycees
+    const actionParcourir = document.createElement('button');
+    actionParcourir.type = 'button';
+    actionParcourir.className = 'welcome-action';
+    actionParcourir.innerHTML = '<span>Parcourir les epreuves de differents lycees</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M4 5.5v15M8 7h8M8 10h8"/></svg>';
+    actionParcourir.addEventListener('click', function() {
+      fermerPanneauGenerer();
+      ouvrirPanneauVide();
+      if (!MODE_DEMO && ELEVE.niveau) {
+        afficherChoixMatiere(ELEVE.niveau, ELEVE.serie || null);
+      } else {
+        afficherChoixNiveau();
+      }
+    });
+    actions.appendChild(actionParcourir);
+
+    accueil.append(kicker, titre, contexte, actions);
+    fenetre.appendChild(accueil);
+  }
+
+  function masquerAccueil() {
+    const accueil = document.getElementById('assistant-welcome');
+    if (accueil) accueil.remove();
+  }
+
+  function commencerAvecTexte(texte) {
+    masquerAccueil();
+    if (input) {
+      input.value = texte;
+      input.focus();
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  }
+
+  // ============================================================
+  // PERSISTANCE DES CONVERSATIONS (NOUVEAU)
+  // ============================================================
+  async function chargerEtAfficherHistorique() {
+    fenetre.innerHTML = '';
+
+    if (MODE_DEMO || !etat.matiere) {
+      afficherAccueil();
+      return;
+    }
+
+    etat.chargementHistorique = true;
+    try {
+      const params = new URLSearchParams({ matiere: etat.matiere });
+      const reponseServeur = await fetch("{{ url_for('assistant_eleve_historique') }}?" + params.toString());
+      if (!reponseServeur.ok) throw new Error('Historique indisponible');
+      const { historique } = await reponseServeur.json();
+
+      if (!historique || historique.length === 0) {
+        afficherAccueil();
+        return;
+      }
+
+      historique.forEach(tour => {
+        if (tour.role === 'user') {
+          ajouterMessageUtilisateur(tour.content);
+        } else {
+          ajouterMessageAssistant(tour.content, false);
+        }
+      });
+    } catch (erreur) {
+      afficherAccueil();
+    } finally {
+      etat.chargementHistorique = false;
+    }
+  }
+
+  // ============================================================
+  // RENDU DES MESSAGES
+  // ============================================================
   function rendreReponseAssistant(conteneur, texte) {
     conteneur.innerHTML = marked.parse(texte);
     if (window.renderMathInElement) {
@@ -1075,7 +1463,7 @@
     ligne.className = 'msg msg-bot' + (enAttente ? ' msg-attente' : '');
     const avatar = document.createElement('div');
     avatar.className = 'msg-avatar';
-    avatar.textContent = 'E';
+    avatar.textContent = '';
     const corps = document.createElement('div');
     corps.className = 'msg-bot-corps';
 
@@ -1083,10 +1471,10 @@
       corps.innerHTML = `
         <div class="indicateur-reflexion">
           <div class="points-typing"><span></span><span></span><span></span></div>
-          <span class="texte-progression">Je réfléchis...</span>
+          <span class="texte-progression">Je reflechis...</span>
         </div>`;
 
-      const phrases = ['Je réfléchis...', 'Je vérifie le calcul...', 'Je prépare la réponse...'];
+      const phrases = ['Je reflechis...', 'Je verifie le calcul...', 'Je prepare la reponse...'];
       let i = 0;
       const spanTexte = corps.querySelector('.texte-progression');
       ligne._intervalReflexion = setInterval(() => {
@@ -1117,7 +1505,7 @@
     ligne.className = 'msg msg-bot';
     const avatar = document.createElement('div');
     avatar.className = 'msg-avatar';
-    avatar.textContent = 'E';
+    avatar.textContent = '';
 
     const corps = document.createElement('div');
     corps.className = 'msg-bot-corps';
@@ -1156,23 +1544,24 @@
     return ligne;
   }
 
+  // ============================================================
+  // ENVOI D'UN MESSAGE (avec persistance)
+  // ============================================================
   async function envoyerMessage(texte) {
+    masquerAccueil();
+    fermerPanneauAjouter();
     ajouterMessageUtilisateur(texte);
     etat.enAttente = true;
     btnEnvoyer.disabled = true;
 
-    const ligneAttente = ajouterMessageAssistant('', true, texte);
+    const ligneAttente = ajouterMessageAssistant('', true);
 
     try {
       const reponseServeur = await fetch("{{ url_for('assistant_eleve_repondre') }}", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // MODIFIÉ (choix de matière, 29/08/2026) : niveau/série/matière
-        // envoyés à chaque message -- voir scripts/chat_scope.py côté
-        // serveur pour la vérification et le choix de mode (RAG/générique).
         body: JSON.stringify({
           question: texte,
-          historique: etat.historique,
           niveau: ELEVE.niveau,
           serie: ELEVE.serie,
           matiere: etat.matiere,
@@ -1187,16 +1576,11 @@
         if (!reponseServeur.ok) {
           throw new Error(resultat.erreur || "Une erreur est survenue.");
         }
-        let texteReponsePourHistorique;
         if (resultat.type === 'resultats') {
           ajouterCarteResultats(resultat.intro, resultat.resultats);
-          texteReponsePourHistorique = resultat.intro;
         } else {
           ajouterMessageAssistant(resultat.reponse, false);
-          texteReponsePourHistorique = resultat.reponse;
         }
-        etat.historique.push({ role: 'user', content: texte });
-        etat.historique.push({ role: 'assistant', content: texteReponsePourHistorique });
         return;
       }
 
@@ -1243,7 +1627,7 @@
       }
 
       curseur.remove();
-      rendreReponseAssistant(corps, texteAccumule || erreurRecue || "Je n'ai pas pu générer de réponse.");
+      rendreReponseAssistant(corps, texteAccumule || erreurRecue || "Je n'ai pas pu generer de reponse.");
       if (erreurRecue && texteAccumule) {
         const noteErreur = document.createElement('p');
         noteErreur.style.cssText = 'font-size:0.82rem;color:var(--ec-ink-soft,#64748B);font-style:italic;margin-top:0.4rem;';
@@ -1251,16 +1635,24 @@
         corps.appendChild(noteErreur);
       }
 
-      etat.historique.push({ role: 'user', content: texte });
-      etat.historique.push({ role: 'assistant', content: texteAccumule });
-
     } catch (erreur) {
       retirerLigneAttente(ligneAttente);
-      ajouterMessageAssistant(erreur.message || "Je n'arrive pas à répondre pour l'instant, réessaie dans un instant.", false);
+      ajouterMessageAssistant(erreur.message || "Je n'arrive pas a repondre pour l'instant, reessaie dans un instant.", false);
     } finally {
       etat.enAttente = false;
       btnEnvoyer.disabled = false;
     }
+  }
+
+  // ============================================================
+  // GESTION DU FORMULAIRE
+  // ============================================================
+  if (input && btnEnvoyer) {
+    const synchroniserEtatEnvoi = () => {
+      btnEnvoyer.disabled = !input.value.trim() || etat.enAttente;
+    };
+    input.addEventListener('input', synchroniserEtatEnvoi);
+    synchroniserEtatEnvoi();
   }
 
   form.addEventListener('submit', (e) => {
@@ -1272,10 +1664,55 @@
     envoyerMessage(texte);
   });
 
+  // ============================================================
+  // PANNEAUX (Ajouter, Generer)
+  // ============================================================
   function fermerPanneauGenerer() {
     const existant = document.getElementById('panneau-generer');
     if (existant) existant.remove();
     etat.panneauOuvert = false;
+  }
+
+  function fermerPanneauAjouter() {
+    if (!panneauAjouter) return;
+    panneauAjouter.hidden = true;
+    if (btnAjouter) btnAjouter.setAttribute('aria-expanded', 'false');
+  }
+
+  function basculerPanneauAjouter() {
+    if (!panneauAjouter) return;
+    const ouvert = panneauAjouter.hidden;
+    panneauAjouter.hidden = !ouvert;
+    if (btnAjouter) btnAjouter.setAttribute('aria-expanded', String(ouvert));
+  }
+
+  if (btnAjouter) {
+    btnAjouter.addEventListener('click', (e) => {
+      e.stopPropagation();
+      basculerPanneauAjouter();
+    });
+  }
+
+  if (btnAjouterEpreuve) {
+    btnAjouterEpreuve.addEventListener('click', () => {
+      fermerPanneauAjouter();
+      fermerSidebar();
+      ouvrirPanneauVide();
+      if (!MODE_DEMO && ELEVE.niveau) {
+        afficherChoixMatiere(ELEVE.niveau, ELEVE.serie || null);
+      } else {
+        afficherChoixNiveau();
+      }
+    });
+  }
+
+  if (btnHeaderMenu) {
+    btnHeaderMenu.addEventListener('click', () => {
+      if (sidebar) {
+        if (sidebar.classList.contains('ouverte')) fermerSidebar();
+        else ouvrirSidebar();
+      }
+    });
   }
 
   function ouvrirPanneauVide() {
@@ -1288,26 +1725,29 @@
     return panneau;
   }
 
+  // ============================================================
+  // CHOIX POUR LA GENERATION ET LE PARCOURS
+  // ============================================================
   function afficherChoixSequence() {
     const panneau = document.getElementById('panneau-generer');
     if (!panneau) return;
     panneau.innerHTML = '';
 
     const texte = document.createElement('p');
-    texte.textContent = 'Pour quelle séquence ?';
+    texte.textContent = 'Pour quelle sequence ?';
     panneau.appendChild(texte);
 
     const options = document.createElement('div');
     options.className = 'panneau-generer-options';
-    const ordinaux = { 1: '1ère', 2: '2e', 3: '3e', 4: '4e', 5: '5e', 6: '6e' };
+    const ordinaux = { 1: '1ere', 2: '2e', 3: '3e', 4: '4e', 5: '5e', 6: '6e' };
     [1, 2, 3, 4, 5, 6].forEach(n => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'chip-option';
-      btn.textContent = `${ordinaux[n]} séquence`;
+      btn.textContent = ordinaux[n] + ' sequence';
       btn.addEventListener('click', () => {
         fermerPanneauGenerer();
-        lancerGeneration({ type_document: 'Sequence', sequence: n }, `Génère-moi une épreuve de la ${ordinaux[n]} séquence`);
+        lancerGeneration({ type_document: 'Sequence', sequence: n }, 'Generer une epreuve de la ' + ordinaux[n] + ' sequence.');
       });
       options.appendChild(btn);
     });
@@ -1345,7 +1785,7 @@
     if (!panneau) return;
     panneau.innerHTML = '<p>Chargement...</p>';
 
-    const reponse = await fetch(`{{ url_for('chat_series') }}?niveau=${encodeURIComponent(niveau)}`);
+    const reponse = await fetch("{{ url_for('chat_series') }}?niveau=" + encodeURIComponent(niveau));
     const { series } = await reponse.json();
 
     if (!series || series.length === 0) {
@@ -1355,7 +1795,7 @@
 
     panneau.innerHTML = '';
     const texte = document.createElement('p');
-    texte.textContent = 'Quelle série ?';
+    texte.textContent = 'Quelle serie ?';
     panneau.appendChild(texte);
 
     const options = document.createElement('div');
@@ -1376,14 +1816,14 @@
     if (!panneau) return;
     panneau.innerHTML = '<p>Chargement...</p>';
 
-    const params = new URLSearchParams({ niveau });
+    const params = new URLSearchParams({ niveau: niveau });
     if (serie) params.set('serie', serie);
-    const reponse = await fetch(`{{ url_for('chat_matieres') }}?${params}`);
+    const reponse = await fetch("{{ url_for('chat_matieres') }}?" + params.toString());
     const { matieres } = await reponse.json();
 
     panneau.innerHTML = '';
     const texte = document.createElement('p');
-    texte.textContent = matieres.length ? 'Quelle matière ?' : "Aucune matière indexée pour l'instant.";
+    texte.textContent = matieres.length ? 'Quelle matiere ?' : "Aucune matiere indexee pour l'instant.";
     panneau.appendChild(texte);
 
     const options = document.createElement('div');
@@ -1408,31 +1848,31 @@
       panneau.appendChild(btnAutre);
     }
   }
-    async function lancerParcourir(niveau, serie, matiere) {
+
+  async function lancerParcourir(niveau, serie, matiere) {
     fermerPanneauGenerer();
 
-  
     const libelleDemande = serie
-      ? `Parcourir : ${niveau} ${serie} - ${matiere}`
-      : `Parcourir : ${niveau} - ${matiere}`;
+      ? 'Parcourir : ' + niveau + ' ' + serie + ' - ' + matiere
+      : 'Parcourir : ' + niveau + ' - ' + matiere;
     ajouterMessageUtilisateur(libelleDemande);
     const ligneAttente = ajouterMessageAssistant('', true);
 
     try {
-      const params = new URLSearchParams({ niveau, matiere });
+      const params = new URLSearchParams({ niveau: niveau, matiere: matiere });
       if (serie) params.set('serie', serie);
-      const reponseServeur = await fetch(`{{ url_for('chat_parcourir_route') }}?${params}`);
+      const reponseServeur = await fetch("{{ url_for('chat_parcourir_route') }}?" + params.toString());
       const { resultats, erreur } = await reponseServeur.json();
       retirerLigneAttente(ligneAttente);
 
       if (erreur) throw new Error(erreur);
 
       if (!resultats || resultats.length === 0) {
-        ajouterMessageAssistant("Je n'ai encore rien d'indexé pour cette combinaison. Essaie une autre matière ou série.", false);
+        ajouterMessageAssistant("Je n'ai encore rien d'indexe pour cette combinaison. Essaie une autre matiere ou serie.", false);
         return;
       }
 
-      ajouterCarteResultats("Voici ce que j'ai trouvé :", resultats);
+      ajouterCarteResultats("Voici ce que j'ai trouve :", resultats);
 
     } catch (erreur) {
       retirerLigneAttente(ligneAttente);
@@ -1440,6 +1880,9 @@
     }
   }
 
+  // ============================================================
+  // GENERATION D'EPREUVE (PDF)
+  // ============================================================
   async function lancerGeneration(params, libelleUtilisateur) {
     ajouterMessageUtilisateur(libelleUtilisateur);
     const ligneAttente = ajouterMessageAssistant('', true);
@@ -1447,14 +1890,14 @@
     corpsAttente.innerHTML = `
       <div class="indicateur-reflexion">
         <div class="points-typing"><span></span><span></span><span></span></div>
-        <span class="texte-progression">Construction de l'énoncé...</span>
+        <span class="texte-progression">Construction de l'enonce...</span>
       </div>
       <div class="barre-progression"></div>`;
 
     const etapesGeneration = [
-      "Construction de l'énoncé...",
+      "Construction de l'enonce...",
       "Mise en page des exercices...",
-      "Vérification du barème...",
+      "Verification du bareme...",
       "Finalisation du PDF..."
     ];
     let etapeIdx = 0;
@@ -1477,7 +1920,7 @@
       const typeContenu = reponseServeur.headers.get('Content-Type') || '';
       if (!reponseServeur.ok || typeContenu.includes('application/json')) {
         const resultat = await reponseServeur.json();
-        throw new Error(resultat.erreur || "La génération a échoué. Réessaie dans quelques minutes.");
+        throw new Error(resultat.erreur || "La generation a echoue. Reessaie dans quelques minutes.");
       }
 
       const dispo = reponseServeur.headers.get('Content-Disposition') || '';
@@ -1495,7 +1938,7 @@
       URL.revokeObjectURL(url);
 
       retirerLigneAttente(ligneAttente);
-      ajouterMessageAssistant("Voilà ton épreuve, elle vient d'être téléchargée. Bon courage pour la révision !", false);
+      ajouterMessageAssistant("Voila votre epreuve, elle vient d'etre telechargee. Bon courage pour la revision !", false);
 
     } catch (erreur) {
       retirerLigneAttente(ligneAttente);
@@ -1503,17 +1946,27 @@
     }
   }
 
+  // ============================================================
+  // SIDEBAR
+  // ============================================================
   const btnSidebarToggle = document.getElementById('btn-sidebar-toggle');
   const backdrop = document.getElementById('sidebar-backdrop');
+
+  function mettreAJourAriaSidebar(ouvert) {
+    if (btnSidebarToggle) btnSidebarToggle.setAttribute('aria-expanded', String(ouvert));
+    if (btnSidebarToggleMobile) btnSidebarToggleMobile.setAttribute('aria-expanded', String(ouvert));
+  }
 
   function ouvrirSidebar() {
     sidebar.classList.add('ouverte');
     backdrop.classList.add('visible');
+    mettreAJourAriaSidebar(true);
   }
 
   function fermerSidebar() {
     sidebar.classList.remove('ouverte');
     backdrop.classList.remove('visible');
+    mettreAJourAriaSidebar(false);
   }
 
   btnSidebarToggle.addEventListener('click', () => {
@@ -1521,28 +1974,59 @@
     else ouvrirSidebar();
   });
 
+  if (btnSidebarToggleMobile) {
+    btnSidebarToggleMobile.addEventListener('click', () => {
+      if (sidebar.classList.contains('ouverte')) fermerSidebar();
+      else ouvrirSidebar();
+    });
+  }
+
   backdrop.addEventListener('click', fermerSidebar);
 
-  document.getElementById('btn-nouvelle-conversation').addEventListener('click', () => {
+  // ============================================================
+  // BOUTONS DE LA SIDEBAR
+  // ============================================================
+  document.getElementById('btn-nouvelle-conversation').addEventListener('click', async () => {
     fermerPanneauGenerer();
     fermerSidebar();
-    etat.historique = [];
+
+    if (!MODE_DEMO && etat.matiere) {
+      try {
+        await fetch("{{ url_for('assistant_eleve_nouvelle_conversation') }}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ matiere: etat.matiere }),
+        });
+      } catch (erreur) {
+        // Si la suppression cote serveur echoue, on continue.
+      }
+    }
+
     fenetre.innerHTML = '';
-    ajouterMessageAssistant(genererMessageAccueil(), false);
+    afficherAccueil();
     input.value = '';
     input.focus();
+    if (btnEnvoyer) btnEnvoyer.disabled = true;
   });
 
   document.getElementById('btn-sidebar-examen').addEventListener('click', () => {
     fermerPanneauGenerer();
     fermerSidebar();
-    lancerGeneration({ type_document: 'Examen', serie: 'C' }, 'Génère-moi un Examen officiel (Bac blanc)');
+    if (ELEVE.disponible) {
+      lancerGeneration({ type_document: 'Examen', serie: 'C' }, 'Generer une epreuve de bac blanc.');
+    } else {
+      ajouterMessageAssistant("La generation d'epreuves de bac blanc n'est pas encore disponible pour votre serie. Revenez bientot !", false);
+    }
   });
 
   document.getElementById('btn-sidebar-sequence').addEventListener('click', () => {
     fermerSidebar();
-    ouvrirPanneauVide();
-    afficherChoixSequence();
+    if (ELEVE.disponible) {
+      ouvrirPanneauVide();
+      afficherChoixSequence();
+    } else {
+      ajouterMessageAssistant("La generation d'epreuves de sequence n'est pas encore disponible pour votre serie. Revenez bientot !", false);
+    }
   });
 
   document.getElementById('btn-sidebar-parcourir').addEventListener('click', () => {
@@ -1555,11 +2039,9 @@
     }
   });
 
-  // NOUVEAU (choix de matière, 29/08/2026) -- clic sur une chip de
-  // matière dans la sidebar : change etat.matiere, redémarre la
-  // conversation (nouveau sujet = nouveau contexte, on ne mélange pas
-  // les matières dans le même historique envoyé au modèle), met à
-  // jour l'état visuel actif des chips.
+  // ============================================================
+  // CHIPS DE MATIERE
+  // ============================================================
   const conteneurMatieres = document.getElementById('sidebar-matieres');
   if (conteneurMatieres) {
     function marquerChipActive() {
@@ -1570,29 +2052,36 @@
 
     conteneurMatieres.addEventListener('click', (e) => {
       const chip = e.target.closest('.chip-matiere');
-      if (!chip || chip.dataset.matiere === etat.matiere) return;
+      if (!chip || chip.dataset.matiere === etat.matiere || etat.chargementHistorique) return;
 
       etat.matiere = chip.dataset.matiere;
       marquerChipActive();
       fermerPanneauGenerer();
       fermerSidebar();
-      etat.historique = [];
-      fenetre.innerHTML = '';
-      ajouterMessageAssistant(genererMessageAccueil(), false);
+      chargerEtAfficherHistorique();
     });
 
     marquerChipActive();
   }
 
+  // ============================================================
+  // FERMETURE DES PANNEAUX AU CLIC EXTERIEUR
+  // ============================================================
   document.addEventListener('click', (e) => {
     const chemin = e.composedPath();
     if (etat.panneauOuvert && !chemin.includes(saisie) && !chemin.includes(sidebar)) {
       fermerPanneauGenerer();
     }
+    if (panneauAjouter && !panneauAjouter.hidden && !chemin.includes(saisie)) {
+      fermerPanneauAjouter();
+    }
   });
 
-  ajouterMessageAssistant(genererMessageAccueil(), false);
-  input.focus();
+  // ============================================================
+  // INITIALISATION
+  // ============================================================
+  chargerEtAfficherHistorique();
+  if (input) input.focus();
 })();
 </script>
 {% endblock %}

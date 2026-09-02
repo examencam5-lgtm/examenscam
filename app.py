@@ -40,15 +40,6 @@ from database_externes import (
 from database import (get_annales, get_matieres, increment_vues, get_stats,
                       get_derniere_maj, create_table)
 from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
-from database_paiements import (
-    create_table as create_table_paiements, creer_paiement, get_paiement_par_ref,
-    confirmer_paiement, MONTANT_ABONNEMENT_FCFA,
-)
-from paiement_monetbil import (
-    initier_paiement, verifier_signature_notification,
-    verifier_paiement_par_transaction, PaiementMonetbilEchoue,
-)
-from database_eleves import get_eleve_par_id
 
 from analytics import (
     creer_table_evenements, log_evenement, get_ou_creer_session,
@@ -74,7 +65,7 @@ from database_eleves import (
 # est désormais seul responsable de la mémoire de la conversation.
 from database_conversations import (
     create_table as create_table_conversations,
-    enregistrer_tour, charger_historique,
+    enregistrer_tour, charger_historique, effacer_conversation,
 )
 # MODIFIÉ (29/08/2026, extension multi-matières) : import de
 # matiere_disponible_pour et matieres_disponibles en plus des 2
@@ -132,8 +123,7 @@ with app.app_context():
     create_table()
     create_table_eleves()          # <-- AJOUT
     create_table_conversations()   # <-- AJOUT (02/09/2026)
-    create_table_paiements() 
-     
+
 ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
 
@@ -1015,6 +1005,14 @@ def assistant_eleve_repondre():
         headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
     )
 
+
+# NOUVEAU (02/09/2026) : renvoie l'historique persistant de la
+# conversation (eleve_id, matiere) -- utilisée par le front au
+# chargement de la page et à chaque changement de matière dans la
+# sidebar, pour reconstruire l'affichage à partir de ce qui a
+# réellement été sauvegardé côté serveur (voir
+# database_conversations.py), au lieu de partir d'un écran vide à
+# chaque bascule.
 @app.route('/assistant-eleve/historique')
 def assistant_eleve_historique():
     eleve_id = session.get('eleve_id')
@@ -1024,6 +1022,23 @@ def assistant_eleve_historique():
     matiere = (request.args.get('matiere') or 'Mathematiques').strip()
     historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
     return jsonify({'historique': historique})
+
+
+# NOUVEAU (02/09/2026) : "Nouvelle conversation" doit effacer la
+# conversation persistée côté serveur, pas seulement l'affichage
+# local -- sinon un rechargement de page ou un changement de matière
+# fait réapparaître l'historique qu'on venait pourtant d'effacer à
+# l'écran, ce qui serait incohérent pour l'élève.
+@app.route('/assistant-eleve/nouvelle-conversation', methods=['POST'])
+def assistant_eleve_nouvelle_conversation():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi.", 'code': 'non_connecte'}), 401
+
+    payload = request.get_json(silent=True) or {}
+    matiere = (payload.get('matiere') or 'Mathematiques').strip()
+    effacer_conversation(eleve_id, matiere)
+    return jsonify({'ok': True})
 
 
 @app.route('/assistant-eleve/generer', methods=['POST'])
@@ -1153,84 +1168,5 @@ def mon_compte():
         niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
         csrf_token=session['csrf_token_mon_compte'],
     )
-
-# ═══════════════════════════════════════
-# ABONNEMENT & PAIEMENT (Monetbil)
-# ═══════════════════════════════════════
-
-def eleve_requis(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if not session.get('eleve_id'):
-            return redirect('/connexion')
-        return f(*args, **kwargs)
-    return wrapper
-
-
-@app.route('/abonnement/payer', methods=['POST'])
-@eleve_requis
-@limiter_debit(max_requetes=5, fenetre_sec=600)
-def abonnement_payer():
-    eleve_id = session['eleve_id']
-    eleve = get_eleve_par_id(eleve_id)
-    if not eleve:
-        return jsonify({'erreur': 'Compte introuvable.'}), 404
-
-    payment_ref = creer_paiement(eleve_id, MONTANT_ABONNEMENT_FCFA)
-
-    try:
-        payment_url = initier_paiement(
-            payment_ref=payment_ref,
-            montant=MONTANT_ABONNEMENT_FCFA,
-            notify_url='https://examenscam.onrender.com/paiement/notification',
-            return_url='https://examenscam.onrender.com/paiement/retour',
-            user=str(eleve_id),
-            first_name=eleve['nom'],
-        )
-    except PaiementMonetbilEchoue as e:
-        app.logger.error(f"Échec initiation paiement (élève {eleve_id}) : {e}")
-        return jsonify({'erreur': "Impossible de démarrer le paiement pour l'instant, réessaie."}), 500
-
-    return redirect(payment_url)
-
-
-@app.route('/paiement/notification', methods=['GET', 'POST'])
-def paiement_notification():
-    # Monetbil peut appeler en GET ou en POST selon la doc officielle
-    # -- request.values couvre les deux sans distinction de code.
-    params = request.values.to_dict()
-
-    payment_ref = params.get('payment_ref')
-    statut_brut = params.get('status')  # 'success', 'cancelled', ou 'failed'
-    transaction_id = params.get('transaction_id')
-    operateur = params.get('operator')
-
-    if not payment_ref or not statut_brut:
-        app.logger.warning(f"Notification Monetbil incomplète : {params}")
-        return '', 200
-
-    if not verifier_signature_notification(params):
-        # Signature absente/invalide (ou secret pas encore configuré
-        # côté Monetbil) -- vérification indépendante avant de rejeter.
-        try:
-            statut_api, _ = verifier_paiement_par_transaction(transaction_id) if transaction_id else (None, None)
-        except PaiementMonetbilEchoue as e:
-            app.logger.error(f"Vérification indépendante échouée : {e}")
-            return '', 200
-        if statut_api not in (1, 7):
-            app.logger.warning(f"Signature invalide + vérification API négative : {params}")
-            return '', 200
-
-    statut_interne = {'success': 'reussi', 'cancelled': 'annule', 'failed': 'echoue'}.get(statut_brut, 'echoue')
-    erreur = confirmer_paiement(payment_ref, transaction_id, statut_interne, operateur)
-    if erreur:
-        app.logger.error(f"confirmer_paiement a échoué pour {payment_ref} : {erreur}")
-
-    return '', 200
-
-
-@app.route('/paiement/retour')
-def paiement_retour():
-    return render_template('paiement_retour.html')
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
