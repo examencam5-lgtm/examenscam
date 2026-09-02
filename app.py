@@ -5,6 +5,7 @@ import json
 import io
 import time
 from pathlib import Path
+from datetime import timedelta
 import secrets
 from functools import wraps
 from dotenv import load_dotenv
@@ -39,6 +40,15 @@ from database_externes import (
 from database import (get_annales, get_matieres, increment_vues, get_stats,
                       get_derniere_maj, create_table)
 from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
+from database_paiements import (
+    create_table as create_table_paiements, creer_paiement, get_paiement_par_ref,
+    confirmer_paiement, MONTANT_ABONNEMENT_FCFA,
+)
+from paiement_monetbil import (
+    initier_paiement, verifier_signature_notification,
+    verifier_paiement_par_transaction, PaiementMonetbilEchoue,
+)
+from database_eleves import get_eleve_par_id
 
 from analytics import (
     creer_table_evenements, log_evenement, get_ou_creer_session,
@@ -54,6 +64,17 @@ from database_eleves import (
     incrementer_usage_mensuel, login_identifiant_bloque, enregistrer_echec_identifiant,
     reinitialiser_echecs_identifiant, minutes_avant_deblocage_identifiant,
     NIVEAUX_VALIDES as NIVEAUX_VALIDES_ELEVES, SERIES_VALIDES as SERIES_VALIDES_ELEVES,
+)
+# NOUVEAU (02/09/2026) : persistance des conversations du chat élève,
+# une conversation continue par couple (élève, matière) -- voir
+# database_conversations.py. enregistrer_tour() est appelé une fois la
+# réponse streamée entièrement générée (voir flux_evenements),
+# charger_historique() remplace l'ancien historique envoyé par le
+# front à chaque requête (payload.get('historique')) -- le serveur
+# est désormais seul responsable de la mémoire de la conversation.
+from database_conversations import (
+    create_table as create_table_conversations,
+    enregistrer_tour, charger_historique,
 )
 # MODIFIÉ (29/08/2026, extension multi-matières) : import de
 # matiere_disponible_pour et matieres_disponibles en plus des 2
@@ -97,6 +118,12 @@ app.config.update(
     SESSION_COOKIE_SECURE=not _DEBUG,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
+    # NOUVEAU (02/09/2026) : durée de vie d'une session "permanente"
+    # (voir session.permanent = True dans connexion()/inscription()).
+    # Sans PERMANENT_SESSION_LIFETIME, Flask utilise 31 jours par
+    # défaut -- fixé ici explicitement à 30 jours pour que la durée
+    # soit un choix documenté, pas une valeur implicite du framework.
+    PERMANENT_SESSION_LIFETIME=timedelta(days=30),
 )
 
 with app.app_context():
@@ -104,7 +131,9 @@ with app.app_context():
 with app.app_context():
     create_table()
     create_table_eleves()          # <-- AJOUT
-
+    create_table_conversations()   # <-- AJOUT (02/09/2026)
+    create_table_paiements() 
+     
 ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
 
@@ -715,6 +744,13 @@ def inscription():
             )
             if eleve_id:
                 session.pop('csrf_token_inscription', None)
+                # NOUVEAU (02/09/2026) : session permanente -- voir
+                # PERMANENT_SESSION_LIFETIME dans app.config.update()
+                # plus haut. Sans cette ligne, le cookie de session
+                # expire à la fermeture du navigateur quelle que soit
+                # la durée configurée -- session.permanent bascule
+                # explicitement sur ce mode "longue durée".
+                session.permanent = True
                 session['eleve_id'] = eleve_id
                 marquer_connexion(eleve_id)
                 return redirect('/mon-compte')
@@ -749,6 +785,11 @@ def connexion():
             if eleve:
                 reinitialiser_echecs_identifiant(identifiant)
                 session.pop('csrf_token_connexion', None)
+                # NOUVEAU (02/09/2026) : voir commentaire équivalent
+                # dans inscription() -- même raisonnement, la connexion
+                # doit aussi persister au-delà de la fermeture du
+                # navigateur, pas seulement la création de compte.
+                session.permanent = True
                 session['eleve_id'] = eleve['id']
                 marquer_connexion(eleve['id'])
                 return redirect('/mon-compte')
@@ -894,6 +935,13 @@ def assistant_eleve():
 # chat_scope.matiere_disponible_pour() -- remplace l'ancien contrôle
 # qui ne vérifiait que le niveau/série (chat_disponible_pour reste
 # réservé à la génération PDF désormais, voir chat_scope.py).
+#
+# MODIFIÉ (02/09/2026, persistance des conversations) : l'historique
+# n'est plus lu depuis le payload envoyé par le front -- il est
+# rechargé depuis la base via charger_historique(), une conversation
+# continue par couple (élève, matière) (voir
+# database_conversations.py). Le front peut continuer à envoyer un
+# champ 'historique' sans effet, il n'est simplement plus utilisé ici.
 @app.route('/assistant-eleve/repondre', methods=['POST'])
 @limiter_debit(max_requetes=15, fenetre_sec=600)
 def assistant_eleve_repondre():
@@ -922,18 +970,12 @@ def assistant_eleve_repondre():
     if not matiere_disponible_pour(eleve['niveau'], eleve['serie'], matiere):
         return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
 
-    historique_brut = payload.get('historique') or []
-    if not isinstance(historique_brut, list):
-        historique_brut = []
-
-    historique = []
-    for tour in historique_brut[-LIMITE_HISTORIQUE_TOURS:]:
-        if not isinstance(tour, dict):
-            continue
-        role = tour.get('role')
-        contenu = tour.get('content')
-        if role in ('user', 'assistant') and isinstance(contenu, str) and contenu.strip():
-            historique.append({'role': role, 'content': contenu.strip()})
+    # MODIFIÉ (02/09/2026) : historique rechargé depuis la base,
+    # propre à la conversation (eleve_id, matiere) -- remplace
+    # l'ancienne lecture de payload.get('historique') + boucle de
+    # nettoyage manuel. charger_historique() renvoie déjà le format
+    # attendu par chat_contexte.py : [{"role": ..., "content": ...}].
+    historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
 
     if detecter_demande_epreuve(question):
         resultat_recherche = chercher_epreuves(question)
@@ -952,20 +994,36 @@ def assistant_eleve_repondre():
             for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere):
                 texte_complet.append(morceau)
                 yield f"data: {json.dumps({'type': 'morceau', 'texte': morceau})}\n\n"
-        except RuntimeError as e:
+        except Exception as e:
             app.logger.error(f"Échec réponse assistant élève (stream) : {e}")
             message_erreur = "Je n'arrive pas à continuer, réessaie dans un instant."
             yield f"data: {json.dumps({'type': 'erreur', 'texte': message_erreur})}\n\n"
             return
 
+        reponse_complete = ''.join(texte_complet)
+        # NOUVEAU (02/09/2026) : sauvegarde du tour complet une fois la
+        # réponse entièrement générée -- voir database_conversations.py
+        # pour le raisonnement (jamais pendant le streaming lui-même,
+        # jamais si le stream a échoué avant d'arriver ici).
+        enregistrer_tour(eleve_id, matiere, question, reponse_complete)
         incrementer_usage_mensuel(eleve_id)
-        yield f"data: {json.dumps({'type': 'fin', 'texte_complet': ''.join(texte_complet)})}\n\n"
+        yield f"data: {json.dumps({'type': 'fin', 'texte_complet': reponse_complete})}\n\n"
 
     return Response(
         flux_evenements(),
         mimetype='text/event-stream',
         headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
     )
+
+@app.route('/assistant-eleve/historique')
+def assistant_eleve_historique():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi.", 'code': 'non_connecte'}), 401
+
+    matiere = (request.args.get('matiere') or 'Mathematiques').strip()
+    historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
+    return jsonify({'historique': historique})
 
 
 @app.route('/assistant-eleve/generer', methods=['POST'])
@@ -1095,5 +1153,84 @@ def mon_compte():
         niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
         csrf_token=session['csrf_token_mon_compte'],
     )
+
+# ═══════════════════════════════════════
+# ABONNEMENT & PAIEMENT (Monetbil)
+# ═══════════════════════════════════════
+
+def eleve_requis(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not session.get('eleve_id'):
+            return redirect('/connexion')
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@app.route('/abonnement/payer', methods=['POST'])
+@eleve_requis
+@limiter_debit(max_requetes=5, fenetre_sec=600)
+def abonnement_payer():
+    eleve_id = session['eleve_id']
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        return jsonify({'erreur': 'Compte introuvable.'}), 404
+
+    payment_ref = creer_paiement(eleve_id, MONTANT_ABONNEMENT_FCFA)
+
+    try:
+        payment_url = initier_paiement(
+            payment_ref=payment_ref,
+            montant=MONTANT_ABONNEMENT_FCFA,
+            notify_url='https://examenscam.onrender.com/paiement/notification',
+            return_url='https://examenscam.onrender.com/paiement/retour',
+            user=str(eleve_id),
+            first_name=eleve['nom'],
+        )
+    except PaiementMonetbilEchoue as e:
+        app.logger.error(f"Échec initiation paiement (élève {eleve_id}) : {e}")
+        return jsonify({'erreur': "Impossible de démarrer le paiement pour l'instant, réessaie."}), 500
+
+    return redirect(payment_url)
+
+
+@app.route('/paiement/notification', methods=['GET', 'POST'])
+def paiement_notification():
+    # Monetbil peut appeler en GET ou en POST selon la doc officielle
+    # -- request.values couvre les deux sans distinction de code.
+    params = request.values.to_dict()
+
+    payment_ref = params.get('payment_ref')
+    statut_brut = params.get('status')  # 'success', 'cancelled', ou 'failed'
+    transaction_id = params.get('transaction_id')
+    operateur = params.get('operator')
+
+    if not payment_ref or not statut_brut:
+        app.logger.warning(f"Notification Monetbil incomplète : {params}")
+        return '', 200
+
+    if not verifier_signature_notification(params):
+        # Signature absente/invalide (ou secret pas encore configuré
+        # côté Monetbil) -- vérification indépendante avant de rejeter.
+        try:
+            statut_api, _ = verifier_paiement_par_transaction(transaction_id) if transaction_id else (None, None)
+        except PaiementMonetbilEchoue as e:
+            app.logger.error(f"Vérification indépendante échouée : {e}")
+            return '', 200
+        if statut_api not in (1, 7):
+            app.logger.warning(f"Signature invalide + vérification API négative : {params}")
+            return '', 200
+
+    statut_interne = {'success': 'reussi', 'cancelled': 'annule', 'failed': 'echoue'}.get(statut_brut, 'echoue')
+    erreur = confirmer_paiement(payment_ref, transaction_id, statut_interne, operateur)
+    if erreur:
+        app.logger.error(f"confirmer_paiement a échoué pour {payment_ref} : {erreur}")
+
+    return '', 200
+
+
+@app.route('/paiement/retour')
+def paiement_retour():
+    return render_template('paiement_retour.html')
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

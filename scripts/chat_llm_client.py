@@ -51,6 +51,26 @@ qualité de réponse par défaut alors que Gemini a encore du quota.
 Nécessite : pip install -U google-genai huggingface_hub
 Nécessite : au moins une clé listée dans CLES_API_ENV_GEMINI ou
             HF_CLES_API_ENV.
+
+FIX (01/09/2026) -- worker gunicorn tué en plein appel Gemini
+(/assistant-eleve/repondre, mode streaming) :
+Même cause que le FIX du 01/09/2026 dans gemini_client.py -- un appel
+Gemini sans timeout HTTP peut bloquer indéfiniment sur un socket SSL
+en lecture (voir traceback Render : ssl.py recv -> httpcore ->
+httpx). Gunicorn finit par tuer le worker via son propre timeout, et
+le message "SIGKILL! Perhaps out of memory?" dans les logs est
+trompeur -- ce n'est pas l'OOM killer, c'est gunicorn qui devine la
+cause après coup.
+
+_appeler_gemini() et _appeler_gemini_stream() portent maintenant un
+timeout HTTP explicite (TIMEOUT_HTTP_MS). En mode bloc, un dépassement
+est une exception ordinaire, absorbée par generer_texte_avec_fallback()
+comme n'importe quelle erreur (voir sa docstring -- ici, contrairement
+à gemini_client.py, toute exception fait basculer sur l'option
+suivante). En mode streaming, la règle de generer_texte_stream_avec_fallback()
+s'applique normalement : si le timeout survient avant le premier
+morceau, on bascule ; s'il survient après, l'erreur remonte telle
+quelle (texte partiel déjà envoyé à l'élève).
 """
 
 import os
@@ -85,6 +105,13 @@ except ImportError:
 CLES_API_ENV_GEMINI = ["GEMINI_API_KEY", "GEMINI_API_KEY_SECONDAIRE", "GEMINI_API_KEY_TROISIEME"]
 MODELE_GEMINI_CHAT = "gemini-flash-lite-latest"  # rapide, adapté à un usage conversationnel
 
+# Timeout HTTP par tentative, en millisecondes -- voir FIX 01/09/2026
+# en tête de fichier. Volontairement plus court qu'en génération
+# d'épreuves JSON (25s dans gemini_client.py) : un chat élève est un
+# usage conversationnel, une réponse qui traîne plus de 20s dégrade
+# l'expérience même si elle finit par arriver.
+TIMEOUT_HTTP_MS = 20_000
+
 # ═══════════════════════════════════════════════════════
 # Fournisseur Hugging Face -- passerelle "router" compatible OpenAI
 # (https://router.huggingface.co/v1), gérée par huggingface_hub.
@@ -105,6 +132,14 @@ MODELES_HF_FALLBACK = [
     "google/gemma-2-9b-it",
     "meta-llama/Llama-3.1-8B-Instruct",
 ]
+
+# Timeout HTTP pour les appels Hugging Face, en secondes cette fois --
+# huggingface_hub.InferenceClient prend son timeout au constructeur,
+# en secondes, pas en millisecondes comme google-genai. Cette
+# différence d'unité entre les deux SDK est une source d'erreur
+# facile si on copie la valeur telle quelle -- vérifié explicitement
+# ici pour ne pas tomber dedans.
+TIMEOUT_HF_SECONDES = 20
 
 
 def construire_pool_clients() -> list[tuple[str, str, object]]:
@@ -147,6 +182,31 @@ def construire_pool_clients() -> list[tuple[str, str, object]]:
     return pool
 
 
+def _construire_contenus_et_config(messages: list[dict]):
+    """Factorise la conversion messages -> (contenus, config) partagée
+    par _appeler_gemini() et _appeler_gemini_stream() -- avant ce fix,
+    la même logique de conversion était dupliquée dans les deux
+    fonctions, avec le risque qu'un futur correctif (ex: le fix du
+    26/08/2026 sur system_instruction) soit appliqué dans l'une et
+    oublié dans l'autre."""
+    instructions_systeme = [m["content"] for m in messages if m["role"] == "system"]
+    system_instruction = "\n\n".join(instructions_systeme) if instructions_systeme else None
+
+    contenus = []
+    for m in messages:
+        if m["role"] == "system":
+            continue
+        role_genai = "model" if m["role"] == "assistant" else "user"
+        contenus.append(genai_types.Content(role=role_genai, parts=[genai_types.Part(text=m["content"])]))
+
+    http_options = genai_types.HttpOptions(timeout=TIMEOUT_HTTP_MS)
+    config = genai_types.GenerateContentConfig(
+        system_instruction=system_instruction,
+        http_options=http_options,
+    )
+    return contenus, config
+
+
 def _appeler_gemini(client, messages: list[dict]) -> str:
     """`messages` au format [{"role": "system"|"user"|"assistant", "content": "..."}]
     -- converti vers le format attendu par google-genai.
@@ -158,18 +218,11 @@ def _appeler_gemini(client, messages: list[dict]) -> str:
     comme une simple question de l'utilisateur, sans le poids
     d'instruction qu'il doit avoir (risque concret : les règles
     "utilise des FCFA, pas d'euros" auraient pu être diluées plutôt
-    que respectées strictement)."""
-    instructions_systeme = [m["content"] for m in messages if m["role"] == "system"]
-    system_instruction = "\n\n".join(instructions_systeme) if instructions_systeme else None
+    que respectées strictement).
 
-    contenus = []
-    for m in messages:
-        if m["role"] == "system":
-            continue
-        role_genai = "model" if m["role"] == "assistant" else "user"
-        contenus.append(genai_types.Content(role=role_genai, parts=[genai_types.Part(text=m["content"])]))
-
-    config = genai_types.GenerateContentConfig(system_instruction=system_instruction) if system_instruction else None
+    FIX (01/09/2026) : timeout HTTP explicite -- voir TIMEOUT_HTTP_MS
+    en tête de fichier."""
+    contenus, config = _construire_contenus_et_config(messages)
     reponse = client.models.generate_content(model=MODELE_GEMINI_CHAT, contents=contenus, config=config)
     if not reponse.text:
         raise ValueError("Réponse Gemini vide.")
@@ -179,8 +232,12 @@ def _appeler_gemini(client, messages: list[dict]) -> str:
 def _appeler_huggingface(jeton: str, modele: str, messages: list[dict]) -> str:
     """Passerelle OpenAI-compatible de Hugging Face -- `messages` est
     déjà au bon format (role "user"/"assistant"/"system"), aucune
-    conversion nécessaire contrairement à Gemini."""
-    client = InferenceClient(api_key=jeton)
+    conversion nécessaire contrairement à Gemini.
+
+    FIX (01/09/2026) : timeout explicite au constructeur du client --
+    unité en SECONDES ici, pas en millisecondes (voir
+    TIMEOUT_HF_SECONDES en tête de fichier)."""
+    client = InferenceClient(api_key=jeton, timeout=TIMEOUT_HF_SECONDES)
     completion = client.chat.completions.create(model=modele, messages=messages, max_tokens=1024)
     contenu = completion.choices[0].message.content
     if not contenu:
@@ -197,10 +254,10 @@ def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: l
 
     Bascule sur l'option suivante pour toute exception -- contrairement
     à gemini_client.generer_avec_fallback(), qui ne bascule que sur
-    des erreurs précises (429/503/404) parce que la génération JSON
-    structurée doit distinguer une vraie erreur API d'un contenu
+    des erreurs précises (429/503/404/timeout) parce que la génération
+    JSON structurée doit distinguer une vraie erreur API d'un contenu
     invalide. Ici, en texte libre, il n'y a pas de distinction fine à
-    faire : n'importe quelle exception (quota, réseau, modèle
+    faire : n'importe quelle exception (quota, réseau, timeout, modèle
     indisponible) justifie un simple passage à l'option suivante.
 
     Retourne (texte, fournisseur, identifiant_source) où
@@ -241,18 +298,14 @@ def _appeler_gemini_stream(client, messages: list[dict]):
     messages, mais utilise generate_content_stream() et yield le
     texte morceau par morceau au lieu de tout attendre puis retourner
     un bloc. Lève ValueError si le flux se termine sans avoir jamais
-    produit de texte (réponse vide)."""
-    instructions_systeme = [m["content"] for m in messages if m["role"] == "system"]
-    system_instruction = "\n\n".join(instructions_systeme) if instructions_systeme else None
+    produit de texte (réponse vide).
 
-    contenus = []
-    for m in messages:
-        if m["role"] == "system":
-            continue
-        role_genai = "model" if m["role"] == "assistant" else "user"
-        contenus.append(genai_types.Content(role=role_genai, parts=[genai_types.Part(text=m["content"])]))
-
-    config = genai_types.GenerateContentConfig(system_instruction=system_instruction) if system_instruction else None
+    FIX (01/09/2026) : timeout HTTP explicite -- voir TIMEOUT_HTTP_MS
+    en tête de fichier. C'est précisément l'appel qui a provoqué le
+    WORKER TIMEOUT du 01/09/2026 sur /assistant-eleve/repondre (voir
+    traceback Render : blocage sur ssl.py recv à l'intérieur de ce
+    generate_content_stream)."""
+    contenus, config = _construire_contenus_et_config(messages)
     flux = client.models.generate_content_stream(model=MODELE_GEMINI_CHAT, contents=contenus, config=config)
 
     recu_du_texte = False
@@ -272,8 +325,11 @@ def _appeler_huggingface_stream(jeton: str, modele: str, messages: list[dict]):
     Certains événements du flux Hugging Face peuvent ne pas contenir
     de choix (`choices=[]`). Ils doivent être ignorés plutôt que de
     provoquer un IndexError.
-    """
-    client = InferenceClient(api_key=jeton)
+
+    FIX (01/09/2026) : timeout explicite au constructeur du client --
+    même remarque d'unité que _appeler_huggingface() (secondes, pas
+    millisecondes)."""
+    client = InferenceClient(api_key=jeton, timeout=TIMEOUT_HF_SECONDES)
     flux = client.chat.completions.create(model=modele, messages=messages, max_tokens=1024, stream=True)
 
     recu_du_texte = False
@@ -307,6 +363,10 @@ def generer_texte_stream_avec_fallback(pool: list[tuple[str, str, object]], mess
     telle quelle, et l'appelant (voir app.py) garde le texte partiel
     déjà envoyé et affiche un message d'erreur en complément, plutôt
     que de tout recommencer.
+
+    Un timeout HTTP (voir TIMEOUT_HTTP_MS / TIMEOUT_HF_SECONDES) suit
+    exactement cette même règle -- s'il survient avant le premier
+    morceau, bascule normale ; après, remontée telle quelle.
 
     Ne retourne rien -- ne peut pas retourner (fournisseur, source)
     comme la version bloc, puisqu'un générateur ne peut pas produire
