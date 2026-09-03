@@ -56,6 +56,14 @@ from database_eleves import (
     reinitialiser_echecs_identifiant, minutes_avant_deblocage_identifiant,
     NIVEAUX_VALIDES as NIVEAUX_VALIDES_ELEVES, SERIES_VALIDES as SERIES_VALIDES_ELEVES,
 )
+from paiement_monetbil import (
+    initier_paiement, verifier_signature_notification,
+    verifier_paiement_par_transaction, PaiementMonetbilEchoue,
+)
+from database_paiements import (
+    create_table as create_table_paiements, creer_paiement, get_paiement_par_ref,
+    confirmer_paiement, abonnement_est_actif, MONTANT_ABONNEMENT_FCFA,
+)
 # NOUVEAU (02/09/2026) : persistance des conversations du chat élève,
 # une conversation continue par couple (élève, matière) -- voir
 # database_conversations.py. enregistrer_tour() est appelé une fois la
@@ -1168,5 +1176,60 @@ def mon_compte():
         niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
         csrf_token=session['csrf_token_mon_compte'],
     )
+@app.route('/abonnement')
+@eleve_requis
+def abonnement_page():
+    eleve = get_eleve_par_id(session['eleve_id'])
+    abonne = abonnement_est_actif(eleve)
+    expire_le = None
+    if abonne and eleve.get('abonnement_expire_le'):
+        expire_le = datetime.strptime(
+            eleve['abonnement_expire_le'], '%Y-%m-%d %H:%M:%S'
+        ).strftime('%d/%m/%Y')
+    return render_template('abonnement.html', eleve=eleve, abonne=abonne,
+                            expire_le=expire_le, montant=MONTANT_ABONNEMENT_FCFA)
+
+@app.route('/abonnement/payer', methods=['POST'])
+@eleve_requis
+@limiter_debit(max_requetes=5, fenetre_sec=600)
+def abonnement_payer():
+    eleve_id = session['eleve_id']
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        return jsonify({'erreur': 'Compte introuvable.'}), 404
+
+    payment_ref = creer_paiement(eleve_id, MONTANT_ABONNEMENT_FCFA)
+    base_url = request.host_url.rstrip('/')
+
+    try:
+        payment_url = initier_paiement(
+            payment_ref=payment_ref,
+            montant=MONTANT_ABONNEMENT_FCFA,
+            notify_url=f'{base_url}/paiement/notification',
+            return_url=f'{base_url}/paiement/retour?ref={payment_ref}',   # <-- ICI, remplace l'ancienne ligne return_url
+            user=str(eleve_id),
+            first_name=eleve['nom'],
+        )
+    except PaiementMonetbilEchoue as e:
+        app.logger.error(f"Échec initiation paiement (élève {eleve_id}) : {e}")
+        return jsonify({'erreur': "Impossible de démarrer le paiement pour l'instant, réessaie."}), 500
+
+    return redirect(payment_url)
+
+
+@app.route('/abonnement/statut')
+def abonnement_statut():
+    # Pas de @eleve_requis ici volontairement : cette route est
+    # interrogée par la page de retour juste après le paiement, où la
+    # session peut ne plus être fraîche (redirection externe via
+    # Monetbil). Le `ref` (payment_ref, jeton aléatoire) sert déjà de
+    # protection -- personne ne peut deviner celui d'un autre élève.
+    ref = request.args.get('ref')
+    if not ref:
+        return jsonify({'erreur': 'Référence manquante.'}), 400
+    paiement = get_paiement_par_ref(ref)
+    if not paiement:
+        return jsonify({'erreur': 'Paiement introuvable.'}), 404
+    return jsonify({'statut': paiement['statut']})
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
