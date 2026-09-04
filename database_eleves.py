@@ -3,60 +3,100 @@
 Comptes élèves — authentification + personnalisation du site et du
 chat par niveau/série.
 
-PRINCIPES DE CONCEPTION (voir échange du 28/08/2026) :
+═══════════════════════════════════════════════════════
+MIGRATION POSTGRES (NEON) — 04/09/2026
+═══════════════════════════════════════════════════════
+Ce module tournait auparavant sur SQLite (fichier data/annales.db).
+Sur Render, sans disque persistant (plan gratuit), ce fichier était
+effacé à chaque redéploiement ET à chaque réveil du service après mise
+en veille -- un compte créé pouvait donc "disparaître" en quelques
+minutes. Ce n'était pas un bug de logique, mais un problème de support
+de stockage.
+
+Migration vers Postgres géré (Neon, plan gratuit permanent, sans carte
+bancaire, sans expiration) : les données vivent maintenant sur un
+serveur externe, indépendant du cycle de vie du service Render.
+
+CE QUI CHANGE (implémentation interne uniquement) :
+  - sqlite3.connect(DB_PATH)        -> psycopg2.connect(DATABASE_URL)
+  - conn.row_factory = sqlite3.Row  -> cursor_factory=RealDictCursor
+  - placeholders '?'                -> placeholders '%s'
+  - INTEGER PRIMARY KEY AUTOINCREMENT -> GENERATED ALWAYS AS IDENTITY
+  - datetime('now')                 -> NOW()
+  - sqlite3.IntegrityError          -> psycopg2.errors.UniqueViolation
+  - conn.execute(...) direct        -> conn.cursor() puis cur.execute(...)
+    (les connexions psycopg2, contrairement à sqlite3, n'exposent pas
+    de raccourci .execute() sur l'objet connexion lui-même)
+  - NOUVEAU : conn.rollback() dans les blocs except -- Postgres, à la
+    différence de SQLite, abandonne la transaction en cours dès qu'une
+    erreur survient ; il faut explicitement revenir en arrière avant
+    de pouvoir réutiliser la connexion.
+
+CE QUI NE CHANGE PAS : tous les noms de fonctions, leurs signatures,
+leurs valeurs de retour, et donc TOUT app.py -- aucune modification
+nécessaire côté routes Flask.
+
+CONFIGURATION REQUISE : variable d'environnement DATABASE_URL, à
+définir dans Render (Environment > Add Environment Variable), JAMAIS
+en clair dans le code. Utiliser la chaîne de connexion "pooled" fournie
+par Neon (contient généralement "-pooler" dans le nom d'hôte) --
+indispensable pour une appli qui ouvre une connexion par requête HTTP,
+sous peine d'épuiser la limite de connexions simultanées du plan
+gratuit.
+
+PRINCIPES DE CONCEPTION D'ORIGINE (inchangés, voir échange du
+28/08/2026) :
 
 1. MINIMISATION DES DONNÉES -- ce sont des données de mineurs, chaque
    champ collecté est un risque juridique et une responsabilité.
    Seuls sont STRICTEMENT obligatoires : identifiant (choisi par
    l'élève, pas un email), mot de passe, nom, niveau. La série est
-   obligatoire sauf pour BEPC (même convention que le reste du site,
-   voir database.py). Email et téléphone sont FACULTATIFS -- utiles
-   seulement pour une éventuelle récupération de compte plus tard,
-   jamais exigés à l'inscription.
+   obligatoire sauf pour BEPC. Email et téléphone restent FACULTATIFS.
 
-2. MOT DE PASSE -- hashé avec werkzeug.security (déjà une dépendance
-   Flask, aucune installation supplémentaire nécessaire). Werkzeug
-   utilise scrypt par défaut sur les versions récentes (algorithme à
-   coût mémoire, résistant au brute-force GPU) -- jamais de hash
-   maison, jamais de mot de passe en clair, même dans les logs.
+2. MOT DE PASSE -- hashé avec werkzeug.security (scrypt par défaut).
+   Jamais de hash maison, jamais de mot de passe en clair, même dans
+   les logs. INCHANGÉ par la migration.
 
-3. SCALABLE MAIS HONNÊTE -- le schéma accepte n'importe quel
-   niveau/série dès aujourd'hui (BEPC, Probatoire, BAC, toutes
-   séries). Mais SEUL le contenu BAC/C existe réellement dans le RAG
-   (voir chat_contexte.py) -- c'est chat_scope.py (nouveau, voir plus
-   bas) qui décide si le chat répond réellement ou renvoie un message
-   "pas encore disponible", PAS ce module. Ce module ne fait QUE
-   stocker qui est l'élève et son niveau déclaré.
+3. SCALABLE MAIS HONNÊTE -- inchangé, voir chat_scope.py.
 
-4. PRÊT POUR ABONNEMENT/QUOTA (pas encore appliqué) -- champs
-   `abonnement_statut`, `abonnement_expire_le`, `messages_ce_mois`,
-   `mois_compteur` déjà présents dans le schéma pour ne pas avoir à
-   migrer la table plus tard quand la facturation sera décidée. Tant
-   qu'aucune logique de facturation n'existe, `abonnement_statut`
-   reste à 'gratuit' pour tout le monde et rien ne bloque personne --
-   voir incrementer_usage_mensuel() pour le compteur déjà actif
-   (mesure d'usage, pas encore de limite imposée).
+4. PRÊT POUR ABONNEMENT/QUOTA -- inchangé.
 
-5. RATE-LIMITING PAR IDENTIFIANT, PAS SEULEMENT PAR IP -- plusieurs
-   élèves d'un même établissement peuvent partager la même IP
-   (salle informatique, réseau scolaire). Bloquer par IP seule
-   pénaliserait toute une classe pour l'erreur d'un seul élève. Le
-   blocage principal se fait donc sur l'identifiant visé ; un blocage
-   IP global, plus large, reste en secours contre un vrai script de
-   brute-force qui testerait des identifiants au hasard.
+5. RATE-LIMITING PAR IDENTIFIANT -- reste en mémoire du process pour
+   l'instant (_TENTATIVES_PAR_IDENTIFIANT). ATTENTION : ceci redevient
+   un point faible réel si Render passe un jour à plusieurs instances
+   simultanées (chaque instance a sa propre mémoire) -- à migrer vers
+   la base ou un cache partagé (Redis) le jour où ce sera le cas. Non
+   traité dans cette migration, qui se concentre sur la persistance
+   des comptes.
 """
 
+import os
 import re
-import sqlite3
 import time
 import unicodedata
-from pathlib import Path
 from typing import Optional
 from datetime import datetime
 
+import psycopg2
+import psycopg2.extras
+from psycopg2 import errors as pg_errors
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
-DB_PATH = Path('data') / 'annales.db'
+# ═══════════════════════════════════════════════════════
+# CONNEXION
+# ═══════════════════════════════════════════════════════
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL manquant. Configure cette variable d'environnement "
+        "sur Render avec la chaine de connexion Postgres fournie par Neon "
+        "(utilise de preference la variante 'pooled', avec '-pooler' dans "
+        "le nom d'hote) -- sans elle, aucune donnee eleve ne peut etre lue "
+        "ni ecrite."
+    )
 
 # Mêmes conventions que le reste du site (voir app.py: SERIES_VALIDES,
 # CATALOGUE) -- pas dupliquées à l'identique pour éviter un import
@@ -82,52 +122,62 @@ _HASH_FACTICE_POUR_TIMING = generate_password_hash("valeur-fixe-non-secrete")
 
 
 def get_connection():
-    Path('data').mkdir(exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    """Retourne une connexion Postgres dont les curseurs renvoient des
+    lignes de type dict (RealDictRow) -- même ergonomie que
+    sqlite3.Row d'origine : row['colonne'] fonctionne à l'identique,
+    dict(row) aussi. Le code appelant doit passer par conn.cursor()
+    puis cur.execute(...), contrairement à sqlite3 qui autorisait
+    conn.execute(...) directement."""
+    return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
 
 def create_table():
-    """Idempotent comme create_table() dans database.py -- appelée au
+    """Idempotent comme la version SQLite d'origine -- appelée au
     démarrage de app.py, jamais destructive sur une table existante."""
-    Path('data').mkdir(exist_ok=True)
     conn = get_connection()
-    conn.executescript("""
-        CREATE TABLE IF NOT EXISTS eleves (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            identifiant TEXT NOT NULL UNIQUE,
-            mot_de_passe_hash TEXT NOT NULL,
-            nom TEXT NOT NULL,
-            niveau TEXT NOT NULL,
-            serie TEXT,
-            classe TEXT,
-            email TEXT,
-            telephone TEXT,
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS eleves (
+                id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                identifiant TEXT NOT NULL UNIQUE,
+                mot_de_passe_hash TEXT NOT NULL,
+                nom TEXT NOT NULL,
+                niveau TEXT NOT NULL,
+                serie TEXT,
+                classe TEXT,
+                email TEXT,
+                telephone TEXT,
 
-            -- Champs abonnement/quota : présents dès maintenant pour
-            -- éviter une migration future, mais NON appliqués tant
-            -- qu'aucune décision de facturation n'est prise (voir
-            -- note 4 en tête de fichier). 'gratuit' = jamais bloqué.
-            abonnement_statut TEXT NOT NULL DEFAULT 'gratuit',
-            abonnement_expire_le TEXT,
-            messages_ce_mois INTEGER NOT NULL DEFAULT 0,
-            mois_compteur TEXT,
+                -- Champs abonnement/quota : présents dès maintenant pour
+                -- éviter une migration future, mais NON appliqués tant
+                -- qu'aucune décision de facturation n'est prise (voir
+                -- note 4 en tête de fichier). 'gratuit' = jamais bloqué.
+                abonnement_statut TEXT NOT NULL DEFAULT 'gratuit',
+                abonnement_expire_le TEXT,
+                messages_ce_mois INTEGER NOT NULL DEFAULT 0,
+                mois_compteur TEXT,
 
-            date_creation TEXT DEFAULT (datetime('now')),
-            derniere_connexion TEXT,
-            actif INTEGER DEFAULT 1
-        );
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_eleves_identifiant ON eleves(identifiant);
-        CREATE INDEX IF NOT EXISTS idx_eleves_niveau_serie ON eleves(niveau, serie);
-    """)
-    conn.commit()
-    conn.close()
+                date_creation TEXT DEFAULT (NOW()::text),
+                derniere_connexion TEXT,
+                actif INTEGER DEFAULT 1
+            );
+        """)
+        cur.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_eleves_identifiant ON eleves(identifiant);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS idx_eleves_niveau_serie ON eleves(niveau, serie);
+        """)
+        conn.commit()
+    finally:
+        conn.close()
 
 
 # ═══════════════════════════════════════════════════════
 # VALIDATION D'ENTRÉE -- jamais faire confiance à ce qui vient du
 # formulaire, même pour un champ "sans conséquence" comme le nom.
+# INCHANGÉ par la migration (pure logique Python, pas de SQL).
 # ═══════════════════════════════════════════════════════
 
 def valider_inscription(identifiant: str, mot_de_passe: str, nom: str,
@@ -177,10 +227,13 @@ def creer_compte(identifiant: str, mot_de_passe: str, nom: str, niveau: str,
     La contrainte UNIQUE sur `identifiant` en base est la SEULE
     protection fiable contre une double inscription simultanée avec
     le même identifiant (une vérification préalable en lecture serait
-    sujette à une course -- deux requêtes qui passent la vérification
-    avant que l'une des deux insère). On tente l'insertion directement
-    et on traduit l'IntegrityError en message utilisateur, jamais
-    l'inverse."""
+    sujette à une course). On tente l'insertion directement et on
+    traduit l'erreur en message utilisateur, jamais l'inverse.
+
+    MIGRATION : sqlite3.IntegrityError -> psycopg2.errors.UniqueViolation.
+    Postgres abandonne la transaction dès l'erreur -- conn.rollback()
+    est nécessaire avant toute nouvelle requête sur cette connexion
+    (même si ici on ferme la connexion juste après)."""
     erreurs = valider_inscription(identifiant, mot_de_passe, nom, niveau, serie)
     if erreurs:
         return None, " ".join(erreurs)
@@ -189,15 +242,20 @@ def creer_compte(identifiant: str, mot_de_passe: str, nom: str, niveau: str,
 
     conn = get_connection()
     try:
-        cur = conn.execute("""
+        cur = conn.cursor()
+        cur.execute("""
             INSERT INTO eleves (identifiant, mot_de_passe_hash, nom, niveau, serie, classe, email, telephone)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
         """, (identifiant, hash_mdp, nom.strip(), niveau, serie, classe, email or None, telephone or None))
+        nouvel_id = cur.fetchone()['id']
         conn.commit()
-        return cur.lastrowid, None
-    except sqlite3.IntegrityError:
+        return nouvel_id, None
+    except pg_errors.UniqueViolation:
+        conn.rollback()
         return None, "Cet identifiant est déjà pris -- choisis-en un autre."
     except Exception as e:
+        conn.rollback()
         print(f"creer_compte error: {e}")
         return None, "Une erreur est survenue, réessaie."
     finally:
@@ -216,9 +274,11 @@ def verifier_identifiants(identifiant: str, mot_de_passe: str) -> Optional[dict]
     déjà facilite l'énumération de comptes."""
     conn = get_connection()
     try:
-        row = conn.execute(
-            "SELECT * FROM eleves WHERE identifiant = ? AND actif = 1", (identifiant,)
-        ).fetchone()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT * FROM eleves WHERE identifiant = %s AND actif = 1", (identifiant,)
+        )
+        row = cur.fetchone()
         if not row:
             # Toujours appeler check_password_hash même si l'identifiant
             # n'existe pas, contre un hash factice de même format --
@@ -240,15 +300,20 @@ def verifier_identifiants(identifiant: str, mot_de_passe: str) -> Optional[dict]
 
 def marquer_connexion(eleve_id: int):
     conn = get_connection()
-    conn.execute("UPDATE eleves SET derniere_connexion = datetime('now') WHERE id = ?", (eleve_id,))
-    conn.commit()
-    conn.close()
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE eleves SET derniere_connexion = NOW()::text WHERE id = %s", (eleve_id,))
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def get_eleve_par_id(eleve_id: int) -> Optional[dict]:
     conn = get_connection()
     try:
-        row = conn.execute("SELECT * FROM eleves WHERE id = ? AND actif = 1", (eleve_id,)).fetchone()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM eleves WHERE id = %s AND actif = 1", (eleve_id,))
+        row = cur.fetchone()
         return dict(row) if row else None
     finally:
         conn.close()
@@ -283,13 +348,15 @@ def modifier_profil(eleve_id: int, nom: Optional[str] = None, niveau: Optional[s
 
     conn = get_connection()
     try:
-        conn.execute("""
-            UPDATE eleves SET nom = ?, niveau = ?, serie = ?, classe = ?
-            WHERE id = ?
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE eleves SET nom = %s, niveau = %s, serie = %s, classe = %s
+            WHERE id = %s
         """, (nom_final, niveau_final, serie_final, classe_final, eleve_id))
         conn.commit()
         return None
     except Exception as e:
+        conn.rollback()
         print(f"modifier_profil error: {e}")
         return "Une erreur est survenue, réessaie."
     finally:
@@ -313,8 +380,9 @@ def changer_mot_de_passe(eleve_id: int, ancien_mot_de_passe: str, nouveau_mot_de
 
     conn = get_connection()
     try:
-        conn.execute(
-            "UPDATE eleves SET mot_de_passe_hash = ? WHERE id = ?",
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE eleves SET mot_de_passe_hash = %s WHERE id = %s",
             (generate_password_hash(nouveau_mot_de_passe), eleve_id)
         )
         conn.commit()
@@ -323,11 +391,45 @@ def changer_mot_de_passe(eleve_id: int, ancien_mot_de_passe: str, nouveau_mot_de
         conn.close()
 
 
+def supprimer_compte(eleve_id: int, mot_de_passe: str) -> Optional[str]:
+    """Suppression définitive du point de vue de l'élève : exige le
+    mot de passe (même principe que changer_mot_de_passe -- pas de
+    suppression via une session dérobée). Anonymise plutôt que DELETE
+    brut pour ne pas casser les FK vers conversations/paiements tout
+    en respectant le droit à l'effacement : plus aucune donnée
+    identifiante ne subsiste après appel."""
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        return "Compte introuvable."
+    if not check_password_hash(eleve['mot_de_passe_hash'], mot_de_passe):
+        return "Mot de passe incorrect."
+
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE eleves SET
+                actif = 0,
+                nom = 'Compte supprimé',
+                identifiant = 'supprime_' || id || '_' || floor(random() * 1000000000)::text,
+                mot_de_passe_hash = %s,
+                email = NULL, telephone = NULL, classe = NULL,
+                derniere_connexion = NULL
+            WHERE id = %s
+        """, (_HASH_FACTICE_POUR_TIMING, eleve_id))
+        conn.commit()
+        return None
+    except Exception as e:
+        conn.rollback()
+        print(f"supprimer_compte error: {e}")
+        return "Une erreur est survenue, réessaie."
+    finally:
+        conn.close()
+
+
 # ═══════════════════════════════════════════════════════
 # COMPTEUR D'USAGE MENSUEL -- mesure uniquement, aucune limite
-# imposée pour l'instant (voir note 4 en tête de fichier). Sert à
-# observer la consommation réelle avant de décider d'un plafond
-# gratuit raisonnable.
+# imposée pour l'instant (voir note 4 en tête de fichier).
 # ═══════════════════════════════════════════════════════
 
 def incrementer_usage_mensuel(eleve_id: int):
@@ -337,21 +439,24 @@ def incrementer_usage_mensuel(eleve_id: int):
     mois_actuel = datetime.now().strftime('%Y-%m')
     conn = get_connection()
     try:
-        row = conn.execute("SELECT mois_compteur FROM eleves WHERE id = ?", (eleve_id,)).fetchone()
+        cur = conn.cursor()
+        cur.execute("SELECT mois_compteur FROM eleves WHERE id = %s", (eleve_id,))
+        row = cur.fetchone()
         if not row:
             return
         if row['mois_compteur'] != mois_actuel:
-            conn.execute(
-                "UPDATE eleves SET messages_ce_mois = 1, mois_compteur = ? WHERE id = ?",
+            cur.execute(
+                "UPDATE eleves SET messages_ce_mois = 1, mois_compteur = %s WHERE id = %s",
                 (mois_actuel, eleve_id)
             )
         else:
-            conn.execute(
-                "UPDATE eleves SET messages_ce_mois = messages_ce_mois + 1 WHERE id = ?",
+            cur.execute(
+                "UPDATE eleves SET messages_ce_mois = messages_ce_mois + 1 WHERE id = %s",
                 (eleve_id,)
             )
         conn.commit()
     except Exception as e:
+        conn.rollback()
         print(f"incrementer_usage_mensuel error: {e}")
     finally:
         conn.close()
@@ -359,8 +464,10 @@ def incrementer_usage_mensuel(eleve_id: int):
 
 # ═══════════════════════════════════════════════════════
 # RATE-LIMITING DE CONNEXION -- PAR IDENTIFIANT D'ABORD (voir note 5
-# en tête de fichier), en mémoire comme le pattern admin de app.py.
-# Même limite connue et acceptée : remise à zéro si Render redémarre.
+# en tête de fichier), toujours EN MÉMOIRE comme avant la migration.
+# Ceci ne dépend pas de SQLite/Postgres et n'a donc pas changé --
+# limite connue et acceptée : remise à zéro si Render redémarre, et
+# point faible si un jour plusieurs instances tournent en parallèle.
 # ═══════════════════════════════════════════════════════
 
 _TENTATIVES_PAR_IDENTIFIANT = {}
