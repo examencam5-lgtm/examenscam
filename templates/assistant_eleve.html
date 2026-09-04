@@ -51,6 +51,16 @@
   .header-action:hover, .assistant-hamburger:hover { background: var(--ec-line-soft, #F8FAFC); color: var(--ec-ink, #0F172A); }
   .assistant-hamburger { display: none; }
   .assistant-fenetre { flex: 1 1 auto; width: 100%; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 1.5rem clamp(1rem, 5vw, 4.5rem) 1.25rem; display: flex; flex-direction: column; gap: 1.35rem; font-size: 1rem; line-height: 1.7; box-sizing: border-box; scroll-behavior: smooth; }
+
+  /* NOUVEAU (mobile, inspire des apps Claude / Grok / Perplexity) :
+     quand l'ecran d'accueil est le seul contenu, on le centre
+     verticalement au lieu de le coller en haut -- c'est ce qui donne
+     cette sensation "app native" plutot que "page web qui commence en
+     haut". Cette classe est ajoutee/retiree en JS (voir
+     afficherAccueil / chargerEtAfficherHistorique) selon qu'on montre
+     l'accueil ou une conversation deja en cours (une conversation,
+     elle, reste ancree en haut comme avant). */
+  .assistant-fenetre.mode-accueil { justify-content: center; }
   .assistant-fenetre > .msg, .assistant-fenetre > .assistant-welcome { width: 100%; max-width: var(--tuteur-content-max); margin-left: auto; margin-right: auto; }
   .assistant-welcome { padding: 1rem 0 0.25rem; }
   .welcome-kicker { font-size: 0.76rem; font-weight: 750; letter-spacing: 0.045em; text-transform: uppercase; color: var(--ec-accent, #2563EB); margin-bottom: 0.55rem; }
@@ -64,6 +74,34 @@
   .welcome-action:disabled:hover { border-color: var(--ec-line, #E2E8F0); background: var(--ec-surface, #fff); }
   .welcome-action svg { width: 16px; height: 16px; flex: 0 0 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; color: var(--ec-ink-soft, #64748B); }
   .welcome-note { margin: 0.85rem 0 0; max-width: 680px; font-size: 0.78rem; color: var(--ec-ink-soft, #64748B); }
+
+  /* NOUVEAU : icone de marque au-dessus du titre d'accueil, comme le
+     soleil (Claude) ou le logo (Grok, Perplexity) sur leurs ecrans
+     d'accueil respectifs. Simple cercle avec le logo ExamensCam. */
+  .welcome-brand {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .welcome-brand img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Sur mobile, l'accueil est centre : le kicker, le titre et le
+     texte de contexte doivent donc aussi etre centres pour rester
+     coherents visuellement, comme sur les apps de reference. */
+  .assistant-welcome.centree {
+    text-align: center;
+  }
+
+  .assistant-welcome.centree .welcome-question {
+    text-align: left;
+  }
   .msg { display: flex; gap: 0.7rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
   .msg-bot { align-items: flex-start; }
   .msg-bot-corps { color: var(--ec-ink, #0F172A); flex: 1 1 auto; width: 100%; max-width: none; min-width: 0; box-sizing: border-box; overflow-wrap: anywhere; word-break: normal; }
@@ -138,11 +176,61 @@
     .assistant-welcome { padding-top: 0.7rem; }
     .welcome-title { font-size: 1.55rem; }
     .welcome-context { font-size: 0.92rem; line-height: 1.65; }
-    .welcome-actions { grid-template-columns: 1fr; gap: 0.45rem; }
-    .welcome-action { min-height: 46px; padding: 0.65rem 0.78rem; }
+
+    /* MOBILE (inspire de Claude / Grok / Perplexity) : les actions
+       deviennent des chips horizontales qui defilent au doigt, comme
+       "Essayez SuperGrok" ou les suggestions de Perplexity -- une
+       grille verticale pleine largeur prend trop de place et ne
+       ressemble pas a une app mobile native. La liste complete de
+       widgets JS reste identique (creerAction) : seule la mise en
+       page CSS change ici. */
+    .welcome-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 0.5rem;
+      max-width: 100%;
+      padding-bottom: 0.3rem;
+      margin: 0 -0.85rem;
+      padding-left: 0.85rem;
+      padding-right: 0.85rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .welcome-actions::-webkit-scrollbar {
+      display: none;
+    }
+
+    .welcome-action {
+      flex: 0 0 auto;
+      min-height: 40px;
+      min-width: 0;
+      width: auto;
+      padding: 0.6rem 0.85rem;
+      border-radius: 999px;
+      justify-content: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      font-size: 0.82rem;
+    }
+
+    .welcome-action svg {
+      order: -1;
+    }
+
+    .welcome-note {
+      display: none;
+    }
+
+    .welcome-question {
+      margin-top: 0.9rem;
+      font-size: 0.84rem;
+    }
     .msg-user-bulle { max-width: 88%; }
-    .assistant-saisie { max-width: none; padding: 0.55rem 0.65rem max(0.65rem, env(safe-area-inset-bottom)); }
-    .assistant-input-form { min-height: 58px; border-radius: 16px; }
+    .assistant-saisie { max-width: none; padding: 0.55rem 0.75rem max(0.75rem, env(safe-area-inset-bottom)); }
+    .assistant-input-form { min-height: 58px; border-radius: 20px; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.09); }
     .composer-action, .btn-envoyer { width: 38px; height: 38px; flex-basis: 38px; }
     .composer-note { font-size: 0.64rem; }
     .panneau-generer { left: 0.65rem; right: 0.65rem; }
@@ -364,9 +452,15 @@
   }
 
   function afficherAccueil() {
+    fenetre.classList.add('mode-accueil');
+
     const accueil = document.createElement('section');
-    accueil.className = 'assistant-welcome';
+    accueil.className = 'assistant-welcome centree';
     accueil.id = 'assistant-welcome';
+
+    const marque = document.createElement('div');
+    marque.className = 'welcome-brand';
+    marque.innerHTML = `<img src="{{ url_for('static', filename='img/logo.svg') }}" alt="">`;
 
     const kicker = document.createElement('div');
     kicker.className = 'welcome-kicker';
@@ -441,13 +535,18 @@
     note.className = 'welcome-note';
     note.textContent = 'Annales officielles indexees par lycee et college. Les epreuves generees suivent le programme et le bareme reels de ta serie.';
 
-    accueil.append(kicker, titre, contexte, question, actions, note);
+    accueil.append(marque, kicker, titre, contexte, question, actions, note);
     fenetre.appendChild(accueil);
   }
 
   function masquerAccueil() {
     const accueil = document.getElementById('assistant-welcome');
     if (accueil) accueil.remove();
+    // Une fois qu'on quitte l'accueil pour une vraie conversation, on
+    // repasse la fenetre en alignement normal (haut) -- le centrage
+    // vertical n'a de sens que pour l'ecran d'accueil vide, jamais
+    // pour une conversation avec des messages.
+    fenetre.classList.remove('mode-accueil');
   }
 
   function commencerAvecTexte(texte) {
@@ -473,6 +572,7 @@
   }
 
   function ajouterMessageUtilisateur(texte) {
+    fenetre.classList.remove('mode-accueil');
     const ligne = document.createElement('div');
     ligne.className = 'msg msg-user';
     const bulle = document.createElement('div');
@@ -589,6 +689,7 @@
         return;
       }
 
+      fenetre.classList.remove('mode-accueil');
       historique.forEach(tour => {
         if (tour.role === 'user') {
           ajouterMessageUtilisateur(tour.content);
