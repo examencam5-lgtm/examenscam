@@ -15,6 +15,8 @@ from flask import send_file
 from scripts.generer_epreuve_json import generer_epreuve_json
 from scripts.construire_pdf_officiel import construire_pdf
 from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream
+from generer_search_index import generer as generer_index
+from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves, get_annees
 from scripts.extraire_entete_personnalisable import (
     extraire_entete_pour_upload, personnaliser_et_decouper, generer_apercu_brut,
     supprimer_extraction_temporaire, ExtractionEnteteEchouee, EnteteSourceIncomplete,
@@ -754,6 +756,15 @@ def admin_parcours(session_id):
         jours=jours,
     )
 
+@app.route('/admin/regenerer-index', methods=['POST'])
+@admin_requis
+def admin_regenerer_index():
+    resultat = generer_index()
+    if not resultat['ok']:
+        app.logger.error(f"Échec régénération search_index : {resultat['erreur']}")
+        return jsonify(resultat), 500
+    return jsonify(resultat)
+
 
 @app.route('/inscription', methods=['GET', 'POST'])
 @limiter_debit(max_requetes=8, fenetre_sec=600)
@@ -1157,17 +1168,24 @@ def chat_matieres():
     if not niveau:
         return jsonify({'erreur': 'Niveau requis.'}), 400
     return jsonify({'matieres': get_toutes_matieres(niveau, serie)})
-
-
 @app.route('/chat/parcourir')
 def chat_parcourir_route():
     niveau = request.args.get('niveau', '')
     matiere = request.args.get('matiere', '')
     serie = request.args.get('serie') or None
+    annee = request.args.get('annee', type=int)   # <-- AJOUT
     if not niveau or not matiere:
         return jsonify({'erreur': 'Niveau et matière requis.'}), 400
-    resultats = lister_epreuves(niveau, matiere, serie)
+    resultats = lister_epreuves(niveau, matiere, serie, annee)   # <-- annee passé ici
     return jsonify({'resultats': resultats})
+@app.route('/chat/annees')
+def chat_annees():
+    niveau = request.args.get('niveau', '')
+    matiere = request.args.get('matiere', '')
+    serie = request.args.get('serie') or None
+    if not niveau or not matiere:
+        return jsonify({'erreur': 'Niveau et matière requis.'}), 400
+    return jsonify({'annees': get_annees(niveau, matiere, serie)})
 
 @app.route('/mon-compte', methods=['GET', 'POST'])
 @eleve_requis

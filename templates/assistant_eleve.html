@@ -958,7 +958,7 @@
       btn.type = 'button';
       btn.className = 'chip-option';
       btn.textContent = matiere;
-      btn.addEventListener('click', () => lancerParcourir(niveau, serie, matiere));
+      btn.addEventListener('click', () => afficherChoixAnnee(niveau, serie, matiere));
       options.appendChild(btn);
     });
     panneau.appendChild(options);
@@ -974,19 +974,69 @@
     }
   }
 
-  async function lancerParcourir(niveau, serie, matiere) {
+  // NOUVEAU (05/09/2026) : 4e etape de la navigation "Parcourir" --
+  // Niveau -> Serie -> Matiere -> ANNEE -> resultats. Interroge
+  // /chat/annees ; si aucune annee n'est indexee pour cette matiere
+  // (encore possible tant que search_index n'a pas ete regeneree en
+  // prod), on saute directement aux resultats plutot que de bloquer
+  // l'eleve sur une etape vide.
+  async function afficherChoixAnnee(niveau, serie, matiere) {
+    const panneau = document.getElementById('panneau-generer');
+    if (!panneau) return;
+    panneau.innerHTML = '<p>Chargement...</p>';
+
+    const params = new URLSearchParams({ niveau, matiere });
+    if (serie) params.set('serie', serie);
+    const reponse = await fetch(`{{ url_for('chat_annees') }}?${params}`);
+    const { annees } = await reponse.json();
+
+    if (!annees || annees.length === 0) {
+      lancerParcourir(niveau, serie, matiere, null);
+      return;
+    }
+
+    panneau.innerHTML = '';
+    const texte = document.createElement('p');
+    texte.textContent = 'Quelle annee ?';
+    panneau.appendChild(texte);
+
+    const options = document.createElement('div');
+    options.className = 'panneau-generer-options';
+
+    annees.forEach(annee => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-option';
+      btn.textContent = String(annee);
+      btn.addEventListener('click', () => lancerParcourir(niveau, serie, matiere, annee));
+      options.appendChild(btn);
+    });
+
+    const btnToutes = document.createElement('button');
+    btnToutes.type = 'button';
+    btnToutes.className = 'chip-option';
+    btnToutes.textContent = 'Toutes les annees';
+    btnToutes.addEventListener('click', () => lancerParcourir(niveau, serie, matiere, null));
+    options.appendChild(btnToutes);
+
+    panneau.appendChild(options);
+  }
+
+  async function lancerParcourir(niveau, serie, matiere, annee) {
     fermerPanneauGenerer();
     masquerAccueil();
 
+    const suffixeAnnee = annee ? ` ${annee}` : '';
     const libelleDemande = serie
-      ? `Parcourir : ${niveau} ${serie} - ${matiere}`
-      : `Parcourir : ${niveau} - ${matiere}`;
+      ? `Parcourir : ${niveau} ${serie} - ${matiere}${suffixeAnnee}`
+      : `Parcourir : ${niveau} - ${matiere}${suffixeAnnee}`;
     ajouterMessageUtilisateur(libelleDemande);
     const ligneAttente = ajouterMessageAssistant('', true);
 
     try {
       const params = new URLSearchParams({ niveau, matiere });
       if (serie) params.set('serie', serie);
+      if (annee) params.set('annee', annee);
       const reponseServeur = await fetch(`{{ url_for('chat_parcourir_route') }}?${params}`);
       const { resultats, erreur } = await reponseServeur.json();
       retirerLigneAttente(ligneAttente);

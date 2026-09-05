@@ -12,6 +12,16 @@
   .dash-filtre.actif { background: var(--ink); color: var(--surface); border-color: var(--ink); }
   .dash-logout { font-size: 12px; color: var(--ink-soft); text-decoration: none; align-self: center; }
 
+  .dash-actions-haut { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .dash-btn-index {
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; padding: 6px 14px;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+    color: var(--ink); cursor: pointer;
+  }
+  .dash-btn-index:hover { border-color: var(--ink); }
+  .dash-btn-index:disabled { opacity: 0.5; cursor: default; }
+  .dash-index-statut { font-size: 11.5px; margin: 6px 0 0; font-family: 'Inter', sans-serif; }
+
   .dash-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
   .dash-carte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
   .dash-carte-num { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; color: var(--ink); }
@@ -53,7 +63,15 @@
         <a href="/admin/dashboard/journal?jours={{ jours }}" class="dash-filtre">Journal detaille &rarr;</a>
       </div>
     </div>
-    <a href="/admin/logout" class="dash-logout">Se deconnecter</a>
+    <div class="dash-actions-haut">
+      <div>
+        <button type="button" class="dash-btn-index" id="btn-regenerer-index">
+          Régénérer l'index de recherche
+        </button>
+        <p class="dash-index-statut" id="regen-index-statut"></p>
+      </div>
+      <a href="/admin/logout" class="dash-logout">Se deconnecter</a>
+    </div>
   </div>
 
   <div class="dash-cartes">
@@ -188,4 +206,37 @@
     </div>
   </div>
 </div>
+
+<script>
+(function () {
+  const btn = document.getElementById('btn-regenerer-index');
+  const statut = document.getElementById('regen-index-statut');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    const texteInitial = btn.textContent;
+    btn.textContent = 'Régénération en cours...';
+    statut.textContent = '';
+
+    try {
+      const reponse = await fetch('/admin/regenerer-index', { method: 'POST' });
+      const resultat = await reponse.json();
+      if (resultat.ok) {
+        statut.style.color = '#2A7A4A';
+        statut.textContent = `Index régénéré : ${resultat.officielles} officielles + ${resultat.externes} externes = ${resultat.total} entrées.`;
+      } else {
+        statut.style.color = '#B33';
+        statut.textContent = `Échec : ${resultat.erreur}`;
+      }
+    } catch (erreur) {
+      statut.style.color = '#B33';
+      statut.textContent = "Erreur réseau, réessaie.";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = texteInitial;
+    }
+  });
+})();
+</script>
 {% endblock %}
