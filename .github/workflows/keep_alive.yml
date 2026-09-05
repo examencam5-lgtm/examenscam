@@ -1,0 +1,13 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping ExamensCam
+        run: curl -f -s -o /dev/null -w "%{http_code}" https://examenscam.onrender.com || echo "Echec du ping"
