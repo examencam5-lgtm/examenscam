@@ -5,9 +5,10 @@ import json
 import io
 import time
 from pathlib import Path
-from datetime import timedelta
+from datetime import timedelta, datetime
 import secrets
 from functools import wraps
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 load_dotenv()
 from flask import send_file
@@ -52,6 +53,7 @@ from analytics import (
 from database_eleves import (
     create_table as create_table_eleves, creer_compte, verifier_identifiants,
     marquer_connexion, get_eleve_par_id, modifier_profil, changer_mot_de_passe,
+    supprimer_compte, identifiant_disponible,
     incrementer_usage_mensuel, login_identifiant_bloque, enregistrer_echec_identifiant,
     reinitialiser_echecs_identifiant, minutes_avant_deblocage_identifiant,
     NIVEAUX_VALIDES as NIVEAUX_VALIDES_ELEVES, SERIES_VALIDES as SERIES_VALIDES_ELEVES,
@@ -263,6 +265,24 @@ def _apres_requete(response):
     if not request.cookies.get('ec_session') and hasattr(g, 'session_id'):
         response.set_cookie('ec_session', g.session_id, max_age=60*60*24*365, samesite='Lax')
     return response
+
+
+# ══════════════════════════════════════════
+# FONCTION UTILITAIRE - PROTECTION OPEN REDIRECT
+# ══════════════════════════════════════════
+
+def redirection_sure(cible: str, defaut: str = '/mon-compte') -> str:
+    """Valide qu'une destination de redirection post-connexion est un
+    chemin LOCAL, jamais une URL externe -- protection contre l'open
+    redirect. Voir commentaire détaillé plus haut dans ce fichier."""
+    if not cible:
+        return defaut
+    if not cible.startswith('/') or cible.startswith('//'):
+        return defaut
+    parsed = urlparse(cible)
+    if parsed.netloc or parsed.scheme:
+        return defaut
+    return cible
 
 
 # ══════════════════════════════════════════
@@ -582,6 +602,18 @@ def api_search():
 
     return jsonify(resultat)
 
+# ══════════════════════════════════════════
+# API - VÉRIFICATION D'IDENTIFIANT EN DIRECT (AJAX)
+# ══════════════════════════════════════════
+
+@app.route('/api/identifiant-disponible')
+@limiter_debit(max_requetes=20, fenetre_sec=10)
+def api_identifiant_disponible():
+    identifiant = (request.args.get('identifiant') or '').strip()
+    if len(identifiant) < 3:
+        return jsonify({'disponible': None})  # trop court pour juger, pas d'avis
+    return jsonify({'disponible': identifiant_disponible(identifiant)})
+
 @app.route('/api/log-clic', methods=['POST'])
 @limiter_debit(max_requetes=20, fenetre_sec=10)
 def api_log_clic():
@@ -614,11 +646,15 @@ def eleve_requis(f):
     def wrapper(*args, **kwargs):
         eleve_id = session.get('eleve_id')
         if not eleve_id:
-            return redirect('/connexion')
+            # NOUVEAU : on retient la page que l'élève essayait
+            # d'atteindre (request.path) pour l'y renvoyer après
+            # connexion -- au lieu de toujours atterrir sur
+            # /mon-compte, sans rapport avec son intention de départ.
+            return redirect(url_for('connexion', next=request.path))
         eleve = get_eleve_par_id(eleve_id)
         if not eleve:
             session.pop('eleve_id', None)
-            return redirect('/connexion')
+            return redirect(url_for('connexion', next=request.path))
         g.eleve = eleve
         return f(*args, **kwargs)
     return wrapper
@@ -720,8 +756,15 @@ def admin_parcours(session_id):
 
 
 @app.route('/inscription', methods=['GET', 'POST'])
+@limiter_debit(max_requetes=8, fenetre_sec=600)
 def inscription():
+    # NOUVEAU : rate-limiting ajouté sur cette route -- absente avant,
+    # contrairement à /connexion qui a toujours eu un blocage par
+    # identifiant. Sans ça, /inscription pouvait être spammée pour
+    # créer des comptes en masse sans aucune limite.
     erreur = None
+    next_url = redirection_sure(request.args.get('next') or request.form.get('next'))
+
     if request.method == 'POST':
         token_soumis = request.form.get('csrf_token', '')
         token_attendu = session.get('csrf_token_inscription', '')
@@ -730,42 +773,39 @@ def inscription():
         else:
             identifiant = request.form.get('identifiant', '').strip()
             mot_de_passe = request.form.get('mot_de_passe', '')
+            prenom = request.form.get('prenom', '').strip()
             nom = request.form.get('nom', '').strip()
             niveau = request.form.get('niveau', '')
             serie = request.form.get('serie') or None
             classe = request.form.get('classe', '').strip() or None
+            etablissement = request.form.get('etablissement', '').strip() or None
             email = request.form.get('email', '').strip() or None
             telephone = request.form.get('telephone', '').strip() or None
 
             eleve_id, erreur = creer_compte(
-                identifiant, mot_de_passe, nom, niveau, serie, classe, email, telephone
+                identifiant, mot_de_passe, prenom, nom, niveau, serie, classe,
+                etablissement, email, telephone
             )
             if eleve_id:
                 session.pop('csrf_token_inscription', None)
-                # NOUVEAU (02/09/2026) : session permanente -- voir
-                # PERMANENT_SESSION_LIFETIME dans app.config.update()
-                # plus haut. Sans cette ligne, le cookie de session
-                # expire à la fermeture du navigateur quelle que soit
-                # la durée configurée -- session.permanent bascule
-                # explicitement sur ce mode "longue durée".
                 session.permanent = True
                 session['eleve_id'] = eleve_id
                 marquer_connexion(eleve_id)
-                return redirect('/mon-compte')
+                return redirect(next_url)
 
     session['csrf_token_inscription'] = secrets.token_urlsafe(32)
     return render_template(
         'inscription.html', erreur=erreur,
         csrf_token=session['csrf_token_inscription'],
         niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
+        next_url=next_url,
     )
-
-
 @app.route('/connexion', methods=['GET', 'POST'])
 def connexion():
     erreur = None
     bloque = False
     minutes_restantes = 0
+    next_url = redirection_sure(request.args.get('next') or request.form.get('next'))
 
     if request.method == 'POST':
         identifiant = request.form.get('identifiant', '').strip()
@@ -783,14 +823,10 @@ def connexion():
             if eleve:
                 reinitialiser_echecs_identifiant(identifiant)
                 session.pop('csrf_token_connexion', None)
-                # NOUVEAU (02/09/2026) : voir commentaire équivalent
-                # dans inscription() -- même raisonnement, la connexion
-                # doit aussi persister au-delà de la fermeture du
-                # navigateur, pas seulement la création de compte.
                 session.permanent = True
                 session['eleve_id'] = eleve['id']
                 marquer_connexion(eleve['id'])
-                return redirect('/mon-compte')
+                return redirect(next_url)
             else:
                 enregistrer_echec_identifiant(identifiant)
                 erreur = "Identifiant ou mot de passe incorrect."
@@ -803,8 +839,8 @@ def connexion():
         'connexion.html', erreur=erreur, bloque=bloque,
         minutes_restantes=minutes_restantes,
         csrf_token=session['csrf_token_connexion'],
+        next_url=next_url,
     )
-
 
 @app.route('/deconnexion')
 def deconnexion():
@@ -1149,10 +1185,12 @@ def mon_compte():
             if action == 'profil':
                 erreur = modifier_profil(
                     g.eleve['id'],
+                    prenom=request.form.get('prenom'),
                     nom=request.form.get('nom'),
                     niveau=request.form.get('niveau'),
                     serie=request.form.get('serie') or None,
                     classe=request.form.get('classe'),
+                    etablissement=request.form.get('etablissement'),
                 )
                 if not erreur:
                     succes = "Profil mis à jour."
@@ -1176,6 +1214,30 @@ def mon_compte():
         niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
         csrf_token=session['csrf_token_mon_compte'],
     )
+
+# ══════════════════════════════════════════
+# SUPPRESSION DE COMPTE
+# ══════════════════════════════════════════
+
+@app.route('/mon-compte/supprimer', methods=['POST'])
+@eleve_requis
+def mon_compte_supprimer():
+    token_soumis = request.form.get('csrf_token', '')
+    token_attendu = session.get('csrf_token_mon_compte', '')
+    if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
+        return redirect('/mon-compte')
+
+    erreur = supprimer_compte(g.eleve['id'], request.form.get('mot_de_passe', ''))
+    if erreur:
+        return render_template(
+            'mon_compte.html', eleve=g.eleve, erreur=erreur, succes=None,
+            niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
+            csrf_token=session['csrf_token_mon_compte'],
+        )
+
+    session.pop('eleve_id', None)
+    return redirect('/')
+
 @app.route('/abonnement')
 @eleve_requis
 def abonnement_page():
@@ -1206,9 +1268,9 @@ def abonnement_payer():
             payment_ref=payment_ref,
             montant=MONTANT_ABONNEMENT_FCFA,
             notify_url=f'{base_url}/paiement/notification',
-            return_url=f'{base_url}/paiement/retour?ref={payment_ref}',   # <-- ICI, remplace l'ancienne ligne return_url
+            return_url=f'{base_url}/paiement/retour?ref={payment_ref}',
             user=str(eleve_id),
-            first_name=eleve['nom'],
+            first_name=eleve.get('prenom') or eleve['nom'],
         )
     except PaiementMonetbilEchoue as e:
         app.logger.error(f"Échec initiation paiement (élève {eleve_id}) : {e}")

@@ -7,16 +7,51 @@ prochaines priorites de scraping).
 
 Import dans app.py :
     from database_search import rechercher, enregistrer_recherche_infructueuse, rechercher_avec_scoring
-"""
-import sqlite3
-import re
-from pathlib import Path
 
-# Necessaire pour normaliser() les requetes -- oublie dans la
-# version precedente, cause de l'ImportError au demarrage.
+═══════════════════════════════════════════════════════
+MIGRATION POSTGRES (NEON) — 04/09/2026
+═══════════════════════════════════════════════════════
+Même migration que les autres modules database_*.py :
+  - sqlite3.connect(DB_PATH)        -> psycopg2.connect(DATABASE_URL)
+  - conn.row_factory = sqlite3.Row  -> cursor_factory=RealDictCursor
+  - placeholders '?'                -> placeholders '%s'
+  - INTEGER PRIMARY KEY AUTOINCREMENT -> GENERATED ALWAYS AS IDENTITY
+  - datetime('now')                 -> NOW()
+  - conn.execute(...) direct        -> conn.cursor() puis cur.execute(...)
+
+BONNE SURPRISE : la clause "ON CONFLICT(requete) DO UPDATE SET ..."
+utilisée dans enregistrer_recherche_infructueuse() est déjà une
+syntaxe standard SQL reprise à l'identique par SQLite (depuis 3.24) ET
+Postgres -- aucune adaptation nécessaire sur cette partie précise.
+
+⚠️ DÉPENDANCE EXTERNE NON RÉSOLUE : ce fichier interroge la table
+`search_index` (fonctions rechercher() et rechercher_avec_scoring())
+sans jamais la créer -- son create_table() se trouve probablement dans
+generer_search_index.py (déjà importé ici pour normaliser()), non
+fourni au moment de cette migration. Cette table doit exister côté
+Postgres avant que la recherche fonctionne.
+
+CE QUI NE CHANGE PAS : tous les alias, le scoring (calculer_score),
+la normalisation de requête -- pure logique Python, aucun SQL,
+inchangés à l'identique.
+"""
+import os
+import re
+
+import psycopg2
+import psycopg2.extras
+
+# Necessaire pour normaliser() les requetes.
 from generer_search_index import normaliser
 
-DB_PATH = Path('data') / 'annales.db'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL manquant. Configure cette variable d'environnement "
+        "sur Render avec la chaine de connexion Postgres fournie par Neon "
+        "-- sans elle, la recherche ne peut pas fonctionner."
+    )
 
 # ═══════════════════════════════════════════════════════
 # ALIAS - Comprendre le langage des élèves
@@ -185,7 +220,7 @@ MATIERES_CANONIQUES = {
 
 
 # ═══════════════════════════════════════════════════════
-# FONCTIONS DE NORMALISATION
+# FONCTIONS DE NORMALISATION -- INCHANGÉES (pure Python)
 # ═══════════════════════════════════════════════════════
 
 def normaliser_avec_alias(q: str) -> str:
@@ -253,7 +288,7 @@ def normaliser_requete_complete(q: str) -> dict:
 
 
 # ═══════════════════════════════════════════════════════
-# FONCTIONS DE SUGGESTION
+# FONCTIONS DE SUGGESTION -- INCHANGÉES (pure Python)
 # ═══════════════════════════════════════════════════════
 
 def suggerer_correction(q: str, niveau: str = None, serie: str = None) -> list:
@@ -315,24 +350,28 @@ def suggerer_correction(q: str, niveau: str = None, serie: str = None) -> list:
 # ═══════════════════════════════════════════════════════
 
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    """Retourne une connexion Postgres dont les curseurs renvoient des
+    lignes de type dict (RealDictRow) -- même ergonomie que
+    sqlite3.Row d'origine : row['colonne'] fonctionne à l'identique."""
+    return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
 
 def creer_table_recherches_infructueuses():
     conn = get_connection()
-    conn.executescript("""
-        CREATE TABLE IF NOT EXISTS recherches_infructueuses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            requete TEXT NOT NULL,
-            nombre_occurrences INTEGER DEFAULT 1,
-            date_derniere TEXT DEFAULT (datetime('now')),
-            UNIQUE(requete)
-        );
-    """)
-    conn.commit()
-    conn.close()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS recherches_infructueuses (
+                id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                requete TEXT NOT NULL,
+                nombre_occurrences INTEGER DEFAULT 1,
+                date_derniere TEXT DEFAULT (NOW()::text),
+                UNIQUE(requete)
+            );
+        """)
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def rechercher(q: str, limite: int = 8, niveau: str = None, serie: str = None, matiere: str = None) -> list[dict]:
@@ -343,9 +382,12 @@ def rechercher(q: str, limite: int = 8, niveau: str = None, serie: str = None, m
     - page niveau (/bac) : niveau seul
     - page serie (/bac/C) : niveau + serie
     - page matiere (carrefour) : niveau + serie + matiere -> le plus precis
-    """
+
+    ⚠️ Suppose que la table `search_index` existe déjà côté Postgres
+    -- voir avertissement en tête de fichier."""
     conn = get_connection()
     try:
+        cur = conn.cursor()
         q_normalisee = normaliser(q)
         tokens = [t for t in q_normalisee.split() if t]
         if not tokens:
@@ -354,23 +396,24 @@ def rechercher(q: str, limite: int = 8, niveau: str = None, serie: str = None, m
         filtre_sql = ""
         filtre_params = []
         if niveau:
-            filtre_sql += " AND niveau = ?"
+            filtre_sql += " AND niveau = %s"
             filtre_params.append(niveau)
         if serie:
-            filtre_sql += " AND serie = ?"
+            filtre_sql += " AND serie = %s"
             filtre_params.append(serie)
         if matiere:
-            filtre_sql += " AND matiere = ?"
+            filtre_sql += " AND matiere = %s"
             filtre_params.append(matiere)
 
         # Priorite 1 : phrase complete contigue (le signal le plus fiable,
         # ex: quelqu'un qui tape exactement "lycee classique d edea")
-        phrase_rows = conn.execute(f"""
+        cur.execute(f"""
             SELECT libelle, destination, type_source, niveau, matiere, serie
             FROM search_index
-            WHERE libelle_recherche LIKE ?{filtre_sql}
+            WHERE libelle_recherche LIKE %s{filtre_sql}
             ORDER BY libelle
-        """, (f"%{q_normalisee}%", *filtre_params)).fetchall()
+        """, (f"%{q_normalisee}%", *filtre_params))
+        phrase_rows = cur.fetchall()
 
         # Priorite 2 : tous les mots presents, n'importe quel ordre --
         # c'est CA qui fait que "maths bac c" == "bac c maths".
@@ -382,14 +425,15 @@ def rechercher(q: str, limite: int = 8, niveau: str = None, serie: str = None, m
         tokens_significatifs = [t for t in tokens if len(t) >= 2]
 
         if tokens_significatifs:
-            conditions_mots = " AND ".join(["libelle_recherche LIKE ?" for _ in tokens_significatifs])
+            conditions_mots = " AND ".join(["libelle_recherche LIKE %s" for _ in tokens_significatifs])
             params_mots = [f"%{t}%" for t in tokens_significatifs] + filtre_params
-            tokens_rows = conn.execute(f"""
+            cur.execute(f"""
                 SELECT libelle, destination, type_source, niveau, matiere, serie
                 FROM search_index
                 WHERE {conditions_mots}{filtre_sql}
                 ORDER BY libelle
-            """, params_mots).fetchall()
+            """, params_mots)
+            tokens_rows = cur.fetchall()
         else:
             tokens_rows = []
 
@@ -414,7 +458,7 @@ def rechercher(q: str, limite: int = 8, niveau: str = None, serie: str = None, m
 
 
 # ═══════════════════════════════════════════════════════
-# SCORING - Algorithme de pertinence
+# SCORING - Algorithme de pertinence -- INCHANGÉ (pure Python)
 # ═══════════════════════════════════════════════════════
 
 def calculer_score(item: dict, q: str, normalisation: dict) -> int:
@@ -546,13 +590,17 @@ def rechercher_avec_scoring(q: str, limite: int = 8, niveau: str = None, serie: 
             item['annee'] = int(annee_match.group(1)) if annee_match else None
             try:
                 conn = get_connection()
-                row = conn.execute("""
-                    SELECT vues FROM annales
-                    WHERE matiere = ? AND annee = ?
-                    LIMIT 1
-                """, (item.get('matiere'), item.get('annee', 0))).fetchone()
-                item['vues'] = row['vues'] if row else 0
-                conn.close()
+                try:
+                    cur = conn.cursor()
+                    cur.execute("""
+                        SELECT vues FROM annales
+                        WHERE matiere = %s AND annee = %s
+                        LIMIT 1
+                    """, (item.get('matiere'), item.get('annee', 0)))
+                    row = cur.fetchone()
+                    item['vues'] = row['vues'] if row else 0
+                finally:
+                    conn.close()
             except Exception:
                 item['vues'] = 0
         else:
@@ -583,17 +631,22 @@ def rechercher_avec_scoring(q: str, limite: int = 8, niveau: str = None, serie: 
 
 
 def enregistrer_recherche_infructueuse(q: str):
+    """MIGRATION : la clause ON CONFLICT(requete) DO UPDATE SET ...
+    est déjà une syntaxe Postgres valide telle quelle -- seul le
+    placeholder '?' -> '%s' change ici."""
     conn = get_connection()
     try:
-        conn.execute("""
+        cur = conn.cursor()
+        cur.execute("""
             INSERT INTO recherches_infructueuses (requete)
-            VALUES (?)
+            VALUES (%s)
             ON CONFLICT(requete) DO UPDATE SET
-                nombre_occurrences = nombre_occurrences + 1,
-                date_derniere = datetime('now')
+                nombre_occurrences = recherches_infructueuses.nombre_occurrences + 1,
+                date_derniere = NOW()::text
         """, (q,))
         conn.commit()
     except Exception as e:
+        conn.rollback()
         print(f"enregistrer_recherche_infructueuse error: {e}")
     finally:
         conn.close()
@@ -602,12 +655,14 @@ def enregistrer_recherche_infructueuse(q: str):
 def get_recherches_infructueuses_frequentes(limite: int = 20) -> list[dict]:
     conn = get_connection()
     try:
-        rows = conn.execute("""
+        cur = conn.cursor()
+        cur.execute("""
             SELECT requete, nombre_occurrences, date_derniere
             FROM recherches_infructueuses
             ORDER BY nombre_occurrences DESC
-            LIMIT ?
-        """, (limite,)).fetchall()
+            LIMIT %s
+        """, (limite,))
+        rows = cur.fetchall()
         return [dict(r) for r in rows]
     finally:
         conn.close()
