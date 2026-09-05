@@ -73,13 +73,6 @@
 
   #groupe-serie { display: none; }
 
-  /* MODIFIÉ (29/08/2026) : Retour au site / Se déconnecter passent de
-     liens texte soulignés à de vrais boutons pilule, dans le même
-     esprit visuel que .compte-btn ("Enregistrer le profil") -- la
-     page ne doit pas mélanger deux styles d'action différents pour
-     des actions de même importance visuelle. `text-decoration:none`
-     est nécessaire car ce sont toujours des balises <a>, qui
-     sous-lignent par défaut. */
   .compte-bas {
     display: flex; justify-content: space-between; align-items: center;
     margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
@@ -90,11 +83,41 @@
     text-decoration: none;
     display: inline-block;
   }
+
+  /* NOUVEAU : zone de danger, visuellement distincte -- séparation
+     nette (bordure rouge, fond légèrement teinté) pour qu'une action
+     irréversible ne puisse jamais être confondue visuellement avec
+     "Enregistrer le profil" ou "Changer le mot de passe". Principe
+     de design de sécurité : la gravité d'une action doit se voir
+     avant même de lire le texte. */
+  .zone-danger {
+    border: 1px solid #E5B8B8; background: #FFF7F7; border-radius: 16px;
+    padding: 20px 22px; margin-top: 8px;
+  }
+  .zone-danger-titre {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.09em; text-transform: uppercase; color: #B33;
+    margin-bottom: 10px;
+  }
+  .zone-danger-texte {
+    font-family: 'Source Serif 4', serif; font-size: 13.5px; color: var(--ink-soft);
+    line-height: 1.6; margin-bottom: 16px;
+  }
+  .btn-danger {
+    padding: 12px 26px; border: 1px solid #B33; border-radius: 999px; background: transparent;
+    color: #B33; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
+  .btn-danger:hover { background: #B33; color: #fff; }
+
+  /* Boîte de confirmation, cachée par défaut -- évite qu'un simple
+     clic accidentel déclenche l'affichage du formulaire de mot de
+     passe pour suppression. */
+  #confirmation-suppression { display: none; margin-top: 16px; }
 </style>
 
 <div class="compte-wrap">
   <p class="compte-eyebrow">ExamensCam</p>
-  <h1 class="compte-title">Bonjour, {{ eleve.nom.split(' ')[0] }}</h1>
+  <h1 class="compte-title">Bonjour, {{ eleve.prenom or eleve.nom.split(' ')[0] }}</h1>
 
   <div class="fiche">
     <div class="fiche-badges">
@@ -103,6 +126,7 @@
     </div>
     <p class="fiche-meta">
       Identifiant : {{ eleve.identifiant }}<br>
+      {% if eleve.etablissement %}{{ eleve.etablissement }}<br>{% endif %}
       {% if eleve.messages_ce_mois %}
       {{ eleve.messages_ce_mois }} message{{ 's' if eleve.messages_ce_mois > 1 else '' }} envoyé{{ 's' if eleve.messages_ce_mois > 1 else '' }} à l'assistant ce mois-ci.
       {% endif %}
@@ -118,10 +142,17 @@
 
     <p class="compte-section-titre">Mon profil</p>
 
-    <div class="compte-field">
-      <label class="compte-label" for="nom">Nom complet</label>
-      <input type="text" id="nom" name="nom" class="compte-input"
-             value="{{ eleve.nom }}" autocomplete="name" maxlength="100" required>
+    <div class="compte-row">
+      <div class="compte-field">
+        <label class="compte-label" for="prenom">Prénom</label>
+        <input type="text" id="prenom" name="prenom" class="compte-input"
+               value="{{ eleve.prenom or '' }}" autocomplete="given-name" maxlength="50" required>
+      </div>
+      <div class="compte-field">
+        <label class="compte-label" for="nom">Nom</label>
+        <input type="text" id="nom" name="nom" class="compte-input"
+               value="{{ eleve.nom }}" autocomplete="family-name" maxlength="50" required>
+      </div>
     </div>
 
     <div class="compte-row">
@@ -152,6 +183,12 @@
              value="{{ eleve.classe or '' }}" placeholder="ex. Tle C" maxlength="40">
     </div>
 
+    <div class="compte-field">
+      <label class="compte-label" for="etablissement">Établissement <span style="font-weight:400;">(facultatif)</span></label>
+      <input type="text" id="etablissement" name="etablissement" class="compte-input"
+             value="{{ eleve.etablissement or '' }}" placeholder="ex. Lycée Bilingue de Maroua" maxlength="120">
+    </div>
+
     <button type="submit" class="compte-btn">Enregistrer le profil</button>
   </form>
 
@@ -176,6 +213,33 @@
     <button type="submit" class="compte-btn-secondaire">Changer le mot de passe</button>
   </form>
 
+  <!-- NOUVEAU : suppression de compte -->
+  <div class="compte-section">
+    <p class="compte-section-titre">Zone de danger</p>
+    <div class="zone-danger">
+      <p class="zone-danger-titre">Supprimer mon compte</p>
+      <p class="zone-danger-texte">
+        Action définitive et irréversible. Ton profil, tes conversations
+        et ton historique seront effacés. Tu devras créer un nouveau
+        compte pour revenir sur ExamensCam.
+      </p>
+      <button type="button" class="btn-danger" onclick="afficherConfirmationSuppression()">
+        Supprimer mon compte
+      </button>
+
+      <div id="confirmation-suppression">
+        <form method="POST" action="/mon-compte/supprimer" onsubmit="return confirmerSuppression(event)">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <div class="compte-field" style="margin-top:16px;">
+            <label class="compte-label" for="mot_de_passe_suppression">Confirme ton mot de passe pour continuer</label>
+            <input type="password" id="mot_de_passe_suppression" name="mot_de_passe" class="compte-input" required>
+          </div>
+          <button type="submit" class="btn-danger">Confirmer la suppression définitive</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div class="compte-bas">
     <a href="/" class="compte-btn-secondaire">← Retour au site</a>
     <a href="/deconnexion" class="compte-btn-secondaire">Se déconnecter</a>
@@ -191,5 +255,26 @@
     champSerie.required = !estBepc;
   }
   basculerSerie(document.getElementById('niveau').value);
+
+  function afficherConfirmationSuppression() {
+    document.getElementById('confirmation-suppression').style.display = 'block';
+    document.getElementById('mot_de_passe_suppression').focus();
+  }
+
+  // Double confirmation explicite -- une action irréversible ne doit
+  // jamais dépendre d'un seul clic. Le mot de passe est déjà une
+  // barrière (voir supprimer_compte() côté serveur), cette boîte de
+  // dialogue en est une seconde, indépendante et locale.
+  function confirmerSuppression(evenement) {
+    var confirme = confirm(
+      "Es-tu vraiment sûr ? Cette action est définitive : ton compte, " +
+      "tes conversations et ton historique seront supprimés pour toujours."
+    );
+    if (!confirme) {
+      evenement.preventDefault();
+      return false;
+    }
+    return true;
+  }
 </script>
 {% endblock %}

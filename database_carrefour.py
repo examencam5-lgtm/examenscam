@@ -1,39 +1,48 @@
 """
-Fonction centrale pour la nouvelle page "carrefour" (les 5 branches
-entre le choix de matière et les épreuves elles-mêmes).
+Fonction centrale pour la page "carrefour" (les branches entre le
+choix de matière et les épreuves elles-mêmes).
 
-Une seule fonction interroge les 4 tables concernées et retourne les
+Une seule fonction interroge les tables concernées et retourne les
 compteurs nécessaires pour afficher des badges vivants sur chaque
-branche (ex: "6 années", "23 épreuves indexées", "4/7 corrigés prêts")
-au lieu de chiffres statiques codés en dur dans le HTML.
+branche (ex: "6 années", "23 épreuves indexées") au lieu de chiffres
+statiques codés en dur dans le HTML.
+
+═══════════════════════════════════════════════════════
+SIMPLIFICATION (05/09/2026) -- BRANCHES CORRIGÉS RETIRÉES
+═══════════════════════════════════════════════════════
+La version précédente de ce fichier interrogeait TROIS tables qui
+n'ont jamais existé nulle part, ni en SQLite ni en Postgres :
+`packs_corriges`, `corriges_fichiers`, `annales_blanches`. Ce n'était
+pas un oubli de migration -- c'est une fonctionnalité de corrigés
+payants (V2, voir la doc de mémoire du projet) qui n'a jamais été
+construite côté base de données. La page /carrefour plantait donc
+systématiquement avec "relation does not exist" dès qu'un élève
+cliquait dessus.
+
+Décision (05/09/2026) : garder les branches qui reposent sur des
+données réellement présentes (énoncés officiels, énoncés blancs,
+énoncés établissements), et neutraliser proprement les deux branches
+"pack corrigés" -- elles retournent None, pas une erreur, en attendant
+que le système de corrigés payants soit réellement construit (V2).
+
+CORRECTIF SUPPLÉMENTAIRE -- ÉNONCÉS BLANCS : il n'existe pas non plus
+de table séparée `annales_blanches`. Les énoncés "blancs" sont déjà
+dans la table `annales`, distingués par la colonne `type_sujet`
+('officiel' ou 'blanc', voir database.py) -- exactement la même table
+que les énoncés officiels, juste filtrée différemment. La branche 1
+(officiels) filtrait auparavant sans préciser type_sujet, comptant
+donc À TORT officiels ET blancs ensemble -- corrigé ici aussi.
 
 ═══════════════════════════════════════════════════════
 MIGRATION POSTGRES (NEON) — 04/09/2026
 ═══════════════════════════════════════════════════════
-Même migration que les autres modules database_*.py :
   - sqlite3.connect(DB_PATH)        -> psycopg2.connect(DATABASE_URL)
   - conn.row_factory = sqlite3.Row  -> cursor_factory=RealDictCursor
   - placeholders '?'                -> placeholders '%s'
   - conn.execute(...) direct        -> conn.cursor() puis cur.execute(...)
-
-⚠️ CORRECTIF DE COMPATIBILITÉ : les COUNT(*) étaient lus par position
-(.fetchone()[0]) -- fonctionne avec sqlite3.Row, PAS avec RealDictRow
-de psycopg2 (dict pur, accès par nom de colonne uniquement). Corrigé
-en ajoutant un alias explicite (COUNT(*) AS n) et en lisant row['n'].
-
-⚠️ DÉPENDANCES EXTERNES NON RÉSOLUES : ce fichier interroge TROIS
-tables dont aucun create_table() n'a été fourni à ce stade de la
-migration : `packs_corriges`, `corriges_fichiers`, `annales_blanches`.
-Ces tables doivent être créées côté Postgres (via leurs modules
-respectifs, non encore migrés) AVANT que get_carrefour() fonctionne
--- sinon erreur "relation does not exist" sur les branches 2, 3 et 4.
-
-Note technique sur la requête des packs (branches 2 et 4) : le
-GROUP BY p.id avec p.titre et p.prix sélectionnés sans agrégation
-fonctionne en Postgres SEULEMENT SI p.id est bien la clé primaire de
-`packs_corriges` (dépendance fonctionnelle reconnue par Postgres
-depuis la version 9.1) -- à vérifier une fois le schéma de cette
-table en main.
+  - COUNT(*) lu par position (row[0]) -> alias explicite (COUNT(*) AS n)
+    et lecture par nom (row['n']), RealDictRow n'autorisant pas
+    l'accès positionnel contrairement à sqlite3.Row.
 
 CE QUI NE CHANGE PAS : get_slug_etablissements() est de la pure
 logique Python (pas de SQL) -- inchangée à l'identique. Le fichier
@@ -82,8 +91,6 @@ def get_slug_etablissements(niveau: str, serie: Optional[str]) -> Optional[str]:
     Construit le slug établissements (ex: 'terminale-c', 'premiere-d')
     à partir du niveau et de la série. Retourne None si aucune
     correspondance sujetexa n'existe pour cette combinaison.
-
-    INCHANGÉ par la migration -- logique Python pure, pas de SQL.
     """
     if niveau == "BEPC":
         return "troisieme"
@@ -111,15 +118,26 @@ def get_connection():
 
 def get_carrefour(niveau: str, matiere: str, serie: Optional[str] = None) -> dict:
     """
-    Retourne l'état des 5 branches pour un niveau/série/matière donné.
-    Utilisé pour peupler la page carrefour avec des chiffres réels.
+    Retourne l'état des branches réellement disponibles pour un
+    niveau/série/matière donné : énoncés officiels, énoncés blancs,
+    énoncés établissements.
+
+    Les branches "pack corrigés" (officiel_corriges, blancs_corriges)
+    retournent toujours None pour l'instant -- fonctionnalité V2 non
+    construite côté base de données (voir note en tête de fichier).
+    Le template appelant doit gérer ce None en affichant "bientôt
+    disponible" ou équivalent, pas en supposant que ces clés existent
+    forcément avec des données.
     """
     conn = get_connection()
     try:
         cur = conn.cursor()
 
-        # ── Branche 1 : Énoncés officiels ──
-        q1 = "SELECT COUNT(*) AS n FROM annales WHERE niveau=%s AND matiere=%s AND actif=1"
+        # ── Branche : Énoncés officiels ──
+        # FIX (05/09/2026) : type_sujet='officiel' explicite -- avant,
+        # cette requête comptait officiels ET blancs ensemble, faute de
+        # filtre sur cette colonne.
+        q1 = "SELECT COUNT(*) AS n FROM annales WHERE niveau=%s AND matiere=%s AND actif=1 AND type_sujet='officiel'"
         p1 = [niveau, matiere]
         if serie:
             q1 += " AND serie=%s"
@@ -127,24 +145,11 @@ def get_carrefour(niveau: str, matiere: str, serie: Optional[str] = None) -> dic
         cur.execute(q1, p1)
         nb_officiel = cur.fetchone()['n']
 
-        # ── Branche 2 : Pack corrigés officiels (progression) ──
-        q2 = """
-            SELECT p.id, p.titre, p.prix,
-                   COUNT(c.id) AS total, SUM(CASE WHEN c.statut='pret' THEN 1 ELSE 0 END) AS prets
-            FROM packs_corriges p
-            LEFT JOIN corriges_fichiers c ON c.pack_id = p.id
-            WHERE p.niveau=%s AND p.matiere=%s AND p.categorie='officiel' AND p.actif=1
-        """
-        p2 = [niveau, matiere]
-        if serie:
-            q2 += " AND p.serie=%s"
-            p2.append(serie)
-        q2 += " GROUP BY p.id ORDER BY p.annee_fin DESC LIMIT 1"
-        cur.execute(q2, p2)
-        pack_officiel = cur.fetchone()
-
-        # ── Branche 3 : Énoncés blancs ──
-        q3 = "SELECT COUNT(*) AS n FROM annales_blanches WHERE niveau=%s AND matiere=%s AND actif=1"
+        # ── Branche : Énoncés blancs ──
+        # FIX (05/09/2026) : plus de table `annales_blanches` (n'a
+        # jamais existé) -- les énoncés blancs vivent dans la même
+        # table `annales`, distingués par type_sujet='blanc'.
+        q3 = "SELECT COUNT(*) AS n FROM annales WHERE niveau=%s AND matiere=%s AND actif=1 AND type_sujet='blanc'"
         p3 = [niveau, matiere]
         if serie:
             q3 += " AND serie=%s"
@@ -152,12 +157,7 @@ def get_carrefour(niveau: str, matiere: str, serie: Optional[str] = None) -> dic
         cur.execute(q3, p3)
         nb_blancs = cur.fetchone()['n']
 
-        # ── Branche 4 : Pack corrigés blancs (progression) ──
-        q4 = q2.replace("categorie='officiel'", "categorie='blanc'")
-        cur.execute(q4, p2)
-        pack_blanc = cur.fetchone()
-
-        # ── Branche 5 : Énoncés établissements ──
+        # ── Branche : Énoncés établissements ──
         # annales_externes utilise sa propre nomenclature (niveau='Premiere'
         # au lieu de 'Probatoire', par ex.) -- on traduit via le slug avant
         # d'interroger cette table.
@@ -176,9 +176,14 @@ def get_carrefour(niveau: str, matiere: str, serie: Optional[str] = None) -> dic
 
         return {
             "officiel_enonces": {"nombre": nb_officiel},
-            "officiel_corriges": dict(pack_officiel) if pack_officiel else None,
+            # NEUTRALISÉ (05/09/2026) : pack corrigés officiels --
+            # table packs_corriges jamais construite (V2, corrigés
+            # payants). None signale explicitement "non disponible",
+            # à distinguer d'un pack existant mais vide.
+            "officiel_corriges": None,
             "blancs_enonces": {"nombre": nb_blancs},
-            "blancs_corriges": dict(pack_blanc) if pack_blanc else None,
+            # NEUTRALISÉ (05/09/2026) : même raison que ci-dessus.
+            "blancs_corriges": None,
             "etablissements_enonces": {"nombre": nb_etablissements},
             "slug_etablissements": slug,
         }

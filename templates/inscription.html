@@ -33,7 +33,7 @@
     display: block; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
     letter-spacing: 0.02em; color: var(--ink-soft); margin: 0 4px 6px;
   }
-  .compte-field { margin-bottom: 14px; }
+  .compte-field { margin-bottom: 14px; position: relative; }
   .compte-input, .compte-select {
     width: 100%; padding: 12px 18px; border: 1px solid var(--line); border-radius: 999px;
     font-family: 'Source Serif 4', serif; font-size: 15px; color: var(--ink); background: var(--surface);
@@ -55,6 +55,7 @@
     cursor: pointer; margin-top: 6px; transition: opacity 0.15s ease;
   }
   .compte-btn:hover { opacity: 0.88; }
+  .compte-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .compte-erreur {
     color: #B33; font-size: 12.5px; text-align: center; margin-bottom: 18px; line-height: 1.5;
   }
@@ -64,6 +65,32 @@
   }
   .compte-lien-bas a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
   #groupe-serie { display: none; }
+
+  /* NOUVEAU : statut de disponibilité de l'identifiant, affiché en
+     direct pendant la frappe (voir script en bas de page) -- évite
+     à l'élève de découvrir après soumission que son identifiant est
+     déjà pris, source de friction et d'abandon à l'inscription. */
+  .compte-statut-identifiant {
+    font-family: 'Inter', sans-serif; font-size: 11.5px; margin: 6px 4px 0;
+    min-height: 14px;
+  }
+  .compte-statut-identifiant.dispo { color: #2A7A4A; }
+  .compte-statut-identifiant.pris { color: #B33; }
+
+  /* NOUVEAU : indicateur de force du mot de passe -- barre simple,
+     pas de dépendance externe, pour rester léger et gratuit. */
+  .force-mdp-barre {
+    height: 4px; border-radius: 999px; background: var(--line);
+    margin-top: 8px; overflow: hidden;
+  }
+  .force-mdp-remplissage {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: #B33; transition: width 0.2s ease, background-color 0.2s ease;
+  }
+  .force-mdp-texte {
+    font-family: 'Inter', sans-serif; font-size: 11.5px; color: var(--ink-soft);
+    margin: 6px 4px 0;
+  }
 </style>
 
 <div class="compte-wrap">
@@ -77,8 +104,9 @@
   <p class="compte-erreur">{{ erreur }}</p>
   {% endif %}
 
-  <form method="POST" autocomplete="on">
+  <form method="POST" autocomplete="on" id="form-inscription">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="next" value="{{ next_url or '' }}">
 
     <div class="compte-section">
       <p class="compte-section-titre">Identifiants</p>
@@ -87,7 +115,8 @@
         <label class="compte-label" for="identifiant">Identifiant</label>
         <input type="text" id="identifiant" name="identifiant" class="compte-input"
                autocomplete="username" minlength="3" maxlength="32" required autofocus>
-        <p class="compte-hint">3 à 32 caractères — lettres, chiffres, points ou tirets.</p>
+        <p class="compte-hint">Choisis un nom d'utilisateur mémorable — pas besoin d'un email, invente quelque chose comme <em>kevin.tle</em> ou <em>marie2027</em>. 3 à 32 caractères, lettres/chiffres/points/tirets.</p>
+        <p class="compte-statut-identifiant" id="statut-identifiant" aria-live="polite"></p>
       </div>
 
       <div class="compte-field">
@@ -95,17 +124,30 @@
         <input type="password" id="mot_de_passe" name="mot_de_passe" class="compte-input"
                autocomplete="new-password" minlength="8" required>
         <p class="compte-hint">Au moins 8 caractères.</p>
+        <div class="force-mdp-barre"><div class="force-mdp-remplissage" id="force-mdp-remplissage"></div></div>
+        <p class="force-mdp-texte" id="force-mdp-texte"></p>
+      </div>
+    </div>
+
+    <div class="compte-section">
+      <p class="compte-section-titre">Qui es-tu ?</p>
+
+      <div class="compte-row">
+        <div class="compte-field">
+          <label class="compte-label" for="prenom">Prénom</label>
+          <input type="text" id="prenom" name="prenom" class="compte-input"
+                 autocomplete="given-name" maxlength="50" required>
+        </div>
+        <div class="compte-field">
+          <label class="compte-label" for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" class="compte-input"
+                 autocomplete="family-name" maxlength="50" required>
+        </div>
       </div>
     </div>
 
     <div class="compte-section">
       <p class="compte-section-titre">Profil scolaire</p>
-
-      <div class="compte-field">
-        <label class="compte-label" for="nom">Nom complet</label>
-        <input type="text" id="nom" name="nom" class="compte-input"
-               autocomplete="name" maxlength="100" required>
-      </div>
 
       <div class="compte-row">
         <div class="compte-field">
@@ -135,6 +177,13 @@
         <input type="text" id="classe" name="classe" class="compte-input"
                placeholder="ex. Tle C" maxlength="40">
       </div>
+
+      <div class="compte-field">
+        <label class="compte-label" for="etablissement">Établissement <span style="font-weight:400;">(facultatif)</span></label>
+        <input type="text" id="etablissement" name="etablissement" class="compte-input"
+               placeholder="ex. Lycée Bilingue de Maroua" maxlength="120">
+        <p class="compte-hint">Utile pour du contenu propre à ton établissement, à venir.</p>
+      </div>
     </div>
 
     <div class="compte-section">
@@ -154,10 +203,10 @@
       </div>
     </div>
 
-    <button type="submit" class="compte-btn">Créer mon compte</button>
+    <button type="submit" class="compte-btn" id="btn-inscription">Créer mon compte</button>
   </form>
 
-  <p class="compte-lien-bas">Déjà un compte ? <a href="/connexion">Se connecter</a></p>
+  <p class="compte-lien-bas">Déjà un compte ? <a href="/connexion{{ '?next=' + next_url if next_url and next_url != '/mon-compte' else '' }}">Se connecter</a></p>
 </div>
 
 <script>
@@ -169,5 +218,70 @@
     champSerie.required = !estBepc;
     if (estBepc) { champSerie.value = ''; }
   }
+
+  // NOUVEAU : vérification de disponibilité de l'identifiant en
+  // direct pendant la frappe, avec un léger anti-rebond (debounce)
+  // pour ne pas spammer le serveur à chaque frappe.
+  (function () {
+    var champ = document.getElementById('identifiant');
+    var statut = document.getElementById('statut-identifiant');
+    var minuteur = null;
+
+    champ.addEventListener('input', function () {
+      var valeur = champ.value.trim();
+      statut.textContent = '';
+      statut.className = 'compte-statut-identifiant';
+      clearTimeout(minuteur);
+
+      if (valeur.length < 3) return;
+
+      minuteur = setTimeout(function () {
+        fetch('/api/identifiant-disponible?identifiant=' + encodeURIComponent(valeur))
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.disponible === true) {
+              statut.textContent = '✓ Disponible';
+              statut.className = 'compte-statut-identifiant dispo';
+            } else if (data.disponible === false) {
+              statut.textContent = '✗ Déjà pris, choisis-en un autre';
+              statut.className = 'compte-statut-identifiant pris';
+            }
+          })
+          .catch(function () { /* silencieux -- la validation finale se fait de toute facon a la soumission */ });
+      }, 400);
+    });
+  })();
+
+  // NOUVEAU : indicateur de force du mot de passe -- heuristique
+  // simple en local (longueur + diversité de caractères), sans
+  // dépendance externe ni appel réseau.
+  (function () {
+    var champ = document.getElementById('mot_de_passe');
+    var barre = document.getElementById('force-mdp-remplissage');
+    var texte = document.getElementById('force-mdp-texte');
+
+    champ.addEventListener('input', function () {
+      var v = champ.value;
+      var score = 0;
+      if (v.length >= 8) score++;
+      if (v.length >= 12) score++;
+      if (/[a-z]/.test(v) && /[A-Z]/.test(v)) score++;
+      if (/[0-9]/.test(v)) score++;
+      if (/[^a-zA-Z0-9]/.test(v)) score++;
+
+      var niveaux = [
+        { pct: 0,   couleur: 'var(--line)', texte: '' },
+        { pct: 20,  couleur: '#B33',        texte: 'Très faible' },
+        { pct: 40,  couleur: '#C77',        texte: 'Faible' },
+        { pct: 60,  couleur: '#C90',        texte: 'Correct' },
+        { pct: 80,  couleur: '#7A2',        texte: 'Bon' },
+        { pct: 100, couleur: '#2A7A4A',     texte: 'Excellent' },
+      ];
+      var n = v.length === 0 ? niveaux[0] : niveaux[score] || niveaux[niveaux.length - 1];
+      barre.style.width = n.pct + '%';
+      barre.style.backgroundColor = n.couleur;
+      texte.textContent = n.texte;
+    });
+  })();
 </script>
 {% endblock %}
