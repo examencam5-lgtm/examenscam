@@ -47,8 +47,10 @@
   .assistant-topbar-identite { display: flex; align-items: center; gap: 0.65rem; min-width: 0; }
   .assistant-topbar-titre { margin: 0; font-size: 0.94rem; line-height: 1.15; font-weight: 700; color: var(--ec-ink, #0F172A); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .assistant-topbar-contexte { margin: 2px 0 0; font-size: 0.72rem; color: var(--ec-ink-soft, #64748B); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .header-action, .assistant-hamburger { width: 36px; height: 36px; flex: 0 0 36px; display: flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--ec-ink-soft, #64748B); cursor: pointer; }
-  .header-action:hover, .assistant-hamburger:hover { background: var(--ec-line-soft, #F8FAFC); color: var(--ec-ink, #0F172A); }
+  .header-action, .assistant-hamburger { width: 38px; height: 38px; flex: 0 0 38px; display: flex; align-items: center; justify-content: center; border: none; border-radius: 50%; background: transparent; color: var(--ec-ink, #0F172A); cursor: pointer; transition: background 0.15s; }
+  .header-action:hover, .assistant-hamburger:hover { background: var(--ec-line-soft, #F1F5F9); }
+  .header-action:active, .assistant-hamburger:active { background: var(--ec-accent-soft, #E2E8F0); }
+  .assistant-hamburger svg { width: 20px; height: 20px; stroke-width: 2; }
   .assistant-hamburger { display: none; }
   .assistant-fenetre { flex: 1 1 auto; width: 100%; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 1.5rem clamp(1rem, 5vw, 4.5rem) 1.25rem; display: flex; flex-direction: column; gap: 1.35rem; font-size: 1rem; line-height: 1.7; box-sizing: border-box; scroll-behavior: smooth; }
 
@@ -74,23 +76,6 @@
   .welcome-action:disabled:hover { border-color: var(--ec-line, #E2E8F0); background: var(--ec-surface, #fff); }
   .welcome-action svg { width: 16px; height: 16px; flex: 0 0 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; color: var(--ec-ink-soft, #64748B); }
   .welcome-note { margin: 0.85rem 0 0; max-width: 680px; font-size: 0.78rem; color: var(--ec-ink-soft, #64748B); }
-
-  /* NOUVEAU : icone de marque au-dessus du titre d'accueil, comme le
-     soleil (Claude) ou le logo (Grok, Perplexity) sur leurs ecrans
-     d'accueil respectifs. Simple cercle avec le logo ExamensCam. */
-  .welcome-brand {
-    width: 44px;
-    height: 44px;
-    margin: 0 auto 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .welcome-brand img {
-    width: 32px;
-    height: 32px;
-  }
 
   /* Sur mobile, l'accueil est centre : le kicker, le titre et le
      texte de contexte doivent donc aussi etre centres pour rester
@@ -168,7 +153,7 @@
     .sidebar-backdrop.visible { display: block; }
     .assistant-hamburger { display: flex; }
     .assistant-topbar { padding: 0 0.55rem; height: 56px; min-height: 56px; }
-    .assistant-topbar-identite { flex: 1 1 auto; justify-content: center; }
+    .assistant-topbar-identite { flex: 1 1 auto; justify-content: flex-start; }
     .assistant-topbar-titre { font-size: 0.9rem; }
     .assistant-topbar-contexte { font-size: 0.68rem; }
     .assistant-topbar .header-action { visibility: hidden; }
@@ -454,10 +439,6 @@
     accueil.className = 'assistant-welcome centree';
     accueil.id = 'assistant-welcome';
 
-    const marque = document.createElement('div');
-    marque.className = 'welcome-brand';
-    marque.innerHTML = `<img src="{{ url_for('static', filename='img/logo.svg') }}" alt="">`;
-
     const kicker = document.createElement('div');
     kicker.className = 'welcome-kicker';
     kicker.textContent = etat.matiere || 'Accompagnement scolaire';
@@ -531,7 +512,7 @@
     note.className = 'welcome-note';
     note.textContent = 'Annales officielles indexees par lycee et college. Les epreuves generees suivent le programme et le bareme reels de ta serie.';
 
-    accueil.append(marque, kicker, titre, contexte, question, actions, note);
+    accueil.append(kicker, titre, contexte, question, actions, note);
     fenetre.appendChild(accueil);
   }
 
