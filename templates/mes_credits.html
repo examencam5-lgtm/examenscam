@@ -1,0 +1,113 @@
+{# ═══════════════════════════════════════════════════════
+   AJOUT À FAIRE MANUELLEMENT dans templates/assistant_eleve.html
+   -- pas dans ce fichier-ci, qui EST le template mes_credits.html.
+
+   Insérer ce bloc juste AVANT la ligne :
+       {% if eleve %}
+       <div class="sidebar-compte">
+   dans la sidebar existante, pour rester au-dessus du bloc
+   compte/déconnexion (cohérent avec "Générer" / "Consulter" qui sont
+   eux aussi des sections juste au-dessus du compte) :
+
+   <div class="sidebar-separateur">Compte</div>
+   <a href="{{ url_for('mes_credits') }}" class="sidebar-item" style="text-decoration:none;">
+     <span class="sidebar-icone" aria-hidden="true">
+       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg>
+     </span> Mes crédits
+   </a>
+   ═══════════════════════════════════════════════════════ #}
+{% extends "base.html" %}
+{% block title %}Mes crédits - ExamensCam{% endblock %}
+
+{% block content %}
+<style>
+  .credits-page { max-width: 640px; margin: 2.5rem auto; padding: 0 1.25rem 3rem; }
+  .credits-titre { font-family: 'Fraunces', serif; font-size: 1.7rem; color: var(--ec-ink, #0F172A); margin: 0 0 0.3rem; }
+  .credits-souscription { color: var(--ec-ink-soft, #64748B); font-size: 0.92rem; margin: 0 0 1.75rem; }
+
+  .credits-solde-carte { background: var(--ec-surface, #fff); border: 1px solid var(--ec-line, #E2E8F0); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .credits-solde-total { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .credits-solde-chiffre { font-family: 'Fraunces', serif; font-size: 2.4rem; color: var(--ec-accent, #2563EB); line-height: 1; }
+  .credits-solde-unite { font-size: 0.95rem; color: var(--ec-ink-soft, #64748B); font-weight: 600; }
+  .credits-detail { display: flex; gap: 1.5rem; padding-top: 0.9rem; border-top: 1px solid var(--ec-line-soft, #F1F5F9); }
+  .credits-detail-item { flex: 1; }
+  .credits-detail-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ec-ink-soft, #64748B); margin-bottom: 0.25rem; }
+  .credits-detail-valeur { font-size: 1.1rem; font-weight: 700; color: var(--ec-ink, #0F172A); }
+
+  .credits-note { font-size: 0.82rem; color: var(--ec-ink-soft, #64748B); line-height: 1.55; margin-bottom: 2rem; }
+
+  .credits-recharge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.4rem; border-radius: 10px; background: var(--ec-accent, #2563EB); color: #fff; text-decoration: none; font-weight: 650; font-size: 0.92rem; margin-bottom: 2.5rem; }
+  .credits-recharge:hover { opacity: 0.92; }
+
+  .credits-historique-titre { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ec-ink-soft, #64748B); margin: 0 0 0.75rem; }
+  .credits-ligne { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--ec-line-soft, #F1F5F9); }
+  .credits-ligne:last-child { border-bottom: none; }
+  .credits-ligne-libelle { font-size: 0.88rem; color: var(--ec-ink, #0F172A); }
+  .credits-ligne-date { font-size: 0.74rem; color: var(--ec-ink-soft, #64748B); margin-top: 2px; }
+  .credits-ligne-valeur { font-size: 0.92rem; font-weight: 700; white-space: nowrap; }
+  .credits-ligne-valeur.positif { color: #15803D; }
+  .credits-ligne-valeur.negatif { color: var(--ec-ink-soft, #64748B); }
+
+  .credits-vide { color: var(--ec-ink-soft, #64748B); font-size: 0.88rem; padding: 1rem 0; text-align: center; }
+</style>
+
+<div class="credits-page">
+  <h1 class="credits-titre">Mes crédits</h1>
+  <p class="credits-souscription">
+    Chaque question posée au tuteur consomme quelques crédits.
+    {{ credits_gratuits_mensuels }} crédits gratuits sont offerts chaque mois.
+  </p>
+
+  <div class="credits-solde-carte">
+    <div class="credits-solde-total">
+      <span class="credits-solde-chiffre">{{ solde.total }}</span>
+      <span class="credits-solde-unite">crédits disponibles</span>
+    </div>
+    <div class="credits-detail">
+      <div class="credits-detail-item">
+        <div class="credits-detail-label">Crédits gratuits (ce mois-ci)</div>
+        <div class="credits-detail-valeur">{{ solde.credits_gratuits_restants }}</div>
+      </div>
+      <div class="credits-detail-item">
+        <div class="credits-detail-label">Crédits achetés</div>
+        <div class="credits-detail-valeur">{{ solde.credits_payants }}</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="credits-note">
+    Les crédits gratuits sont renouvelés automatiquement au début de chaque mois.
+    Les crédits achetés n'expirent jamais et sont utilisés uniquement une fois
+    les crédits gratuits du mois épuisés.
+  </p>
+
+  {# NOTE (06/09/2026) : la route d'achat (/recharger-credits) n'existe
+     pas encore -- en attente du choix définitif de prestataire de
+     paiement (voir database_credits.py). Bouton visible mais
+     désactivé pour l'instant, plutôt qu'un lien mort ou une erreur
+     Jinja sur un endpoint qui n'existe pas encore -- à remplacer par
+     un vrai url_for('recharger_credits') dès que cette route sera
+     créée. #}
+  <span class="credits-recharge" style="opacity:0.55; cursor:not-allowed;" title="Bientôt disponible">
+    Recharger mes crédits (bientôt)
+  </span>
+
+  <h2 class="credits-historique-titre">Historique récent</h2>
+
+  {% if historique %}
+    {% for ligne in historique %}
+    <div class="credits-ligne">
+      <div>
+        <div class="credits-ligne-libelle">{{ ligne.libelle }}</div>
+        <div class="credits-ligne-date">{{ ligne.date }}</div>
+      </div>
+      <div class="credits-ligne-valeur {{ 'positif' if ligne.credits > 0 else 'negatif' }}">
+        {{ '+' if ligne.credits > 0 else '' }}{{ ligne.credits }}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="credits-vide">Aucune activité pour l'instant.</p>
+  {% endif %}
+</div>
+{% endblock %}
