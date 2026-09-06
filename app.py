@@ -1157,6 +1157,18 @@ def assistant_eleve_generer():
     if not eleve:
         session.pop('eleve_id', None)
         return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
+
+    # NOUVEAU (06/09/2026, système de crédits) : même garde-fou que
+    # assistant_eleve_repondre() -- vérifié AVANT de lancer une
+    # génération, qui peut coûter jusqu'à 3 appels Gemini réels (voir
+    # NB_TENTATIVES_MAX dans generer_epreuve_json.py). Inutile de
+    # dépenser ça pour un élève qui n'a plus de crédit de toute façon.
+    if not peut_poser_question(eleve_id):
+        return jsonify({
+            'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
+            'code': 'credits_epuises',
+        }), 402
+
     # Génération de PDF -- reste Mathématiques uniquement, donc
     # chat_disponible_pour(niveau, serie) à 2 arguments reste le bon
     # contrôle ici, INCHANGÉ.
@@ -1185,7 +1197,12 @@ def assistant_eleve_generer():
     metadonnees = metadonnees_defaut_eleve(type_document, serie)
 
     try:
-        chemin_json = generer_epreuve_json(
+        # MODIFIÉ (06/09/2026) : generer_epreuve_json() retourne
+        # désormais 3 valeurs -- (chemin_json, tokens_entree,
+        # tokens_sortie), accumulés sur toutes les tentatives internes
+        # (voir sa docstring). Nécessaire pour facturer le bon nombre
+        # de crédits après une génération réussie.
+        chemin_json, tokens_entree, tokens_sortie = generer_epreuve_json(
             sequence, metadonnees,
             type_document=type_document, serie=serie,
         )
@@ -1193,12 +1210,23 @@ def assistant_eleve_generer():
     except RuntimeError as e:
         cible = f"Examen série {serie}" if type_document == 'Examen' else f"séquence {sequence}"
         app.logger.error(f"Échec génération épreuve élève ({cible}): {e}")
+        # NOTE (06/09/2026) : aucune déduction de crédit sur un échec
+        # total -- même principe que le streaming du chat (voir
+        # generer_texte_stream_avec_fallback dans chat_llm_client.py) :
+        # l'élève n'a rien reçu, on ne facture pas une génération qui
+        # a échoué, même si des appels Gemini réels ont eu lieu en
+        # coulisses pendant les tentatives.
         return jsonify({'erreur': "La génération a échoué. Réessaie dans quelques minutes."}), 500
 
     incrementer_usage_mensuel(eleve_id)
 
-    return send_file(chemin_pdf, as_attachment=True, download_name=chemin_pdf.name)
+    # NOUVEAU (06/09/2026, système de crédits) : déduction APRÈS
+    # succès complet (JSON validé + PDF construit) -- voir
+    # database_credits.py, consommer_credits(), même raisonnement que
+    # pour le chat : jamais avant, jamais sur un échec.
+    consommer_credits(eleve_id, tokens_entree, tokens_sortie, fournisseur='gemini', source_modele='generer_epreuve_json')
 
+    return send_file(chemin_pdf, as_attachment=True, download_name=chemin_pdf.name)
 
 @app.route('/chat/niveaux')
 def chat_niveaux():

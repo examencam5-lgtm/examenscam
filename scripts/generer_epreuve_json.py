@@ -171,7 +171,30 @@ SERIES_SUPPORTEES = ["C", "E"]
 # sur une donnée qui doit être exacte, jamais interpolée).
 COEFFICIENT_EXAMEN = {"C": 7, "E": 6}
 DUREE_EXAMEN = "4 heures"
+def _estimer_tokens(texte: str) -> int:
+    """~4 caractères par token -- filet de sécurité si usage_metadata
+    manque sur une réponse Gemini (voir chat_llm_client.py, même
+    logique et même commentaire de fond)."""
+    if not texte:
+        return 0
+    return max(1, round(len(texte) / 4))
 
+
+def _extraire_tokens_reponse(response, prompt_envoye: str) -> tuple[int, int]:
+    """Extrait (tokens_entree, tokens_sortie) d'une réponse Gemini brute
+    -- appelée à CHAQUE tentative réussie côté réseau (même si la
+    validation métier échoue ensuite), car l'appel API a un coût réel
+    dans les deux cas. Repli sur l'estimation par caractères si
+    usage_metadata est absent."""
+    usage = getattr(response, "usage_metadata", None)
+    tokens_entree = getattr(usage, "prompt_token_count", None) if usage else None
+    tokens_sortie = getattr(usage, "candidates_token_count", None) if usage else None
+    if tokens_entree is None:
+        tokens_entree = _estimer_tokens(prompt_envoye)
+    if tokens_sortie is None:
+        texte_sortie = getattr(response, "text", "") or ""
+        tokens_sortie = _estimer_tokens(texte_sortie)
+    return tokens_entree, tokens_sortie
 
 def calculer_frequence_themes(conn, sequence: int, type_document: str = "sequence") -> list[tuple[str, int]]:
     """`type_document` filtre sur la colonne du même nom dans rag.db
@@ -776,6 +799,14 @@ def generer_epreuve_json(sequence: int, metadonnees: dict, modele: str = MODELE_
     serie_demandee = serie if type_document == "Examen" else None
 
     prompt_tentative = prompt
+        # NOUVEAU (06/09/2026, système de crédits) : accumulé sur TOUTES
+    # les tentatives, pas seulement la dernière réussie -- chaque appel
+    # à generer_avec_fallback() qui reçoit une réponse de Gemini est un
+    # appel FACTURÉ par Google, que la validation métier accepte ou
+    # rejette ensuite le contenu. Une génération qui échoue 2 fois
+    # avant de réussir a réellement coûté 3 appels, pas 1.
+    tokens_entree_total = 0
+    tokens_sortie_total = 0
 
     for tentative, pause in enumerate(PAUSES_ENTRE_TENTATIVES[:NB_TENTATIVES_MAX], start=1):
         if pause:
@@ -788,6 +819,9 @@ def generer_epreuve_json(sequence: int, metadonnees: dict, modele: str = MODELE_
                 config,
             )
             candidat = parser_reponse(response)
+            t_entree, t_sortie = _extraire_tokens_reponse(response, prompt_tentative)
+            tokens_entree_total += t_entree
+            tokens_sortie_total += t_sortie
         except (json.JSONDecodeError, ValueError) as e:
             derniere_erreur = f"Réponse invalide (tentative {tentative}) : {e}"
             continue
@@ -860,7 +894,7 @@ AVANT DE RÉPONDRE, vérifie particulièrement :
     chemin_sortie = SORTIE_DIR / f"epreuve_{suffixe}_{horodatage}.json"
     chemin_sortie.write_text(json.dumps(paquet_final, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    return chemin_sortie
+    return chemin_sortie, tokens_entree_total, tokens_sortie_total
 
 
 def main():
@@ -907,7 +941,7 @@ def main():
     print("\n🧠 Génération en cours (peut prendre 20-40s, jusqu'à 3 tentatives si validation échoue)...\n")
 
     try:
-        chemin_sortie = generer_epreuve_json(
+        chemin_sortie, tokens_entree, tokens_sortie = generer_epreuve_json(
             args.sequence or 0, metadonnees, args.modele, contexte_regional,
             type_document=type_document, serie=args.serie,
         )
@@ -916,8 +950,7 @@ def main():
         return
 
     print(f"✅ Épreuve générée (JSON validé) : {chemin_sortie}")
-    print("   Prochaine étape : python construire_pdf_officiel.py --fichier "
-          f"\"{chemin_sortie}\"")
+    print(f"   ({tokens_entree} tokens entrée, {tokens_sortie} tokens sortie sur l'ensemble des tentatives)")
 
 
 if __name__ == "__main__":
