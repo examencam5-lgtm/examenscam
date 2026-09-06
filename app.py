@@ -35,6 +35,7 @@ from flask import (
 )
 
 from database_carrefour import get_carrefour
+import database_credits
 from database_matieres import get_toutes_matieres
 from database_externes import (
     get_matieres_externes, get_annales_externes, get_annale_externe_by_id,
@@ -1357,5 +1358,75 @@ def abonnement_statut():
     if not paiement:
         return jsonify({'erreur': 'Paiement introuvable.'}), 404
     return jsonify({'statut': paiement['statut']})
+
+# NOUVEAU (06/09/2026) : page "Mes crédits" -- accessible depuis la
+# sidebar de assistant_eleve.html. Montre UNIQUEMENT des crédits à
+# l'élève, jamais de tokens -- get_solde() ne renvoie de toute façon
+# que credits_gratuits_restants / credits_payants / total (voir
+# database_credits.py), donc aucun risque d'exposer par erreur un
+# détail technique (tokens, fournisseur Gemini/Hugging Face) que
+# l'élève n'a pas besoin de connaître et qui n'a aucun sens pour lui.
+#
+# L'historique de transactions est volontairement simplifié pour
+# l'élève : date, type (achat/consommation/reset_mensuel), nombre de
+# crédits -- jamais tokens_entree/tokens_sortie/fournisseur/source_modele,
+# qui restent des colonnes techniques internes consultables uniquement
+# par toi via Neon SQL Editor.
+@app.route('/mes-credits')
+def mes_credits():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return redirect(url_for('connexion'))
+
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        session.pop('eleve_id', None)
+        return redirect(url_for('connexion'))
+
+    solde = get_solde(eleve_id)
+
+    conn = database_credits.get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT type, credits, cree_le
+            FROM transactions_credits
+            WHERE eleve_id = %s
+            ORDER BY id DESC
+            LIMIT 30
+            """,
+            (eleve_id,),
+        )
+        historique_brut = cur.fetchall()
+    finally:
+        conn.close()
+
+    # Libellés lisibles pour l'élève -- les valeurs brutes de la
+    # colonne `type` (achat / consommation / reset_mensuel) viennent
+    # directement du code, pas destinées à un affichage tel quel.
+    libelles_type = {
+        'achat': 'Achat de crédits',
+        'consommation': 'Question posée au tuteur',
+        'reset_mensuel': 'Crédits gratuits du mois',
+    }
+
+    historique = [
+        {
+            'libelle': libelles_type.get(ligne['type'], ligne['type']),
+            'credits': ligne['credits'],
+            'date': ligne['cree_le'],
+        }
+        for ligne in historique_brut
+    ]
+
+    return render_template(
+        'mes_credits.html',
+        eleve=eleve,
+        solde=solde,
+        historique=historique,
+        prix_credit_fcfa=database_credits.PRIX_CREDIT_FCFA,
+        credits_gratuits_mensuels=database_credits.CREDITS_GRATUITS_MENSUELS,
+    )
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
