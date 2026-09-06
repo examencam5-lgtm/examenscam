@@ -711,6 +711,37 @@ def admin_login():
                             minutes_restantes=minutes_restantes,
                             csrf_token=session['csrf_token'])
 
+# ══════════════════════════════════════════
+# RECHARGE MANUELLE — ADMIN (06/09/2026)
+# ══════════════════════════════════════════
+
+@app.route('/admin/recharges')
+@admin_requis
+def admin_recharges():
+    return render_template(
+        'admin_recharges.html',
+        demandes=database_credits.lister_demandes_en_attente(),
+    )
+
+
+@app.route('/admin/recharges/<int:demande_id>/valider', methods=['POST'])
+@admin_requis
+def admin_valider_recharge(demande_id):
+    resultat = database_credits.valider_demande_recharge(demande_id)
+    if not resultat['ok']:
+        app.logger.error(f"Échec validation recharge {demande_id}: {resultat.get('erreur')}")
+    return redirect(url_for('admin_recharges'))
+
+
+@app.route('/admin/recharges/<int:demande_id>/rejeter', methods=['POST'])
+@admin_requis
+def admin_rejeter_recharge(demande_id):
+    note = request.form.get('note_admin', '').strip() or None
+    resultat = database_credits.rejeter_demande_recharge(demande_id, note)
+    if not resultat['ok']:
+        app.logger.error(f"Échec rejet recharge {demande_id}: {resultat.get('erreur')}")
+    return redirect(url_for('admin_recharges'))
+
 
 @app.route('/admin/logout')
 def admin_logout():
@@ -1467,5 +1498,44 @@ def mes_credits():
         return render_template(
             '500.html'
         ), 500
+
+# ══════════════════════════════════════════
+# RECHARGE MANUELLE — ÉLÈVE (06/09/2026)
+# ══════════════════════════════════════════
+
+@app.route('/mes-credits/recharger', methods=['GET', 'POST'])
+@eleve_requis
+def recharger_credits():
+    erreur = None
+
+    if request.method == 'POST':
+        token_soumis = request.form.get('csrf_token', '')
+        token_attendu = session.get('csrf_token_recharge', '')
+        if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
+            erreur = "Session expirée, réessaie."
+        else:
+            pack_id = request.form.get('pack_id', '')
+            operateur = request.form.get('operateur', '')
+            telephone_envoyeur = request.form.get('telephone_envoyeur', '').strip()
+            reference_operateur = request.form.get('reference_operateur', '').strip()
+
+            resultat = database_credits.demander_recharge(
+                g.eleve['id'], pack_id, operateur, telephone_envoyeur, reference_operateur
+            )
+
+            if resultat['ok']:
+                session.pop('csrf_token_recharge', None)
+                return render_template('recharge_confirmation.html', eleve=g.eleve)
+            else:
+                erreur = resultat['erreur']
+
+    session['csrf_token_recharge'] = secrets.token_urlsafe(32)
+    return render_template(
+        'recharge_credits.html',
+        eleve=g.eleve,
+        packs=database_credits.PACKS_RECHARGE,
+        erreur=erreur,
+        csrf_token=session['csrf_token_recharge'],
+    )
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

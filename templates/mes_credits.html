@@ -1,21 +1,3 @@
-{# ═══════════════════════════════════════════════════════
-   AJOUT À FAIRE MANUELLEMENT dans templates/assistant_eleve.html
-   -- pas dans ce fichier-ci, qui EST le template mes_credits.html.
-
-   Insérer ce bloc juste AVANT la ligne :
-       {% if eleve %}
-       <div class="sidebar-compte">
-   dans la sidebar existante, pour rester au-dessus du bloc
-   compte/déconnexion (cohérent avec "Générer" / "Consulter" qui sont
-   eux aussi des sections juste au-dessus du compte) :
-
-   <div class="sidebar-separateur">Compte</div>
-   <a href="{{ url_for('mes_credits') }}" class="sidebar-item" style="text-decoration:none;">
-     <span class="sidebar-icone" aria-hidden="true">
-       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg>
-     </span> Mes crédits
-   </a>
-   ═══════════════════════════════════════════════════════ #}
 {% extends "base.html" %}
 {% block title %}Mes crédits - ExamensCam{% endblock %}
 
@@ -81,16 +63,12 @@
     les crédits gratuits du mois épuisés.
   </p>
 
-  {# NOTE (06/09/2026) : la route d'achat (/recharger-credits) n'existe
-     pas encore -- en attente du choix définitif de prestataire de
-     paiement (voir database_credits.py). Bouton visible mais
-     désactivé pour l'instant, plutôt qu'un lien mort ou une erreur
-     Jinja sur un endpoint qui n'existe pas encore -- à remplacer par
-     un vrai url_for('recharger_credits') dès que cette route sera
-     créée. #}
-  <span class="credits-recharge" style="opacity:0.55; cursor:not-allowed;" title="Bientôt disponible">
-    Recharger mes crédits (bientôt)
-  </span>
+  {# MODIFIÉ (06/09/2026) : la route recharger_credits existe désormais
+     (voir route_recharger_credits.py) -- le lien de recharge manuelle
+     remplace l'ancien bouton désactivé "bientôt disponible". #}
+  <a href="{{ url_for('recharger_credits') }}" class="credits-recharge">
+    Recharger mes crédits
+  </a>
 
   <h2 class="credits-historique-titre">Historique récent</h2>
 
