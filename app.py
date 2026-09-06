@@ -17,7 +17,12 @@ from scripts.construire_pdf_officiel import construire_pdf
 from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream
 from generer_search_index import generer as generer_index
 from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves, get_annees
-from database_credits import create_table as create_table_credits, peut_poser_question, consommer_credits
+from database_credits import (
+    create_table as create_table_credits,
+    peut_poser_question,
+    consommer_credits,
+    get_solde,
+)
 from scripts.extraire_entete_personnalisable import (
     extraire_entete_pour_upload, personnaliser_et_decouper, generer_apercu_brut,
     supprimer_extraction_temporaire, ExtractionEnteteEchouee, EnteteSourceIncomplete,
@@ -132,11 +137,9 @@ app.config.update(
 )
 with app.app_context():
     create_table()
-with app.app_context():
-    create_table()
-    create_table_eleves()          # <-- AJOUT
-    create_table_conversations()   # <-- AJOUT (02/09/2026)
-    create_table_credits()         # <-- AJOUT (05/09/2026, systeme de credits)
+    create_table_eleves()
+    create_table_conversations()
+    create_table_credits()
 
 ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
@@ -1373,60 +1376,68 @@ def abonnement_statut():
 # qui restent des colonnes techniques internes consultables uniquement
 # par toi via Neon SQL Editor.
 @app.route('/mes-credits')
+@eleve_requis
 def mes_credits():
-    eleve_id = session.get('eleve_id')
-    if not eleve_id:
-        return redirect(url_for('connexion'))
+    eleve_id = session['eleve_id']
 
-    eleve = get_eleve_par_id(eleve_id)
-    if not eleve:
-        session.pop('eleve_id', None)
-        return redirect(url_for('connexion'))
-
-    solde = get_solde(eleve_id)
-
-    conn = database_credits.get_connection()
     try:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT type, credits, cree_le
-            FROM transactions_credits
-            WHERE eleve_id = %s
-            ORDER BY id DESC
-            LIMIT 30
-            """,
-            (eleve_id,),
-        )
-        historique_brut = cur.fetchall()
-    finally:
-        conn.close()
+        eleve = get_eleve_par_id(eleve_id)
+        if not eleve:
+            session.pop('eleve_id', None)
+            return redirect(url_for('connexion'))
 
-    # Libellés lisibles pour l'élève -- les valeurs brutes de la
-    # colonne `type` (achat / consommation / reset_mensuel) viennent
-    # directement du code, pas destinées à un affichage tel quel.
-    libelles_type = {
-        'achat': 'Achat de crédits',
-        'consommation': 'Question posée au tuteur',
-        'reset_mensuel': 'Crédits gratuits du mois',
-    }
+        solde = get_solde(eleve_id)
 
-    historique = [
-        {
-            'libelle': libelles_type.get(ligne['type'], ligne['type']),
-            'credits': ligne['credits'],
-            'date': ligne['cree_le'],
+        conn = database_credits.get_connection()
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT type, credits, cree_le
+                FROM transactions_credits
+                WHERE eleve_id = %s
+                ORDER BY id DESC
+                LIMIT 30
+                """,
+                (eleve_id,),
+            )
+            historique_brut = cur.fetchall()
+        finally:
+            conn.close()
+
+        libelles_type = {
+            'achat': 'Achat de crédits',
+            'consommation': 'Question posée au tuteur',
+            'reset_mensuel': 'Crédits gratuits du mois',
         }
-        for ligne in historique_brut
-    ]
 
-    return render_template(
-        'mes_credits.html',
-        eleve=eleve,
-        solde=solde,
-        historique=historique,
-        prix_credit_fcfa=database_credits.PRIX_CREDIT_FCFA,
-        credits_gratuits_mensuels=database_credits.CREDITS_GRATUITS_MENSUELS,
-    )
+        historique = [
+            {
+                'libelle': libelles_type.get(
+                    ligne['type'],
+                    ligne['type']
+                ),
+                'credits': ligne['credits'],
+                'date': ligne['cree_le'],
+            }
+            for ligne in historique_brut
+        ]
+
+        return render_template(
+            'mes_credits.html',
+            eleve=eleve,
+            solde=solde,
+            historique=historique,
+            prix_credit_fcfa=database_credits.PRIX_CREDIT_FCFA,
+            credits_gratuits_mensuels=database_credits.CREDITS_GRATUITS_MENSUELS,
+        )
+
+    except Exception as e:
+        app.logger.exception(
+            f"Erreur page mes crédits pour élève {eleve_id}: {e}"
+        )
+        return render_template(
+            '500.html'
+        ), 500
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
