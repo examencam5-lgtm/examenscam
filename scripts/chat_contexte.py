@@ -25,6 +25,26 @@ tuteur peut alors les RECOMMANDER par leur nom exact plutôt que de
 rester silencieux sur leur existence. Seule la référence (session,
 série, identifiant) est injectée, jamais le contenu intégral de
 l'exercice.
+
+BRANCHEMENT CRÉDITS (05/09/2026) :
+generer_texte_avec_fallback() (mode bloc) retourne désormais 5
+valeurs -- (texte, fournisseur, source, tokens_entree, tokens_sortie)
+au lieu de 3 -- voir scripts/chat_llm_client.py. repondre_eleve() est
+mise à jour pour ce nouveau contrat et retourne ces deux champs en
+plus, au cas où un futur appelant non-streaming voudrait aussi
+facturer un usage bloc (aujourd'hui le chat élève passe uniquement en
+streaming côté app.py -- voir assistant_eleve_repondre -- mais casser
+silencieusement le contrat de repondre_eleve() serait une régression
+non détectée pour le prochain script qui l'utiliserait en CLI, voir
+le bloc `if __name__ == "__main__"` plus bas).
+
+repondre_eleve_stream() accepte maintenant `stats: dict | None = None`
+et le transmet tel quel à generer_texte_stream_avec_fallback(), qui
+y écrit 'fournisseur', 'source', 'tokens_entree', 'tokens_sortie' une
+fois le flux terminé avec succès (voir sa docstring dans
+chat_llm_client.py). C'est un dict mutable passé par référence -- rien
+à retourner explicitement ici, l'appelant (app.py) lit le même objet
+qu'il a construit et passé en argument après la fin du `yield from`.
 """
 
 import re
@@ -968,11 +988,20 @@ def repondre_eleve(
     historique: list[dict] | None = None,
     eleve: dict | None = None,
     matiere: str = MATIERE_DEFAUT,
-) -> tuple[str, str, str]:
+) -> tuple[str, str, str, int, int]:
     """
     Point d'entrée classique du chat élève.
 
     `matiere` est désormais transmis jusqu'au RAG et au prompt.
+
+    MODIFIÉ (05/09/2026) : generer_texte_avec_fallback() (voir
+    chat_llm_client.py) retourne désormais 5 valeurs au lieu de 3 --
+    (texte, fournisseur, source, tokens_entree, tokens_sortie). Cette
+    fonction répercute ce changement dans sa propre signature de
+    retour, pour ne pas masquer silencieusement l'info de tokens à un
+    futur appelant CLI/bloc qui voudrait aussi facturer des crédits
+    (voir le bloc `if __name__ == "__main__"` plus bas, mis à jour en
+    conséquence).
     """
 
     if not DB_PATH.exists():
@@ -1013,14 +1042,14 @@ def repondre_eleve(
 
     pool = construire_pool_clients()
 
-    texte, fournisseur, source = (
+    texte, fournisseur, source, tokens_entree, tokens_sortie = (
         generer_texte_avec_fallback(
             pool,
             messages,
         )
     )
 
-    return texte, fournisseur, source
+    return texte, fournisseur, source, tokens_entree, tokens_sortie
 
 
 # ═══════════════════════════════════════════════════════
@@ -1032,6 +1061,7 @@ def repondre_eleve_stream(
     historique: list[dict] | None = None,
     eleve: dict | None = None,
     matiere: str = MATIERE_DEFAUT,
+    stats: dict | None = None,
 ):
     """
     Version streaming SSE du chat élève.
@@ -1043,6 +1073,21 @@ def repondre_eleve_stream(
 
         TypeError:
         repondre_eleve_stream() got an unexpected keyword argument 'matiere'
+
+    BRANCHEMENT CRÉDITS (05/09/2026) :
+    Accepte désormais `stats: dict | None = None`, transmis tel quel
+    à generer_texte_stream_avec_fallback() (voir chat_llm_client.py).
+    C'est un dict MUTABLE -- cette fonction ne le retourne pas
+    explicitement (un générateur ne peut pas `return` une valeur
+    consommable en plus de ses `yield`), l'appelant (app.py,
+    assistant_eleve_repondre -> flux_evenements) doit construire ce
+    dict AVANT d'appeler `yield from repondre_eleve_stream(...)`, et
+    le relire APRÈS que la boucle `yield from` est terminée pour
+    connaître 'fournisseur', 'source', 'tokens_entree',
+    'tokens_sortie' et appeler consommer_credits() en conséquence.
+    Si `stats` n'est pas fourni, comportement inchangé (rien n'est
+    calculé côté crédits) -- rétro-compatible avec tout appelant qui
+    n'a pas encore ce besoin.
     """
 
     if not DB_PATH.exists():
@@ -1086,6 +1131,7 @@ def repondre_eleve_stream(
     yield from generer_texte_stream_avec_fallback(
         pool,
         messages,
+        stats=stats,
     )
 
 
@@ -1105,13 +1151,14 @@ if __name__ == "__main__":
         f"Question : {question}\n"
     )
 
-    texte, fournisseur, source = repondre_eleve(
+    texte, fournisseur, source, tokens_entree, tokens_sortie = repondre_eleve(
         question,
         matiere=MATIERE_DEFAUT,
     )
 
     print(
-        f"[Répondu par {fournisseur} / {source}]\n"
+        f"[Répondu par {fournisseur} / {source} -- "
+        f"{tokens_entree} tokens entrée, {tokens_sortie} tokens sortie]\n"
     )
 
     print(texte)

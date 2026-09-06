@@ -17,6 +17,7 @@ from scripts.construire_pdf_officiel import construire_pdf
 from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream
 from generer_search_index import generer as generer_index
 from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves, get_annees
+from database_credits import create_table as create_table_credits, peut_poser_question, consommer_credits
 from scripts.extraire_entete_personnalisable import (
     extraire_entete_pour_upload, personnaliser_et_decouper, generer_apercu_brut,
     supprimer_extraction_temporaire, ExtractionEnteteEchouee, EnteteSourceIncomplete,
@@ -128,13 +129,13 @@ app.config.update(
     # soit un choix documenté, pas une valeur implicite du framework.
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),
 )
-
 with app.app_context():
     create_table()
 with app.app_context():
     create_table()
     create_table_eleves()          # <-- AJOUT
     create_table_conversations()   # <-- AJOUT (02/09/2026)
+    create_table_credits()         # <-- AJOUT (05/09/2026, systeme de credits)
 
 ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
@@ -1000,6 +1001,20 @@ def assistant_eleve_repondre():
         session.pop('eleve_id', None)
         return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
 
+    # NOUVEAU (05/09/2026, système de crédits) : vérifié AVANT tout
+    # appel IA -- inutile de dépenser un appel Gemini/Hugging Face
+    # pour découvrir ensuite que l'élève n'a plus de crédit. Voir
+    # database_credits.py, peut_poser_question() : True si
+    # (credits_gratuits_restants + credits_payants) > 0, après reset
+    # mensuel automatique si on a changé de mois calendaire.
+    # Code HTTP 402 (Payment Required) -- sémantiquement le bon choix
+    # ici, distinct du 401 (non_connecte) déjà utilisé au-dessus.
+    if not peut_poser_question(eleve_id):
+        return jsonify({
+            'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
+            'code': 'credits_epuises',
+        }), 402
+
     question = (payload.get('question') or '').strip()
     if not question:
         return jsonify({'erreur': "Message vide."}), 400
@@ -1034,9 +1049,18 @@ def assistant_eleve_repondre():
     # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
     # choisisse le bon mode (RAG Maths vs générique), voir chat_scope.py.
     def flux_evenements():
+        # NOUVEAU (05/09/2026, système de crédits) : dict mutable
+        # passé à repondre_eleve_stream(), qui le transmet lui-même à
+        # generer_texte_stream_avec_fallback() (voir chat_llm_client.py).
+        # Rempli SI ET SEULEMENT SI le flux se termine avec succès --
+        # voir la docstring de generer_texte_stream_avec_fallback().
+        # Si une exception survient avant tout texte, `stats` reste
+        # vide : aucune déduction de crédit sur une réponse jamais
+        # reçue par l'élève.
+        stats = {}
         texte_complet = []
         try:
-            for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere):
+            for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere, stats=stats):
                 texte_complet.append(morceau)
                 yield f"data: {json.dumps({'type': 'morceau', 'texte': morceau})}\n\n"
         except Exception as e:
@@ -1052,6 +1076,28 @@ def assistant_eleve_repondre():
         # jamais si le stream a échoué avant d'arriver ici).
         enregistrer_tour(eleve_id, matiere, question, reponse_complete)
         incrementer_usage_mensuel(eleve_id)
+
+        # NOUVEAU (05/09/2026, système de crédits) : déduction APRÈS
+        # coup, jamais avant -- voir database_credits.py,
+        # consommer_credits(), qui explique pourquoi on ne réclame
+        # jamais une question déjà répondue même si le solde finit
+        # en négatif exceptionnellement ici (le blocage se fait EN
+        # AMONT, via peut_poser_question() au tout début de la route).
+        # `stats.get('tokens_entree') is not None` couvre le seul cas
+        # où stats est resté vide : le flux a échoué avant le premier
+        # morceau (voir le `except` ci-dessus, qui a déjà `return`)
+        # -- donc en pratique ce garde-fou ne se déclenche jamais côté
+        # succès, mais reste une protection explicite plutôt qu'un
+        # accès direct à une clé qui pourrait manquer.
+        if stats.get('tokens_entree') is not None:
+            consommer_credits(
+                eleve_id,
+                stats['tokens_entree'],
+                stats['tokens_sortie'],
+                stats.get('fournisseur'),
+                stats.get('source'),
+            )
+
         yield f"data: {json.dumps({'type': 'fin', 'texte_complet': reponse_complete})}\n\n"
 
     return Response(

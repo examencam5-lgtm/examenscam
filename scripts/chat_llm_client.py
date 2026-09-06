@@ -207,7 +207,36 @@ def _construire_contenus_et_config(messages: list[dict]):
     return contenus, config
 
 
-def _appeler_gemini(client, messages: list[dict]) -> str:
+# ═══════════════════════════════════════════════════════
+# COMPTAGE DE TOKENS -- NOUVEAU (05/09/2026), pour la facturation au
+# credit (voir database_credits.py). Principe : TOUJOURS préférer le
+# compte réel renvoyé par l'API (usage_metadata côté Gemini, usage
+# côté Hugging Face/OpenAI-compatible) -- l'estimation par caractères
+# ci-dessous n'est qu'un filet de sécurité pour les cas où l'API ne
+# renvoie pas ce champ (arrive en streaming Hugging Face, dont la
+# passerelle "router" ne garantit pas la remontée d'usage sur chaque
+# session). Sous-estimer ou sur-estimer légèrement un cas rare a un
+# impact négligeable ici : la décision business du 05/09/2026 est que
+# le nombre de crédits facturé est LE MÊME quel que soit le
+# fournisseur qui a répondu, donc la précision de l'estimation
+# Hugging Face n'a pas besoin d'être parfaite.
+# ═══════════════════════════════════════════════════════
+
+def _estimer_tokens(texte: str) -> int:
+    """~4 caracteres par token, approximation courante pour du texte
+    latin/francais. A n'utiliser qu'en dernier recours (voir note
+    ci-dessus) -- jamais quand un compte reel est disponible."""
+    if not texte:
+        return 0
+    return max(1, round(len(texte) / 4))
+
+
+def _estimer_tokens_entree(messages: list[dict]) -> int:
+    texte_total = "\n".join(m.get("content", "") for m in messages)
+    return _estimer_tokens(texte_total)
+
+
+def _appeler_gemini(client, messages: list[dict]) -> dict:
     """`messages` au format [{"role": "system"|"user"|"assistant", "content": "..."}]
     -- converti vers le format attendu par google-genai.
 
@@ -221,31 +250,61 @@ def _appeler_gemini(client, messages: list[dict]) -> str:
     que respectées strictement).
 
     FIX (01/09/2026) : timeout HTTP explicite -- voir TIMEOUT_HTTP_MS
-    en tête de fichier."""
+    en tête de fichier.
+
+    MODIFIÉ (05/09/2026) : retourne désormais un dict
+    {texte, tokens_entree, tokens_sortie} au lieu d'une simple chaîne
+    -- nécessaire pour la facturation au crédit (voir
+    database_credits.py). Les tokens viennent de
+    reponse.usage_metadata (compte RÉEL renvoyé par Gemini), avec
+    repli sur l'estimation seulement si ce champ manque."""
     contenus, config = _construire_contenus_et_config(messages)
     reponse = client.models.generate_content(model=MODELE_GEMINI_CHAT, contents=contenus, config=config)
     if not reponse.text:
         raise ValueError("Réponse Gemini vide.")
-    return reponse.text
+
+    usage = getattr(reponse, "usage_metadata", None)
+    tokens_entree = getattr(usage, "prompt_token_count", None) if usage else None
+    tokens_sortie = getattr(usage, "candidates_token_count", None) if usage else None
+    if tokens_entree is None:
+        tokens_entree = _estimer_tokens_entree(messages)
+    if tokens_sortie is None:
+        tokens_sortie = _estimer_tokens(reponse.text)
+
+    return {"texte": reponse.text, "tokens_entree": tokens_entree, "tokens_sortie": tokens_sortie}
 
 
-def _appeler_huggingface(jeton: str, modele: str, messages: list[dict]) -> str:
+def _appeler_huggingface(jeton: str, modele: str, messages: list[dict]) -> dict:
     """Passerelle OpenAI-compatible de Hugging Face -- `messages` est
     déjà au bon format (role "user"/"assistant"/"system"), aucune
     conversion nécessaire contrairement à Gemini.
 
     FIX (01/09/2026) : timeout explicite au constructeur du client --
     unité en SECONDES ici, pas en millisecondes (voir
-    TIMEOUT_HF_SECONDES en tête de fichier)."""
+    TIMEOUT_HF_SECONDES en tête de fichier).
+
+    MODIFIÉ (05/09/2026) : retourne un dict {texte, tokens_entree,
+    tokens_sortie} -- voir _appeler_gemini() pour le raisonnement.
+    `completion.usage` (champ standard OpenAI-compatible) est utilisé
+    quand la passerelle Hugging Face le renvoie, estimation sinon."""
     client = InferenceClient(api_key=jeton, timeout=TIMEOUT_HF_SECONDES)
     completion = client.chat.completions.create(model=modele, messages=messages, max_tokens=1024)
     contenu = completion.choices[0].message.content
     if not contenu:
         raise ValueError(f"Réponse Hugging Face vide (modèle {modele}).")
-    return contenu
+
+    usage = getattr(completion, "usage", None)
+    tokens_entree = getattr(usage, "prompt_tokens", None) if usage else None
+    tokens_sortie = getattr(usage, "completion_tokens", None) if usage else None
+    if tokens_entree is None:
+        tokens_entree = _estimer_tokens_entree(messages)
+    if tokens_sortie is None:
+        tokens_sortie = _estimer_tokens(contenu)
+
+    return {"texte": contenu, "tokens_entree": tokens_entree, "tokens_sortie": tokens_sortie}
 
 
-def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: list[dict]) -> tuple[str, str, str]:
+def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: list[dict]) -> tuple[str, str, str, int, int]:
     """Essaie chaque entrée du pool dans l'ordre -- pour Hugging Face,
     essaie en plus chaque modèle de MODELES_HF_FALLBACK avant de
     passer à la clé suivante (même logique qu'un modèle Gemini
@@ -260,10 +319,10 @@ def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: l
     faire : n'importe quelle exception (quota, réseau, timeout, modèle
     indisponible) justifie un simple passage à l'option suivante.
 
-    Retourne (texte, fournisseur, identifiant_source) où
-    identifiant_source est le nom de variable d'env pour Gemini, ou
-    "nom_var_env/nom_modele" pour Hugging Face (pour distinguer quel
-    modèle a répondu dans les logs).
+    MODIFIÉ (05/09/2026) : retourne désormais
+    (texte, fournisseur, identifiant_source, tokens_entree, tokens_sortie)
+    -- les deux derniers champs alimentent database_credits.py pour
+    déduire le bon nombre de crédits après une réponse.
 
     Lève RuntimeError avec la dernière erreur rencontrée si TOUTES
     les options du pool échouent."""
@@ -272,8 +331,8 @@ def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: l
     for fournisseur, nom_var, client_ou_jeton in pool:
         if fournisseur == "gemini":
             try:
-                texte = _appeler_gemini(client_ou_jeton, messages)
-                return texte, fournisseur, nom_var
+                resultat = _appeler_gemini(client_ou_jeton, messages)
+                return resultat["texte"], fournisseur, nom_var, resultat["tokens_entree"], resultat["tokens_sortie"]
             except Exception as e:
                 derniere_erreur = e
                 continue
@@ -281,8 +340,9 @@ def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: l
         elif fournisseur == "huggingface":
             for modele in MODELES_HF_FALLBACK:
                 try:
-                    texte = _appeler_huggingface(client_ou_jeton, modele, messages)
-                    return texte, fournisseur, f"{nom_var}/{modele}"
+                    resultat = _appeler_huggingface(client_ou_jeton, modele, messages)
+                    return (resultat["texte"], fournisseur, f"{nom_var}/{modele}",
+                            resultat["tokens_entree"], resultat["tokens_sortie"])
                 except Exception as e:
                     derniere_erreur = e
                     continue
@@ -293,7 +353,7 @@ def generer_texte_avec_fallback(pool: list[tuple[str, str, object]], messages: l
     )
 
 
-def _appeler_gemini_stream(client, messages: list[dict]):
+def _appeler_gemini_stream(client, messages: list[dict], stats: dict):
     """Version streaming de _appeler_gemini() -- même conversion de
     messages, mais utilise generate_content_stream() et yield le
     texte morceau par morceau au lieu de tout attendre puis retourner
@@ -304,20 +364,42 @@ def _appeler_gemini_stream(client, messages: list[dict]):
     en tête de fichier. C'est précisément l'appel qui a provoqué le
     WORKER TIMEOUT du 01/09/2026 sur /assistant-eleve/repondre (voir
     traceback Render : blocage sur ssl.py recv à l'intérieur de ce
-    generate_content_stream)."""
+    generate_content_stream).
+
+    NOUVEAU (05/09/2026) : `stats` est un dict mutable dans lequel
+    cette fonction écrit 'tokens_entree'/'tokens_sortie' une fois le
+    flux terminé -- un générateur ne peut pas "retourner" une valeur
+    consommable normalement, donc l'info sort par effet de bord (voir
+    generer_texte_stream_avec_fallback). usage_metadata n'est en
+    général peuplé que sur le DERNIER morceau du flux Gemini -- on
+    garde donc la dernière valeur non nulle rencontrée plutôt que la
+    première."""
     contenus, config = _construire_contenus_et_config(messages)
     flux = client.models.generate_content_stream(model=MODELE_GEMINI_CHAT, contents=contenus, config=config)
 
     recu_du_texte = False
+    texte_accumule = []
+    dernier_usage = None
     for morceau in flux:
         if morceau.text:
             recu_du_texte = True
+            texte_accumule.append(morceau.text)
             yield morceau.text
+        if getattr(morceau, "usage_metadata", None):
+            dernier_usage = morceau.usage_metadata
+
     if not recu_du_texte:
         raise ValueError("Réponse Gemini vide (stream).")
 
+    stats["tokens_entree"] = getattr(dernier_usage, "prompt_token_count", None) if dernier_usage else None
+    stats["tokens_sortie"] = getattr(dernier_usage, "candidates_token_count", None) if dernier_usage else None
+    if stats["tokens_entree"] is None:
+        stats["tokens_entree"] = _estimer_tokens_entree(messages)
+    if stats["tokens_sortie"] is None:
+        stats["tokens_sortie"] = _estimer_tokens("".join(texte_accumule))
 
-def _appeler_huggingface_stream(jeton: str, modele: str, messages: list[dict]):
+
+def _appeler_huggingface_stream(jeton: str, modele: str, messages: list[dict], stats: dict):
     """Version streaming de _appeler_huggingface() -- stream=True sur
     la passerelle OpenAI-compatible, yield le delta de chaque morceau
     reçu.
@@ -328,11 +410,21 @@ def _appeler_huggingface_stream(jeton: str, modele: str, messages: list[dict]):
 
     FIX (01/09/2026) : timeout explicite au constructeur du client --
     même remarque d'unité que _appeler_huggingface() (secondes, pas
-    millisecondes)."""
+    millisecondes).
+
+    NOUVEAU (05/09/2026) : même principe de `stats` que
+    _appeler_gemini_stream() ci-dessus. La passerelle Hugging Face ne
+    garantit pas de renvoyer un champ 'usage' en streaming -- dans ce
+    cas (le cas courant en pratique), on retombe systématiquement sur
+    l'estimation. Ce n'est pas un problème : la décision business du
+    05/09/2026 facture le même nombre de crédits quel que soit le
+    fournisseur, donc la précision de ce chiffre précis n'affecte pas
+    ce que paie l'élève."""
     client = InferenceClient(api_key=jeton, timeout=TIMEOUT_HF_SECONDES)
     flux = client.chat.completions.create(model=modele, messages=messages, max_tokens=1024, stream=True)
 
     recu_du_texte = False
+    texte_accumule = []
     for morceau in flux:
         if not morceau.choices:
             continue
@@ -344,13 +436,18 @@ def _appeler_huggingface_stream(jeton: str, modele: str, messages: list[dict]):
         contenu = delta.content
         if contenu:
             recu_du_texte = True
+            texte_accumule.append(contenu)
             yield contenu
 
     if not recu_du_texte:
         raise ValueError(f"Réponse Hugging Face vide (stream, modèle {modele}).")
 
+    stats["tokens_entree"] = _estimer_tokens_entree(messages)
+    stats["tokens_sortie"] = _estimer_tokens("".join(texte_accumule))
 
-def generer_texte_stream_avec_fallback(pool: list[tuple[str, str, object]], messages: list[dict]):
+
+def generer_texte_stream_avec_fallback(pool: list[tuple[str, str, object]], messages: list[dict],
+                                        stats: dict | None = None):
     """Version streaming de generer_texte_avec_fallback() -- yield le
     texte au fur et à mesure plutôt que de retourner un bloc complet.
 
@@ -368,27 +465,46 @@ def generer_texte_stream_avec_fallback(pool: list[tuple[str, str, object]], mess
     exactement cette même règle -- s'il survient avant le premier
     morceau, bascule normale ; après, remontée telle quelle.
 
-    Ne retourne rien -- ne peut pas retourner (fournisseur, source)
-    comme la version bloc, puisqu'un générateur ne peut pas produire
-    de valeur de retour consommable par `yield from`. Si ce diagnostic
-    devient nécessaire, il faudra le faire remonter autrement (ex: un
-    dict mutable passé en argument)."""
+    MODIFIÉ (05/09/2026) : `stats` est un dict mutable OPTIONNEL que
+    l'appelant peut fournir pour récupérer, une fois le flux terminé
+    avec succès, la facturation réelle de la réponse -- nécessaire
+    pour database_credits.py. Un générateur ne peut pas "retourner"
+    une valeur consommable par `yield from`, d'où ce dict passé en
+    argument plutôt qu'une valeur de retour (voir l'ancienne remarque
+    ici, qui anticipait déjà ce besoin). Clés écrites SI ET SEULEMENT
+    SI un flux se termine avec succès :
+        stats['fournisseur']     -- 'gemini' ou 'huggingface'
+        stats['source']          -- nom de variable d'env (Gemini) ou
+                                     'nom_var_env/nom_modele' (HF)
+        stats['tokens_entree']   -- réel si dispo, estimé sinon
+        stats['tokens_sortie']   -- réel si dispo, estimé sinon
+    Si stats est None (comportement par défaut), rien n'est calculé
+    ni écrit nulle part -- retro-compatible avec un appelant qui n'en
+    a pas l'usage."""
+    if stats is None:
+        stats = {}
+
     tentatives = []
     for fournisseur, nom_var, client_ou_jeton in pool:
         if fournisseur == "gemini":
-            tentatives.append((nom_var, lambda c=client_ou_jeton: _appeler_gemini_stream(c, messages)))
+            tentatives.append((fournisseur, nom_var,
+                                lambda c=client_ou_jeton: _appeler_gemini_stream(c, messages, stats)))
         elif fournisseur == "huggingface":
             for modele in MODELES_HF_FALLBACK:
-                tentatives.append((f"{nom_var}/{modele}",
-                                    lambda j=client_ou_jeton, m=modele: _appeler_huggingface_stream(j, m, messages)))
+                tentatives.append((fournisseur, f"{nom_var}/{modele}",
+                                    lambda j=client_ou_jeton, m=modele: _appeler_huggingface_stream(j, m, messages, stats)))
 
     derniere_erreur = None
-    for source, fabrique_generateur in tentatives:
+    for fournisseur, source, fabrique_generateur in tentatives:
         premier_morceau_envoye = False
+        stats.pop("tokens_entree", None)
+        stats.pop("tokens_sortie", None)
         try:
             for morceau in fabrique_generateur():
                 premier_morceau_envoye = True
                 yield morceau
+            stats["fournisseur"] = fournisseur
+            stats["source"] = source
             return  # généré entièrement avec succès
         except Exception as e:
             derniere_erreur = e
@@ -411,6 +527,8 @@ if __name__ == "__main__":
     pool = construire_pool_clients()
     print(f"Pool construit : {[(f, n) for f, n, _ in pool]}\n")
 
-    texte, fournisseur, source = generer_texte_avec_fallback(pool, [{"role": "user", "content": question}])
-    print(f"[Répondu par {fournisseur} / {source}]\n")
+    texte, fournisseur, source, tokens_entree, tokens_sortie = generer_texte_avec_fallback(
+        pool, [{"role": "user", "content": question}]
+    )
+    print(f"[Répondu par {fournisseur} / {source} -- {tokens_entree} tokens entrée, {tokens_sortie} tokens sortie]\n")
     print(texte)
