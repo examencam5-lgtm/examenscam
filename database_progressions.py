@@ -21,6 +21,17 @@ JSON a la main, et reste coherent avec le reste du projet deja migre.
 CE QUI NE CHANGE PAS : les noms de fonctions et leurs signatures publiques,
 pour rester appelables depuis chat_contexte.py sans adaptation si jamais tu
 changes encore d'implementation plus tard.
+
+CORRECTIF (07/09/2026) -- ajout de la table progressions_niveaux :
+horaire_hebdo et nombre_chapitres existent dans le JSON source (au niveau
+du contenu, avant la liste "chapitres") mais n'etaient stockes nulle part
+en base -- progressions_chapitres est au niveau du CHAPITRE, pas du
+niveau/serie. Consequence concrete observee : un eleve de Terminale C a
+demande son horaire hebdomadaire officiel, et Gemini a invente "6h"
+(l'horaire de Premiere C, une autre serie) au lieu de repondre "7h" (la
+vraie valeur, presente dans le JSON mais absente de la base). Cette
+table comble ce trou -- voir _inserer_meta_niveau() et
+obtenir_horaire_hebdo().
 """
 
 import json
@@ -58,7 +69,14 @@ def get_connection():
 
 def create_table():
     """Idempotent -- appelable au demarrage de app.py comme les autres
-    create_table() du projet, jamais destructive sur une table existante."""
+    create_table() du projet, jamais destructive sur une table existante.
+
+    UNE SEULE definition de create_table() dans ce fichier -- l'ancienne
+    version dupliquee plus bas (avec du SQL tronque "...") a ete
+    supprimee : en Python, deux fonctions du meme nom dans le meme
+    module ne cohabitent jamais, la seconde ecrase silencieusement la
+    premiere. C'etait le bug qui aurait fini par casser la creation de
+    progressions_chapitres au prochain redemarrage."""
     conn = get_connection()
     try:
         cur = conn.cursor()
@@ -87,6 +105,24 @@ def create_table():
                 date_fin        DATE,
                 label           TEXT NOT NULL,
                 UNIQUE(annee_scolaire, date_debut, label)
+            );
+        """)
+        # NOUVEAU (07/09/2026) : voir note de correctif en tete de
+        # fichier -- horaire_hebdo/nombre_chapitres/evaluation_fin_annee
+        # sont des metadonnees au niveau NIVEAU/SERIE (pas chapitre),
+        # d'ou une table separee plutot qu'une colonne repetee sur
+        # chaque ligne de progressions_chapitres.
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS progressions_niveaux (
+                id                    INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                annee_scolaire        TEXT NOT NULL,
+                matiere               TEXT NOT NULL,
+                niveau                TEXT NOT NULL,
+                serie                 TEXT,
+                horaire_hebdo         TEXT,
+                nombre_chapitres      INTEGER,
+                evaluation_fin_annee  TEXT,
+                UNIQUE(annee_scolaire, matiere, niveau, serie)
             );
         """)
         cur.execute("CREATE INDEX IF NOT EXISTS idx_prog_matiere_niveau "
@@ -167,6 +203,31 @@ def parser_semaine(semaine_texte: str):
     return debut, fin
 
 
+def _inserer_meta_niveau(cur, annee_scolaire, matiere, niveau, serie, contenu):
+    """NOUVEAU (07/09/2026) -- voir note de correctif en tete de
+    fichier. Capture horaire_hebdo/nombre_chapitres/evaluation_fin_annee
+    depuis le meme dict `contenu` que celui deja parcouru pour les
+    chapitres (contenu["chapitres"]) ou sous_contenu -- rien a relire
+    depuis le fichier JSON, juste les champs voisins deja en memoire.
+
+    ON CONFLICT DO UPDATE : reimporter une version corrigee du JSON
+    ecrase les anciennes valeurs, meme logique que _inserer_chapitres."""
+    cur.execute("""
+        INSERT INTO progressions_niveaux
+        (annee_scolaire, matiere, niveau, serie, horaire_hebdo, nombre_chapitres, evaluation_fin_annee)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (annee_scolaire, matiere, niveau, serie)
+        DO UPDATE SET
+            horaire_hebdo = EXCLUDED.horaire_hebdo,
+            nombre_chapitres = EXCLUDED.nombre_chapitres,
+            evaluation_fin_annee = EXCLUDED.evaluation_fin_annee
+    """, (
+        annee_scolaire, matiere, niveau, serie,
+        contenu.get("horaire_hebdo"), contenu.get("nombre_chapitres"),
+        contenu.get("evaluation_fin_annee"),
+    ))
+
+
 def importer_json_progression(chemin_json: str, matiere: str, annee_scolaire: str):
     """Importe un fichier JSON structure (format progression_minesec_2026_2027.json)
     dans Postgres pour une matiere donnee. Reutilisable pour Physique, SVT,
@@ -176,7 +237,13 @@ def importer_json_progression(chemin_json: str, matiere: str, annee_scolaire: st
 
     ON CONFLICT DO UPDATE (equivalent Postgres du INSERT OR REPLACE SQLite) :
     si on reimporte une version corrigee du meme fichier, on ecrase l'ancienne
-    ligne au lieu de la dupliquer ou de la laisser perimee."""
+    ligne au lieu de la dupliquer ou de la laisser perimee.
+
+    CORRECTIF (07/09/2026) : une SEULE boucle sur niveaux.items() --
+    une version precedente de ce fichier avait cette boucle dupliquee
+    par erreur de copier-coller (une fois avec l'appel a
+    _inserer_meta_niveau, une fois sans), ce qui doublait inutilement
+    le travail d'insertion des chapitres a chaque import."""
     conn = get_connection()
     try:
         create_table()
@@ -191,17 +258,21 @@ def importer_json_progression(chemin_json: str, matiere: str, annee_scolaire: st
 
         for niveau_cle, contenu in niveaux.items():
             if "chapitres" in contenu:
+                # Cas plat, ex: "3e" -- pas de sous-decoupage par serie.
                 n = _inserer_chapitres(cur, matiere, annee_scolaire, niveau_cle,
                                         None, contenu["chapitres"])
                 compte_chapitres += len(contenu["chapitres"])
                 compte_non_parses += n
+                _inserer_meta_niveau(cur, annee_scolaire, matiere, niveau_cle, None, contenu)
             else:
+                # Cas par serie, ex: "premiere" -> "C"/"D"/"TI"/"A4".
                 for serie, sous_contenu in contenu.items():
                     chapitres = sous_contenu.get("chapitres", [])
                     n = _inserer_chapitres(cur, matiere, annee_scolaire, niveau_cle,
                                             serie, chapitres)
                     compte_chapitres += len(chapitres)
                     compte_non_parses += n
+                    _inserer_meta_niveau(cur, annee_scolaire, matiere, niveau_cle, serie, sous_contenu)
 
         meta = data.get("meta", {})
         calendrier = meta.get("calendrier_commun", {})
@@ -327,17 +398,55 @@ def obtenir_progression_du_jour(matiere: str, niveau: str, serie: Optional[str] 
     return resultat
 
 
+def obtenir_horaire_hebdo(matiere: str, niveau: str, serie: Optional[str] = None) -> dict:
+    """NOUVEAU (07/09/2026) -- lecture de progressions_niveaux, voir
+    note de correctif en tete de fichier. Retourne {'disponible': False}
+    si rien n'est trouve -- meme discipline anti-hallucination que
+    obtenir_progression_du_jour() : jamais de valeur devinee en aval."""
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT horaire_hebdo, nombre_chapitres, evaluation_fin_annee
+            FROM progressions_niveaux
+            WHERE matiere = %s AND niveau = %s
+              AND (serie = %s OR (%s IS NULL AND serie IS NULL))
+            LIMIT 1
+        """, (matiere, niveau, serie, serie))
+        row = cur.fetchone()
+        if not row:
+            return {"disponible": False}
+        return {"disponible": True, **dict(row)}
+    except Exception as e:
+        print(f"obtenir_horaire_hebdo error: {e}")
+        return {"disponible": False}
+    finally:
+        conn.close()
+
+
 def texte_pour_prompt_systeme(matiere: str, niveau: str, serie: Optional[str] = None,
                                date_reference: Optional[date] = None) -> str:
-    """Formate obtenir_progression_du_jour() en un bloc de texte pret a
-    coller dans le prompt systeme Gemini. Garde-fou : si rien n'est
-    disponible, le dit explicitement plutot que de laisser un trou que le
-    modele pourrait combler par hallucination."""
+    """Formate obtenir_progression_du_jour() (+ obtenir_horaire_hebdo(),
+    NOUVEAU 07/09/2026) en un bloc de texte pret a coller dans le prompt
+    systeme Gemini. Garde-fou : si rien n'est disponible, le dit
+    explicitement plutot que de laisser un trou que le modele pourrait
+    combler par hallucination."""
     info = obtenir_progression_du_jour(matiere, niveau, serie, date_reference)
     jour_lisible = datetime.fromisoformat(info["date_reference"]).strftime("%d/%m/%Y")
 
     lignes = [f"[PROGRESSION NATIONALE MINESEC - {matiere} - {niveau}"
               + (f" serie {serie}" if serie else "") + f" - date du jour: {jour_lisible}]"]
+
+    # NOUVEAU (07/09/2026) : horaire_hebdo/nombre_chapitres injectes
+    # systematiquement quand disponibles -- c'est precisement la
+    # donnee que Gemini avait inventee ("6h" au lieu de "7h" pour
+    # Terminale C) faute d'etre presente ici auparavant.
+    meta = obtenir_horaire_hebdo(matiere, niveau, serie)
+    if meta.get("disponible"):
+        if meta.get("horaire_hebdo"):
+            lignes.append(f"- Horaire hebdomadaire officiel : {meta['horaire_hebdo']}")
+        if meta.get("nombre_chapitres"):
+            lignes.append(f"- Nombre total de chapitres au programme : {meta['nombre_chapitres']}")
 
     for ev in info.get("evenements_du_jour", []):
         lignes.append(f"- Evenement du jour: {ev['label']}")
@@ -367,4 +476,4 @@ def texte_pour_prompt_systeme(matiere: str, niveau: str, serie: Optional[str] = 
 if __name__ == "__main__":
     # Test rapide : python database_progressions.py
     create_table()
-    print(texte_pour_prompt_systeme("Mathematiques", "terminale", "C-E"))
+    print(texte_pour_prompt_systeme("Mathematiques", "terminale", "C"))

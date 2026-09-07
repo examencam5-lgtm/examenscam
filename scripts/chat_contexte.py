@@ -128,8 +128,18 @@ RÈGLES DE CONTEXTE OBLIGATOIRES :
 - Si des extraits de vrais sujets MINESEC te sont donnés ci-dessous, utilise-les UNIQUEMENT \
   comme repère de style et de niveau d'exigence réel -- ne les recopie JAMAIS mot pour mot \
   dans ta réponse, ils servent à calibrer ton propre exemple, pas à être cités.
-"""
 
+RÈGLE ANTI-HALLUCINATION CRITIQUE SUR LES CHIFFRES ET DONNÉES FACTUELLES :
+- Si l'élève demande une donnée précise et vérifiable (horaire hebdomadaire, coefficient, \
+  barème, date d'évaluation, durée d'épreuve, nombre de chapitres) et que cette donnée \
+  N'APPARAÎT PAS explicitement dans les blocs injectés ci-dessous (PROGRESSION NATIONALE, \
+  PROGRAMME OFFICIEL), tu DOIS dire clairement que tu n'as pas cette information vérifiée \
+  et orienter l'élève vers son professeur ou son emploi du temps -- NE JAMAIS improviser un \
+  chiffre plausible, même s'il semble raisonnable.
+- Ne confonds JAMAIS deux séries différentes (ex: l'horaire de Première C n'est pas celui \
+  de Terminale C) -- vérifie toujours que la donnée citée correspond exactement au niveau \
+  ET à la série de l'élève tels qu'indiqués dans son profil.
+"""
 
 # ═══════════════════════════════════════════════════════
 # NORMALISATION
@@ -883,6 +893,8 @@ def construire_sommaire_programme(
 
 
 # ═══════════════════════════════════════════════════════
+# ══════════════
+# ═══════════════════════════════════════════════════════
 # PROMPT GÉNÉRIQUE
 # ═══════════════════════════════════════════════════════
 
@@ -908,13 +920,19 @@ RÈGLES :
 - Pour une correction, montre les calculs et ne saute pas les étapes importantes.
 - Si une donnée de l'énoncé est ambiguë, demande confirmation plutôt que d'inventer.
 
+RÈGLE ANTI-HALLUCINATION CRITIQUE SUR LES CHIFFRES ET DONNÉES FACTUELLES :
+- Si l'élève demande une donnée précise et vérifiable (horaire hebdomadaire, coefficient,
+  barème, date d'évaluation, durée d'épreuve, nombre de chapitres) et que cette donnée
+  N'APPARAÎT PAS explicitement dans les blocs injectés dans ce prompt système (PROGRESSION
+  NATIONALE, PROGRAMME OFFICIEL), tu DOIS dire clairement que tu n'as pas cette information
+  vérifiée et orienter l'élève vers son professeur ou son emploi du temps -- NE JAMAIS
+  improviser un chiffre plausible, même s'il semble raisonnable.
+- Ne confonds JAMAIS deux séries différentes (ex: l'horaire de Première C n'est pas celui
+  de Terminale C) -- vérifie toujours que la donnée citée correspond exactement au niveau
+  ET à la série de l'élève tels qu'indiqués dans son profil.
+
 MATIÈRE ACTUELLE : {matiere}
 """
-
-
-# ═══════════════════════════════════════════════════════
-# CONSTRUCTION COMMUNE DU PROMPT
-# ═══════════════════════════════════════════════════════
 
 def _construire_prompt_systeme(
     question: str,
