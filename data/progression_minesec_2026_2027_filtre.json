@@ -1,0 +1,1441 @@
+{
+  "meta": {
+    "titre": "Fiches simplifiées de progression harmonisée nationale des mathématiques - Enseignement secondaire général",
+    "annee_scolaire": "2026-2027",
+    "source": "Ministère des Enseignements Secondaires (MINESEC) - Inspection Générale des Enseignements - Inspection de Pédagogie chargée de l'Enseignement des Sciences - Section Mathématiques",
+    "usage": "Cette structure sert a calibrer le prompt systeme de l'assistant IA d'ExamensCam. Elle permet a l'IA de savoir, a une date donnee, quel chapitre/lecon un eleve d'une classe et serie donnees est cense etudier selon le calendrier officiel MINESEC, ainsi que les periodes d'evaluation, d'interruption des cours et les journees speciales.",
+    "calendrier_commun": {
+      "interruption_1": {
+        "debut": "2026-12-18",
+        "fin": "2027-01-04",
+        "label": "Premiere interruption des cours (vacances de Noel)"
+      },
+      "interruption_2": {
+        "debut": "2027-03-25",
+        "fin": "2027-04-12",
+        "label": "Deuxieme interruption des cours (Paques)"
+      },
+      "epreuves_zero": {
+        "debut": "2027-04-14",
+        "fin": "2027-04-17"
+      },
+      "fete_nationale_unite": "2027-05-20",
+      "journees_notables": [
+        {
+          "date": "2026-09-08",
+          "label": "Journee internationale de l'alphabetisation"
+        },
+        {
+          "date": "2026-10-05",
+          "label": "Journee mondiale de l'enseignant"
+        },
+        {
+          "date": "2026-10-09",
+          "label": "Journee nationale du materiel didactique local"
+        },
+        {
+          "date": "2026-10-15",
+          "label": "Journee mondiale du lavage des mains"
+        },
+        {
+          "date": "2026-10-16",
+          "label": "Journee nationale de l'orientation scolaire"
+        },
+        {
+          "date": "2026-11-19",
+          "label": "Journee mondiale de la philosophie"
+        },
+        {
+          "date": "2027-01-25",
+          "date_fin": "2027-01-29",
+          "label": "Semaine nationale du bilinguisme"
+        },
+        {
+          "date": "2027-02-03",
+          "date_fin": "2027-02-11",
+          "label": "Semaine de la jeunesse"
+        },
+        {
+          "date": "2027-02-11",
+          "label": "Journee internationale des femmes et filles de science / Fete nationale de la jeunesse"
+        },
+        {
+          "date": "2027-02-21",
+          "label": "Journee internationale de la langue maternelle"
+        },
+        {
+          "date": "2027-03-05",
+          "label": "Journee nationale des arts et cultures a l'ecole"
+        },
+        {
+          "date": "2027-03-08",
+          "label": "Journee du Commonwealth"
+        },
+        {
+          "date": "2027-03-11",
+          "date_fin": "2027-03-12",
+          "label": "Journees portes ouvertes"
+        },
+        {
+          "date": "2027-03-14",
+          "label": "Journee internationale des mathematiques"
+        },
+        {
+          "date": "2027-03-20",
+          "label": "Journee internationale de la francophonie"
+        },
+        {
+          "date": "2027-05-20",
+          "label": "Fete nationale de l'unite"
+        },
+        {
+          "date": "2027-06-05",
+          "label": "Journee mondiale de l'environnement"
+        }
+      ]
+    }
+  },
+  "niveaux": {
+    "3e": {
+      "horaire_hebdo": "4h",
+      "nombre_chapitres": 16,
+      "chapitres": [
+        {
+          "ordre": 1,
+          "nom": "PGCD - algorithme des soustractions et d'Euclide",
+          "semaine": "07-11 sept 2026",
+          "lecons": [
+            "PGCD - algorithme des soustractions",
+            "PGCD - algorithme d'Euclide",
+            "Relation entre le PPCM et PGCD de deux entiers naturels"
+          ]
+        },
+        {
+          "ordre": 2,
+          "nom": "Thales dans le triangle",
+          "semaine": "14-18 sept 2026",
+          "lecons": [
+            "Propriete directe de Thales",
+            "Propriete reciproque de Thales"
+          ]
+        },
+        {
+          "ordre": 3,
+          "nom": "Nombres reels",
+          "semaine": "21-25 sept 2026 a 26-30 oct 2026",
+          "lecons": [
+            "Racines carrees d'un reel positif",
+            "Ensemble des nombres reels",
+            "Somme et produit des nombres reels comportant un radical",
+            "Quotient des nombres reels comportant un radical",
+            "Puissances entieres d'un nombre reel",
+            "Comparaison de deux nombres reels comportant un radical",
+            "Encadrement d'un nombre reel",
+            "Intervalles de IR"
+          ],
+          "evaluation": "28 sept-02 oct 2026 (1h)"
+        },
+        {
+          "ordre": 4,
+          "nom": "Trigonometrie dans le triangle rectangle",
+          "semaine": "02-06 nov 2026 a 09-13 nov 2026",
+          "lecons": [
+            "Sinus, cosinus et tangente d'un angle aigu dans un triangle rectangle",
+            "Mesure d'un angle aigu et longueur d'un cote dans un triangle rectangle"
+          ],
+          "evaluation": "16-20 nov 2026"
+        },
+        {
+          "ordre": 5,
+          "nom": "Calcul litteral",
+          "semaine": "30 nov-04 dec 2026 a 07-11 dec 2026",
+          "lecons": [
+            "Expression litterale",
+            "Monomes et polynomes",
+            "Developpement et reduction d'une expression litterale",
+            "Factorisation d'une expression litterale",
+            "Fractions rationnelles"
+          ]
+        },
+        {
+          "ordre": 6,
+          "nom": "Section d'une pyramide ou d'un cone par un plan parallele a la base",
+          "semaine": "14-18 dec 2026",
+          "lecons": [
+            "Section d'un cone et elements metriques",
+            "Section d'une pyramide et elements metriques"
+          ]
+        },
+        {
+          "ordre": 7,
+          "nom": "Multiplication d'un vecteur par un nombre reel",
+          "semaine": "11-15 jan 2027",
+          "lecons": [
+            "Produit d'un vecteur par un nombre reel",
+            "Vecteurs colineaires ; vecteurs directeurs d'une droite"
+          ]
+        },
+        {
+          "ordre": 8,
+          "nom": "Coordonnees d'un vecteur",
+          "semaine": "18-22 jan 2027 a 25-29 jan 2027",
+          "lecons": [
+            "Coordonnees d'un vecteur AB",
+            "Distance de deux points",
+            "Condition de colinearite",
+            "Condition d'orthogonalite"
+          ]
+        },
+        {
+          "ordre": 9,
+          "nom": "Equations et inequations du 1er degre a une inconnue dans R",
+          "semaine": "01-05 fev 2027 a 08-12 fev 2027",
+          "lecons": [
+            "Equations de la forme ax+b=0",
+            "Equations se ramenant a une equation du 1er degre a une inconnue dans R",
+            "Inequations de la forme ax+b>0"
+          ]
+        },
+        {
+          "ordre": 10,
+          "nom": "Equations de droites",
+          "semaine": "15-19 fev 2027 a 22-26 fev 2027",
+          "lecons": [
+            "Equations cartesiennes d'une droite passant par deux points",
+            "Equations cartesiennes d'une droite de coefficient directeur donne"
+          ]
+        },
+        {
+          "ordre": 11,
+          "nom": "Equations du 1er degre dans R x R",
+          "semaine": "01-05 mars 2027",
+          "lecons": [
+            "Equations du premier degre dans R x R",
+            "Systemes de deux equations du premier degre dans R x R"
+          ]
+        },
+        {
+          "ordre": 12,
+          "nom": "Angles dans un cercle",
+          "semaine": "08-12 mars 2027",
+          "lecons": [
+            "Angles inscrits et angles au centre associes",
+            "Angles inscrits interceptant le meme arc"
+          ]
+        },
+        {
+          "ordre": 13,
+          "nom": "Polygones reguliers",
+          "semaine": "15-19 mars 2027",
+          "lecons": [
+            "Polygones reguliers particuliers : triangle equilateral, hexagone regulier",
+            "Polygones reguliers particuliers : carre, octogone regulier"
+          ]
+        },
+        {
+          "ordre": 14,
+          "nom": "Statistiques",
+          "semaine": "12-16 avr 2027 a 19-23 avr 2027",
+          "lecons": [
+            "Regroupement en classe : classe modale, frequence d'une classe",
+            "Regroupement en classe : moyenne d'une serie statistique",
+            "Representations graphiques d'une serie statistique regroupee en classes"
+          ]
+        },
+        {
+          "ordre": 15,
+          "nom": "Homothetie",
+          "semaine": "26 avr-30 avr 2027",
+          "lecons": [
+            "Image d'un point par une homothetie",
+            "Agrandissement ; reduction"
+          ]
+        },
+        {
+          "ordre": 16,
+          "nom": "Applications lineaires et applications affines",
+          "semaine": "10-14 mai 2027 a 17-21 mai 2027",
+          "lecons": [
+            "Applications affines : images et antecedents, sens de variation",
+            "Representation graphique d'une application affine",
+            "Applications affines par intervalles"
+          ]
+        }
+      ],
+      "evaluation_fin_annee": "24-28 mai 2027 (2h)"
+    },
+    "premiere": {
+      "A4": {
+        "horaire_hebdo": "2h",
+        "nombre_chapitres": 7,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Equations, inequations et systemes",
+            "semaine": "07-11 sept 2026 a 21-25 sept 2026",
+            "lecons": [
+              "Equations et inequations associees aux fonctions homographiques",
+              "Tableau des signes d'un quotient",
+              "Equations du second degre dans IR",
+              "Signes d'un polynome ax2+bx+c",
+              "Inequations du second degre dans IR",
+              "Systeme d'equations du premier degre dans IR2"
+            ],
+            "evaluation": "28 sept-02 oct 2026 (1h)"
+          },
+          {
+            "ordre": 2,
+            "nom": "Denombrement",
+            "semaine": "05-09 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              "Complements sur les ensembles finis : reunion, intersection, complementaire, produit cartesien",
+              "p-listes d'elements d'un ensemble (p-uplets)",
+              "Arrangements",
+              "Permutations",
+              "Combinaisons"
+            ],
+            "evaluation": "26-30 oct 2026 (1h)"
+          },
+          {
+            "ordre": 3,
+            "nom": "Fonctions : Generalites",
+            "semaine": "02-06 nov 2026 a 09-13 nov 2026",
+            "lecons": [
+              "Parite d'une fonction",
+              "Elements de symetrie de la courbe d'une fonction sur un domaine borne"
+            ],
+            "evaluation": "16-20 nov 2026 (1h)"
+          },
+          {
+            "ordre": 4,
+            "nom": "Fonctions : Limites et continuite",
+            "semaine": "30 nov-04 dec 2026 a 07-11 dec 2026",
+            "lecons": [
+              "Approche intuitive des notions de limite",
+              "Continuite"
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Statistiques",
+            "semaine": "14-18 dec 2026 a 15-19 fev 2027",
+            "lecons": [
+              "Caracteres statistiques discrets",
+              "Caracteres statistiques regroupes en classes d'egales amplitudes",
+              "Caracteristiques de positions : moyenne, mediane",
+              "Caracteristiques de dispersion : variance, ecart type",
+              "Tableaux des effectifs cumules croissants et decroissants",
+              "Tableaux des frequences cumulees croissantes et decroissantes",
+              "Representations graphiques : histogramme, polygones des effectifs/frequences cumules"
+            ],
+            "evaluation": "01-05 fev 2027 (1h) et 22-26 fev 2027 (1h)"
+          },
+          {
+            "ordre": 6,
+            "nom": "Fonctions derivees",
+            "semaine": "08-12 mars 2027 a 15-19 mars 2027",
+            "lecons": [
+              "Derivation en un reel x0 : nombre derive, equation de la tangente",
+              "Fonctions derivees : definition, derivees des fonctions elementaires",
+              "Derivees et operations sur les fonctions"
+            ],
+            "evaluation": "22-25 mars 2027 (1h)"
+          },
+          {
+            "ordre": 7,
+            "nom": "Fonctions associees et etude des fonctions",
+            "semaine": "19-23 avr 2027 a 26-30 avr 2027",
+            "lecons": [
+              "Etude de fonctions polynomes et homographiques definies sur un intervalle borne",
+              "Fonctions et transformations usuelles"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "10-14 mai 2027 (2h)"
+      },
+      "C": {
+        "horaire_hebdo": "6h",
+        "nombre_chapitres": 19,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Equations, inequations polynomiales et irrationnelles",
+            "semaine": "07-11 sept 2026 a 14-18 sept 2026",
+            "lecons": [
+              "Equations et inequations de degre deux dans R",
+              "Systemes d'equations a deux inconnues se ramenant a une equation du second degre dans R",
+              "Polynomes de degre 3",
+              "Signe d'un polynome de degre 3",
+              "Equations irrationnelles",
+              "Inequations irrationnelles"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Systemes d'equations a deux ou trois inconnues",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              "Systemes d'equations lineaires a deux inconnues",
+              "Systemes d'equations lineaires a trois inconnues"
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Geometrie analytique du plan",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              "Droites et distance d'un point a une droite",
+              "Cercles"
+            ],
+            "evaluation": "28 sept-02 oct 2026 (2h)"
+          },
+          {
+            "ordre": 4,
+            "nom": "Trigonometrie",
+            "semaine": "05-09 oct 2026",
+            "lecons": [
+              "Formules de transformation",
+              "Equations et inequations trigonometriques"
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Denombrement",
+            "semaine": "12-16 oct 2026",
+            "lecons": [
+              "Premiers outils de denombrement",
+              "Les p-listes, arrangements et combinaisons"
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Barycentres",
+            "semaine": "19-23 oct 2026",
+            "lecons": [
+              "Barycentre",
+              "Ligne de niveau - Arcs capables"
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Generalites sur les fonctions numeriques",
+            "semaine": "26-30 oct 2026 a 02-06 nov 2026",
+            "lecons": [
+              "Notion de fonctions et d'applications",
+              "Symetries et translations dans la construction des courbes"
+            ],
+            "evaluation": "09-13 nov 2026 (3h)"
+          },
+          {
+            "ordre": 8,
+            "nom": "Continuite et limites d'une fonction",
+            "semaine": "16-20 nov 2026 a 23-27 nov 2026",
+            "lecons": [
+              "Limites",
+              "Continuite"
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Derivation",
+            "semaine": "30 nov-04 dec 2026 a 07-11 dec 2026",
+            "lecons": [
+              "Nombre derive et fonction derivee",
+              "Utilisation de la fonction derivee"
+            ],
+            "evaluation": "14-18 dec 2026 (3h)"
+          },
+          {
+            "ordre": 10,
+            "nom": "Transformations affines du plan",
+            "semaine": "04-08 jan 2027 a 11-15 jan 2027",
+            "lecons": [
+              "Composee de certaines isometries du plan",
+              "Homotheties et composition avec rotations, translations, reflexions",
+              "Transformation du plan et etude analytique"
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Representation graphique d'une fonction numerique",
+            "semaine": "18-22 jan 2027 a 25-29 jan 2027",
+            "lecons": [
+              "Representation des fonctions polynomes",
+              "Representation des fonctions rationnelles"
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Espaces vectoriels sur IR et applications lineaires",
+            "semaine": "01-05 fev 2027 a 08-12 fev 2027",
+            "lecons": [
+              "Espaces et sous-espaces vectoriels",
+              "Applications lineaires",
+              "Matrices et applications lineaires"
+            ],
+            "evaluation": "15-19 fev 2027 (3h)"
+          },
+          {
+            "ordre": 13,
+            "nom": "Suites numeriques",
+            "semaine": "22-26 fev 2027 a 01-05 mars 2027",
+            "lecons": [
+              "Generalites sur les suites numeriques",
+              "Suites arithmetiques et suites geometriques"
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Series statistiques regroupees en classes",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              "Caracteristiques de positions et de dispersions",
+              "Regroupement en classe : representation graphique"
+            ],
+            "evaluation": "22-25 mars 2027 (2h)"
+          },
+          {
+            "ordre": 15,
+            "nom": "Orthogonalite dans l'espace",
+            "semaine": "12-16 avr 2027",
+            "lecons": [
+              "Droites orthogonales",
+              "Plans orthogonaux",
+              "Droites et plans orthogonaux"
+            ]
+          },
+          {
+            "ordre": 16,
+            "nom": "Introduction a la theorie des graphes",
+            "semaine": "19-23 avr 2027",
+            "lecons": [
+              "Presentation du concept de graphe",
+              "Nombre d'aretes et somme des degres d'un graphe"
+            ]
+          },
+          {
+            "ordre": 17,
+            "nom": "Geometrie analytique dans l'espace",
+            "semaine": "26-30 avr 2027 a 03-07 mai 2027",
+            "lecons": [
+              "Reperes de l'espace",
+              "Representations parametriques et cartesiennes des droites et des plans",
+              "Positions relatives de deux droites, deux plans, droite et plan",
+              "Distance d'un point a une droite ou a un plan"
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "Spheres",
+            "semaine": "10-14 mai 2027",
+            "lecons": [
+              "Equations cartesiennes d'une sphere",
+              "Intersection d'une sphere et d'un plan"
+            ]
+          },
+          {
+            "ordre": 19,
+            "nom": "Arcs capables",
+            "semaine": "17-21 mai 2027",
+            "lecons": [
+              "Ensemble des points M tels que MesAMB = alpha",
+              "Ensemble de points selon mesures d'angles orientes"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "24-28 mai 2027 (3h)"
+      },
+      "D": {
+        "horaire_hebdo": "4h",
+        "nombre_chapitres": 14,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Equations, inequations polynomiales et irrationnelles",
+            "semaine": "07-11 sept 2026 a 14-18 sept 2026",
+            "lecons": [
+              "Equations et inequations de degre deux dans R",
+              "Systeme d'equations a deux inconnues se ramenant a une equation du second degre",
+              "Polynomes de degre 3 : zero/racine, factorisation, divisibilite par x-alpha",
+              "Signe d'un polynome de degre 3",
+              "Equations irrationnelles",
+              "Inequations irrationnelles"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Systemes d'equations a deux ou trois inconnues",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              "Systemes d'equations lineaires a deux inconnues",
+              "Systemes d'equations lineaires a trois inconnues"
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Trigonometrie",
+            "semaine": "28 sept-02 oct 2026",
+            "lecons": [
+              "Formules de transformation",
+              "Equations et inequations trigonometriques"
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Denombrement",
+            "semaine": "05-09 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              "Premiers outils de denombrement",
+              "Les p-listes, p-arrangements et combinaisons"
+            ],
+            "evaluation": "12-16 oct 2026 (2h)"
+          },
+          {
+            "ordre": 5,
+            "nom": "Barycentres",
+            "semaine": "26-30 oct 2026 a 02-06 nov 2026",
+            "lecons": [
+              "Barycentre",
+              "Ligne de niveau"
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Generalites sur les fonctions numeriques",
+            "semaine": "09-13 nov 2026",
+            "lecons": [
+              "Notion de fonctions et d'applications",
+              "Symetries et translations dans la construction des courbes"
+            ],
+            "evaluation": "16-20 nov 2026 a 23-27 nov 2026 (3h)"
+          },
+          {
+            "ordre": 7,
+            "nom": "Continuite et limites d'une fonction",
+            "semaine": "30 nov-04 dec 2026 a 07-11 dec 2026",
+            "lecons": [
+              "Limites",
+              "Continuite"
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Derivation",
+            "semaine": "14-18 dec 2026 a 04-08 jan 2027",
+            "lecons": [
+              "Nombre derive et fonction derivee",
+              "Utilisation de la fonction derivee"
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Transformations affines du plan",
+            "semaine": "18-22 jan 2027 a 25-29 jan 2027",
+            "lecons": [
+              "Composee de deux symetries orthogonales",
+              "Composee de deux rotations de meme centre",
+              "Composee de deux homotheties de meme centre ; d'une homothetie et d'une translation"
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Representation graphique d'une fonction numerique",
+            "semaine": "01-05 fev 2027 a 08-12 fev 2027",
+            "lecons": [
+              "Representation des fonctions polynomes",
+              "Representation des fonctions rationnelles"
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Suites numeriques",
+            "semaine": "01-05 mars 2027 a 08-12 mars 2027",
+            "lecons": [
+              "Generalites sur les suites numeriques",
+              "Suites arithmetiques et suites geometriques"
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Series statistiques regroupees en classes",
+            "semaine": "15-19 mars 2027 a 22-25 mars 2027",
+            "lecons": [
+              "Caracteristiques de positions et de dispersions",
+              "Regroupement en classe : representation graphique"
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Orthogonalite dans l'espace",
+            "semaine": "19-23 avr 2027",
+            "lecons": [
+              "Droites orthogonales",
+              "Plans orthogonaux",
+              "Droites et plans orthogonaux"
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Introduction a la theorie des graphes",
+            "semaine": "26-30 avr 2027",
+            "lecons": [
+              "Presentation du concept de graphe",
+              "Nombre d'aretes et somme des degres d'un graphe"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "N/A - revisions generales 17-21 mai 2027"
+      },
+      "TI": {
+        "horaire_hebdo": "4h",
+        "nombre_chapitres": 14,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Equations, inequations polynomiales et irrationnelles",
+            "semaine": "07-11 sept 2026 a 14-18 sept 2026",
+            "lecons": [
+              "Equations et inequations de degre deux dans R",
+              "Systeme d'equations a deux inconnues se ramenant a une equation du second degre",
+              "Polynomes de degre 3",
+              "Signe d'un polynome de degre 3",
+              "Equations irrationnelles",
+              "Inequations irrationnelles"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Systemes d'equations a deux ou trois inconnues",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              "Systemes d'equations lineaires a deux inconnues",
+              "Systemes d'equations lineaires a trois inconnues"
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Trigonometrie",
+            "semaine": "28 sept-02 oct 2026",
+            "lecons": [
+              "Formules de transformation",
+              "Equations et inequations trigonometriques"
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Denombrement",
+            "semaine": "05-09 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              "Premiers outils de denombrement",
+              "Les p-listes, p-arrangements et combinaisons",
+              "Permutations, Combinaisons"
+            ],
+            "evaluation": "12-16 oct 2026 (2h)"
+          },
+          {
+            "ordre": 5,
+            "nom": "Barycentres",
+            "semaine": "26-30 oct 2026 a 02-06 nov 2026",
+            "lecons": [
+              "Barycentre",
+              "Ligne de niveau"
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Generalites sur les fonctions numeriques",
+            "semaine": "09-13 nov 2026",
+            "lecons": [
+              "Notion de fonctions et d'applications",
+              "Symetries et translations dans la construction des courbes"
+            ],
+            "evaluation": "16-20 nov 2026 a 23-27 nov 2026 (3h)"
+          },
+          {
+            "ordre": 7,
+            "nom": "Continuite et limites d'une fonction",
+            "semaine": "30 nov-04 dec 2026 a 07-11 dec 2026",
+            "lecons": [
+              "Limites",
+              "Continuite"
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Derivation",
+            "semaine": "14-18 dec 2026 a 04-08 jan 2027",
+            "lecons": [
+              "Nombre derive et fonction derivee",
+              "Utilisation de la fonction derivee"
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Arithmetique",
+            "semaine": "18-22 jan 2027 a 25-29 jan 2027",
+            "lecons": [
+              "Division euclidienne dans IN",
+              "Numeration de base a"
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Representation graphique d'une fonction numerique",
+            "semaine": "01-05 fev 2027 a 08-12 fev 2027",
+            "lecons": [
+              "Representation des fonctions polynomes",
+              "Representation des fonctions rationnelles"
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Suites numeriques",
+            "semaine": "01-05 mars 2027 a 08-12 mars 2027",
+            "lecons": [
+              "Generalites sur les suites numeriques",
+              "Suites arithmetiques et suites geometriques"
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Series statistiques regroupees en classes",
+            "semaine": "15-19 mars 2027 a 22-25 mars 2027",
+            "lecons": [
+              "Caracteristiques de positions et de dispersions",
+              "Regroupement en classe : representation graphique"
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Espaces vectoriels sur IR",
+            "semaine": "19-23 avr 2027 a 26-30 avr 2027",
+            "lecons": [
+              "Lois de composition interne",
+              "Espaces vectoriels sur IR",
+              "Familles libres, familles liees, familles generatrices"
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Introduction a la theorie des graphes",
+            "semaine": "03-07 mai 2027",
+            "lecons": [
+              "Presentation du concept de graphe",
+              "Nombre d'aretes et somme des degres d'un graphe"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "N/A - revisions generales 24-28 mai / 31 mai-04 juin 2027"
+      }
+    },
+    "terminale": {
+      "A4": {
+        "horaire_hebdo": "2h",
+        "nombre_chapitres": 10,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Equations, inequations, systemes",
+            "semaine": "07-11 sept 2026 a 21-25 sept 2026",
+            "lecons": [
+              "Equations et inequations de degre 3 dans IR",
+              "Equations et inequations faisant intervenir des inconnues auxiliaires",
+              "Systemes lineaires d'equations dans IR2",
+              "Systemes lineaires d'equations dans IR3"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Fonctions : Limites et continuite",
+            "semaine": "05-09 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              "Limite d'une fonction en l'infini",
+              "Limite d'une fonction en un reel x0",
+              "Limite a droite et a gauche d'un reel x0",
+              "Limites et operations",
+              "Continuite"
+            ],
+            "evaluation": "28 sept-02 oct 2026"
+          },
+          {
+            "ordre": 3,
+            "nom": "Statistiques",
+            "semaine": "26-30 oct 2026 a 02-06 nov 2026",
+            "lecons": [
+              "Types de representations graphiques d'une serie statistique",
+              "Caracteristiques de position : mode, mediane, moyenne, quartile, decile",
+              "Serie statistique a deux caracteres",
+              "Ajustement lineaire"
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Fonctions : Derivee",
+            "semaine": "09-13 nov 2026",
+            "lecons": [
+              "Derivees usuelles",
+              "Derivees des fonctions composees"
+            ],
+            "evaluation": "16-20 nov 2026 (2h)"
+          },
+          {
+            "ordre": 5,
+            "nom": "Courbes representatives",
+            "semaine": "30 nov-04 dec 2026 a 07-11 dec 2026",
+            "lecons": [
+              "Derivee et sens de variation",
+              "Centre de symetrie, axe de symetrie"
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Primitives d'une fonction sur un intervalle",
+            "semaine": "14-18 dec 2026",
+            "lecons": [
+              "Asymptotes",
+              "Primitives des fonctions usuelles"
+            ],
+            "evaluation": "11-15 jan 2027 (1h)"
+          },
+          {
+            "ordre": 7,
+            "nom": "Fonction logarithme neperien",
+            "semaine": "18-22 jan 2027 a 25-29 jan 2027",
+            "lecons": [
+              "Definition : ensemble de definition, proprietes algebriques",
+              "Equations, inequations et systemes ayant pour inconnue auxiliaire ln",
+              "Limites usuelles",
+              "Derivee et primitives"
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Fonctions exponentielles",
+            "semaine": "01-05 fev 2027 a 08-12 fev 2027",
+            "lecons": [
+              "Definition : ensemble de definition, proprietes algebriques",
+              "Equations du type lnx=y ou e^x=y",
+              "Equations, inequations et systemes ayant pour inconnue auxiliaire e^x",
+              "Limites usuelles",
+              "Derivee et primitives"
+            ],
+            "evaluation": "22-26 fev 2027"
+          },
+          {
+            "ordre": 9,
+            "nom": "Probabilites",
+            "semaine": "08-12 mars 2027 a 15-19 mars 2027",
+            "lecons": [
+              "Vocabulaire des evenements",
+              "Proprietes des probabilites"
+            ],
+            "evaluation": "22-25 mars 2027 (1h)"
+          },
+          {
+            "ordre": 10,
+            "nom": "Etude des fonctions",
+            "semaine": "12-16 avr 2027 a 26-30 avr 2027",
+            "lecons": [
+              "Fonctions polynomes",
+              "Fonctions rationnelles",
+              "Fonctions logarithmes neperiens et exponentielles"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "10-14 mai 2027 (2h)"
+      },
+      "C": {
+        "horaire_hebdo": "7h",
+        "nombre_chapitres": 18,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Arithmetique dans Z (serie C uniquement)",
+            "semaine": "07-11 sept 2026 a 21-25 sept 2026",
+            "lecons": [
+              "Division euclidienne dans N",
+              "Numeration binaire et decimale",
+              "Divisibilite dans Z et notion de congruence",
+              "Nombres premiers",
+              "PGCD et PPCM",
+              "Proprietes de Bezout, de Gauss et equations diophantiennes"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Nombres complexes : approche algebrique",
+            "semaine": "28 sept-02 oct 2026 a 05-09 oct 2026",
+            "lecons": [
+              "Ecriture algebrique, calculs dans C",
+              "Nombres complexes conjugues",
+              "Module d'un nombre complexe",
+              "Equations de degre 2 et 3 dans C"
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Fonctions numeriques d'une variable reelle",
+            "semaine": "12-16 oct 2026 a 26-30 oct 2026",
+            "lecons": [
+              "Limites des fonctions trigonometriques et irrationnelles",
+              "Fonction continue sur un intervalle",
+              "Fonction continue et strictement monotone",
+              "Derivabilite de f-1 et inegalites des accroissements finis",
+              "Representations graphiques des fonctions"
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Espaces vectoriels et applications lineaires en dimension 3",
+            "semaine": "02-06 nov 2026 a 09-13 nov 2026",
+            "lecons": [
+              "Espaces vectoriels sur R",
+              "Applications lineaires"
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Statistiques a deux variables",
+            "semaine": "16-20 nov 2026",
+            "lecons": [
+              "Tableaux a double entree des effectifs et nuage de points",
+              "Ajustements lineaires"
+            ],
+            "evaluation": "23-27 nov 2026 (4h)"
+          },
+          {
+            "ordre": 6,
+            "nom": "Produit vectoriel",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              "Orientation de l'espace et produit vectoriel",
+              "Proprietes du produit vectoriel",
+              "Applications du produit vectoriel"
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Suites numeriques",
+            "semaine": "07-11 dec 2026",
+            "lecons": [
+              "Raisonnement par recurrence",
+              "Suites monotones ; suites bornees",
+              "Convergence de suites definies par Un+1=f(Un)",
+              "Limite d'une suite en utilisant epsilon"
+            ],
+            "evaluation": "14-18 dec 2026 (2h)"
+          },
+          {
+            "ordre": 8,
+            "nom": "Notion de graphes",
+            "semaine": "04-08 jan 2027",
+            "lecons": [
+              "Quelques vocabulaires",
+              "Quelques proprietes et algorithmes"
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Nombres complexes : approche geometrique",
+            "semaine": "11-15 jan 2027",
+            "lecons": [
+              "Representation d'un complexe : image et affixe",
+              "Ecriture trigonometrique et notation exponentielle",
+              "Linearisation et racines n-iemes",
+              "Complexes et geometrie"
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Similitudes directes planes",
+            "semaine": "18-22 jan 2027",
+            "lecons": [
+              "Expressions complexes et expressions analytiques",
+              "Proprietes des similitudes directes et utilisations"
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Primitives d'une fonction",
+            "semaine": "25-29 jan 2027",
+            "lecons": [
+              "Primitives d'une fonction continue sur un intervalle",
+              "Determination des primitives"
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Fonctions logarithmes",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              "Le logarithme neperien",
+              "Autres fonctions logarithmes"
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Probabilites",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              "Vocabulaire des probabilites",
+              "Probabilite d'un evenement : calculs",
+              "Probabilites conditionnelles",
+              "Variables aleatoires",
+              "Epreuves de Bernoulli et loi binomiale"
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Fonctions exponentielles",
+            "semaine": "15-19 fev 2027",
+            "lecons": [
+              "Fonction exponentielle neperienne x->e^x",
+              "Fonction exponentielle x->a^x",
+              "Fonction x->x^a"
+            ],
+            "evaluation": "22-26 fev 2027"
+          },
+          {
+            "ordre": 15,
+            "nom": "Coniques",
+            "semaine": "01-05 mars 2027 a 08-12 mars 2027",
+            "lecons": [
+              "Presentation generale",
+              "Definition monofocale",
+              "Definition analytique et construction",
+              "Tangente a une conique",
+              "Similitudes directes et coniques"
+            ]
+          },
+          {
+            "ordre": 16,
+            "nom": "Calculs des integrales",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              "Presentation et proprietes de calculs",
+              "Applications : calculs d'aires et de volumes",
+              "Positivite et inegalite de la moyenne",
+              "Quelques methodes de calculs des integrales",
+              "Valeurs approchees d'une integrale"
+            ],
+            "evaluation": "22-25 mars 2027 (2h)"
+          },
+          {
+            "ordre": 17,
+            "nom": "Isometries de l'espace",
+            "semaine": "12-16 avr 2027",
+            "lecons": [
+              "Reflexions de l'espace",
+              "Demi-tours"
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "Equations differentielles",
+            "semaine": "19-23 avr 2027 a 26-30 avr 2027",
+            "lecons": [
+              "Presentation",
+              "Equations f'=g et f'=af",
+              "Equations af''+bf'+cf=0",
+              "Equations af''+bf'+cf=d"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "03-07 mai 2027 (4h)"
+      },
+      "D": {
+        "horaire_hebdo": "4h",
+        "nombre_chapitres": 12,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Nombres complexes : approche algebrique",
+            "semaine": "07-11 sept 2026 a 14-18 sept 2026",
+            "lecons": [
+              "Ecriture algebrique, calculs dans C",
+              "Nombres complexes conjugues",
+              "Module d'un nombre complexe",
+              "Equations de degre 2 et 3 dans C"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Fonctions numeriques d'une variable reelle",
+            "semaine": "21-25 sept 2026 a 19-23 oct 2026",
+            "lecons": [
+              "Limites des fonctions trigonometriques et irrationnelles",
+              "Fonction continue sur un intervalle",
+              "Fonction continue et strictement monotone",
+              "Derivabilite de f-1 et inegalites des accroissements finis",
+              "Representations graphiques des fonctions"
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Statistiques a deux variables",
+            "semaine": "19-23 oct 2026",
+            "lecons": [
+              "Tableaux a double entree des effectifs et nuage de points",
+              "Ajustements lineaires"
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Suites numeriques",
+            "semaine": "26-30 oct 2026 a 02-06 nov 2026",
+            "lecons": [
+              "Notion de recurrence",
+              "Quelques generalites sur les suites",
+              "Etude de la convergence de certaines suites"
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Notion de graphes",
+            "semaine": "16-20 nov 2026",
+            "lecons": [
+              "Quelques vocabulaires",
+              "Quelques proprietes et algorithmes"
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Nombres complexes : approche geometrique",
+            "semaine": "23-27 nov 2026 a 30 nov-04 dec 2026",
+            "lecons": [
+              "Representation d'un complexe : image et affixe",
+              "Ecriture trigonometrique et notation exponentielle",
+              "Linearisation et racines n-iemes",
+              "Complexes et geometrie"
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Primitives d'une fonction",
+            "semaine": "07-11 dec 2026",
+            "lecons": [
+              "Primitives d'une fonction continue sur un intervalle",
+              "Determination des primitives"
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Fonctions logarithmes",
+            "semaine": "11-15 jan 2027",
+            "lecons": [
+              "Le logarithme neperien",
+              "Autres fonctions logarithmes"
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Probabilites",
+            "semaine": "18-22 jan 2027 a 25-29 jan 2027",
+            "lecons": [
+              "Vocabulaire des probabilites",
+              "Probabilite d'un evenement : calculs",
+              "Probabilites conditionnelles",
+              "Variables aleatoires",
+              "Epreuves de Bernoulli et loi binomiale"
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Similitudes directes planes",
+            "semaine": "01-05 fev 2027 a 08-12 fev 2027",
+            "lecons": [
+              "Expressions complexes et expressions analytiques",
+              "Proprietes des similitudes directes et utilisations",
+              "Etude de quelques fonctions definies a l'aide de exp"
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Calculs des integrales",
+            "semaine": "15-19 mars 2027 a 22-25 mars 2027",
+            "lecons": [
+              "Presentation et proprietes de calculs",
+              "Applications : calculs d'aires",
+              "Positivite et inegalite de la moyenne",
+              "Quelques methodes de calculs des integrales",
+              "Valeurs approchees d'une integrale"
+            ],
+            "evaluation": "08-12 mars 2027 (2h)"
+          },
+          {
+            "ordre": 12,
+            "nom": "Equations differentielles",
+            "semaine": "12-16 avr 2027 a 26-30 avr 2027",
+            "lecons": [
+              "Presentation",
+              "Equations f'=g et f'=af",
+              "Equations af''+bf'+cf=0",
+              "Equations af''+bf'+cf=d"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "03-07 mai 2027 (4h)"
+      },
+      "TI": {
+        "horaire_hebdo": "4h",
+        "nombre_chapitres": 15,
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Arithmetique",
+            "semaine": "07-11 sept 2026 a 14-18 sept 2026",
+            "lecons": [
+              "Divisibilite dans Z et notion de congruence",
+              "Nombres premiers",
+              "PGCD et PPCM"
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Nombres complexes : approche algebrique",
+            "semaine": "21-25 sept 2026 a 28 sept-02 oct 2026",
+            "lecons": [
+              "Ecriture algebrique, calculs dans C",
+              "Nombres complexes conjugues",
+              "Module d'un nombre complexe",
+              "Equations de degre 2 et 3 dans C"
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Fonctions numeriques d'une variable reelle",
+            "semaine": "12-16 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              "Limites des fonctions trigonometriques et irrationnelles",
+              "Fonction continue sur un intervalle",
+              "Fonction continue et strictement monotone",
+              "Derivabilite de f-1 et inegalites des accroissements finis",
+              "Representations graphiques des fonctions"
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Applications lineaires",
+            "semaine": "26-30 oct 2026",
+            "lecons": [
+              "Applications lineaires",
+              "Matrices et applications lineaires"
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Statistiques a deux variables",
+            "semaine": "02-06 nov 2026",
+            "lecons": [
+              "Tableaux a des effectifs et nuage de points",
+              "Ajustements lineaires"
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Suites numeriques",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              "Notion de recurrence",
+              "Quelques generalites sur les suites",
+              "Etude de la convergence de certaines suites",
+              "Reel l limite d'une suite"
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Notion de graphes",
+            "semaine": "07-11 dec 2026",
+            "lecons": [
+              "Quelques vocabulaires",
+              "Quelques proprietes et algorithmes"
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Nombres complexes : approche geometrique",
+            "semaine": "11-15 jan 2027 a 18-22 jan 2027",
+            "lecons": [
+              "Representation d'un complexe : image et affixe",
+              "Ecriture trigonometrique et notation exponentielle",
+              "Linearisation et racines n-iemes",
+              "Complexes et geometrie"
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Similitudes directes planes",
+            "semaine": "25-29 jan 2027",
+            "lecons": [
+              "Expressions complexes et expressions analytiques",
+              "Proprietes des similitudes directes et utilisations"
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Primitives d'une fonction",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              "Primitives d'une fonction continue sur un intervalle",
+              "Determination des primitives"
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Fonctions logarithmes",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              "Le logarithme neperien",
+              "Autres fonctions logarithmes"
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Probabilites",
+            "semaine": "22-26 fev 2027 a 01-05 mars 2027",
+            "lecons": [
+              "Vocabulaire des probabilites",
+              "Probabilite d'un evenement : calculs",
+              "Probabilites conditionnelles",
+              "Variables aleatoires",
+              "Epreuves de Bernoulli et loi binomiale"
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Fonctions exponentielles",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              "Fonction exponentielle neperienne x->e^x",
+              "Etude de quelques fonctions definies a l'aide de exp"
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Calculs des integrales",
+            "semaine": "15-19 mars 2027 a 22-25 mars 2027",
+            "lecons": [
+              "Presentation et proprietes de calculs",
+              "Applications : calculs d'aires",
+              "Positivite et inegalite de la moyenne",
+              "Quelques methodes de calculs des integrales",
+              "Valeurs approchees d'une integrale"
+            ]
+          },
+          {
+            "ordre": 15,
+            "nom": "Equations differentielles",
+            "semaine": "12-16 avr 2027 a 26-30 avr 2027",
+            "lecons": [
+              "Presentation",
+              "Equations f'=g et f'=af",
+              "Equations af''+bf'+cf=0",
+              "Equations af''+bf'+cf=d"
+            ]
+          }
+        ],
+        "evaluation_fin_annee": "03-07 mai 2027 (4h)"
+      }
+    }
+  }
+}

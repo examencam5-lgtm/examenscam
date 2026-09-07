@@ -83,6 +83,11 @@ try:
         import chat_scope
 except ImportError:
     chat_scope = None
+try:
+    from database_progressions import texte_pour_prompt_systeme as _progression_du_jour
+except Exception:
+    _progression_du_jour = None
+ 
 
 
 # ═══════════════════════════════════════════════════════
@@ -728,6 +733,52 @@ def construire_contexte_eleve(
 
     return bloc
 
+def construire_bloc_progression_nationale(
+    niveau: str,
+    serie: str,
+    matiere: str = MATIERE_DEFAUT,
+) -> str:
+    """
+    Injecte le chapitre officiel MINESEC en cours a la date du jour,
+    pour le niveau/serie exact de l'eleve (source: database_progressions.py,
+    alimentee par les fiches de progression harmonisee nationale 2026-2027).
+
+    Prend niveau/serie deja extraits par _construire_prompt_systeme()
+    (memes variables que celles passees a chat_scope.mode_pour()) plutot
+    que de re-extraire depuis le dict eleve -- evite une deuxieme logique
+    de valeurs par defaut divergente de celle deja en place.
+
+    Degradation gracieuse totale : si le niveau n'est pas encore couvert,
+    si la matiere n'est pas encore couverte (seule Mathematiques l'est
+    pour l'instant), si database_progressions n'a pas pu etre importe,
+    ou si la requete Postgres echoue pour une raison quelconque (perte
+    reseau a Maroua, Neon indisponible), cette fonction retourne une
+    chaine vide -- elle ne doit JAMAIS faire planter une reponse eleve.
+
+    Garde-fou anti-hallucination : le texte retourne par
+    texte_pour_prompt_systeme() dit deja explicitement a Gemini de ne
+    pas se positionner dans le programme s'il n'y a aucune donnee pour
+    cette date/serie -- rien a dupliquer ici.
+    """
+    if _progression_du_jour is None:
+        return ""
+
+    niveau_norm = (niveau or "").strip().lower()
+    serie_norm = (serie or "").strip().upper() or None
+
+    if niveau_norm not in ("3e", "premiere", "terminale"):
+        return ""
+
+    if matiere != MATIERE_DEFAUT:
+        return ""
+
+    try:
+        bloc = _progression_du_jour(matiere, niveau_norm, serie_norm)
+    except Exception as e:
+        print(f"construire_bloc_progression_nationale error: {e}")
+        return ""
+
+    return "\n" + bloc + "\n"
 
 # ═══════════════════════════════════════════════════════
 # SOMMAIRE DU PROGRAMME
@@ -857,16 +908,16 @@ def _construire_prompt_systeme(
 ) -> str:
     """
     Construction commune utilisée par la réponse normale et le streaming.
-
+ 
     Cette fonction centralise le choix RAG/générique afin que les deux
     modes aient exactement le même comportement.
     """
-
+ 
     niveau = (eleve or {}).get("niveau") or "BAC"
     serie = (eleve or {}).get("serie") or "C"
-
+ 
     mode = None
-
+ 
     if chat_scope is not None:
         try:
             mode = chat_scope.mode_pour(
@@ -876,63 +927,63 @@ def _construire_prompt_systeme(
             )
         except Exception:
             mode = None
-
+ 
     # ═══════════════════════════════════════════════════
     # MODE RAG
     # ═══════════════════════════════════════════════════
-
+ 
     mode_rag = (
         chat_scope is not None
         and hasattr(chat_scope, "MODE_RAG")
         and mode == chat_scope.MODE_RAG
     )
-
+ 
     if mode_rag:
-
+ 
         if not DB_PATH.exists():
             raise RuntimeError(
                 f"Base introuvable : {DB_PATH}"
             )
-
+ 
         conn = sqlite3.connect(DB_PATH)
-
+ 
         themes_detectes = detecter_themes_mentionnes(
             question,
             conn,
             matiere,
         )
-
+ 
         contexte_camerounais = (
             construire_contexte_camerounais(
                 conn,
                 themes_detectes,
             )
         )
-
+ 
         lecons_detectees = detecter_lecons_mentionnees(
             question,
             conn,
             matiere,
         )
-
+ 
         contexte_lecon = construire_contexte_lecon(
             conn,
             lecons_detectees,
         )
-
+ 
         references_officielles = construire_references_epreuves_officielles(
             conn,
             lecons_detectees,
         )
-
+ 
         conn.close()
-
+ 
         sommaire_programme = (
             construire_sommaire_programme(
                 matiere
             )
         )
-
+ 
         prompt_matiere = (
             PROMPT_SYSTEME_BASE
             + sommaire_programme
@@ -940,44 +991,55 @@ def _construire_prompt_systeme(
             + contexte_lecon
             + references_officielles
         )
-
+ 
     # ═══════════════════════════════════════════════════
     # MODE GÉNÉRIQUE
     # ═══════════════════════════════════════════════════
-
+ 
     else:
-
+ 
         prompt_matiere = (
             construire_prompt_systeme_generique(
                 matiere
             )
         )
-
+ 
     # ═══════════════════════════════════════════════════
     # PROFIL ÉLÈVE
     # ═══════════════════════════════════════════════════
-
+ 
     contexte_eleve = construire_contexte_eleve(
         eleve,
         historique,
     )
-
+ 
+    # ═══════════════════════════════════════════════════
+    # PROGRESSION NATIONALE MINESEC (04/09/2026)
+    # ═══════════════════════════════════════════════════
+ 
+    bloc_progression = construire_bloc_progression_nationale(
+        niveau,
+        serie,
+        matiere,
+    )
+ 
     # ═══════════════════════════════════════════════════
     # CORRECTION FIDÈLE
     # ═══════════════════════════════════════════════════
-
+ 
     instruction_correction = (
         INSTRUCTION_CORRECTION_FIDELE
         if detecter_demande_correction(question)
         else ""
     )
-
+ 
     return (
         prompt_matiere
         + contexte_eleve
+        + bloc_progression
         + instruction_correction
     )
-
+ 
 
 # ═══════════════════════════════════════════════════════
 # RÉPONSE NON STREAMÉE
