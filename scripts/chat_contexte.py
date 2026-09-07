@@ -733,6 +733,23 @@ def construire_contexte_eleve(
 
     return bloc
 
+# ═══════════════════════════════════════════════════════
+# CORRESPONDANCE NIVEAU COMPTE ÉLÈVE -> NIVEAU PROGRESSION MINESEC
+# ═══════════════════════════════════════════════════════
+
+# database_eleves.NIVEAUX_VALIDES stocke 'BEPC' / 'Probatoire' / 'BAC'
+# (voir database_eleves.py). database_progressions.py, lui, utilise le
+# decoupage du JSON source MINESEC : '3e' / 'premiere' / 'terminale'.
+# Sans cette correspondance, niveau_norm = 'bac' ne matche jamais
+# ('terminale' attendu) et construire_bloc_progression_nationale()
+# retourne toujours "" silencieusement -- aucune exception, aucun log,
+# juste une progression jamais injectee dans le prompt.
+CORRESPONDANCE_NIVEAU_PROGRESSION = {
+    "bepc": "3e",
+    "probatoire": "premiere",
+    "bac": "terminale",
+}
+
 def construire_bloc_progression_nationale(
     niveau: str,
     serie: str,
@@ -763,12 +780,11 @@ def construire_bloc_progression_nationale(
     if _progression_du_jour is None:
         return ""
 
-    niveau_norm = (niveau or "").strip().lower()
+    niveau_norm = CORRESPONDANCE_NIVEAU_PROGRESSION.get((niveau or "").strip().lower())
     serie_norm = (serie or "").strip().upper() or None
 
-    if niveau_norm not in ("3e", "premiere", "terminale"):
+    if niveau_norm is None:
         return ""
-
     if matiere != MATIERE_DEFAUT:
         return ""
 
