@@ -237,7 +237,6 @@ def charger_historique(eleve_id: int, matiere: str, limite_tours: Optional[int] 
     finally:
         conn.close()
 
-
 def effacer_conversation(eleve_id: int, matiere: str) -> None:
     """Supprime définitivement la conversation (eleve_id, matiere) et
     tous ses messages -- vraie suppression (DELETE FROM), jamais de
@@ -262,3 +261,4 @@ def effacer_conversation(eleve_id: int, matiere: str) -> None:
         print(f"effacer_conversation error: {e}")
     finally:
         conn.close()
+

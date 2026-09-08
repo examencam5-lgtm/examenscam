@@ -424,6 +424,43 @@ def obtenir_horaire_hebdo(matiere: str, niveau: str, serie: Optional[str] = None
         conn.close()
 
 
+def obtenir_chronologie(matiere: str, niveau: str, serie: Optional[str] = None,
+                         annee_scolaire: str = "2026-2027") -> list[dict]:
+    """Retourne TOUS les chapitres d'un niveau/serie, dans l'ordre, avec
+    leurs dates -- pour repondre a une demande de calendrier complet
+    ou de trimestre, par opposition a obtenir_progression_du_jour() qui
+    ne regarde QUE la date du jour meme. Reponse deterministe depuis la
+    base, jamais laissee a l'improvisation du modele sur un long bloc
+    de texte (voir chat_contexte.py: repondre_chronologie_datee)."""
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT ordre, nom_chapitre, semaine_texte, date_debut, date_fin, evaluation
+            FROM progressions_chapitres
+            WHERE matiere = %s AND niveau = %s AND annee_scolaire = %s
+              AND (serie = %s OR (%s IS NULL AND serie IS NULL))
+            ORDER BY ordre
+        """, (matiere, niveau, annee_scolaire, serie, serie))
+        return [dict(r) for r in cur.fetchall()]
+    except Exception as e:
+        print(f"obtenir_chronologie error: {e}")
+        return []
+    finally:
+        conn.close()
+
+
+def obtenir_chapitre_a_date(matiere: str, niveau: str, serie: Optional[str],
+                             date_cible: date) -> dict:
+    """Meme logique que obtenir_progression_du_jour() mais pour une
+    date ARBITRAIRE (passee ou future dans l'annee scolaire), pas
+    seulement aujourd'hui -- reponse a 'le 12 janvier on fait quoi'.
+    Simple alias explicite : obtenir_progression_du_jour() accepte deja
+    date_reference en parametre, ce wrapper documente juste l'usage
+    different (date choisie par l'eleve, pas date.today())."""
+    return obtenir_progression_du_jour(matiere, niveau, serie, date_reference=date_cible)
+
+
 def texte_pour_prompt_systeme(matiere: str, niveau: str, serie: Optional[str] = None,
                                date_reference: Optional[date] = None) -> str:
     """Formate obtenir_progression_du_jour() (+ obtenir_horaire_hebdo(),
