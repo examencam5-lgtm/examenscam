@@ -14,7 +14,7 @@ load_dotenv()
 from flask import send_file
 from scripts.generer_epreuve_json import generer_epreuve_json
 from scripts.construire_pdf_officiel import construire_pdf
-from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream
+from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream, repondre_chronologie_datee
 from generer_search_index import generer as generer_index
 from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves, get_annees
 from database_credits import (
@@ -1071,6 +1071,9 @@ def assistant_eleve_repondre():
     # nettoyage manuel. charger_historique() renvoie déjà le format
     # attendu par chat_contexte.py : [{"role": ..., "content": ...}].
     historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
+    reponse_chronologie = repondre_chronologie_datee(question, eleve)
+    if reponse_chronologie is not None:
+        return jsonify({'reponse': reponse_chronologie})
 
     if detecter_demande_epreuve(question):
         resultat_recherche = chercher_epreuves(question)
@@ -1537,5 +1540,13 @@ def recharger_credits():
         erreur=erreur,
         csrf_token=session['csrf_token_recharge'],
     )
+@app.route('/sw.js')
+def service_worker():
+    reponse = send_file('static/sw.js', mimetype='application/javascript')
+    # Empêche le navigateur de mettre en cache une VIEILLE version du
+    # service worker lui-même -- sinon une mise à jour de sw.js ne
+    # serait jamais détectée par les téléphones déjà installés.
+    reponse.headers['Cache-Control'] = 'no-cache'
+    return reponse
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

@@ -14,6 +14,12 @@
   <!-- Fichier CSS principal des sous-pages et composantes -->
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo.svg') }}">
 
+  <!-- NOUVEAU (07/09/2026, transformation en app installable / TWA) :
+       manifest.json déclare l'app à Android -- nom, icônes, couleurs,
+       mode d'affichage "standalone" (sans barre d'adresse). Voir
+       static/manifest.json et sw.js (enregistré plus bas). -->
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/nouvelles_pages.css') }}">
 
   <style>
@@ -385,6 +391,20 @@
           menu.classList.remove('open');
           btn.setAttribute('aria-expanded', 'false');
         });
+      });
+    }
+  </script>
+
+  <!-- NOUVEAU (07/09/2026, transformation en app installable / TWA) :
+       enregistre sw.js -- voir ce fichier pour le détail (cache
+       uniquement les fichiers /static/, jamais les routes dynamiques
+       comme le chat, la connexion ou le paiement). Enregistrement au
+       'load' de la page, pas plus tôt, pour ne jamais retarder
+       l'affichage du contenu réel. -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js');
       });
     }
   </script>
