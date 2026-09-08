@@ -760,6 +760,37 @@ CORRESPONDANCE_NIVEAU_PROGRESSION = {
     "bac": "terminale",
 }
 
+# ═══════════════════════════════════════════════════════
+# REMPLACE integralement construire_bloc_progression_nationale() ET
+# le dict NIVEAU_VERS_PROGRESSION dans chat_contexte.py.
+#
+# AJOUT : SERIE_VERS_PROGRESSION -- la serie stockee cote ExamensCam
+# (probablement "A4", alignee sur CATALOGUE dans app.py et sur le
+# SCOPE_ACTIF etendu de chat_scope.py) ne correspond plus a la cle
+# "A" utilisee dans database_progressions.py (renommee ainsi sur
+# demande explicite pour eviter l'ambiguite "A4 vs A-ABI" -- voir
+# l'echange precedent). Sans ce second mapping, un eleve A4 ne
+# recevrait jamais sa progression meme apres correction du niveau.
+# ═══════════════════════════════════════════════════════
+
+NIVEAU_VERS_PROGRESSION = {
+    "bepc": "3e",
+    "probatoire": "premiere",
+    "bac": "terminale",
+    "3e": "3e",
+    "premiere": "premiere",
+    "terminale": "terminale",
+}
+
+# Cle en MAJUSCULES car serie_brute est deja .upper() avant consultation.
+SERIE_VERS_PROGRESSION = {
+    "A4": "A",
+    "C": "C",
+    "D": "D",
+    "TI": "TI",
+}
+
+
 def construire_bloc_progression_nationale(
     niveau: str,
     serie: str,
@@ -775,12 +806,27 @@ def construire_bloc_progression_nationale(
     que de re-extraire depuis le dict eleve -- evite une deuxieme logique
     de valeurs par defaut divergente de celle deja en place.
 
-    Degradation gracieuse totale : si le niveau n'est pas encore couvert,
-    si la matiere n'est pas encore couverte (seule Mathematiques l'est
-    pour l'instant), si database_progressions n'a pas pu etre importe,
-    ou si la requete Postgres echoue pour une raison quelconque (perte
-    reseau a Maroua, Neon indisponible), cette fonction retourne une
-    chaine vide -- elle ne doit JAMAIS faire planter une reponse eleve.
+    Traduit DEUX nomenclatures distinctes vers celle de la base
+    progression :
+      - niveau : ExamensCam (BEPC/Probatoire/BAC) -> MINESEC classe
+        (3e/premiere/terminale), voir NIVEAU_VERS_PROGRESSION.
+      - serie : ExamensCam (A4/C/D/TI) -> base progression (A/C/D/TI),
+        voir SERIE_VERS_PROGRESSION. Necessaire car la serie A4 a ete
+        renommee "A" dans database_progressions.py pour lever une
+        ambiguite avec la classe source "A-ABI" du document MINESEC --
+        ce renommage est un choix interne a cette base, jamais visible
+        cote eleve/ExamensCam, d'ou la traduction ici.
+
+    Pour BEPC, serie sera generalement None ou vide -- pas de mapping
+    necessaire, database_progressions gere deja serie=None pour "3e".
+
+    Degradation gracieuse totale : si le niveau ou la serie ne sont pas
+    reconnus, si la matiere n'est pas encore couverte (seule
+    Mathematiques l'est pour l'instant), si database_progressions n'a
+    pas pu etre importe, ou si la requete Postgres echoue pour une
+    raison quelconque (perte reseau a Maroua, Neon indisponible), cette
+    fonction retourne une chaine vide -- elle ne doit JAMAIS faire
+    planter une reponse eleve.
 
     Garde-fou anti-hallucination : le texte retourne par
     texte_pour_prompt_systeme() dit deja explicitement a Gemini de ne
@@ -790,12 +836,26 @@ def construire_bloc_progression_nationale(
     if _progression_du_jour is None:
         return ""
 
-    niveau_norm = CORRESPONDANCE_NIVEAU_PROGRESSION.get((niveau or "").strip().lower())
-    serie_norm = (serie or "").strip().upper() or None
+    niveau_brut = (niveau or "").strip().lower()
+    niveau_norm = NIVEAU_VERS_PROGRESSION.get(niveau_brut)
 
     if niveau_norm is None:
         return ""
+
+    serie_brute = (serie or "").strip().upper()
+    if not serie_brute:
+        serie_norm = None
+    else:
+        serie_norm = SERIE_VERS_PROGRESSION.get(serie_brute)
+        if serie_norm is None and niveau_norm != "3e":
+            # Serie fournie mais non reconnue (typo, nouvelle serie
+            # jamais mappee) -- on prefere ne rien afficher plutot que
+            # de risquer une correspondance fausse.
+            return ""
+
     if matiere != MATIERE_DEFAUT:
+        # Seule matiere alimentee pour l'instant (04/09/2026) --
+        # a retirer/etendre au fur et a mesure de l'import Physique/SVT.
         return ""
 
     try:
@@ -1229,7 +1289,88 @@ def repondre_eleve_stream(
         messages,
         stats=stats,
     )
+# ═══════════════════════════════════════════════════════
+# DEMANDE DE CHRONOLOGIE / DATE PRÉCISE — réponse déterministe,
+# jamais laissée à l'improvisation du modèle sur un long historique.
+# ═══════════════════════════════════════════════════════
 
+import re as _re
+from datetime import date as _date
+try:
+    from database_progressions import (
+        obtenir_chronologie as _obtenir_chronologie,
+        obtenir_chapitre_a_date as _obtenir_chapitre_a_date,
+        MOIS as _MOIS, MOIS_RE as _MOIS_RE,
+    )
+except Exception:
+    _obtenir_chronologie = None
+    _obtenir_chapitre_a_date = None
+
+MOTS_DECLENCHEURS_CHRONOLOGIE = ["trimestre", "chronologie", "calendrier", "semaine par semaine"]
+
+
+def detecter_date_precise(question: str):
+    """Cherche un motif 'JJ mois' ou 'JJ mois AAAA' dans la question.
+    Retourne un objet date (année déduite : sept-déc -> 2026, sinon
+    2027, cohérent avec l'année scolaire 2026-2027) ou None."""
+    m = _re.search(rf"(\d{{1,2}})\s+({_MOIS_RE})\.?\s*(\d{{4}})?", question, _re.IGNORECASE)
+    if not m:
+        return None
+    jour, mois_txt, annee_txt = m.groups()
+    mois = _MOIS.get(mois_txt.lower())
+    if not mois:
+        return None
+    annee = int(annee_txt) if annee_txt else (2026 if mois >= 9 else 2027)
+    try:
+        return _date(annee, mois, int(jour))
+    except ValueError:
+        return None
+
+
+def detecter_demande_chronologie(question: str) -> bool:
+    q_norm = _normaliser(question)
+    return any(mot in q_norm for mot in MOTS_DECLENCHEURS_CHRONOLOGIE)
+
+def repondre_chronologie_datee(question: str, eleve: dict | None) -> str | None:
+    """Point d'entrée à appeler AVANT tout appel Gemini (comme
+    detecter_demande_epreuve dans app.py). Retourne un texte de
+    réponse déterministe si la question porte sur une date précise ou
+    une chronologie complète/trimestre, None sinon (auquel cas le
+    flux normal RAG/générique continue)."""
+    if _obtenir_chronologie is None or not eleve:
+        return None
+
+    niveau = CORRESPONDANCE_NIVEAU_PROGRESSION.get((eleve.get("niveau") or "").strip().lower())
+    serie = (eleve.get("serie") or "").strip().upper() or None
+    if niveau is None:
+        return None
+
+    date_cible = detecter_date_precise(question)
+    if date_cible:
+        info = _obtenir_chapitre_a_date(MATIERE_DEFAUT, niveau, serie, date_cible)
+        jour_lisible = date_cible.strftime("%d/%m/%Y")
+        if info.get("disponible"):
+            return (f"Le {jour_lisible}, tu es censé être sur le chapitre "
+                    f"« {info['chapitre_nom']} » (semaine du {info['periode']}).")
+        if info.get("prochain_chapitre"):
+            return (f"Le {jour_lisible}, aucun chapitre officiel n'est en cours "
+                    f"(vacances ou hors calendrier). Le prochain chapitre prévu "
+                    f"est « {info['prochain_chapitre']} », à partir du "
+                    f"{info['prochain_chapitre_debut']}.")
+        return f"Je n'ai pas de donnée de progression officielle pour le {jour_lisible}."
+
+    if detecter_demande_chronologie(question):
+        chapitres = _obtenir_chronologie(MATIERE_DEFAUT, niveau, serie)
+        if not chapitres:
+            return None  # pas de donnée -> laisser le flux normal répondre prudemment
+        lignes = [f"Voici la chronologie complète pour {eleve.get('niveau')} "
+                  f"{serie or ''} :\n"]
+        for c in chapitres:
+            periode = c.get("semaine_texte") or "période non précisée"
+            lignes.append(f"{c['ordre']}. {c['nom_chapitre']} — {periode}")
+        return "\n".join(lignes)
+
+    return None
 
 # ═══════════════════════════════════════════════════════
 # TEST DIRECT

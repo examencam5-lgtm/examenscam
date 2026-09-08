@@ -70,6 +70,26 @@ MATIERE_RAG_PRINCIPALE = "Mathematiques"
 # matière par oubli plutôt que par décision explicite.
 #
 # Noms de matières alignés sur CATALOGUE['BAC']['C'] dans app.py.
+# ═══════════════════════════════════════════════════════
+# REMPLACE integralement le bloc SCOPE_ACTIF dans chat_scope.py.
+#
+# Principe : MODE_RAG reste reserve a ("BAC", "C") -- c'est le seul
+# corpus reel (data/rag_maths_bac_c/rag.db, 70 epreuves calibrees
+# specifiquement pour cette serie). L'etendre a d'autres series
+# afficherait des extraits de style/exercices BAC C a des eleves
+# D/TI/A4/Probatoire/BEPC -- correct pour l'ancrage general mais
+# potentiellement trompeur sur des exercices non representatifs de
+# LEUR programme reel.
+#
+# En revanche, MODE_GENERIQUE + le bloc progression nationale
+# (branche independamment du mode RAG/generique dans chat_contexte.py,
+# voir construire_bloc_progression_nationale) suffit a donner a ces
+# eleves un tuteur calibre ET au courant du chapitre exact du jour --
+# largement mieux que le message_indisponible() actuel, qui bloque
+# tout accord au chat pour 8 classes sur 9 alors que la donnee
+# officielle existe deja en base.
+# ═══════════════════════════════════════════════════════
+
 SCOPE_ACTIF = {
     ("BAC", "C"): {
         "Mathematiques": MODE_RAG,
@@ -80,8 +100,31 @@ SCOPE_ACTIF = {
         "Français": MODE_GENERIQUE,
         "Anglais": MODE_GENERIQUE,
     },
+    ("BAC", "D"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("BAC", "TI"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("BAC", "A4"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("Probatoire", "C"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("Probatoire", "D"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("Probatoire", "TI"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("Probatoire", "A4"): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
+    ("BEPC", None): {
+        "Mathematiques": MODE_GENERIQUE,
+    },
 }
-
 
 def _matieres_du_scope(niveau: str, serie: str | None) -> dict | None:
     """Retourne le dict {matiere: mode} applicable, en tenant compte
