@@ -791,6 +791,20 @@ SERIE_VERS_PROGRESSION = {
 }
 
 
+# ═══════════════════════════════════════════════════════
+# A ajouter juste avant construire_bloc_progression_nationale()
+# (a cote de NIVEAU_VERS_PROGRESSION / SERIE_VERS_PROGRESSION)
+# ═══════════════════════════════════════════════════════
+
+# Matieres pour lesquelles une fiche de progression a ete importee
+# dans database_progressions -- a completer au fur et a mesure
+# (Chimie, SVT, etc.). Une matiere absente d'ici n'appelle jamais
+# Postgres pour rien : pas de requete inutile, pas de bruit dans le
+# prompt avec un message "aucune donnee disponible" pour une matiere
+# qui n'a simplement jamais ete alimentee.
+MATIERES_AVEC_PROGRESSION = {"Mathematiques", "Physique"}
+
+
 def construire_bloc_progression_nationale(
     niveau: str,
     serie: str,
@@ -798,8 +812,9 @@ def construire_bloc_progression_nationale(
 ) -> str:
     """
     Injecte le chapitre officiel MINESEC en cours a la date du jour,
-    pour le niveau/serie exact de l'eleve (source: database_progressions.py,
-    alimentee par les fiches de progression harmonisee nationale 2026-2027).
+    pour le niveau/serie/matiere exact de l'eleve (source:
+    database_progressions.py, alimentee par les fiches de progression
+    harmonisee nationale 2026-2027).
 
     Prend niveau/serie deja extraits par _construire_prompt_systeme()
     (memes variables que celles passees a chat_scope.mode_pour()) plutot
@@ -820,11 +835,16 @@ def construire_bloc_progression_nationale(
     Pour BEPC, serie sera generalement None ou vide -- pas de mapping
     necessaire, database_progressions gere deja serie=None pour "3e".
 
-    Degradation gracieuse totale : si le niveau ou la serie ne sont pas
-    reconnus, si la matiere n'est pas encore couverte (seule
-    Mathematiques l'est pour l'instant), si database_progressions n'a
-    pas pu etre importe, ou si la requete Postgres echoue pour une
-    raison quelconque (perte reseau a Maroua, Neon indisponible), cette
+    MATIERES_AVEC_PROGRESSION filtre en amont : seules les matieres
+    reellement importees declenchent une requete Postgres -- evite un
+    appel reseau et un bloc de prompt "aucune donnee disponible" pour
+    une matiere jamais alimentee (Chimie, SVT, etc. tant qu'elles ne
+    sont pas importees).
+
+    Degradation gracieuse totale : si le niveau, la serie ou la matiere
+    ne sont pas reconnus/couverts, si database_progressions n'a pas pu
+    etre importe, ou si la requete Postgres echoue pour une raison
+    quelconque (perte reseau a Maroua, Neon indisponible), cette
     fonction retourne une chaine vide -- elle ne doit JAMAIS faire
     planter une reponse eleve.
 
@@ -834,6 +854,9 @@ def construire_bloc_progression_nationale(
     cette date/serie -- rien a dupliquer ici.
     """
     if _progression_du_jour is None:
+        return ""
+
+    if matiere not in MATIERES_AVEC_PROGRESSION:
         return ""
 
     niveau_brut = (niveau or "").strip().lower()
@@ -853,11 +876,6 @@ def construire_bloc_progression_nationale(
             # de risquer une correspondance fausse.
             return ""
 
-    if matiere != MATIERE_DEFAUT:
-        # Seule matiere alimentee pour l'instant (04/09/2026) --
-        # a retirer/etendre au fur et a mesure de l'import Physique/SVT.
-        return ""
-
     try:
         bloc = _progression_du_jour(matiere, niveau_norm, serie_norm)
     except Exception as e:
@@ -865,7 +883,6 @@ def construire_bloc_progression_nationale(
         return ""
 
     return "\n" + bloc + "\n"
-
 # ═══════════════════════════════════════════════════════
 # SOMMAIRE DU PROGRAMME
 # ═══════════════════════════════════════════════════════

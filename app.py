@@ -1548,5 +1548,9 @@ def service_worker():
     # serait jamais détectée par les téléphones déjà installés.
     reponse.headers['Cache-Control'] = 'no-cache'
     return reponse
+
+@app.route('/.well-known/assetlinks.json')
+def asset_links():
+    return send_file('static/.well-known/assetlinks.json', mimetype='application/json')
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

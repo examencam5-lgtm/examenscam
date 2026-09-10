@@ -1,0 +1,12 @@
+﻿[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.examenscam.tuteurcam",
+      "sha256_cert_fingerprints": [
+        "CF:F3:80:71:DF:5F:C8:A6:AE:24:F0:54:C1:E4:0E:53:5F:B8:39:12:D9:9D:2D:D3:E8:BF:26:0B:DF:1D:1A:F6"
+      ]
+    }
+  }
+]
