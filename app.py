@@ -667,25 +667,19 @@ def admin_requis(f):
             return redirect('/admin/login')
         return f(*args, **kwargs)
     return wrapper
-
 def eleve_requis(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         eleve_id = session.get('eleve_id')
         if not eleve_id:
-            # NOUVEAU : on retient la page que l'élève essayait
-            # d'atteindre (request.path) pour l'y renvoyer après
-            # connexion -- au lieu de toujours atterrir sur
-            # /mon-compte, sans rapport avec son intention de départ.
-            return redirect(url_for('connexion', next=request.path))
+            return redirect(url_for('connexion_google', next=request.path))
         eleve = get_eleve_par_id(eleve_id)
         if not eleve:
             session.pop('eleve_id', None)
-            return redirect(url_for('connexion', next=request.path))
+            return redirect(url_for('connexion_google', next=request.path))
         g.eleve = eleve
         return f(*args, **kwargs)
     return wrapper
-
 
 @app.context_processor
 def inject_eleve():
@@ -885,8 +879,14 @@ def completer_profil_vue():
             etablissement, consentement_parental
         )
         if not erreur:
-            next_url = session.pop('next_apres_connexion', None) or '/'
-            return redirect(next_url)
+            # Premier profil complété -- toujours vers l'accueil/chat,
+            # jamais vers next_apres_connexion. Un nouveau compte n'a
+            # aucun historique d'intention a respecter ; la destination
+            # la plus utile pour decouvrir le produit est le chat, pas
+            # la page ou l'element qui a initialement declenche la
+            # connexion (souvent /mon-compte si teste directement).
+            session.pop('next_apres_connexion', None)
+            return redirect('/')
 
     return render_template(
         'completer_profil.html', erreur=erreur, eleve=eleve,
@@ -1315,28 +1315,18 @@ def mon_compte():
         if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
             erreur = "Session expirée, réessaie."
         else:
-            action = request.form.get('action')
-            if action == 'profil':
-                erreur = modifier_profil(
-                    g.eleve['id'],
-                    prenom=request.form.get('prenom'),
-                    nom=request.form.get('nom'),
-                    niveau=request.form.get('niveau'),
-                    serie=request.form.get('serie') or None,
-                    classe=request.form.get('classe'),
-                    etablissement=request.form.get('etablissement'),
-                )
-                if not erreur:
-                    succes = "Profil mis à jour."
-                    g.eleve = get_eleve_par_id(g.eleve['id'])
-            elif action == 'mot_de_passe':
-                erreur = changer_mot_de_passe(
-                    g.eleve['id'],
-                    request.form.get('ancien_mot_de_passe', ''),
-                    request.form.get('nouveau_mot_de_passe', ''),
-                )
-                if not erreur:
-                    succes = "Mot de passe changé."
+            erreur = modifier_profil(
+                g.eleve['id'],
+                prenom=request.form.get('prenom'),
+                nom=request.form.get('nom'),
+                niveau=request.form.get('niveau'),
+                serie=request.form.get('serie') or None,
+                classe=request.form.get('classe'),
+                etablissement=request.form.get('etablissement'),
+            )
+            if not erreur:
+                succes = "Profil mis à jour."
+                g.eleve = get_eleve_par_id(g.eleve['id'])
 
             session['csrf_token_mon_compte'] = secrets.token_urlsafe(32)
 
