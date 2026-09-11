@@ -30,3 +30,4 @@ google-genai==2.18.1
 matplotlib
 huggingface_hub>=0.30.0
 psycopg2-binary
+Authlib==1.8.0

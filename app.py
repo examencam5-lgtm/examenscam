@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 from dotenv import load_dotenv
 load_dotenv()
 from flask import send_file
+from authlib.integrations.flask_client import OAuth
 from scripts.generer_epreuve_json import generer_epreuve_json
 from scripts.construire_pdf_officiel import construire_pdf
 from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream, repondre_chronologie_datee
@@ -60,11 +61,9 @@ from analytics import (
     stats_journal_recherches, stats_journal_clics, stats_parcours_session,
 )
 from database_eleves import (
-    create_table as create_table_eleves, creer_compte, verifier_identifiants,
-    marquer_connexion, get_eleve_par_id, modifier_profil, changer_mot_de_passe,
-    supprimer_compte, identifiant_disponible,
-    incrementer_usage_mensuel, login_identifiant_bloque, enregistrer_echec_identifiant,
-    reinitialiser_echecs_identifiant, minutes_avant_deblocage_identifiant,
+    create_table as create_table_eleves, creer_ou_recuperer_compte_google,
+    completer_profil, marquer_connexion, get_eleve_par_id, modifier_profil,
+    supprimer_compte, incrementer_usage_mensuel,
     NIVEAUX_VALIDES as NIVEAUX_VALIDES_ELEVES, SERIES_VALIDES as SERIES_VALIDES_ELEVES,
 )
 from paiement_monetbil import (
@@ -134,6 +133,27 @@ app.config.update(
     # défaut -- fixé ici explicitement à 30 jours pour que la durée
     # soit un choix documenté, pas une valeur implicite du framework.
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),
+)
+    # ═══════════════════════════════════════════════════════
+# AUTHENTIFICATION GOOGLE
+# ═══════════════════════════════════════════════════════
+_GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+_GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+
+if not _GOOGLE_CLIENT_ID or not _GOOGLE_CLIENT_SECRET:
+    raise RuntimeError(
+        "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET manquants. Configure ces "
+        "variables d'environnement sur Render avec les identifiants OAuth "
+        "obtenus depuis console.cloud.google.com."
+    )
+
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id=_GOOGLE_CLIENT_ID,
+    client_secret=_GOOGLE_CLIENT_SECRET,
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid email'},
 )
 with app.app_context():
     create_table()
@@ -802,91 +822,75 @@ def admin_regenerer_index():
     return jsonify(resultat)
 
 
-@app.route('/inscription', methods=['GET', 'POST'])
-@limiter_debit(max_requetes=8, fenetre_sec=600)
-def inscription():
-    # NOUVEAU : rate-limiting ajouté sur cette route -- absente avant,
-    # contrairement à /connexion qui a toujours eu un blocage par
-    # identifiant. Sans ça, /inscription pouvait être spammée pour
-    # créer des comptes en masse sans aucune limite.
-    erreur = None
-    next_url = redirection_sure(request.args.get('next') or request.form.get('next'))
+@app.route('/connexion/google')
+@limiter_debit(max_requetes=15, fenetre_sec=600)
+def connexion_google():
+    next_url = redirection_sure(request.args.get('next'))
+    session['next_apres_connexion'] = next_url
+    redirect_uri = url_for('connexion_google_callback', _external=True)
+    return google.authorize_redirect(redirect_uri)
 
-    if request.method == 'POST':
-        token_soumis = request.form.get('csrf_token', '')
-        token_attendu = session.get('csrf_token_inscription', '')
-        if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
-            erreur = "Session expirée, réessaie."
-        else:
-            identifiant = request.form.get('identifiant', '').strip()
-            mot_de_passe = request.form.get('mot_de_passe', '')
-            prenom = request.form.get('prenom', '').strip()
-            nom = request.form.get('nom', '').strip()
-            niveau = request.form.get('niveau', '')
-            serie = request.form.get('serie') or None
-            classe = request.form.get('classe', '').strip() or None
-            etablissement = request.form.get('etablissement', '').strip() or None
-            email = request.form.get('email', '').strip() or None
-            telephone = request.form.get('telephone', '').strip() or None
 
-            eleve_id, erreur = creer_compte(
-                identifiant, mot_de_passe, prenom, nom, niveau, serie, classe,
-                etablissement, email, telephone
-            )
-            if eleve_id:
-                session.pop('csrf_token_inscription', None)
-                session.permanent = True
-                session['eleve_id'] = eleve_id
-                marquer_connexion(eleve_id)
-                return redirect(next_url)
+@app.route('/connexion/google/callback')
+def connexion_google_callback():
+    try:
+        token = google.authorize_access_token()
+    except Exception as e:
+        print(f"connexion_google_callback erreur token: {e}")
+        return redirect(url_for('connexion_google', erreur='echec_google'))
 
-    session['csrf_token_inscription'] = secrets.token_urlsafe(32)
-    return render_template(
-        'inscription.html', erreur=erreur,
-        csrf_token=session['csrf_token_inscription'],
-        niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
-        next_url=next_url,
+    userinfo = token.get('userinfo')
+    if not userinfo or not userinfo.get('sub') or not userinfo.get('email'):
+        return redirect(url_for('connexion_google', erreur='profil_google_incomplet'))
+
+    eleve = creer_ou_recuperer_compte_google(
+        google_sub=userinfo['sub'],
+        email=userinfo['email'],
     )
-@app.route('/connexion', methods=['GET', 'POST'])
-def connexion():
+
+    session.permanent = True
+    session['eleve_id'] = eleve['id']
+    marquer_connexion(eleve['id'])
+
+    if not eleve.get('profil_complet'):
+        return redirect(url_for('completer_profil_vue'))
+
+    next_url = session.pop('next_apres_connexion', None) or '/'
+    return redirect(next_url)
+
+
+@app.route('/completer-profil', methods=['GET', 'POST'])
+def completer_profil_vue():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return redirect(url_for('connexion_google'))
+
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        session.pop('eleve_id', None)
+        return redirect(url_for('connexion_google'))
+
     erreur = None
-    bloque = False
-    minutes_restantes = 0
-    next_url = redirection_sure(request.args.get('next') or request.form.get('next'))
-
     if request.method == 'POST':
-        identifiant = request.form.get('identifiant', '').strip()
-        token_soumis = request.form.get('csrf_token', '')
-        token_attendu = session.get('csrf_token_connexion', '')
+        prenom = request.form.get('prenom', '').strip()
+        nom = request.form.get('nom', '').strip()
+        niveau = request.form.get('niveau', '')
+        serie = request.form.get('serie') or None
+        classe = request.form.get('classe', '').strip() or None
+        etablissement = request.form.get('etablissement', '').strip() or None
+        consentement_parental = request.form.get('consentement_parental') == 'on'
 
-        if login_identifiant_bloque(identifiant):
-            bloque = True
-            minutes_restantes = minutes_avant_deblocage_identifiant(identifiant)
-        elif not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
-            erreur = "Session expirée, réessaie."
-        else:
-            mot_de_passe = request.form.get('mot_de_passe', '')
-            eleve = verifier_identifiants(identifiant, mot_de_passe)
-            if eleve:
-                reinitialiser_echecs_identifiant(identifiant)
-                session.pop('csrf_token_connexion', None)
-                session.permanent = True
-                session['eleve_id'] = eleve['id']
-                marquer_connexion(eleve['id'])
-                return redirect(next_url)
-            else:
-                enregistrer_echec_identifiant(identifiant)
-                erreur = "Identifiant ou mot de passe incorrect."
-                if login_identifiant_bloque(identifiant):
-                    bloque = True
-                    minutes_restantes = minutes_avant_deblocage_identifiant(identifiant)
+        erreur = completer_profil(
+            eleve_id, prenom, nom, niveau, serie, classe,
+            etablissement, consentement_parental
+        )
+        if not erreur:
+            next_url = session.pop('next_apres_connexion', None) or '/'
+            return redirect(next_url)
 
-    session['csrf_token_connexion'] = secrets.token_urlsafe(32)
     return render_template(
-        'connexion.html', erreur=erreur, bloque=bloque,
-        minutes_restantes=minutes_restantes,
-        csrf_token=session['csrf_token_connexion'],
-        next_url=next_url,
+        'completer_profil.html', erreur=erreur, eleve=eleve,
+        niveaux=NIVEAUX_VALIDES_ELEVES, series=SERIES_VALIDES_ELEVES,
     )
 
 @app.route('/deconnexion')
