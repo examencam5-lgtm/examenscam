@@ -1351,7 +1351,7 @@ def mon_compte_supprimer():
     if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
         return redirect('/mon-compte')
 
-    erreur = supprimer_compte(g.eleve['id'], request.form.get('mot_de_passe', ''))
+    erreur = supprimer_compte(g.eleve['id'])
     if erreur:
         return render_template(
             'mon_compte.html', eleve=g.eleve, erreur=erreur, succes=None,
