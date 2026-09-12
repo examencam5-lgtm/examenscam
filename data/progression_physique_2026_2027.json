@@ -1,0 +1,1561 @@
+{
+  "meta": {
+    "titre": "Fiches simplifiees de progression annuelle - Physique",
+    "annee_scolaire": "2026-2027",
+    "source": "MINESEC - Inspection de Pedagogie chargee de l'Enseignement des Sciences - Section Physique-Chimie-Technologie",
+    "note": "Serie E exclue (hors perimetre ExamensCam BAC C/D/TI/A4). Premiere D et TI partagent la meme fiche source (classe combinee 'P D et TI Phys') -- dupliquee sous les deux cles serie."
+  },
+  "niveaux": {
+    "terminale": {
+      "C": {
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Rappel sur les mesures et incertitudes",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Erreur et incertitude sur la mesure - Systeme international d'unites",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Equations aux dimensions",
+            "semaine": "14-18 sept 2026",
+            "lecons": [
+              {
+                "titre": "Dimensions d'une grandeur physique - Homogeneite d'une relation",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Interaction gravitationnelle",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Force de gravitation - Loi de l'attraction universelle",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Champ de gravitation",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Interaction electrique",
+            "semaine": "28 sept-02 oct 2026 a 12-16 oct 2026",
+            "lecons": [
+              {
+                "titre": "Charge electrique et phenomene d'electrisation - Forces electrostatiques - Loi de Coulomb",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Champ electrostatique - Champ a l'interieur d'un condensateur",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "05-09 oct 2026 (Evaluation 1, 2H)"
+          },
+          {
+            "ordre": 5,
+            "nom": "Interaction magnetique",
+            "semaine": "19-23 oct 2026 a 26-30 oct 2026",
+            "lecons": [
+              {
+                "titre": "Force magnetique - Champ magnetique cree par un conducteur parcouru par un courant",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Interaction entre conducteurs parcourus par des courants - Force de Lorentz",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Les lois de Newton sur le mouvement",
+            "semaine": "02-06 nov 2026",
+            "lecons": [
+              {
+                "titre": "Les parametres cinematiques",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Enoncer des lois de Newton - Dynamique des solides",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Application des lois de Newton aux mouvements d'un solide dans le champ de pesanteur",
+            "semaine": "09-13 nov 2026 a 23-27 nov 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement rectiligne",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement plan",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement d'un pendule conique, d'un vehicule dans un virage et d'un satellite",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "16-20 nov 2026 (Evaluation 2, 2H)"
+          },
+          {
+            "ordre": 8,
+            "nom": "Application des lois de Newton aux mouvements des particules chargees",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement dans un champ electrique",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement dans un champ magnetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Application des lois de Newton aux pendules",
+            "semaine": "07-11 dec 2026 a 14-18 dec 2026",
+            "lecons": [
+              {
+                "titre": "Generalites sur les systemes oscillants",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Pendule en translation",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Pendule en rotation",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Pendule simple - Oscillations amorties et resonnance",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Condensateur",
+            "semaine": "04-08 jan 2027 a 18-22 jan 2027",
+            "lecons": [
+              {
+                "titre": "Symbole normalise - Charge et decharge - Capacite",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Condensateur plan - association de condensateurs - Expression de l'energie emmagasinee",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "11-15 jan 2027 (Evaluation 3, 2H)"
+          },
+          {
+            "ordre": 11,
+            "nom": "Circuit RLC",
+            "semaine": "25-29 jan 2027 a 01-05 fev 2027",
+            "lecons": [
+              {
+                "titre": "Cas des circuits RC / RL / LC",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Cas des circuits RLC - Oscillations electriques libres et forcees",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Reponse en intensite d'un circuit RLC - Puissance en regime sinusoidal",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Etude de quelques dipoles commandes et capteurs",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition - Principe de captage d'une grandeur physique - Exemple de dipole commande et capteur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Les chaines electroniques",
+            "semaine": "15-19 fev 2027",
+            "lecons": [
+              {
+                "titre": "Les differents elements d'une chaine electronique et schematisation - Exemples de chaines electroniques",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Onde mecanique",
+            "semaine": "15-19 fev 2027 a 01-05 mars 2027",
+            "lecons": [
+              {
+                "titre": "Stroboscopie",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Ondes progressives, transversales et longitudinales",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "22-26 fev 2027 (Evaluation 4, 2H)"
+          },
+          {
+            "ordre": 15,
+            "nom": "Superposition d'ondes mecaniques",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              {
+                "titre": "Principe de superposition - Interferences",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 16,
+            "nom": "Aspect ondulatoire de la lumiere",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Phenomene de diffraction de la lumiere - Interference lumineuse",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 17,
+            "nom": "Effet Doppler",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Exemples de manifestations de l'effet Doppler - applications technologiques",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "Aspect corpusculaire de la lumiere : Effet photoelectrique",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Definition de l'effet photoelectrique - etude experimentale",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 19,
+            "nom": "Effet Compton",
+            "semaine": "22-25 mars 2027",
+            "lecons": [
+              {
+                "titre": "Definition - relation entre la longueur d'onde du photon final et incident",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 20,
+            "nom": "Niveau d'energie de l'atome d'hydrogene",
+            "semaine": "12-16 avr 2027",
+            "lecons": [
+              {
+                "titre": "Spectre et transitions",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "19-23 avr 2027 (Evaluation 5, 2H)"
+          },
+          {
+            "ordre": 21,
+            "nom": "Noyau atomique",
+            "semaine": "26-30 avr 2027",
+            "lecons": [
+              {
+                "titre": "Nucleons - Isotopes - Energie de liaison - Stabilite",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 22,
+            "nom": "La radioactivite",
+            "semaine": "03-07 mai 2027",
+            "lecons": [
+              {
+                "titre": "Generalites - Les differents types de reactions nucleaires",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Activite d'une source - Loi de decroissance - Applications de la radioactivite",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 23,
+            "nom": "Reactions nucleaires provoquees",
+            "semaine": "10-14 mai 2027",
+            "lecons": [
+              {
+                "titre": "Differents types de reactions nucleaires provoquees",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 24,
+            "nom": "Strategie de protection contre le rayonnement",
+            "semaine": "17-21 mai 2027",
+            "lecons": [
+              {
+                "titre": "Dangers de l'exposition aux rayonnements radioactifs - Methodes de radioprotection",
+                "duree_heures": 2
+              }
+            ]
+          }
+        ]
+      },
+      "D": {
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Rappels sur les mesures et incertitudes",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Erreur et incertitude sur la mesure",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Equations aux dimensions",
+            "semaine": "14-18 sept 2026",
+            "lecons": [
+              {
+                "titre": "Systeme international d'unite - Dimensions d'une grandeur physique - Homogeneite d'une relation",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Interaction gravitationnelle",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Force de gravitation - Loi de l'attraction universelle",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Champ de gravitation",
+                "duree_heures": 1
+              }
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Interaction electrique",
+            "semaine": "28 sept-02 oct 2026 a 12-16 oct 2026",
+            "lecons": [
+              {
+                "titre": "Charge electrique et phenomene d'electrisation - Forces electrostatiques - Loi de Coulomb",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Champ electrostatique - Champ a l'interieur d'un condensateur",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "05-09 oct 2026 (2H)"
+          },
+          {
+            "ordre": 5,
+            "nom": "Interaction magnetique",
+            "semaine": "19-23 oct 2026 a 26-30 oct 2026",
+            "lecons": [
+              {
+                "titre": "Force magnetique - Champ magnetique cree par un conducteur parcouru par un courant",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Interaction entre conducteurs parcourus par des courants - Force de Lorentz",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Les lois de Newton sur le mouvement",
+            "semaine": "02-06 nov 2026",
+            "lecons": [
+              {
+                "titre": "Les parametres cinematiques",
+                "duree_heures": 1
+              },
+              {
+                "titre": "Enoncer des lois de Newton - Dynamique des solides",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Application des lois de Newton aux mouvements d'un solide dans le champ de pesanteur",
+            "semaine": "09-13 nov 2026 a 23-27 nov 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement rectiligne",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement plan",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "16-20 nov 2026 (2H)"
+          },
+          {
+            "ordre": 8,
+            "nom": "Application des lois de Newton aux mouvements d'un solide dans le champ de pesanteur (suite)",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement d'un satellite",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Application des lois de Newton aux mouvements des particules chargees",
+            "semaine": "07-11 dec 2026 a 14-18 dec 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement dans un champ electrique",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement dans un champ magnetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Application des lois de Newton aux pendules",
+            "semaine": "04-08 jan 2027 a 18-22 jan 2027",
+            "lecons": [
+              {
+                "titre": "Generalites sur les systemes oscillants",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Pendule simple - Oscillations amorties",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "11-15 jan 2027 (2H)"
+          },
+          {
+            "ordre": 11,
+            "nom": "Condensateur",
+            "semaine": "25-29 jan 2027",
+            "lecons": [
+              {
+                "titre": "Symbole normalise - Capacite - Expression de l'energie emmagasinee",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Circuit RLC",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              {
+                "titre": "Notion d'impedance - Tension efficace et maximale - Dephasage",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Ondes mecaniques",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              {
+                "titre": "Stroboscopie",
+                "duree_heures": 1
+              },
+              {
+                "titre": "Ondes progressives, transversales et longitudinales",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Superposition d'ondes mecaniques",
+            "semaine": "15-19 fev 2027",
+            "lecons": [
+              {
+                "titre": "Principe de superposition - Interferences",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "22-26 fev 2027 (2H)"
+          },
+          {
+            "ordre": 15,
+            "nom": "Aspect ondulatoire de la lumiere",
+            "semaine": "01-05 mars 2027",
+            "lecons": [
+              {
+                "titre": "Phenomene de diffraction de la lumiere - Interference lumineuse",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 16,
+            "nom": "Aspect corpusculaire de la lumiere : Effet photoelectrique",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              {
+                "titre": "Definition de l'effet photoelectrique - etude experimentale",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 17,
+            "nom": "Noyau atomique",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Nucleons - Isotopes - Energie de liaison - Stabilite",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "La radioactivite",
+            "semaine": "22-25 mars 2027 a 12-16 avr 2027",
+            "lecons": [
+              {
+                "titre": "Generalites - Les differents types de reactions nucleaires",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Activite d'une source - Loi de decroissance - Applications de la radioactivite",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 19,
+            "nom": "Reactions nucleaires provoquees",
+            "semaine": "19-23 avr 2027",
+            "lecons": [
+              {
+                "titre": "Differents types de reactions nucleaires provoquees",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 20,
+            "nom": "Strategie de protection contre le rayonnement",
+            "semaine": "26-30 avr 2027",
+            "lecons": [
+              {
+                "titre": "Dangers de l'exposition aux rayonnements radioactifs - Methodes de radioprotection",
+                "duree_heures": 2
+              }
+            ]
+          }
+        ]
+      },
+      "TI": {
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Interaction gravitationnelle",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Force de gravitation - Loi de l'attraction universelle - Champ de gravitation",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Interaction electrique",
+            "semaine": "14-18 sept 2026",
+            "lecons": [
+              {
+                "titre": "Charge electrique et phenomene d'electrisation - Forces electrostatiques - Loi de Coulomb - Champ electrostatique - Champ a l'interieur d'un condensateur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Interaction magnetique",
+            "semaine": "21-25 sept 2026 a 28 sept-02 oct 2026",
+            "lecons": [
+              {
+                "titre": "Force magnetique - Champ magnetique cree par un conducteur parcouru par un courant",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Interaction entre conducteurs parcourus par des courants - Force de Lorentz",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "12-16 oct 2026 (Evaluation 1, 2H)"
+          },
+          {
+            "ordre": 4,
+            "nom": "Les lois de Newton sur le mouvement",
+            "semaine": "19-23 oct 2026 a 26-30 oct 2026",
+            "lecons": [
+              {
+                "titre": "Les parametres cinematiques",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Enoncer des lois de Newton - Dynamique des solides",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Application des lois de Newton aux mouvements d'un solide dans le champ de pesanteur",
+            "semaine": "02-06 nov 2026 a 09-13 nov 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement rectiligne",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement plan",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "23-27 nov 2026 (Evaluation 2, 2H)"
+          },
+          {
+            "ordre": 6,
+            "nom": "Application des lois de Newton aux mouvements des particules chargees",
+            "semaine": "30 nov-04 dec 2026 a 14-18 dec 2026",
+            "lecons": [
+              {
+                "titre": "Mouvement d'un satellite",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement dans un champ electrique",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Mouvement dans un champ magnetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Application des lois de Newton aux pendules",
+            "semaine": "04-08 jan 2027 a 25-29 jan 2027",
+            "lecons": [
+              {
+                "titre": "Generalites sur les systemes oscillants",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Pendule simple - Oscillations amorties",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "18-22 jan 2027 (Evaluation 3, 2H)"
+          },
+          {
+            "ordre": 8,
+            "nom": "Condensateur",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              {
+                "titre": "Symbole normalise - Capacite - Expression de l'energie emmagasinee par un condensateur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Circuit RLC",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              {
+                "titre": "Notion d'impedance - Tension efficace et maximale - Dephasage",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 10,
+            "nom": "Ondes mecaniques",
+            "semaine": "15-19 fev 2027",
+            "lecons": [
+              {
+                "titre": "Stroboscopie",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Ondes mecaniques (suite)",
+            "semaine": "22-26 fev 2027",
+            "lecons": [
+              {
+                "titre": "Ondes progressives, transversales et longitudinales",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "08-12 mars 2027 (Evaluation 4, 2H)"
+          },
+          {
+            "ordre": 12,
+            "nom": "Superposition d'ondes mecaniques",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Principe de superposition - Interferences",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Aspect ondulatoire de la lumiere",
+            "semaine": "22-25 mars 2027",
+            "lecons": [
+              {
+                "titre": "Phenomene de diffraction de la lumiere - Interference lumineuse",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Aspect corpusculaire de la lumiere : Effet photoelectrique",
+            "semaine": "12-16 avr 2027",
+            "lecons": [
+              {
+                "titre": "Definition de l'effet photoelectrique - etude experimentale",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 15,
+            "nom": "La radioactivite",
+            "semaine": "19-23 avr 2027",
+            "lecons": [
+              {
+                "titre": "Definition et proprietes - types de radioactivite",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Decroissance radioactive - Application de la radioactivite",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 16,
+            "nom": "Protection contre les effets de la radioactivite",
+            "semaine": "26-30 avr 2027",
+            "lecons": [
+              {
+                "titre": "Dangers de l'exposition au rayonnement nucleaire - Methodes de radioprotection",
+                "duree_heures": 2
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "premiere": {
+      "C": {
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Mesure des grandeurs physiques et chimiques",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Mesures des grandeurs physiques et chimiques du programme d'etude - Notion d'incertitude sur la mesure",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Modelisation d'un phenomene",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Notion de modele - Exemples de modeles utilises en sciences physiques",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Travail d'une force",
+            "semaine": "14-18 sept 2026 a 21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Travail d'une force constante - Travail de la tension d'un ressort a reponse lineaire - Travail d'un couple de force a moment constant",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Puissance d'une force",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Puissance d'une force constante - Puissance d'un couple de force de moment constant",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Energie cinetique",
+            "semaine": "28 sept-02 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion d'energie cinetique - Theoreme de l'energie cinetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 6,
+            "nom": "Conservation de l'energie cinetique",
+            "semaine": "05-09 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion de chocs - Expressions des vitesses apres les chocs",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "12-16 oct 2026 (Evaluation 1, 2H)"
+          },
+          {
+            "ordre": 7,
+            "nom": "Principe de conservation de l'energie mecanique",
+            "semaine": "26-30 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion d'energie potentielle",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Notion d'energie mecanique - Conservation de l'energie mecanique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Mode de transfert de chaleur",
+            "semaine": "02-06 nov 2026",
+            "lecons": [
+              {
+                "titre": "Notion de chaleur - Mode de propagation de la chaleur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Principe des echanges de chaleur",
+            "semaine": "09-13 nov 2026",
+            "lecons": [
+              {
+                "titre": "Calorimetre - Mesure de la quantite de chaleur",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "23-27 nov 2026 (Evaluation 2, 2H)"
+          },
+          {
+            "ordre": 10,
+            "nom": "Les lentilles",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              {
+                "titre": "Notion de lentille mince - Caracteristiques d'une lentille mince - Distance focale et vergence des lentilles minces",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Construction de l'image de l'objet a travers les lentilles minces - Relation de conjugaison",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Fonctionnement optique de l'oeil",
+            "semaine": "07-11 dec 2026",
+            "lecons": [
+              {
+                "titre": "L'oeil humain - L'oeil reduit - Defauts d'accommodation de l'oeil",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 12,
+            "nom": "Le microscope",
+            "semaine": "14-18 dec 2026",
+            "lecons": [
+              {
+                "titre": "La loupe - Description - Principe de fonctionnement",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "La lunette astronomique et Telescope de Newton",
+            "semaine": "04-08 jan 2027",
+            "lecons": [
+              {
+                "titre": "Description - Principe de fonctionnement",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Caracteristiques d'un instrument optique",
+            "semaine": "04-08 jan 2027",
+            "lecons": [
+              {
+                "titre": "Puissance - Grossissement",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 15,
+            "nom": "Spectre lumineux",
+            "semaine": "11-15 jan 2027",
+            "lecons": [
+              {
+                "titre": "Spectre absorption et emission - Spectre de lumiere blanche",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Domaines des ondes electromagnetiques - Couleurs des corps chauds (Loi de Wien)",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "18-22 jan 2027 (Evaluation 3, 2H)"
+          },
+          {
+            "ordre": 16,
+            "nom": "Interaction lumiere-matiere",
+            "semaine": "25-29 jan 2027",
+            "lecons": [
+              {
+                "titre": "Emission, absorption, diffusion - Energie d'un photon",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 17,
+            "nom": "Generateur electrique",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition et schema normalise d'un generateur - Caracteristiques des dipoles generateur - Association des generateurs",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "Recepteur",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition et schema normalise d'un recepteur - Caracteristiques des dipoles recepteur - Domaines des ondes electromagnetiques",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 19,
+            "nom": "Point de fonctionnement d'un circuit electrique ou electronique",
+            "semaine": "15-19 fev 2027",
+            "lecons": [
+              {
+                "titre": "Exploitation de la caracteristique d'un resistor, d'une diode, d'un transistor",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "01-05 mars 2027 (Evaluation 4, 2H)"
+          },
+          {
+            "ordre": 20,
+            "nom": "Le flux magnetique",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              {
+                "titre": "Le champ magnetique - Le flux magnetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 21,
+            "nom": "Phenomene d'induction electromagnetique",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Induction electromagnetique - Phenomene d'auto-induction",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 22,
+            "nom": "Fonctionnement des generateurs electromagnetiques",
+            "semaine": "22-25 mars 2027",
+            "lecons": [
+              {
+                "titre": "Dispositif pouvant produire un courant alternatif - Principe de fonctionnement d'un alternateur - Exemples d'un alternateur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 23,
+            "nom": "Energie et puissance electrique",
+            "semaine": "12-16 avr 2027 a 19-23 avr 2027",
+            "lecons": [
+              {
+                "titre": "Puissance electrique - Energie electrique - Loi de Joules",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Bilan energetique et rendement d'un generateur et d'un recepteur - Rendement d'une chaine energetique",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "26-30 avr 2027 (Evaluation 5, 2H)"
+          }
+        ]
+      },
+      "D": {
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Mesure des grandeurs physiques et chimiques",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Mesures des grandeurs physiques et chimiques du programme d'etude - Notion d'incertitude sur la mesure",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Modelisation d'un phenomene",
+            "semaine": "14-18 sept 2026",
+            "lecons": [
+              {
+                "titre": "Notion de modele - Exemples de modeles utilises en sciences physiques",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Travail d'une force",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Travail d'une force constante - Travail de la tension d'un ressort a reponse lineaire - Travail d'un couple de force a moment constant",
+                "duree_heures": 1
+              }
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Puissance d'une force",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Puissance d'une force constante - Puissance d'un couple de force de moment constant",
+                "duree_heures": 1
+              }
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Energie cinetique",
+            "semaine": "28 sept-02 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion d'energie cinetique - Theoreme de l'energie cinetique - Conservation de l'energie cinetique",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "05-09 oct 2026 (Evaluation 1, 2H)"
+          },
+          {
+            "ordre": 6,
+            "nom": "Energie mecanique",
+            "semaine": "12-16 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion d'energie potentielle",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Notion d'energie mecanique - Conservation de l'energie mecanique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Modes de transfert de la chaleur",
+            "semaine": "26-30 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion de chaleur - Mode de propagation de la chaleur - Calorimetre - Mesure de la quantite de chaleur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Les lentilles",
+            "semaine": "02-06 nov 2026 a 09-13 nov 2026",
+            "lecons": [
+              {
+                "titre": "Notion de lentille mince - Caracteristiques d'une lentille mince - Distance focale et vergence des lentilles minces",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Construction de l'image de l'objet a travers les lentilles minces - Relation de conjugaison",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Fonctionnement optique de l'oeil",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              {
+                "titre": "L'oeil humain - L'oeil reduit - Defauts d'accommodation de l'oeil",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "23-27 nov 2026 (Evaluation 2, 2H)"
+          },
+          {
+            "ordre": 10,
+            "nom": "Le microscope",
+            "semaine": "07-11 dec 2026",
+            "lecons": [
+              {
+                "titre": "La loupe - Description - Principe de fonctionnement - Puissance - Grossissement",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Spectre lumineux",
+            "semaine": "11-15 jan 2027",
+            "lecons": [
+              {
+                "titre": "Spectre d'absorption et emission - Spectre de la lumiere blanche - Domaine des ondes electromagnetiques - Couleur des corps chauds (loi de Wien)",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "04-08 jan 2027 (Evaluation 3, 2H)"
+          },
+          {
+            "ordre": 12,
+            "nom": "Interaction lumiere-matiere",
+            "semaine": "18-22 jan 2027",
+            "lecons": [
+              {
+                "titre": "Emission, absorption, diffusion - Energie d'un photon",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Generateur electrique",
+            "semaine": "25-29 jan 2027",
+            "lecons": [
+              {
+                "titre": "Definition et schema normalise d'un generateur - Caracteristiques des dipoles generateur - Association des generateurs",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Recepteur",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition et schema normalise d'un recepteur - Caracteristiques des dipoles recepteurs",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 15,
+            "nom": "Point de fonctionnement d'un circuit electrique ou electronique",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition - Determination - Loi de Pouillet graphiquement (exploitation caracteristique resistor, diode, transistor)",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "22-26 fev 2027 (Evaluation 4, 2H)"
+          },
+          {
+            "ordre": 16,
+            "nom": "Le flux magnetique",
+            "semaine": "01-05 mars 2027",
+            "lecons": [
+              {
+                "titre": "Le champ magnetique - Le flux magnetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 17,
+            "nom": "Phenomene d'induction electromagnetique",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              {
+                "titre": "Induction electromagnetique - Phenomene d'auto-induction",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "Fonctionnement des generateurs electromagnetiques",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Dispositif pouvant produire un courant alternatif - Principe de fonctionnement d'un alternateur - Exemples d'un alternateur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 19,
+            "nom": "Energie et puissance electrique",
+            "semaine": "03-07 mai 2027 a 10-14 mai 2027",
+            "lecons": [
+              {
+                "titre": "Puissance electrique - Energie electrique - Loi de Joules",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Bilan energetique et rendement d'un generateur et d'un recepteur - Rendement d'une chaine energetique",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "26-30 avr 2027 (Evaluation 5, 2H)"
+          }
+        ]
+      },
+      "TI": {
+        "chapitres": [
+          {
+            "ordre": 1,
+            "nom": "Mesure des grandeurs physiques et chimiques",
+            "semaine": "07-11 sept 2026",
+            "lecons": [
+              {
+                "titre": "Mesures des grandeurs physiques et chimiques du programme d'etude - Notion d'incertitude sur la mesure",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 2,
+            "nom": "Modelisation d'un phenomene",
+            "semaine": "14-18 sept 2026",
+            "lecons": [
+              {
+                "titre": "Notion de modele - Exemples de modeles utilises en sciences physiques",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 3,
+            "nom": "Travail d'une force",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Travail d'une force constante - Travail de la tension d'un ressort a reponse lineaire - Travail d'un couple de force a moment constant",
+                "duree_heures": 1
+              }
+            ]
+          },
+          {
+            "ordre": 4,
+            "nom": "Puissance d'une force",
+            "semaine": "21-25 sept 2026",
+            "lecons": [
+              {
+                "titre": "Puissance d'une force constante - Puissance d'un couple de force de moment constant",
+                "duree_heures": 1
+              }
+            ]
+          },
+          {
+            "ordre": 5,
+            "nom": "Energie cinetique",
+            "semaine": "28 sept-02 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion d'energie cinetique - Theoreme de l'energie cinetique - Conservation de l'energie cinetique",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "05-09 oct 2026 (Evaluation 1, 2H)"
+          },
+          {
+            "ordre": 6,
+            "nom": "Energie mecanique",
+            "semaine": "12-16 oct 2026 a 19-23 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion d'energie potentielle",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Notion d'energie mecanique - Conservation de l'energie mecanique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 7,
+            "nom": "Modes de transfert de la chaleur",
+            "semaine": "26-30 oct 2026",
+            "lecons": [
+              {
+                "titre": "Notion de chaleur - Mode de propagation de la chaleur - Calorimetre - Mesure de la quantite de chaleur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 8,
+            "nom": "Les lentilles",
+            "semaine": "02-06 nov 2026 a 09-13 nov 2026",
+            "lecons": [
+              {
+                "titre": "Notion de lentille mince - Caracteristiques d'une lentille mince - Distance focale et vergence des lentilles minces",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Construction de l'image de l'objet a travers les lentilles minces - Relation de conjugaison",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 9,
+            "nom": "Fonctionnement optique de l'oeil",
+            "semaine": "30 nov-04 dec 2026",
+            "lecons": [
+              {
+                "titre": "L'oeil humain - L'oeil reduit - Defauts d'accommodation de l'oeil",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "23-27 nov 2026 (Evaluation 2, 2H)"
+          },
+          {
+            "ordre": 10,
+            "nom": "Le microscope",
+            "semaine": "07-11 dec 2026",
+            "lecons": [
+              {
+                "titre": "La loupe - Description - Principe de fonctionnement - Puissance - Grossissement",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 11,
+            "nom": "Spectre lumineux",
+            "semaine": "11-15 jan 2027",
+            "lecons": [
+              {
+                "titre": "Spectre d'absorption et emission - Spectre de la lumiere blanche - Domaine des ondes electromagnetiques - Couleur des corps chauds (loi de Wien)",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "04-08 jan 2027 (Evaluation 3, 2H)"
+          },
+          {
+            "ordre": 12,
+            "nom": "Interaction lumiere-matiere",
+            "semaine": "18-22 jan 2027",
+            "lecons": [
+              {
+                "titre": "Emission, absorption, diffusion - Energie d'un photon",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 13,
+            "nom": "Generateur electrique",
+            "semaine": "25-29 jan 2027",
+            "lecons": [
+              {
+                "titre": "Definition et schema normalise d'un generateur - Caracteristiques des dipoles generateur - Association des generateurs",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 14,
+            "nom": "Recepteur",
+            "semaine": "01-05 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition et schema normalise d'un recepteur - Caracteristiques des dipoles recepteurs",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 15,
+            "nom": "Point de fonctionnement d'un circuit electrique ou electronique",
+            "semaine": "08-12 fev 2027",
+            "lecons": [
+              {
+                "titre": "Definition - Determination - Loi de Pouillet graphiquement (exploitation caracteristique resistor, diode, transistor)",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "22-26 fev 2027 (Evaluation 4, 2H)"
+          },
+          {
+            "ordre": 16,
+            "nom": "Le flux magnetique",
+            "semaine": "01-05 mars 2027",
+            "lecons": [
+              {
+                "titre": "Le champ magnetique - Le flux magnetique",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 17,
+            "nom": "Phenomene d'induction electromagnetique",
+            "semaine": "08-12 mars 2027",
+            "lecons": [
+              {
+                "titre": "Induction electromagnetique - Phenomene d'auto-induction",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 18,
+            "nom": "Fonctionnement des generateurs electromagnetiques",
+            "semaine": "15-19 mars 2027",
+            "lecons": [
+              {
+                "titre": "Dispositif pouvant produire un courant alternatif - Principe de fonctionnement d'un alternateur - Exemples d'un alternateur",
+                "duree_heures": 2
+              }
+            ]
+          },
+          {
+            "ordre": 19,
+            "nom": "Energie et puissance electrique",
+            "semaine": "03-07 mai 2027 a 10-14 mai 2027",
+            "lecons": [
+              {
+                "titre": "Puissance electrique - Energie electrique - Loi de Joules",
+                "duree_heures": 2
+              },
+              {
+                "titre": "Bilan energetique et rendement d'un generateur et d'un recepteur - Rendement d'une chaine energetique",
+                "duree_heures": 2
+              }
+            ],
+            "evaluation": "26-30 avr 2027 (Evaluation 5, 2H)"
+          }
+        ]
+      }
+    }
+  }
+}
