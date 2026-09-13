@@ -572,9 +572,51 @@
     overflow-wrap: anywhere;
   }
 
-  .msg-bot-corps h3 {
+    .msg-bot-corps h3 {
     font-size: 1.04rem;
     margin: 0.8rem 0 0.35rem;
+  }
+
+  /* Titre d'exercice (ex: "### Exercice 3 : Utilisation des savoirs")
+     mis en avant avec un accent visuel distinct du texte normal */
+  .msg-bot-corps h3.titre-exercice {
+    display: inline-block;
+    margin: 1.1rem 0 0.6rem;
+    padding: 0.3rem 0.85rem;
+    background: var(--ec-accent-soft, #F1F5F9);
+    color: var(--ec-accent, #2563EB);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 750;
+  }
+
+  .msg-bot-corps h3.titre-exercice:first-child {
+    margin-top: 0;
+  }
+
+  /* Titre de partie (ex: "#### Partie A") -- plus discret qu'un
+     exercice, sert juste à scinder visuellement un long problème */
+  .msg-bot-corps h4.titre-partie {
+    margin: 0.9rem 0 0.4rem;
+    padding-left: 0.6rem;
+    border-left: 3px solid var(--ec-line, #CBD5E1);
+    color: var(--ec-ink-soft, #64748B);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* Chaque question numérotée démarre clairement sur sa propre ligne,
+     avec le numéro légèrement détaché du texte */
+  .msg-bot-corps p.question-numerotee {
+    margin: 0.55rem 0;
+  }
+
+  .msg-bot-corps p.question-numerotee > .numero-question {
+    font-weight: 700;
+    color: var(--ec-accent, #2563EB);
+    margin-right: 0.3rem;
   }
 
   .msg-bot-corps h3:first-child {
@@ -1756,6 +1798,50 @@
     );
   }
 
+   function structurerTexteExercice(texte) {
+    /*
+     * Le texte brut d'un exercice officiel (voir
+     * chat_bac_officiel.formuler_reponse_exercice_bac) n'a pas de
+     * structure Markdown -- juste du texte au fil de l'eau où les
+     * titres d'exercice/partie et les numéros de question sont collés
+     * au reste. Cette fonction insère les marqueurs Markdown
+     * nécessaires (titres, sauts de ligne) AVANT que marked.parse()
+     * ne s'exécute, pour obtenir un rendu visuellement structuré au
+     * lieu d'un bloc de texte plat.
+     */
+
+    let resultat = texte;
+
+    // "Exercice 3 : ..." / "EXERCICE 1" en début de ligne -> titre visible
+    resultat = resultat.replace(
+      /^[ \t]*(EXERCICE|Exercice)\s+([^\n]{0,80})/gm,
+      (match, mot, reste) => `\n### __EXO__ ${mot} ${reste.trim()}\n`
+    );
+
+    // "Partie A" / "PARTIE B" en début de ligne -> sous-titre discret
+    resultat = resultat.replace(
+      /^[ \t]*(PARTIE|Partie)\s+([^\n]{0,80})/gm,
+      (match, mot, reste) => `\n#### __PARTIE__ ${mot} ${reste.trim()}\n`
+    );
+
+    // Force un saut de ligne avant chaque numéro de question qui suit
+    // un barème ou une ponctuation de fin de question (ex: "...0,25pt)
+    // 2. En déduire...") -- sans ça, marked.js ne voit qu'un seul
+    // paragraphe géant.
+    resultat = resultat.replace(
+      /([.):])\s+(\d{1,2}\.\s)/g,
+      '$1\n\n$2'
+    );
+
+    // Idem pour les sous-questions "(a)", "(b)", "(c)..."
+    resultat = resultat.replace(
+      /\s+(\([a-z]\)\s)/g,
+      '\n$1'
+    );
+
+    return resultat;
+  }
+
   function rendreReponseAssistant(conteneur, texte) {
     if (!conteneur) return;
 
@@ -1769,11 +1855,10 @@
      * protégées de marked.parse() -- sinon les underscores et
      * backslashes qu'elles contiennent (ex: $^{134}_{55}\text{Cs}$,
      * \frac{...}{...}) sont interprétés comme de la syntaxe Markdown
-     * (italique, échappement) et cassent la formule avant même que
-     * KaTeX ne la voie. On remplace chaque bloc par un jeton neutre,
-     * on laisse Markdown faire son travail sans jamais toucher à une
-     * vraie formule, puis on restaure les blocs d'origine juste avant
-     * que KaTeX les rende.
+     * et cassent la formule avant que KaTeX ne la voie. On remplace
+     * chaque bloc par un jeton neutre, on laisse Markdown et la
+     * structuration travailler sans jamais toucher une vraie formule,
+     * puis on restaure les blocs d'origine juste avant KaTeX.
      */
     const blocsLatex = [];
 
@@ -1786,7 +1871,21 @@
       }
     );
 
-    let html = marked.parse(texteProtege);
+    const texteStructure = structurerTexteExercice(texteProtege);
+
+    let html = marked.parse(texteStructure);
+
+    // Remplace les jetons de titre par du vrai HTML stylé (fait après
+    // marked.parse() car on veut les classes CSS exactes, pas ce que
+    // Markdown produirait pour un ### standard)
+    html = html.replace(
+      /<h3>__EXO__ ([\s\S]*?)<\/h3>/g,
+      '<h3 class="titre-exercice">$1</h3>'
+    );
+    html = html.replace(
+      /<h4>__PARTIE__ ([\s\S]*?)<\/h4>/g,
+      '<h4 class="titre-partie">$1</h4>'
+    );
 
     blocsLatex.forEach((bloc, i) => {
       html = html.split(`@@LATEX${i}@@`).join(bloc);
@@ -1799,7 +1898,7 @@
      */
     conteneur.innerHTML =
       window.DOMPurify
-        ? DOMPurify.sanitize(html)
+        ? DOMPurify.sanitize(html, { ADD_ATTR: ['class'] })
         : html;
 
     if (window.renderMathInElement) {
@@ -1811,8 +1910,7 @@
         throwOnError: false
       });
     }
-}
-
+  }
   function ajouterMessageUtilisateur(texte) {
     if (!fenetre) return;
 
