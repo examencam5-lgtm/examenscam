@@ -42,6 +42,19 @@ n'est pas cassé, mais reste exposé au même risque de collision décrit
 ci-dessus tant qu'il n'est pas mis à jour (voir app.py,
 assistant_eleve_repondre, qui le transmet désormais).
 
+CORRECTIF AFFICHAGE (13/09/2026, suite du fix ci-dessus) : le filtre
+niveau corrigeait bien la RECHERCHE (la bonne épreuve était déjà
+trouvée), mais formuler_reponse_exercice_bac() affichait toujours
+l'en-tête "BAC {series} — ..." EN DUR, quel que soit le niveau réel de
+l'épreuve trouvée -- un exercice Probatoire s'affichait donc avec un
+titre "BAC", создant une fausse impression de bug de recherche alors
+que seul l'étiquetage était faux. obtenir_exercice_bac() renvoie
+désormais `niveau` (valeur brute de la table, 'terminale'/'premiere'
+/'3e') dans son dict de retour, et LIBELLE_NIVEAU_AFFICHAGE traduit
+cette valeur vers le libellé correct affiché à l'élève ('BAC'/
+'Probatoire'/'BEPC') -- indépendant de NIVEAU_VERS_TABLE (qui va dans
+l'autre sens : compte élève -> table).
+
 Table SOURCE : sections_bac_officielles / epreuves_bac_officielles
 (contenu réel, OCR intégral, PAS le corpus de style 'epreuves' utilisé
 par le générateur -- distinction déjà actée à l'import).
@@ -96,6 +109,17 @@ NIVEAU_VERS_TABLE = {
     "bepc": "3e",
     "probatoire": "premiere",
     "bac": "terminale",
+}
+
+# Sens inverse de NIVEAU_VERS_TABLE -- utilisé uniquement pour
+# l'affichage du libellé à l'élève (voir formuler_reponse_exercice_bac),
+# jamais pour une requête SQL. Une valeur de niveau absente de ce dict
+# (base ancienne, valeur inattendue) retombe sur "BAC" par défaut --
+# comportement historique avant ce correctif, jamais pire qu'avant.
+LIBELLE_NIVEAU_AFFICHAGE = {
+    "terminale": "BAC",
+    "premiere": "Probatoire",
+    "3e": "BEPC",
 }
 
 
@@ -162,7 +186,12 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
     Retourne None si la session n'existe pas dans le corpus pour cette
     matière/niveau, ou si le numéro demandé n'existe pas pour cette
     session -- jamais une approximation sur une autre année, un autre
-    numéro, un autre niveau, ou une autre matière."""
+    numéro, un autre niveau, ou une autre matière.
+
+    Le dict retourné inclut désormais `niveau` (valeur brute de la
+    table, ex: 'terminale', 'premiere', '3e') -- voir
+    LIBELLE_NIVEAU_AFFICHAGE dans formuler_reponse_exercice_bac() pour
+    la traduction en libellé affiché à l'élève."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     try:
@@ -175,12 +204,12 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
             # colonne absente.
             try:
                 epreuve = conn.execute(
-                    "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
+                    "SELECT id, session, series, qualite, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
                     (annee, matiere, niveau_table)
                 ).fetchone()
             except sqlite3.OperationalError:
                 epreuve = conn.execute(
-                    "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
+                    "SELECT id, session, series, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
                     (annee, matiere, niveau_table)
                 ).fetchone()
         else:
@@ -191,12 +220,12 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
             # existant qui ne passe pas encore ce parametre).
             try:
                 epreuve = conn.execute(
-                    "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
+                    "SELECT id, session, series, qualite, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
                     (annee, matiere)
                 ).fetchone()
             except sqlite3.OperationalError:
                 epreuve = conn.execute(
-                    "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
+                    "SELECT id, session, series, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
                     (annee, matiere)
                 ).fetchone()
 
@@ -225,6 +254,7 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
             "titre": row["titre"], "contenu_integral": row["contenu_integral"],
             "bareme_annonce": row["bareme_annonce"],
             "qualite": epreuve["qualite"] if "qualite" in epreuve.keys() else "ocr_brut",
+            "niveau": epreuve["niveau"] if "niveau" in epreuve.keys() else None,
         }
     finally:
         conn.close()
@@ -250,7 +280,16 @@ def formuler_reponse_exercice_bac(exercice: dict | None, annee: int, numero: int
     affichage dans un bloc de code Markdown (```) -- rendu en
     monospace préformaté par marked.js, donc IMMUNISÉ contre toute
     réinterprétation de "1.", "2." etc. comme liste, et préserve les
-    sauts de ligne exacts du texte source."""
+    sauts de ligne exacts du texte source.
+
+    CORRECTIF (13/09/2026) : l'en-tête affichait "BAC" EN DUR quel que
+    soit le niveau réel de l'épreuve -- un exercice Probatoire
+    s'affichait "BAC C — 2024 — ..." alors que la RECHERCHE elle-même
+    était déjà correcte (voir obtenir_exercice_bac). Le libellé vient
+    maintenant de exercice['niveau'] traduit via
+    LIBELLE_NIVEAU_AFFICHAGE, avec repli sur "BAC" si le niveau est
+    absent ou non reconnu (comportement identique à avant ce
+    correctif dans ce cas de repli uniquement)."""
     if not exercice:
         precision = f" (exercice {numero})" if numero else ""
         return (
@@ -258,7 +297,8 @@ def formuler_reponse_exercice_bac(exercice: dict | None, annee: int, numero: int
             f"Essaie une autre année entre 1999 et 2025, ou demande-moi d'en générer un inédit à la place."
         )
 
-    entete = f"**BAC {exercice['series']} — {exercice['session']} — {exercice['titre']}**"
+    libelle_niveau = LIBELLE_NIVEAU_AFFICHAGE.get(exercice.get("niveau"), "BAC")
+    entete = f"**{libelle_niveau} {exercice['series']} — {exercice['session']} — {exercice['titre']}**"
 
     # CORRECTIF (29/08/2026) : maintenant que retranscrire_epreuve_vision.py
     # produit du vrai LaTeX propre ($...$), le bloc de code Markdown qui
