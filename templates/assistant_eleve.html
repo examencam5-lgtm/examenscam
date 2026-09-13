@@ -572,7 +572,7 @@
     overflow-wrap: anywhere;
   }
 
-  .msg-bot-corps h3 {
+    .msg-bot-corps h3 {
     font-size: 1.04rem;
     margin: 0.8rem 0 0.35rem;
   }
@@ -607,13 +607,47 @@
     letter-spacing: 0.03em;
   }
 
+  /* Titre de sous-partie numérotée (ex: "1. Pendule simple / 2 points")
+     -- un cran en dessous du titre d'exercice : pas de pastille pleine
+     (pour ne pas surcharger visuellement quand il y en a plusieurs à
+     la suite), mais un texte coloré et une petite puce d'accent pour
+     bien la détacher du reste, notamment utile en physique où chaque
+     sous-partie correspond à un thème différent (pendule, ondes...). */
+  .msg-bot-corps h3.titre-sous-partie {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 1rem 0 0.4rem;
+    padding: 0;
+    background: none;
+    color: var(--ec-accent, #2563EB);
+    font-size: 0.98rem;
+    font-weight: 750;
+  }
+
+  .msg-bot-corps h3.titre-sous-partie::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ec-accent, #2563EB);
+  }
+
+  .msg-bot-corps h3.titre-sous-partie:first-child {
+    margin-top: 0;
+  }
+
   /* Chaque question numérotée démarre clairement sur sa propre ligne,
      avec le numéro légèrement détaché du texte */
   .msg-bot-corps p.question-numerotee {
     margin: 0.55rem 0;
   }
 
-  .msg-bot-corps p.question-numerotee > .numero-question {
+  /* Numéro de question (ex: "2.", "2.1.", "(a)") mis en couleur pour
+     le repérer d'un coup d'œil, qu'il soit au tout début d'un
+     paragraphe ou glissé au milieu d'un long énoncé */
+  .msg-bot-corps .numero-question {
     font-weight: 700;
     color: var(--ec-accent, #2563EB);
     margin-right: 0.3rem;
@@ -1798,24 +1832,18 @@
     );
   }
 
-  /*
-   * CORRECTIF (mise en forme des exercices officiels) : le texte brut
-   * d'un exercice officiel (voir chat_bac_officiel.
-   * formuler_reponse_exercice_bac) n'a AUCUNE structure Markdown --
-   * juste du texte au fil de l'eau où les titres d'exercice/partie et
-   * les numéros de question sont collés au reste. Cette fonction
-   * insère les marqueurs Markdown nécessaires (titres, sauts de ligne)
-   * AVANT que marked.parse() ne s'exécute, pour obtenir un rendu
-   * visuellement structuré au lieu d'un bloc de texte plat.
-   *
-   * IMPORTANT : les marqueurs utilisés ("MARQUEUREXO", "MARQUEURPARTIE")
-   * ne doivent JAMAIS contenir de caractères Markdown spéciaux (_, *,
-   * #, etc.) -- une première version utilisait "__EXO__", ce qui a été
-   * interprété par marked.js comme du gras (_..._) avant même que le
-   * second remplacement (post-marked) ait pu le repérer. D'où le mot
-   * "EXO" affiché en gras au lieu d'un vrai badge stylé.
-   */
-  function structurerTexteExercice(texte) {
+   function structurerTexteExercice(texte) {
+    /*
+     * Le texte brut d'un exercice officiel (voir
+     * chat_bac_officiel.formuler_reponse_exercice_bac) n'a pas de
+     * structure Markdown -- juste du texte au fil de l'eau où les
+     * titres d'exercice/partie et les numéros de question sont collés
+     * au reste. Cette fonction insère les marqueurs Markdown
+     * nécessaires (titres, sauts de ligne) AVANT que marked.parse()
+     * ne s'exécute, pour obtenir un rendu visuellement structuré au
+     * lieu d'un bloc de texte plat.
+     */
+
     let resultat = texte;
 
     // "Exercice 3 : ..." / "EXERCICE 1" en début de ligne -> titre visible
@@ -1830,28 +1858,48 @@
       (match, mot, reste) => `\n#### MARQUEURPARTIE ${mot} ${reste.trim()}\n`
     );
 
-    // Casse la ligne avant chaque numéro de question qui suit un
-    // barème ou une ponctuation de fin de question (ex: "...0,25pt)
-    // 2. En déduire...") -- sans ça, marked.js ne voit qu'un seul
-    // paragraphe géant.
+    // Sous-partie numérotée du type "1. Pendule simple / 2 points" en
+    // début de ligne -> titre coloré (un cran en dessous du titre
+    // d'exercice), très fréquent en physique où chaque sous-partie
+    // porte sur un thème différent.
     resultat = resultat.replace(
-      /([.):])\s+(\d{1,2}\.\s)/g,
-      '$1\n\n$2'
+      /^[ \t]*(\d{1,2}\.\s[^\n]{1,90}?\/\s*\d+(?:,\d+)?\s*points?)[ \t]*$/gim,
+      (match, titre) => `\n### MARQUEURSOUS ${titre}\n`
     );
 
-    // Casse la ligne après chaque mini-titre du type "Pendule simple /
-    // 2 points" avant que la phrase suivante (qui commence par une
-    // majuscule) ne s'enchaîne directement à la suite sur la même
-    // ligne -- corrige "Pendule simple / 2 points On considère..."
+    // Numérotation composée du type "2.1." / "2.2." glissée au milieu
+    // d'un énoncé (ex: "...eau. 2.1. Déterminer...") -> saut de ligne
+    // + numéro mis en couleur. Le point sert de séparateur (jamais la
+    // virgule, utilisée pour les décimales en français), donc aucun
+    // risque de confondre avec un nombre comme "0,24".
+    resultat = resultat.replace(
+      /([.):])\s+(\d{1,2}\.\d{1,2}\.)\s+/g,
+      (match, prefixe, numero) =>
+        `${prefixe}\n\n<span class="numero-question">${numero}</span> `
+    );
+
+    // Force un saut de ligne avant chaque numéro de question qui suit
+    // un barème ou une ponctuation de fin de question (ex: "...0,25pt)
+    // 2. En déduire...") -- sans ça, marked.js ne voit qu'un seul
+    // paragraphe géant. Le numéro est aussi mis en couleur.
+    resultat = resultat.replace(
+      /([.):])\s+(\d{1,2}\.)\s+/g,
+      (match, prefixe, numero) =>
+        `${prefixe}\n\n<span class="numero-question">${numero}</span> `
+    );
+
+    // Casse la ligne après chaque mini-titre du type "Pendule simple / 2 points"
+    // avant que la phrase suivante (qui commence par une majuscule) ne s'enchaîne
     resultat = resultat.replace(
       /(\/\s*\d+(?:,\d+)?\s*points?)\s+(?=[A-ZÉÈÀÂÎ])/g,
       '$1\n\n'
     );
 
-    // Idem pour les sous-questions "(a)", "(b)", "(c)..."
+    // Idem pour les sous-questions "(a)", "(b)", "(c)..." -- numéro
+    // également mis en couleur pour cohérence avec les numéros ci-dessus.
     resultat = resultat.replace(
-      /\s+(\([a-z]\)\s)/g,
-      '\n$1'
+      /\s+(\([a-z]\))\s+/g,
+      (match, lettre) => `\n<span class="numero-question">${lettre}</span> `
     );
 
     return resultat;
@@ -1870,11 +1918,10 @@
      * protégées de marked.parse() -- sinon les underscores et
      * backslashes qu'elles contiennent (ex: $^{134}_{55}\text{Cs}$,
      * \frac{...}{...}) sont interprétés comme de la syntaxe Markdown
-     * (italique, échappement) et cassent la formule avant même que
-     * KaTeX ne la voie. On remplace chaque bloc par un jeton neutre,
-     * on laisse Markdown et la structuration travailler sans jamais
-     * toucher une vraie formule, puis on restaure les blocs d'origine
-     * juste avant que KaTeX les rende.
+     * et cassent la formule avant que KaTeX ne la voie. On remplace
+     * chaque bloc par un jeton neutre, on laisse Markdown et la
+     * structuration travailler sans jamais toucher une vraie formule,
+     * puis on restaure les blocs d'origine juste avant KaTeX.
      */
     const blocsLatex = [];
 
@@ -1902,6 +1949,10 @@
       /<h4>MARQUEURPARTIE ([\s\S]*?)<\/h4>/g,
       '<h4 class="titre-partie">$1</h4>'
     );
+    html = html.replace(
+      /<h3>MARQUEURSOUS ([\s\S]*?)<\/h3>/g,
+      '<h3 class="titre-sous-partie">$1</h3>'
+    );
 
     blocsLatex.forEach((bloc, i) => {
       html = html.split(`@@LATEX${i}@@`).join(bloc);
@@ -1911,11 +1962,6 @@
      * Les réponses de l'IA sont transformées en HTML.
      * DOMPurify empêche qu'un HTML éventuellement injecté
      * dans la réponse puisse devenir du contenu actif.
-     * ADD_ATTR: ['class'] est nécessaire car la configuration par
-     * défaut de DOMPurify retire l'attribut class -- sans ça, le HTML
-     * "titre-exercice"/"titre-partie" est généré correctement mais
-     * silencieusement dépouillé de sa classe avant l'affichage, et
-     * aucune mise en forme n'apparaît malgré un code juste.
      */
     conteneur.innerHTML =
       window.DOMPurify
@@ -1925,22 +1971,13 @@
     if (window.renderMathInElement) {
       renderMathInElement(conteneur, {
         delimiters: [
-          {
-            left: '$$',
-            right: '$$',
-            display: true
-          },
-          {
-            left: '$',
-            right: '$',
-            display: false
-          }
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
         ],
         throwOnError: false
       });
     }
   }
-
   function ajouterMessageUtilisateur(texte) {
     if (!fenetre) return;
 
