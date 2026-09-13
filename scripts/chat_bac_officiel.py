@@ -148,9 +148,10 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
         if numero is not None:
             row = conn.execute("""
                 SELECT titre, contenu_integral, bareme_annonce FROM sections_bac_officielles
-                WHERE epreuve_id=? AND LOWER(type)='exercice' AND titre LIKE ?
+                WHERE epreuve_id=? AND LOWER(type)='exercice'
+                AND (identifiant LIKE ? OR titre LIKE ?)
                 ORDER BY ordre LIMIT 1
-            """, (epreuve["id"], f"%EXERCICE {numero}%")).fetchone()
+            """, (epreuve["id"], f"%EXERCICE {numero}%", f"%EXERCICE {numero}%")).fetchone()
         else:
             row = conn.execute("""
                 SELECT titre, contenu_integral, bareme_annonce FROM sections_bac_officielles
