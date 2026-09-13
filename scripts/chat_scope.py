@@ -93,7 +93,7 @@ MATIERE_RAG_PRINCIPALE = "Mathematiques"
 SCOPE_ACTIF = {
     ("BAC", "C"): {
         "Mathematiques": MODE_RAG,
-        "Physique": MODE_GENERIQUE,
+        "Physique": MODE_RAG,
         "Chimie": MODE_GENERIQUE,
         "SVT": MODE_GENERIQUE,
         "Philosophie": MODE_GENERIQUE,
@@ -102,21 +102,26 @@ SCOPE_ACTIF = {
     },
     ("BAC", "D"): {
         "Mathematiques": MODE_GENERIQUE,
+        "Physique": MODE_RAG,
     },
     ("BAC", "TI"): {
         "Mathematiques": MODE_GENERIQUE,
+        "Physique": MODE_RAG,
     },
     ("BAC", "A4"): {
         "Mathematiques": MODE_GENERIQUE,
     },
     ("Probatoire", "C"): {
         "Mathematiques": MODE_GENERIQUE,
+        "Physique": MODE_RAG,
     },
     ("Probatoire", "D"): {
         "Mathematiques": MODE_GENERIQUE,
+        "Physique": MODE_RAG,
     },
     ("Probatoire", "TI"): {
         "Mathematiques": MODE_GENERIQUE,
+        "Physique": MODE_RAG,
     },
     ("Probatoire", "A4"): {
         "Mathematiques": MODE_GENERIQUE,

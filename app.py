@@ -1084,12 +1084,18 @@ def assistant_eleve_repondre():
         return jsonify(preparer_resultats_epreuves(resultat_recherche))
     criteres_bac = detecter_demande_exercice_bac(question)
     if criteres_bac is not None:
-        exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'])
+        # CORRECTIF (12/09/2026, extension Physique) : `matiere` est
+        # désormais transmis à obtenir_exercice_bac() -- sans ce
+        # paramètre, toute recherche d'exercice réel du Bac restait
+        # câblée sur Mathematiques quelle que soit la matière active
+        # de la conversation élève (voir chat_bac_officiel.py).
+        exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'], matiere)
         texte_bac = formuler_reponse_exercice_bac(exercice, criteres_bac['annee'], criteres_bac['numero'])
         return jsonify({'reponse': texte_bac})
 
     # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
-    # choisisse le bon mode (RAG Maths vs générique), voir chat_scope.py.
+    # choisisse le bon mode (RAG Maths/Physique vs générique), voir
+    # chat_scope.py.
     def flux_evenements():
         # NOUVEAU (05/09/2026, système de crédits) : dict mutable
         # passé à repondre_eleve_stream(), qui le transmet lui-même à
@@ -1147,15 +1153,6 @@ def assistant_eleve_repondre():
         mimetype='text/event-stream',
         headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
     )
-
-
-# NOUVEAU (02/09/2026) : renvoie l'historique persistant de la
-# conversation (eleve_id, matiere) -- utilisée par le front au
-# chargement de la page et à chaque changement de matière dans la
-# sidebar, pour reconstruire l'affichage à partir de ce qui a
-# réellement été sauvegardé côté serveur (voir
-# database_conversations.py), au lieu de partir d'un écran vide à
-# chaque bascule.
 @app.route('/assistant-eleve/historique')
 def assistant_eleve_historique():
     eleve_id = session.get('eleve_id')

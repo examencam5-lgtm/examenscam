@@ -16,6 +16,14 @@ appel API. Le jour où un quota payant existe, ce module peut être
 exposé comme un outil (tool) au SDK Gemini sans changer sa logique
 interne -- seule la décision de déclenchement changerait de place.
 
+GÉNÉRIQUE PAR MATIÈRE (12/09/2026, extension Physique) :
+obtenir_exercice_bac() accepte désormais `matiere`, transmis par
+app.py depuis la matière active de la conversation élève -- sans ce
+paramètre, toute recherche d'exercice réel restait câblée sur
+Mathematiques quelle que soit la matière choisie par l'élève.
+Défaut 'Mathematiques' conservé pour rétrocompatibilité avec tout
+appelant qui ne le précise pas encore.
+
 Table SOURCE : sections_bac_officielles / epreuves_bac_officielles
 (contenu réel, OCR intégral, PAS le corpus de style 'epreuves' utilisé
 par le générateur -- distinction déjà actée à l'import).
@@ -96,8 +104,14 @@ def detecter_demande_exercice_bac(question: str) -> dict | None:
     }
 
 
-def obtenir_exercice_bac(annee: int, numero: int | None = None) -> dict | None:
-    """Retrouve UNE section (exercice) réelle pour cette session.
+def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "Mathematiques") -> dict | None:
+    """Retrouve UNE section (exercice) réelle pour cette session et
+    cette matière.
+
+    `matiere='Mathematiques'` par défaut -- rétrocompatible avec tout
+    appelant qui ne la précise pas encore. app.py doit transmettre la
+    matière active de la conversation élève (voir route
+    /assistant-eleve/repondre).
 
     Si `numero` est fourni, cherche le titre contenant "EXERCICE {numero}"
     (insensible à la casse) -- correspond au format réel observé dans
@@ -106,9 +120,10 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None) -> dict | None:
     'exercice') -- jamais l'épreuve entière par défaut, pour ne pas
     noyer l'élève sous plusieurs pages d'un coup.
 
-    Retourne None si la session n'existe pas dans le corpus, ou si le
-    numéro demandé n'existe pas pour cette session -- jamais une
-    approximation sur une autre année ou un autre numéro."""
+    Retourne None si la session n'existe pas dans le corpus pour cette
+    matière, ou si le numéro demandé n'existe pas pour cette session --
+    jamais une approximation sur une autre année, un autre numéro, ou
+    une autre matière."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     try:
@@ -118,13 +133,13 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None) -> dict | None:
         # colonne absente.
         try:
             epreuve = conn.execute(
-                "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere='Mathematiques'",
-                (annee,)
+                "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
+                (annee, matiere)
             ).fetchone()
         except sqlite3.OperationalError:
             epreuve = conn.execute(
-                "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere='Mathematiques'",
-                (annee,)
+                "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
+                (annee, matiere)
             ).fetchone()
 
         if not epreuve:
@@ -184,7 +199,7 @@ def formuler_reponse_exercice_bac(exercice: dict | None, annee: int, numero: int
             f"Essaie une autre année entre 1999 et 2025, ou demande-moi d'en générer un inédit à la place."
         )
 
-    entete = f"**BAC {exercice['series']} — Maths {exercice['session']} — {exercice['titre']}**"
+    entete = f"**BAC {exercice['series']} — {exercice['session']} — {exercice['titre']}**"
 
     # CORRECTIF (29/08/2026) : maintenant que retranscrire_epreuve_vision.py
     # produit du vrai LaTeX propre ($...$), le bloc de code Markdown qui
