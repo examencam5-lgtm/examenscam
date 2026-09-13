@@ -653,6 +653,15 @@
     margin-right: 0.3rem;
   }
 
+  /* NOUVEAU : les sous-questions lettrées (a), b), c)...) sont
+     indentées sous leur numéro de question parent -- convention
+     MINESEC : la lettre n'est jamais au même niveau visuel que le
+     chiffre. La classe est posée sur le <p> englobant par
+     rendreReponseAssistant() (post-traitement après marked.parse()). */
+  .msg-bot-corps p.sous-question {
+    margin-left: 1.4rem;
+  }
+
   .msg-bot-corps h3:first-child {
     margin-top: 0;
   }
@@ -1832,19 +1841,33 @@
     );
   }
 
-    function structurerTexteExercice(texte) {
+  function structurerTexteExercice(texte) {
     /*
      * GÉNÉRICITÉ : doit fonctionner sur toute matière/niveau -- voir
      * commentaire précédent. RÈGLE MARKDOWN CRITIQUE : un seul saut de
      * ligne (\n) ne crée JAMAIS un nouveau paragraphe pour marked.js,
-     * seule une ligne vide (\n\n) le fait. La version précédente
-     * n'insérait qu'un \n pour les lettres a)/b)/c), d'où l'absence
-     * totale de saut visuel malgré les couleurs correctement
-     * appliquées. Cette version insère TOUJOURS \n\n, sans condition,
-     * et nettoie l'excès de sauts de ligne en toute fin de fonction.
+     * seule une ligne vide (\n\n) le fait. Cette version insère
+     * TOUJOURS \n\n, sans condition, et nettoie l'excès de sauts de
+     * ligne en toute fin de fonction.
+     *
+     * CORRECTIF (transcription en base) : certaines épreuves
+     * retranscrites contiennent des séquences "\n" LITTÉRALES
+     * (backslash + n, DEUX caractères imprimables) au lieu d'un vrai
+     * saut de ligne -- artefact du pipeline de transcription
+     * (probablement une chaîne échappée jamais re-décodée avant
+     * l'écriture en base, voir contenu_integral dans
+     * sections_bac_officielles). Comme ce n'est pas un vrai \n
+     * JavaScript, aucune des règles ci-dessous ne peut le voir comme
+     * un saut de paragraphe -- pour marked.parse(), c'est juste du
+     * texte plat. On les convertit ICI, en tout premier, en vrais
+     * sauts de paragraphe, avant toute autre règle de structuration.
+     * Se déclenche uniquement si le motif existe réellement dans le
+     * texte -- aucun effet sur les épreuves déjà propres.
      */
 
     let resultat = texte;
+
+    resultat = resultat.replace(/\\n/g, '\n\n');
 
     // "Exercice 3 : ..." / "EXERCICE 1" en début de ligne -> titre visible
     resultat = resultat.replace(
@@ -1875,10 +1898,15 @@
     );
 
     // SOUS-QUESTION LETTRÉE ("a)", "b)", ou "(a)", "(b)") -- même
-    // logique, saut de paragraphe inconditionnel avant.
+    // logique, saut de paragraphe inconditionnel avant. Le marqueur
+    // MARQUEURLETTRE (invisible, retiré ensuite) permet à
+    // rendreReponseAssistant() de reconnaître après coup le <p>
+    // généré par marked.parse() et de l'indenter (convention
+    // MINESEC : la lettre n'est jamais au même niveau visuel que le
+    // chiffre parent) -- voir la classe CSS .sous-question.
     resultat = resultat.replace(
       /\(?([a-e])\)(?=\s+\S)/g,
-      (match, lettre) => `\n\n<span class="numero-question">${lettre})</span>`
+      (match, lettre) => `\n\nMARQUEURLETTRE<span class="numero-question">${lettre})</span>`
     );
 
     // Casse la ligne après chaque mini-titre "... / N points" avant
@@ -1944,6 +1972,17 @@
     html = html.replace(
       /<h3>MARQUEURSOUS ([\s\S]*?)<\/h3>/g,
       '<h3 class="titre-sous-partie">$1</h3>'
+    );
+
+    // NOUVEAU : indentation des sous-questions lettrées (a), b), c)...)
+    // sous leur numéro parent -- convention MINESEC (voir CSS
+    // .sous-question). Le marqueur MARQUEURLETTRE posé par
+    // structurerTexteExercice() se retrouve, après marked.parse(), en
+    // tout début du <p> qui l'englobe -- on ajoute la classe sur ce
+    // <p> puis on retire le marqueur (jamais affiché à l'élève).
+    html = html.replace(
+      /<p>MARQUEURLETTRE/g,
+      '<p class="sous-question">'
     );
 
     blocsLatex.forEach((bloc, i) => {
