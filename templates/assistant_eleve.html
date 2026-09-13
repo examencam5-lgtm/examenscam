@@ -1832,21 +1832,16 @@
     );
   }
 
-     function structurerTexteExercice(texte) {
+    function structurerTexteExercice(texte) {
     /*
-     * GÉNÉRICITÉ (important) : cette fonction doit fonctionner sur
-     * N'IMPORTE QUEL exercice officiel, toute matière et tout niveau
-     * confondus -- les épreuves ne partagent PAS toutes le même style
-     * de ponctuation (ex: BAC C utilise souvent "(a)", "(b)" et un
-     * barème du type "0,25pt)" juste avant le numéro suivant, alors
-     * que ce Probatoire C 2024 utilise "a)", "b)" SANS parenthèse
-     * ouvrante, et écrit le barème "0,5 pt" en texte libre avant le
-     * numéro suivant, sans aucune ponctuation de transition).
-     *
-     * D'où le choix de détecter un numéro de question par CE QUI LE
-     * SUIT (un mot commençant par une majuscule, ou une lettre de
-     * sous-question) plutôt que par ce qui le précède -- bien plus
-     * robuste face à la diversité réelle des documents MINESEC.
+     * GÉNÉRICITÉ : doit fonctionner sur toute matière/niveau -- voir
+     * commentaire précédent. RÈGLE MARKDOWN CRITIQUE : un seul saut de
+     * ligne (\n) ne crée JAMAIS un nouveau paragraphe pour marked.js,
+     * seule une ligne vide (\n\n) le fait. La version précédente
+     * n'insérait qu'un \n pour les lettres a)/b)/c), d'où l'absence
+     * totale de saut visuel malgré les couleurs correctement
+     * appliquées. Cette version insère TOUJOURS \n\n, sans condition,
+     * et nettoie l'excès de sauts de ligne en toute fin de fonction.
      */
 
     let resultat = texte;
@@ -1854,47 +1849,36 @@
     // "Exercice 3 : ..." / "EXERCICE 1" en début de ligne -> titre visible
     resultat = resultat.replace(
       /^[ \t]*(EXERCICE|Exercice)\s+([^\n]{0,80})/gm,
-      (match, mot, reste) => `\n### MARQUEUREXO ${mot} ${reste.trim()}\n`
+      (match, mot, reste) => `\n\n### MARQUEUREXO ${mot} ${reste.trim()}\n\n`
     );
 
     // "Partie A" / "PARTIE B" en début de ligne -> sous-titre discret
     resultat = resultat.replace(
       /^[ \t]*(PARTIE|Partie)\s+([^\n]{0,80})/gm,
-      (match, mot, reste) => `\n#### MARQUEURPARTIE ${mot} ${reste.trim()}\n`
+      (match, mot, reste) => `\n\n#### MARQUEURPARTIE ${mot} ${reste.trim()}\n\n`
     );
 
     // Sous-partie numérotée du type "1. Pendule simple / 2 points" en
     // début de ligne -> titre coloré (fréquent en physique)
     resultat = resultat.replace(
       /^[ \t]*(\d{1,2}\.\s[^\n]{1,90}?\/\s*\d+(?:,\d+)?\s*points?)[ \t]*$/gim,
-      (match, titre) => `\n### MARQUEURSOUS ${titre}\n`
+      (match, titre) => `\n\n### MARQUEURSOUS ${titre}\n\n`
     );
 
     // NUMÉRO DE QUESTION PRINCIPAL ("1.", "2.", "12."...) -- détecté
-    // par ce qui SUIT (majuscule = début de phrase, ou lettre a-e)
-    // plutôt que par ce qui précède. Exclut les nombres décimaux
-    // (ex: "0.5" jamais suivi d'espace avant le chiffre suivant, donc
-    // jamais matché) et les numéros déjà collés à un autre chiffre ou
-    // une virgule (évite de couper "3,5" ou un numéro à deux chiffres
-    // en plein milieu).
+    // par ce qui SUIT (majuscule ou lettre a-e suivie de ")"), pas par
+    // ce qui précède, pour rester indépendant du style de ponctuation
+    // du document source. Saut de paragraphe INCONDITIONNEL avant.
     resultat = resultat.replace(
-      /(^|[^\d,])(\d{1,2})\.(?=\s+(?:[A-ZÉÈÀÂÎ]|[a-e]\)))/gm,
-      (match, avant, numero) => {
-        const separateur =
-          avant === '' || avant === '\n' ? avant : avant + '\n\n';
-        return `${separateur}<span class="numero-question">${numero}.</span>`;
-      }
+      /(\d{1,2})\.(?=\s+(?:[A-ZÉÈÀÂÎ]|[a-e]\)))/g,
+      (match, numero) => `\n\n<span class="numero-question">${numero}.</span>`
     );
 
-    // SOUS-QUESTION LETTRÉE ("a)", "b)", ou "(a)", "(b)") -- gère les
-    // deux styles (parenthèse ouvrante présente ou non), détectée de
-    // la même façon : ce qui suit compte, pas ce qui précède.
+    // SOUS-QUESTION LETTRÉE ("a)", "b)", ou "(a)", "(b)") -- même
+    // logique, saut de paragraphe inconditionnel avant.
     resultat = resultat.replace(
-      /(^|[^\w])\(?([a-e])\)(?=\s+\S)/gm,
-      (match, avant, lettre) => {
-        const separateur = avant === '' || avant === '\n' ? avant : avant + '\n';
-        return `${separateur}<span class="numero-question">${lettre})</span>`;
-      }
+      /\(?([a-e])\)(?=\s+\S)/g,
+      (match, lettre) => `\n\n<span class="numero-question">${lettre})</span>`
     );
 
     // Casse la ligne après chaque mini-titre "... / N points" avant
@@ -1903,6 +1887,13 @@
       /(\/\s*\d+(?:,\d+)?\s*points?)\s+(?=[A-ZÉÈÀÂÎ])/g,
       '$1\n\n'
     );
+
+    // Nettoyage : les insertions ci-dessus peuvent s'accumuler (ex:
+    // un "1." suivi immédiatement d'un "a)" génère deux \n\n
+    // consécutifs) -- on ramène tout excès à exactement un \n\n, et on
+    // retire un éventuel \n\n en tout début de texte.
+    resultat = resultat.replace(/\n{3,}/g, '\n\n');
+    resultat = resultat.replace(/^\n+/, '');
 
     return resultat;
   }
