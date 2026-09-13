@@ -1764,7 +1764,33 @@
         ? texte
         : String(texte || '');
 
-    const html = marked.parse(texteSecurise);
+    /*
+     * CORRECTIF : les formules LaTeX ($...$ et $$...$$) doivent être
+     * protégées de marked.parse() -- sinon les underscores et
+     * backslashes qu'elles contiennent (ex: $^{134}_{55}\text{Cs}$,
+     * \frac{...}{...}) sont interprétés comme de la syntaxe Markdown
+     * (italique, échappement) et cassent la formule avant même que
+     * KaTeX ne la voie. On remplace chaque bloc par un jeton neutre,
+     * on laisse Markdown faire son travail sans jamais toucher à une
+     * vraie formule, puis on restaure les blocs d'origine juste avant
+     * que KaTeX les rende.
+     */
+    const blocsLatex = [];
+
+    const texteProtege = texteSecurise.replace(
+      /\$\$[\s\S]+?\$\$|\$[^$\n]+?\$/g,
+      (match) => {
+        const jeton = `@@LATEX${blocsLatex.length}@@`;
+        blocsLatex.push(match);
+        return jeton;
+      }
+    );
+
+    let html = marked.parse(texteProtege);
+
+    blocsLatex.forEach((bloc, i) => {
+      html = html.split(`@@LATEX${i}@@`).join(bloc);
+    });
 
     /*
      * Les réponses de l'IA sont transformées en HTML.
@@ -1779,21 +1805,13 @@
     if (window.renderMathInElement) {
       renderMathInElement(conteneur, {
         delimiters: [
-          {
-            left: '$$',
-            right: '$$',
-            display: true
-          },
-          {
-            left: '$',
-            right: '$',
-            display: false
-          }
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
         ],
         throwOnError: false
       });
     }
-  }
+}
 
   function ajouterMessageUtilisateur(texte) {
     if (!fenetre) return;
