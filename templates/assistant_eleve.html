@@ -572,7 +572,7 @@
     overflow-wrap: anywhere;
   }
 
-    .msg-bot-corps h3 {
+  .msg-bot-corps h3 {
     font-size: 1.04rem;
     margin: 0.8rem 0 0.35rem;
   }
@@ -1798,39 +1798,54 @@
     );
   }
 
-   function structurerTexteExercice(texte) {
-    /*
-     * Le texte brut d'un exercice officiel (voir
-     * chat_bac_officiel.formuler_reponse_exercice_bac) n'a pas de
-     * structure Markdown -- juste du texte au fil de l'eau où les
-     * titres d'exercice/partie et les numéros de question sont collés
-     * au reste. Cette fonction insère les marqueurs Markdown
-     * nécessaires (titres, sauts de ligne) AVANT que marked.parse()
-     * ne s'exécute, pour obtenir un rendu visuellement structuré au
-     * lieu d'un bloc de texte plat.
-     */
-
+  /*
+   * CORRECTIF (mise en forme des exercices officiels) : le texte brut
+   * d'un exercice officiel (voir chat_bac_officiel.
+   * formuler_reponse_exercice_bac) n'a AUCUNE structure Markdown --
+   * juste du texte au fil de l'eau où les titres d'exercice/partie et
+   * les numéros de question sont collés au reste. Cette fonction
+   * insère les marqueurs Markdown nécessaires (titres, sauts de ligne)
+   * AVANT que marked.parse() ne s'exécute, pour obtenir un rendu
+   * visuellement structuré au lieu d'un bloc de texte plat.
+   *
+   * IMPORTANT : les marqueurs utilisés ("MARQUEUREXO", "MARQUEURPARTIE")
+   * ne doivent JAMAIS contenir de caractères Markdown spéciaux (_, *,
+   * #, etc.) -- une première version utilisait "__EXO__", ce qui a été
+   * interprété par marked.js comme du gras (_..._) avant même que le
+   * second remplacement (post-marked) ait pu le repérer. D'où le mot
+   * "EXO" affiché en gras au lieu d'un vrai badge stylé.
+   */
+  function structurerTexteExercice(texte) {
     let resultat = texte;
 
     // "Exercice 3 : ..." / "EXERCICE 1" en début de ligne -> titre visible
     resultat = resultat.replace(
       /^[ \t]*(EXERCICE|Exercice)\s+([^\n]{0,80})/gm,
-      (match, mot, reste) => `\n### __EXO__ ${mot} ${reste.trim()}\n`
+      (match, mot, reste) => `\n### MARQUEUREXO ${mot} ${reste.trim()}\n`
     );
 
     // "Partie A" / "PARTIE B" en début de ligne -> sous-titre discret
     resultat = resultat.replace(
       /^[ \t]*(PARTIE|Partie)\s+([^\n]{0,80})/gm,
-      (match, mot, reste) => `\n#### __PARTIE__ ${mot} ${reste.trim()}\n`
+      (match, mot, reste) => `\n#### MARQUEURPARTIE ${mot} ${reste.trim()}\n`
     );
 
-    // Force un saut de ligne avant chaque numéro de question qui suit
-    // un barème ou une ponctuation de fin de question (ex: "...0,25pt)
+    // Casse la ligne avant chaque numéro de question qui suit un
+    // barème ou une ponctuation de fin de question (ex: "...0,25pt)
     // 2. En déduire...") -- sans ça, marked.js ne voit qu'un seul
     // paragraphe géant.
     resultat = resultat.replace(
       /([.):])\s+(\d{1,2}\.\s)/g,
       '$1\n\n$2'
+    );
+
+    // Casse la ligne après chaque mini-titre du type "Pendule simple /
+    // 2 points" avant que la phrase suivante (qui commence par une
+    // majuscule) ne s'enchaîne directement à la suite sur la même
+    // ligne -- corrige "Pendule simple / 2 points On considère..."
+    resultat = resultat.replace(
+      /(\/\s*\d+(?:,\d+)?\s*points?)\s+(?=[A-ZÉÈÀÂÎ])/g,
+      '$1\n\n'
     );
 
     // Idem pour les sous-questions "(a)", "(b)", "(c)..."
@@ -1855,10 +1870,11 @@
      * protégées de marked.parse() -- sinon les underscores et
      * backslashes qu'elles contiennent (ex: $^{134}_{55}\text{Cs}$,
      * \frac{...}{...}) sont interprétés comme de la syntaxe Markdown
-     * et cassent la formule avant que KaTeX ne la voie. On remplace
-     * chaque bloc par un jeton neutre, on laisse Markdown et la
-     * structuration travailler sans jamais toucher une vraie formule,
-     * puis on restaure les blocs d'origine juste avant KaTeX.
+     * (italique, échappement) et cassent la formule avant même que
+     * KaTeX ne la voie. On remplace chaque bloc par un jeton neutre,
+     * on laisse Markdown et la structuration travailler sans jamais
+     * toucher une vraie formule, puis on restaure les blocs d'origine
+     * juste avant que KaTeX les rende.
      */
     const blocsLatex = [];
 
@@ -1879,11 +1895,11 @@
     // marked.parse() car on veut les classes CSS exactes, pas ce que
     // Markdown produirait pour un ### standard)
     html = html.replace(
-      /<h3>__EXO__ ([\s\S]*?)<\/h3>/g,
+      /<h3>MARQUEUREXO ([\s\S]*?)<\/h3>/g,
       '<h3 class="titre-exercice">$1</h3>'
     );
     html = html.replace(
-      /<h4>__PARTIE__ ([\s\S]*?)<\/h4>/g,
+      /<h4>MARQUEURPARTIE ([\s\S]*?)<\/h4>/g,
       '<h4 class="titre-partie">$1</h4>'
     );
 
@@ -1895,6 +1911,11 @@
      * Les réponses de l'IA sont transformées en HTML.
      * DOMPurify empêche qu'un HTML éventuellement injecté
      * dans la réponse puisse devenir du contenu actif.
+     * ADD_ATTR: ['class'] est nécessaire car la configuration par
+     * défaut de DOMPurify retire l'attribut class -- sans ça, le HTML
+     * "titre-exercice"/"titre-partie" est généré correctement mais
+     * silencieusement dépouillé de sa classe avant l'affichage, et
+     * aucune mise en forme n'apparaît malgré un code juste.
      */
     conteneur.innerHTML =
       window.DOMPurify
@@ -1904,13 +1925,22 @@
     if (window.renderMathInElement) {
       renderMathInElement(conteneur, {
         delimiters: [
-          { left: '$$', right: '$$', display: true },
-          { left: '$', right: '$', display: false }
+          {
+            left: '$$',
+            right: '$$',
+            display: true
+          },
+          {
+            left: '$',
+            right: '$',
+            display: false
+          }
         ],
         throwOnError: false
       });
     }
   }
+
   function ajouterMessageUtilisateur(texte) {
     if (!fenetre) return;
 
