@@ -859,7 +859,7 @@
   .assistant-input-form {
     min-height: 56px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 0.35rem;
     background: var(--ec-surface, #fff);
     border: 1px solid var(--ec-line, #CBD5E1);
@@ -894,20 +894,31 @@
     color: var(--ec-ink, #0F172A);
   }
 
-  .assistant-input-form input {
+  .assistant-input-form textarea {
     flex: 1 1 auto;
     min-width: 0;
     width: 100%;
     border: none;
     outline: none;
     font: 400 0.98rem/1.4 'Inter', sans-serif;
+    font-family: inherit;
     padding: 0.55rem 0.3rem;
     background: transparent;
     color: var(--ec-ink, #0F172A);
+    resize: none;
+    overflow-y: auto;
+    min-height: 24px;
+    max-height: 160px;
+    display: block;
   }
 
-  .assistant-input-form input::placeholder {
+  .assistant-input-form textarea::placeholder {
     color: #94A3B8;
+  }
+
+  .composer-action,
+  .btn-envoyer {
+    margin-bottom: 1px;
   }
 
   .btn-envoyer {
@@ -1127,6 +1138,18 @@
       font-size: 0.98rem;
     }
 
+    /* CORRECTIF (rendu mobile) : le centrage vertical de l'accueil
+       (justify-content: center, hérité du style desktop) laissait un
+       grand vide au-dessus de "Bonjour ..." sur téléphone -- le
+       contenu flottait au milieu d'un écran presque vide au lieu de
+       démarrer juste sous la barre du haut, comme un vrai espace de
+       chat (WhatsApp, ChatGPT). On ancre en haut sur mobile
+       uniquement -- le desktop garde son centrage, plus adapté à un
+       écran large. */
+    .assistant-fenetre.mode-accueil {
+      justify-content: flex-start;
+    }
+
     .assistant-welcome {
       padding-top: 0.7rem;
     }
@@ -1236,7 +1259,7 @@
       max-width: 145px;
     }
 
-    .assistant-input-form input {
+    .assistant-input-form textarea {
       font-size: 0.92rem;
     }
 
@@ -1546,12 +1569,12 @@
 
     </button>
 
-    <input
-      type="text"
+    <textarea
       id="input-question"
       placeholder="Écris ta question..."
       autocomplete="off"
-      required>
+      rows="1"
+      required></textarea>
 
     <button
       type="submit"
@@ -1738,15 +1761,12 @@
     creerAction(
       'Chercher un exercice officiel',
       () => {
-        const libelle =
-          ELEVE.niveau
-            ? `Cherche-moi un exercice officiel du ${ELEVE.niveau}${ELEVE.serie ? ' ' + ELEVE.serie : ''}`
-            : 'Cherche-moi un exercice officiel';
-
-        commencerAvecTexte(libelle);
+        fermerSidebar();
+        ouvrirPanneauVide();
+        afficherChoixAnneeExerciceOfficiel();
       },
       '<path d="M11 4a7 7 0 1 0 4.9 12l4.6 4.6"/><path d="M9 11h4M11 9v4"/>',
-      false
+      !ELEVE.niveau
     );
 
     creerAction(
@@ -2624,10 +2644,54 @@
       etat.enAttente;
   }
 
+  /*
+   * CORRECTIF : le champ de saisie était un <input> figé sur une
+   * seule ligne -- contrairement à tout espace de saisie normal
+   * (WhatsApp, ChatGPT...), aucun retour à la ligne n'était possible,
+   * le texte partait dans une seule direction. C'est maintenant un
+   * <textarea> qui s'agrandit automatiquement avec le contenu (voir
+   * redimensionnerTextarea, plafonné à 160px puis ça scrolle).
+   * Entrée envoie le message (comportement identique à avant, pour
+   * ne pas surprendre l'élève) -- Maj+Entrée insère un vrai saut de
+   * ligne dans la question.
+   */
+  function redimensionnerTextarea() {
+    if (!input) return;
+
+    input.style.height = 'auto';
+    input.style.height =
+      Math.min(input.scrollHeight, 160) + 'px';
+  }
+
   if (input) {
     input.addEventListener(
       'input',
-      synchroniserEtatEnvoi
+      () => {
+        synchroniserEtatEnvoi();
+        redimensionnerTextarea();
+      }
+    );
+
+    input.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+
+          if (form) {
+            if (form.requestSubmit) {
+              form.requestSubmit();
+            } else {
+              form.dispatchEvent(
+                new Event('submit', {
+                  cancelable: true,
+                  bubbles: true
+                })
+              );
+            }
+          }
+        }
+      }
     );
   }
 
@@ -2653,6 +2717,7 @@
         }
 
         input.value = '';
+        redimensionnerTextarea();
 
         fermerPanneauGenerer();
 
@@ -2859,6 +2924,238 @@
 
     panneau.appendChild(
       options
+    );
+  }
+
+  /*
+   * NOUVEAU : "Chercher un exercice officiel" pointait vers un texte
+   * générique pré-rempli ("Cherche-moi un exercice officiel du BAC
+   * C"), sans année ni numéro -- l'élève devait deviner quoi taper
+   * ensuite. Ce sélecteur récupère les VRAIES années indexées pour
+   * le niveau/série/matière de l'élève (même endpoint réel que le
+   * parcours d'annales, /chat/annees), puis demande le numéro
+   * d'exercice, et envoie directement une question précise au
+   * tuteur -- exactement ce qu'un élève taperait lui-même
+   * ("exercice 3 2024"), plutôt qu'un texte flou.
+   */
+  async function afficherChoixAnneeExerciceOfficiel() {
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
+    if (!panneau) return;
+
+    panneau.innerHTML =
+      '<p>Chargement...</p>';
+
+    const matiereCible =
+      etat.matiere || 'Mathematiques';
+
+    try {
+      const params =
+        new URLSearchParams({
+          niveau: ELEVE.niveau,
+          matiere: matiereCible
+        });
+
+      if (ELEVE.serie) {
+        params.set(
+          'serie',
+          ELEVE.serie
+        );
+      }
+
+      const reponse =
+        await fetch(
+          `{{ url_for('chat_annees') }}?${params}`,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
+
+      if (!reponse.ok) {
+        throw new Error(
+          'Impossible de charger les années.'
+        );
+      }
+
+      const donnees =
+        await reponse.json();
+
+      const annees =
+        Array.isArray(donnees.annees)
+          ? donnees.annees
+          : [];
+
+      panneau.innerHTML = '';
+
+      const texte =
+        document.createElement('p');
+
+      texte.textContent =
+        annees.length
+          ? `Exercice officiel de ${matiereCible} -- quelle année ?`
+          : 'Aucune année indexée pour l’instant pour ta série/matière. Essaie une autre matière.';
+
+      panneau.appendChild(
+        texte
+      );
+
+      const options =
+        document.createElement('div');
+
+      options.className =
+        'panneau-generer-options';
+
+      annees.forEach(
+        (annee) => {
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.type = 'button';
+          btn.className =
+            'chip-option';
+
+          btn.textContent =
+            String(annee);
+
+          btn.addEventListener(
+            'click',
+            () =>
+              afficherChoixNumeroExerciceOfficiel(
+                annee,
+                matiereCible
+              )
+          );
+
+          options.appendChild(
+            btn
+          );
+        }
+      );
+
+      panneau.appendChild(
+        options
+      );
+
+    } catch (erreur) {
+      console.error(
+        'Erreur années (exercice officiel) :',
+        erreur
+      );
+
+      panneau.innerHTML =
+        '<p>Impossible de charger les années. Réessaie dans un instant.</p>';
+    }
+  }
+
+  function afficherChoixNumeroExerciceOfficiel(
+    annee,
+    matiereCible
+  ) {
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
+    if (!panneau) return;
+
+    panneau.innerHTML = '';
+
+    const libelleSerie =
+      ELEVE.serie
+        ? ` ${ELEVE.serie}`
+        : '';
+
+    const texte =
+      document.createElement('p');
+
+    texte.textContent =
+      `${ELEVE.niveau}${libelleSerie} ${annee} -- quel exercice ?`;
+
+    panneau.appendChild(
+      texte
+    );
+
+    const options =
+      document.createElement('div');
+
+    options.className =
+      'panneau-generer-options';
+
+    const envoyerDemande = (
+      question
+    ) => {
+      fermerPanneauGenerer();
+      masquerAccueil();
+      envoyerMessage(question);
+    };
+
+    [1, 2, 3, 4, 5, 6]
+      .forEach((n) => {
+        const btn =
+          document.createElement(
+            'button'
+          );
+
+        btn.type = 'button';
+        btn.className =
+          'chip-option';
+
+        btn.textContent =
+          `Exercice ${n}`;
+
+        btn.addEventListener(
+          'click',
+          () =>
+            envoyerDemande(
+              `Donne-moi l’exercice ${n} du ${ELEVE.niveau}${libelleSerie} ${annee} en ${matiereCible}.`
+            )
+        );
+
+        options.appendChild(
+          btn
+        );
+      });
+
+    panneau.appendChild(
+      options
+    );
+
+    const btnInconnu =
+      document.createElement(
+        'button'
+      );
+
+    btnInconnu.type =
+      'button';
+
+    btnInconnu.className =
+      'chip-option';
+
+    btnInconnu.textContent =
+      'Je ne connais pas le numéro';
+
+    btnInconnu.addEventListener(
+      'click',
+      () =>
+        envoyerDemande(
+          `Propose-moi un exercice officiel du ${ELEVE.niveau}${libelleSerie} ${annee} en ${matiereCible}.`
+        )
+    );
+
+    panneau.appendChild(
+      document.createElement('br')
+    );
+
+    panneau.appendChild(
+      btnInconnu
     );
   }
 
