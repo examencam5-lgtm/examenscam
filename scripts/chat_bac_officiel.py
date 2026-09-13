@@ -24,6 +24,24 @@ Mathematiques quelle que soit la matière choisie par l'élève.
 Défaut 'Mathematiques' conservé pour rétrocompatibilité avec tout
 appelant qui ne le précise pas encore.
 
+FILTRE NIVEAU (13/09/2026, correctif Probatoire Maths) :
+obtenir_exercice_bac() accepte désormais aussi `niveau`. AVANT ce
+correctif, la requête ne filtrait que sur (session, matiere) -- avec
+plusieurs niveaux désormais présents en base pour la même matière/année
+(ex: BAC-2024-XX niveau='terminale' ET PROB-MATH-2024
+niveau='premiere', tous deux matiere='Mathematiques', session=2024),
+`fetchone()` retournait une ligne arbitraire selon l'ordre physique en
+base -- un élève en scope Probatoire pouvait ainsi recevoir une
+épreuve de Terminale, et inversement. NIVEAU_VERS_TABLE traduit le
+niveau tel que stocké côté compte élève ('BAC'/'Probatoire'/'BEPC',
+voir database_eleves.py) vers celui utilisé dans
+epreuves_bac_officielles ('terminale'/'premiere'/'3e', issu du JSON
+source MINESEC). `niveau=None` (rétrocompatibilité totale) conserve le
+comportement historique -- tout appelant qui ne le transmet pas encore
+n'est pas cassé, mais reste exposé au même risque de collision décrit
+ci-dessus tant qu'il n'est pas mis à jour (voir app.py,
+assistant_eleve_repondre, qui le transmet désormais).
+
 Table SOURCE : sections_bac_officielles / epreuves_bac_officielles
 (contenu réel, OCR intégral, PAS le corpus de style 'epreuves' utilisé
 par le générateur -- distinction déjà actée à l'import).
@@ -67,6 +85,19 @@ MOTS_CORRECTION = [
     "explique la solution", "explique moi la correction",
 ]
 
+# Correspondance niveau compte élève -> niveau tel que stocké dans
+# epreuves_bac_officielles (issu du découpage du JSON source MINESEC).
+# Même logique que CORRESPONDANCE_NIVEAU_PROGRESSION /
+# NIVEAU_VERS_PROGRESSION dans chat_contexte.py -- dupliquée ici plutôt
+# qu'importée pour éviter un couplage circulaire entre les deux
+# modules (chat_contexte.py importe déjà detecter_demande_correction
+# depuis ce fichier).
+NIVEAU_VERS_TABLE = {
+    "bepc": "3e",
+    "probatoire": "premiere",
+    "bac": "terminale",
+}
+
 
 def detecter_demande_correction(question: str) -> bool:
     q_norm = _normaliser(question)
@@ -104,7 +135,7 @@ def detecter_demande_exercice_bac(question: str) -> dict | None:
     }
 
 
-def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "Mathematiques") -> dict | None:
+def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "Mathematiques", niveau: str | None = None) -> dict | None:
     """Retrouve UNE section (exercice) réelle pour cette session et
     cette matière.
 
@@ -112,6 +143,14 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
     appelant qui ne la précise pas encore. app.py doit transmettre la
     matière active de la conversation élève (voir route
     /assistant-eleve/repondre).
+
+    `niveau` (ex: 'BAC', 'Probatoire', 'BEPC' -- format compte élève,
+    voir database_eleves.py) est traduit via NIVEAU_VERS_TABLE vers le
+    format stocké en base ('terminale'/'premiere'/'3e') et utilisé pour
+    filtrer la requête. Si `niveau` est None ou non reconnu, la requête
+    ne filtre pas sur le niveau (comportement historique,
+    rétrocompatible avec tout appelant qui ne le transmet pas encore --
+    voir avertissement de collision en tête de fichier).
 
     Si `numero` est fourni, cherche le titre contenant "EXERCICE {numero}"
     (insensible à la casse) -- correspond au format réel observé dans
@@ -121,26 +160,45 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
     noyer l'élève sous plusieurs pages d'un coup.
 
     Retourne None si la session n'existe pas dans le corpus pour cette
-    matière, ou si le numéro demandé n'existe pas pour cette session --
-    jamais une approximation sur une autre année, un autre numéro, ou
-    une autre matière."""
+    matière/niveau, ou si le numéro demandé n'existe pas pour cette
+    session -- jamais une approximation sur une autre année, un autre
+    numéro, un autre niveau, ou une autre matière."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     try:
-        # 'qualite' peut ne pas exister sur une base jamais passée par
-        # retranscrire_epreuve_vision.py -- fallback 'ocr_brut' explicite
-        # via try/except plutôt qu'un SELECT qui planterait sur une
-        # colonne absente.
-        try:
-            epreuve = conn.execute(
-                "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
-                (annee, matiere)
-            ).fetchone()
-        except sqlite3.OperationalError:
-            epreuve = conn.execute(
-                "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
-                (annee, matiere)
-            ).fetchone()
+        niveau_table = NIVEAU_VERS_TABLE.get((niveau or "").strip().lower())
+
+        if niveau_table:
+            # 'qualite' peut ne pas exister sur une base jamais passée par
+            # retranscrire_epreuve_vision.py -- fallback 'ocr_brut' explicite
+            # via try/except plutôt qu'un SELECT qui planterait sur une
+            # colonne absente.
+            try:
+                epreuve = conn.execute(
+                    "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
+                    (annee, matiere, niveau_table)
+                ).fetchone()
+            except sqlite3.OperationalError:
+                epreuve = conn.execute(
+                    "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
+                    (annee, matiere, niveau_table)
+                ).fetchone()
+        else:
+            # Retro-compatibilite : niveau non fourni ou non reconnu par
+            # l'appelant -- comportement historique (risque de collision
+            # documente en tete de fichier si plusieurs niveaux existent
+            # pour la meme session/matiere, mais ne casse aucun appelant
+            # existant qui ne passe pas encore ce parametre).
+            try:
+                epreuve = conn.execute(
+                    "SELECT id, session, series, qualite FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
+                    (annee, matiere)
+                ).fetchone()
+            except sqlite3.OperationalError:
+                epreuve = conn.execute(
+                    "SELECT id, session, series FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
+                    (annee, matiere)
+                ).fetchone()
 
         if not epreuve:
             return None

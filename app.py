@@ -1088,8 +1088,7 @@ def assistant_eleve_repondre():
         # désormais transmis à obtenir_exercice_bac() -- sans ce
         # paramètre, toute recherche d'exercice réel du Bac restait
         # câblée sur Mathematiques quelle que soit la matière active
-        # de la conversation élève (voir chat_bac_officiel.py).
-        exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'], matiere)
+        exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'], matiere, eleve['niveau'])
         texte_bac = formuler_reponse_exercice_bac(exercice, criteres_bac['annee'], criteres_bac['numero'])
         return jsonify({'reponse': texte_bac})
 

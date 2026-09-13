@@ -48,6 +48,21 @@ niveau/série/matière que le site ne couvre pas du tout -- le tuteur
 répondrait alors avec des connaissances génériques du modèle, SANS
 AUCUN calibrage MINESEC/camerounais. Mieux vaut un message honnête
 "pas encore disponible" qu'une réponse plausible mais non calibrée.
+
+CORRECTIF (13/09/2026) : ("Probatoire", "C")["Mathematiques"] passe de
+MODE_GENERIQUE à MODE_RAG -- le corpus rag.db contient désormais 25
+épreuves Probatoire C Mathématiques réellement transcrites
+(PROB-MATH-1999 à PROB-MATH-2025, voir
+scripts/creer_squelettes_maths_probatoire.py et
+scripts/transcrire_maths_probatoire.py), ainsi que la progression
+MINESEC Première C importée dans themes/lecons (voir
+scripts/importer_maths_progression.py). Laisser ce niveau/série en
+MODE_GENERIQUE alors que la donnée réelle existe déjà en base était la
+cause du bug observé en production : le chat en scope Probatoire C
+Maths ne consultait jamais rag.db, et une demande d'exercice précis
+retombait sur une détection non filtrée par niveau côté
+chat_bac_officiel.obtenir_exercice_bac() (voir correctif du même jour
+dans ce fichier).
 """
 
 MODE_RAG = "rag"
@@ -73,21 +88,18 @@ MATIERE_RAG_PRINCIPALE = "Mathematiques"
 # ═══════════════════════════════════════════════════════
 # REMPLACE integralement le bloc SCOPE_ACTIF dans chat_scope.py.
 #
-# Principe : MODE_RAG reste reserve a ("BAC", "C") -- c'est le seul
-# corpus reel (data/rag_maths_bac_c/rag.db, 70 epreuves calibrees
-# specifiquement pour cette serie). L'etendre a d'autres series
-# afficherait des extraits de style/exercices BAC C a des eleves
-# D/TI/A4/Probatoire/BEPC -- correct pour l'ancrage general mais
-# potentiellement trompeur sur des exercices non representatifs de
-# LEUR programme reel.
+# Principe : MODE_RAG reste reserve aux niveau/serie/matiere pour
+# lesquels un corpus reel existe dans rag.db. L'etendre sans donnee
+# reelle afficherait des extraits non representatifs du programme
+# reel de l'eleve.
 #
 # En revanche, MODE_GENERIQUE + le bloc progression nationale
 # (branche independamment du mode RAG/generique dans chat_contexte.py,
 # voir construire_bloc_progression_nationale) suffit a donner a ces
 # eleves un tuteur calibre ET au courant du chapitre exact du jour --
 # largement mieux que le message_indisponible() actuel, qui bloque
-# tout accord au chat pour 8 classes sur 9 alors que la donnee
-# officielle existe deja en base.
+# tout accord au chat pour les classes non couvertes alors que la
+# donnee officielle existe deja en base.
 # ═══════════════════════════════════════════════════════
 
 SCOPE_ACTIF = {
@@ -112,7 +124,7 @@ SCOPE_ACTIF = {
         "Mathematiques": MODE_GENERIQUE,
     },
     ("Probatoire", "C"): {
-        "Mathematiques": MODE_GENERIQUE,
+        "Mathematiques": MODE_RAG,
         "Physique": MODE_RAG,
     },
     ("Probatoire", "D"): {
