@@ -76,22 +76,10 @@ from database_paiements import (
     create_table as create_table_paiements, creer_paiement, get_paiement_par_ref,
     confirmer_paiement, abonnement_est_actif, MONTANT_ABONNEMENT_FCFA,
 )
-# NOUVEAU (02/09/2026) : persistance des conversations du chat élève,
-# une conversation continue par couple (élève, matière) -- voir
-# database_conversations.py. enregistrer_tour() est appelé une fois la
-# réponse streamée entièrement générée (voir flux_evenements),
-# charger_historique() remplace l'ancien historique envoyé par le
-# front à chaque requête (payload.get('historique')) -- le serveur
-# est désormais seul responsable de la mémoire de la conversation.
 from database_conversations import (
     create_table as create_table_conversations,
     enregistrer_tour, charger_historique, effacer_conversation,
 )
-# MODIFIÉ (29/08/2026, extension multi-matières) : import de
-# matiere_disponible_pour et matieres_disponibles en plus des 2
-# fonctions déjà utilisées -- chat_disponible_pour et
-# message_indisponible gardent leur usage EXACT d'avant (génération
-# PDF, toujours Mathématiques), voir scripts/chat_scope.py.
 from scripts.chat_scope import (
     chat_disponible_pour, message_indisponible,
     matiere_disponible_pour, matieres_disponibles,
@@ -129,11 +117,6 @@ app.config.update(
     SESSION_COOKIE_SECURE=not _DEBUG,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
-    # NOUVEAU (02/09/2026) : durée de vie d'une session "permanente"
-    # (voir session.permanent = True dans connexion()/inscription()).
-    # Sans PERMANENT_SESSION_LIFETIME, Flask utilise 31 jours par
-    # défaut -- fixé ici explicitement à 30 jours pour que la durée
-    # soit un choix documenté, pas une valeur implicite du framework.
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),
 )
     # ═══════════════════════════════════════════════════════
@@ -318,13 +301,6 @@ def redirection_sure(cible: str, defaut: str = '/mon-compte') -> str:
 # ROUTES PRINCIPALES
 # ══════════════════════════════════════════
 
-# MODIFIÉ (29/08/2026, extension multi-matières) : calcule aussi
-# `matieres_dispo` -- liste des matières que le chat peut réellement
-# discuter pour le niveau/série de l'élève (RAG ou générique, voir
-# chat_scope.matieres_disponibles). `disponible` NE CHANGE PAS de
-# sens : il reste spécifique à Mathématiques/génération PDF (voir
-# chat_scope.chat_disponible_pour) -- ne pas le confondre avec
-# `matieres_dispo`.
 @app.route('/')
 def index():
     eleve = None
@@ -338,7 +314,7 @@ def index():
         disponible = chat_disponible_pour(eleve['niveau'], eleve['serie'])
         matieres_dispo = matieres_disponibles(eleve['niveau'], eleve['serie'])
     else:
-        disponible = True  # mode démo -- le vrai scope est de toute façon imposé côté serveur
+        disponible = True
         matieres_dispo = []
 
     return render_template(
@@ -881,12 +857,6 @@ def completer_profil_vue():
             etablissement, consentement_parental
         )
         if not erreur:
-            # Premier profil complété -- toujours vers l'accueil/chat,
-            # jamais vers next_apres_connexion. Un nouveau compte n'a
-            # aucun historique d'intention a respecter ; la destination
-            # la plus utile pour decouvrir le produit est le chat, pas
-            # la page ou l'element qui a initialement declenche la
-            # connexion (souvent /mon-compte si teste directement).
             session.pop('next_apres_connexion', None)
             return redirect('/')
 
@@ -1012,23 +982,6 @@ def assistant_eleve():
     return redirect(url_for('index'))
 
 
-# CORRECTIF (29/08/2026) : l'ancienne version avait deux décorateurs
-# @app.route identiques empilés sur cette fonction (copier-coller) --
-# inoffensif en pratique mais source de confusion. Un seul décorateur.
-#
-# MODIFIÉ (29/08/2026, extension multi-matières) : la matière choisie
-# par l'élève dans la sidebar (voir assistant_eleve.html, nouvelle
-# section "Matière") est lue dans le payload et vérifiée via
-# chat_scope.matiere_disponible_pour() -- remplace l'ancien contrôle
-# qui ne vérifiait que le niveau/série (chat_disponible_pour reste
-# réservé à la génération PDF désormais, voir chat_scope.py).
-#
-# MODIFIÉ (02/09/2026, persistance des conversations) : l'historique
-# n'est plus lu depuis le payload envoyé par le front -- il est
-# rechargé depuis la base via charger_historique(), une conversation
-# continue par couple (élève, matière) (voir
-# database_conversations.py). Le front peut continuer à envoyer un
-# champ 'historique' sans effet, il n'est simplement plus utilisé ici.
 @app.route('/assistant-eleve/repondre', methods=['POST'])
 @limiter_debit(max_requetes=15, fenetre_sec=600)
 def assistant_eleve_repondre():
@@ -1042,14 +995,6 @@ def assistant_eleve_repondre():
         session.pop('eleve_id', None)
         return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
 
-    # NOUVEAU (05/09/2026, système de crédits) : vérifié AVANT tout
-    # appel IA -- inutile de dépenser un appel Gemini/Hugging Face
-    # pour découvrir ensuite que l'élève n'a plus de crédit. Voir
-    # database_credits.py, peut_poser_question() : True si
-    # (credits_gratuits_restants + credits_payants) > 0, après reset
-    # mensuel automatique si on a changé de mois calendaire.
-    # Code HTTP 402 (Payment Required) -- sémantiquement le bon choix
-    # ici, distinct du 401 (non_connecte) déjà utilisé au-dessus.
     if not peut_poser_question(eleve_id):
         return jsonify({
             'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
@@ -1062,20 +1007,10 @@ def assistant_eleve_repondre():
     if len(question) > 2000:
         return jsonify({'erreur': "Message trop long."}), 400
 
-    # NOUVEAU (29/08/2026, extension multi-matières) : défaut
-    # "Mathematiques" si le front n'envoie pas encore ce champ (vieux
-    # cache navigateur, etc.) -- rétrocompatible. Un seul contrôle
-    # (matiere_disponible_pour) couvre à la fois "niveau/série pas
-    # actif" et "matière pas couverte pour cette série".
     matiere = (payload.get('matiere') or 'Mathematiques').strip()
     if not matiere_disponible_pour(eleve['niveau'], eleve['serie'], matiere):
         return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
 
-    # MODIFIÉ (02/09/2026) : historique rechargé depuis la base,
-    # propre à la conversation (eleve_id, matiere) -- remplace
-    # l'ancienne lecture de payload.get('historique') + boucle de
-    # nettoyage manuel. charger_historique() renvoie déjà le format
-    # attendu par chat_contexte.py : [{"role": ..., "content": ...}].
     historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
     reponse_chronologie = repondre_chronologie_datee(question, eleve)
     if reponse_chronologie is not None:
@@ -1086,10 +1021,6 @@ def assistant_eleve_repondre():
         return jsonify(preparer_resultats_epreuves(resultat_recherche))
     criteres_bac = detecter_demande_exercice_bac(question)
     if criteres_bac is not None:
-        # CORRECTIF (12/09/2026, extension Physique) : `matiere` est
-        # désormais transmis à obtenir_exercice_bac() -- sans ce
-        # paramètre, toute recherche d'exercice réel du Bac restait
-        # câblée sur Mathematiques quelle que soit la matière active
         exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'], matiere, eleve['niveau'])
         texte_bac = formuler_reponse_exercice_bac(exercice, criteres_bac['annee'], criteres_bac['numero'])
         return jsonify({'reponse': texte_bac})
@@ -1097,6 +1028,71 @@ def assistant_eleve_repondre():
     # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
     # choisisse le bon mode (RAG Maths/Physique vs générique), voir
     # chat_scope.py.
+    #
+    # NOTE (chantier en cours, crédits) : contrairement à
+    # assistant_eleve_generer() et assistant_eleve_repondre_image(),
+    # aucune déduction de crédits n'a lieu ici pour l'instant --
+    # repondre_eleve_stream() ne renvoie pas encore de compte de
+    # tokens exploitable par consommer_credits(). Le garde-fou
+    # peut_poser_question() plus haut bloque déjà l'accès si l'élève
+    # n'a plus de crédit, mais le chat texte ne les décrémente pas
+    # encore. À câbler une fois chat_llm_client.py confirmé comme
+    # source de tokens_entree/tokens_sortie pour ce chemin.
+    def flux_evenements():
+        texte_complet = []
+        try:
+            for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere):
+                texte_complet.append(morceau)
+                yield f"data: {json.dumps({'type': 'morceau', 'texte': morceau})}\n\n"
+        except Exception as e:
+            app.logger.error(f"Échec réponse assistant élève (stream) : {e}")
+            message_erreur = "Je n'arrive pas à continuer, réessaie dans un instant."
+            yield f"data: {json.dumps({'type': 'erreur', 'texte': message_erreur})}\n\n"
+            return
+
+        reponse_complete = ''.join(texte_complet)
+        enregistrer_tour(eleve_id, matiere, question, reponse_complete)
+        incrementer_usage_mensuel(eleve_id)
+        yield f"data: {json.dumps({'type': 'fin', 'texte_complet': reponse_complete})}\n\n"
+
+    return Response(
+        flux_evenements(),
+        mimetype='text/event-stream',
+        headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
+    )
+
+
+# NOUVEAU : historique persistant de la conversation (eleve_id, matiere)
+# -- utilisée par le front au chargement de la page et à chaque
+# changement de matière dans la sidebar. Route manquante en prod : le
+# template l'appelait via url_for('assistant_eleve_historique') alors
+# qu'elle avait disparu du fichier, causant un 500 sur TOUTE la page
+# d'accueil (BuildError Jinja2, voir diagnostic du 15/09/2026).
+@app.route('/assistant-eleve/historique')
+def assistant_eleve_historique():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi.", 'code': 'non_connecte'}), 401
+
+    matiere = (request.args.get('matiere') or 'Mathematiques').strip()
+    historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
+    return jsonify({'historique': historique})
+
+
+# NOUVEAU : "Nouvelle conversation" doit effacer la conversation
+# persistée côté serveur, pas seulement l'affichage local. Route
+# manquante en prod, même cause que ci-dessus.
+@app.route('/assistant-eleve/nouvelle-conversation', methods=['POST'])
+def assistant_eleve_nouvelle_conversation():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi.", 'code': 'non_connecte'}), 401
+
+    payload = request.get_json(silent=True) or {}
+    matiere = (payload.get('matiere') or 'Mathematiques').strip()
+    effacer_conversation(eleve_id, matiere)
+    return jsonify({'ok': True})
+
 
 TAILLE_MAX_UPLOAD_OCTETS = 15 * 1024 * 1024  # 15 Mo -- voir POIDS_MAX_ENTREE_MO dans image_utils.py, cohérent
  
@@ -1112,9 +1108,6 @@ def assistant_eleve_repondre_image():
         session.pop('eleve_id', None)
         return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
  
-    # Même garde-fou crédits que le chat texte -- vérifié AVANT l'appel
-    # Gemini, encore plus important ici puisqu'une image coûte plus
-    # cher en tokens qu'un message texte classique.
     if not peut_poser_question(eleve_id):
         return jsonify({
             'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
@@ -1125,9 +1118,6 @@ def assistant_eleve_repondre_image():
     if not fichier_image or fichier_image.filename == '':
         return jsonify({'erreur': "Aucune image reçue."}), 400
  
-    # Lecture des octets AVANT toute validation de taille -- Werkzeug
-    # ne connaît la taille réelle qu'une fois le fichier lu, pas via
-    # un en-tête fiable à 100% côté client.
     donnees_brutes = fichier_image.read()
     if len(donnees_brutes) > TAILLE_MAX_UPLOAD_OCTETS:
         return jsonify({'erreur': "Image trop lourde (maximum 15 Mo)."}), 413
@@ -1147,21 +1137,8 @@ def assistant_eleve_repondre_image():
     except ImageInvalideError as e:
         return jsonify({'erreur': str(e)}), 400
     finally:
-        # Les octets bruts non compressés ne servent plus à rien après
-        # ce point -- retrait explicite de la référence pour que le
-        # garbage collector Python les libère dès que possible, plutôt
-        # que d'attendre la fin de la requête (image potentiellement
-        # volumineuse avant compression).
         del donnees_brutes
  
-    # SIMPLIFICATION ASSUMÉE (première version de la fonctionnalité
-    # photo) : contexte minimal, sans la richesse de progression
-    # MINESEC que repondre_eleve_stream() / chat_contexte.py
-    # construisent pour le chat texte (fichier non consulté à ce
-    # stade). Le tuteur répond correctement à l'exercice photographié,
-    # juste sans le fil de progression pédagogique fine du mode texte.
-    # À enrichir plus tard en réutilisant la vraie fonction de
-    # chat_contexte.py une fois consultée.
     contexte_systeme = (
         f"Tu es le tuteur ExamensCam pour un élève de {eleve['niveau']}"
         + (f" série {eleve['serie']}" if eleve.get('serie') else "")
@@ -1176,7 +1153,7 @@ def assistant_eleve_repondre_image():
         print(f"assistant_eleve_repondre_image erreur Gemini: {e}")
         return jsonify({'erreur': "Le tuteur est momentanément indisponible, réessaie dans un instant."}), 503
     finally:
-        del image_compressee  # jamais stockée, voir principe de minimisation
+        del image_compressee
  
     consommer_credits(
         eleve_id,
@@ -1202,20 +1179,12 @@ def assistant_eleve_generer():
         session.pop('eleve_id', None)
         return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
 
-    # NOUVEAU (06/09/2026, système de crédits) : même garde-fou que
-    # assistant_eleve_repondre() -- vérifié AVANT de lancer une
-    # génération, qui peut coûter jusqu'à 3 appels Gemini réels (voir
-    # NB_TENTATIVES_MAX dans generer_epreuve_json.py). Inutile de
-    # dépenser ça pour un élève qui n'a plus de crédit de toute façon.
     if not peut_poser_question(eleve_id):
         return jsonify({
             'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
             'code': 'credits_epuises',
         }), 402
 
-    # Génération de PDF -- reste Mathématiques uniquement, donc
-    # chat_disponible_pour(niveau, serie) à 2 arguments reste le bon
-    # contrôle ici, INCHANGÉ.
     if not chat_disponible_pour(eleve['niveau'], eleve['serie']):
         return jsonify({'erreur': message_indisponible(eleve['niveau'], eleve['serie']), 'code': 'niveau_indisponible'}), 403
 
@@ -1241,11 +1210,6 @@ def assistant_eleve_generer():
     metadonnees = metadonnees_defaut_eleve(type_document, serie)
 
     try:
-        # MODIFIÉ (06/09/2026) : generer_epreuve_json() retourne
-        # désormais 3 valeurs -- (chemin_json, tokens_entree,
-        # tokens_sortie), accumulés sur toutes les tentatives internes
-        # (voir sa docstring). Nécessaire pour facturer le bon nombre
-        # de crédits après une génération réussie.
         chemin_json, tokens_entree, tokens_sortie = generer_epreuve_json(
             sequence, metadonnees,
             type_document=type_document, serie=serie,
@@ -1254,20 +1218,10 @@ def assistant_eleve_generer():
     except RuntimeError as e:
         cible = f"Examen série {serie}" if type_document == 'Examen' else f"séquence {sequence}"
         app.logger.error(f"Échec génération épreuve élève ({cible}): {e}")
-        # NOTE (06/09/2026) : aucune déduction de crédit sur un échec
-        # total -- même principe que le streaming du chat (voir
-        # generer_texte_stream_avec_fallback dans chat_llm_client.py) :
-        # l'élève n'a rien reçu, on ne facture pas une génération qui
-        # a échoué, même si des appels Gemini réels ont eu lieu en
-        # coulisses pendant les tentatives.
         return jsonify({'erreur': "La génération a échoué. Réessaie dans quelques minutes."}), 500
 
     incrementer_usage_mensuel(eleve_id)
 
-    # NOUVEAU (06/09/2026, système de crédits) : déduction APRÈS
-    # succès complet (JSON validé + PDF construit) -- voir
-    # database_credits.py, consommer_credits(), même raisonnement que
-    # pour le chat : jamais avant, jamais sur un échec.
     consommer_credits(eleve_id, tokens_entree, tokens_sortie, fournisseur='gemini', source_modele='generer_epreuve_json')
 
     return send_file(chemin_pdf, as_attachment=True, download_name=chemin_pdf.name)
@@ -1411,11 +1365,6 @@ def abonnement_payer():
 
 @app.route('/abonnement/statut')
 def abonnement_statut():
-    # Pas de @eleve_requis ici volontairement : cette route est
-    # interrogée par la page de retour juste après le paiement, où la
-    # session peut ne plus être fraîche (redirection externe via
-    # Monetbil). Le `ref` (payment_ref, jeton aléatoire) sert déjà de
-    # protection -- personne ne peut deviner celui d'un autre élève.
     ref = request.args.get('ref')
     if not ref:
         return jsonify({'erreur': 'Référence manquante.'}), 400
@@ -1424,19 +1373,6 @@ def abonnement_statut():
         return jsonify({'erreur': 'Paiement introuvable.'}), 404
     return jsonify({'statut': paiement['statut']})
 
-# NOUVEAU (06/09/2026) : page "Mes crédits" -- accessible depuis la
-# sidebar de assistant_eleve.html. Montre UNIQUEMENT des crédits à
-# l'élève, jamais de tokens -- get_solde() ne renvoie de toute façon
-# que credits_gratuits_restants / credits_payants / total (voir
-# database_credits.py), donc aucun risque d'exposer par erreur un
-# détail technique (tokens, fournisseur Gemini/Hugging Face) que
-# l'élève n'a pas besoin de connaître et qui n'a aucun sens pour lui.
-#
-# L'historique de transactions est volontairement simplifié pour
-# l'élève : date, type (achat/consommation/reset_mensuel), nombre de
-# crédits -- jamais tokens_entree/tokens_sortie/fournisseur/source_modele,
-# qui restent des colonnes techniques internes consultables uniquement
-# par toi via Neon SQL Editor.
 @app.route('/mes-credits')
 @eleve_requis
 def mes_credits():
@@ -1543,9 +1479,6 @@ def recharger_credits():
 @app.route('/sw.js')
 def service_worker():
     reponse = send_file('static/sw.js', mimetype='application/javascript')
-    # Empêche le navigateur de mettre en cache une VIEILLE version du
-    # service worker lui-même -- sinon une mise à jour de sw.js ne
-    # serait jamais détectée par les téléphones déjà installés.
     reponse.headers['Cache-Control'] = 'no-cache'
     return reponse
 
