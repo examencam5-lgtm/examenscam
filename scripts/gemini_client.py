@@ -183,3 +183,52 @@ def generer_avec_fallback(clients, contents, config):
         f"Tous les modèles sur toutes les clés API sont indisponibles (quota épuisé, "
         f"surcharge, timeout, ou modèle retiré). Dernière erreur : {derniere_erreur}"
     )
+
+def envoyer_image_gemini(image_jpeg_bytes: bytes, question_eleve: str, contexte_systeme: str):
+    """Envoie une image (deja compressee par image_utils.compresser_image_pour_gemini)
+    accompagnee de la question de l'eleve et du contexte systeme habituel
+    (progression MINESEC, niveau/serie).
+ 
+    IMPORTANT : image_jpeg_bytes n'est jamais stocke -- utilise une
+    seule fois pour cet appel, puis jete par le garbage collector des
+    la fin de la fonction. Aucune ecriture disque, aucune insertion
+    en base -- voir la decision de minimisation des donnees prise pour
+    cette fonctionnalite.
+ 
+    Retourne un dict :
+      {
+        'texte': str,             # reponse du tuteur
+        'tokens_entree': int,     # inclut le cout de l'image
+        'tokens_sortie': int,
+        'fournisseur': str,       # nom de la variable d'env de la cle utilisee
+        'modele': str,
+      }
+ 
+    Leve RuntimeError si toutes les combinaisons cle/modele echouent --
+    meme comportement que generer_avec_fallback() pour le chat texte.
+    """
+    clients = construire_clients()
+ 
+    partie_image = genai_types.Part.from_bytes(
+        data=image_jpeg_bytes,
+        mime_type='image/jpeg',
+    )
+    partie_texte = (
+        f"{contexte_systeme}\n\n"
+        f"Question de l'eleve (avec une image d'exercice jointe) : {question_eleve}"
+    )
+ 
+    contents = [partie_texte, partie_image]
+ 
+    reponse, modele_utilise, nom_cle_utilisee = generer_avec_fallback(clients, contents, config=None)
+ 
+    usage = reponse.usage_metadata
+ 
+    return {
+        'texte': reponse.text,
+        'tokens_entree': usage.prompt_token_count,
+        'tokens_sortie': usage.candidates_token_count,
+        'fournisseur': nom_cle_utilisee,
+        'modele': modele_utilise,
+    }
+ 

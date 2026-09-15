@@ -18,6 +18,8 @@ from scripts.construire_pdf_officiel import construire_pdf
 from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream, repondre_chronologie_datee
 from generer_search_index import generer as generer_index
 from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves, get_annees
+from scripts.image_utils import compresser_image_pour_gemini, ImageInvalideError
+from scripts.gemini_client import envoyer_image_gemini
 from database_credits import (
     create_table as create_table_credits,
     peut_poser_question,
@@ -1095,89 +1097,97 @@ def assistant_eleve_repondre():
     # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
     # choisisse le bon mode (RAG Maths/Physique vs générique), voir
     # chat_scope.py.
-    def flux_evenements():
-        # NOUVEAU (05/09/2026, système de crédits) : dict mutable
-        # passé à repondre_eleve_stream(), qui le transmet lui-même à
-        # generer_texte_stream_avec_fallback() (voir chat_llm_client.py).
-        # Rempli SI ET SEULEMENT SI le flux se termine avec succès --
-        # voir la docstring de generer_texte_stream_avec_fallback().
-        # Si une exception survient avant tout texte, `stats` reste
-        # vide : aucune déduction de crédit sur une réponse jamais
-        # reçue par l'élève.
-        stats = {}
-        texte_complet = []
-        try:
-            for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere, stats=stats):
-                texte_complet.append(morceau)
-                yield f"data: {json.dumps({'type': 'morceau', 'texte': morceau})}\n\n"
-        except Exception as e:
-            app.logger.error(f"Échec réponse assistant élève (stream) : {e}")
-            message_erreur = "Je n'arrive pas à continuer, réessaie dans un instant."
-            yield f"data: {json.dumps({'type': 'erreur', 'texte': message_erreur})}\n\n"
-            return
 
-        reponse_complete = ''.join(texte_complet)
-        # NOUVEAU (02/09/2026) : sauvegarde du tour complet une fois la
-        # réponse entièrement générée -- voir database_conversations.py
-        # pour le raisonnement (jamais pendant le streaming lui-même,
-        # jamais si le stream a échoué avant d'arriver ici).
-        enregistrer_tour(eleve_id, matiere, question, reponse_complete)
-        incrementer_usage_mensuel(eleve_id)
-
-        # NOUVEAU (05/09/2026, système de crédits) : déduction APRÈS
-        # coup, jamais avant -- voir database_credits.py,
-        # consommer_credits(), qui explique pourquoi on ne réclame
-        # jamais une question déjà répondue même si le solde finit
-        # en négatif exceptionnellement ici (le blocage se fait EN
-        # AMONT, via peut_poser_question() au tout début de la route).
-        # `stats.get('tokens_entree') is not None` couvre le seul cas
-        # où stats est resté vide : le flux a échoué avant le premier
-        # morceau (voir le `except` ci-dessus, qui a déjà `return`)
-        # -- donc en pratique ce garde-fou ne se déclenche jamais côté
-        # succès, mais reste une protection explicite plutôt qu'un
-        # accès direct à une clé qui pourrait manquer.
-        if stats.get('tokens_entree') is not None:
-            consommer_credits(
-                eleve_id,
-                stats['tokens_entree'],
-                stats['tokens_sortie'],
-                stats.get('fournisseur'),
-                stats.get('source'),
-            )
-
-        yield f"data: {json.dumps({'type': 'fin', 'texte_complet': reponse_complete})}\n\n"
-
-    return Response(
-        flux_evenements(),
-        mimetype='text/event-stream',
-        headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
+TAILLE_MAX_UPLOAD_OCTETS = 15 * 1024 * 1024  # 15 Mo -- voir POIDS_MAX_ENTREE_MO dans image_utils.py, cohérent
+ 
+ 
+@app.route('/assistant-eleve/repondre-image', methods=['POST'])
+@limiter_debit(max_requetes=10, fenetre_sec=600)
+def assistant_eleve_repondre_image():
+    eleve_id = session.get('eleve_id')
+    if not eleve_id:
+        return jsonify({'erreur': "Connecte-toi pour utiliser l'assistant.", 'code': 'non_connecte'}), 401
+    eleve = get_eleve_par_id(eleve_id)
+    if not eleve:
+        session.pop('eleve_id', None)
+        return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
+ 
+    # Même garde-fou crédits que le chat texte -- vérifié AVANT l'appel
+    # Gemini, encore plus important ici puisqu'une image coûte plus
+    # cher en tokens qu'un message texte classique.
+    if not peut_poser_question(eleve_id):
+        return jsonify({
+            'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
+            'code': 'credits_epuises',
+        }), 402
+ 
+    fichier_image = request.files.get('image')
+    if not fichier_image or fichier_image.filename == '':
+        return jsonify({'erreur': "Aucune image reçue."}), 400
+ 
+    # Lecture des octets AVANT toute validation de taille -- Werkzeug
+    # ne connaît la taille réelle qu'une fois le fichier lu, pas via
+    # un en-tête fiable à 100% côté client.
+    donnees_brutes = fichier_image.read()
+    if len(donnees_brutes) > TAILLE_MAX_UPLOAD_OCTETS:
+        return jsonify({'erreur': "Image trop lourde (maximum 15 Mo)."}), 413
+ 
+    question = (request.form.get('question') or '').strip()
+    if not question:
+        question = "Aide-moi à résoudre cet exercice."
+    if len(question) > 2000:
+        return jsonify({'erreur': "Message trop long."}), 400
+ 
+    matiere = (request.form.get('matiere') or 'Mathematiques').strip()
+    if not matiere_disponible_pour(eleve['niveau'], eleve['serie'], matiere):
+        return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
+ 
+    try:
+        image_compressee = compresser_image_pour_gemini(donnees_brutes)
+    except ImageInvalideError as e:
+        return jsonify({'erreur': str(e)}), 400
+    finally:
+        # Les octets bruts non compressés ne servent plus à rien après
+        # ce point -- retrait explicite de la référence pour que le
+        # garbage collector Python les libère dès que possible, plutôt
+        # que d'attendre la fin de la requête (image potentiellement
+        # volumineuse avant compression).
+        del donnees_brutes
+ 
+    # SIMPLIFICATION ASSUMÉE (première version de la fonctionnalité
+    # photo) : contexte minimal, sans la richesse de progression
+    # MINESEC que repondre_eleve_stream() / chat_contexte.py
+    # construisent pour le chat texte (fichier non consulté à ce
+    # stade). Le tuteur répond correctement à l'exercice photographié,
+    # juste sans le fil de progression pédagogique fine du mode texte.
+    # À enrichir plus tard en réutilisant la vraie fonction de
+    # chat_contexte.py une fois consultée.
+    contexte_systeme = (
+        f"Tu es le tuteur ExamensCam pour un élève de {eleve['niveau']}"
+        + (f" série {eleve['serie']}" if eleve.get('serie') else "")
+        + f", en {matiere}. L'élève a photographié un exercice. "
+        "Aide-le à comprendre et résoudre, en expliquant le raisonnement "
+        "étape par étape, comme au tableau, sans juste donner le résultat final."
     )
-@app.route('/assistant-eleve/historique')
-def assistant_eleve_historique():
-    eleve_id = session.get('eleve_id')
-    if not eleve_id:
-        return jsonify({'erreur': "Connecte-toi.", 'code': 'non_connecte'}), 401
-
-    matiere = (request.args.get('matiere') or 'Mathematiques').strip()
-    historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
-    return jsonify({'historique': historique})
-
-
-# NOUVEAU (02/09/2026) : "Nouvelle conversation" doit effacer la
-# conversation persistée côté serveur, pas seulement l'affichage
-# local -- sinon un rechargement de page ou un changement de matière
-# fait réapparaître l'historique qu'on venait pourtant d'effacer à
-# l'écran, ce qui serait incohérent pour l'élève.
-@app.route('/assistant-eleve/nouvelle-conversation', methods=['POST'])
-def assistant_eleve_nouvelle_conversation():
-    eleve_id = session.get('eleve_id')
-    if not eleve_id:
-        return jsonify({'erreur': "Connecte-toi.", 'code': 'non_connecte'}), 401
-
-    payload = request.get_json(silent=True) or {}
-    matiere = (payload.get('matiere') or 'Mathematiques').strip()
-    effacer_conversation(eleve_id, matiere)
-    return jsonify({'ok': True})
+ 
+    try:
+        resultat = envoyer_image_gemini(image_compressee, question, contexte_systeme)
+    except RuntimeError as e:
+        print(f"assistant_eleve_repondre_image erreur Gemini: {e}")
+        return jsonify({'erreur': "Le tuteur est momentanément indisponible, réessaie dans un instant."}), 503
+    finally:
+        del image_compressee  # jamais stockée, voir principe de minimisation
+ 
+    consommer_credits(
+        eleve_id,
+        resultat['tokens_entree'],
+        resultat['tokens_sortie'],
+        fournisseur=resultat['fournisseur'],
+        source_modele=resultat['modele'],
+    )
+ 
+    return jsonify({'reponse': resultat['texte']})
+ 
 
 
 @app.route('/assistant-eleve/generer', methods=['POST'])
