@@ -117,7 +117,15 @@ app.config.update(
     SESSION_COOKIE_SECURE=not _DEBUG,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
-    PERMANENT_SESSION_LIFETIME=timedelta(days=30),
+    # MODIFIÉ (16/09/2026, durcissement session) : 30 jours ramené à 7.
+    # Beaucoup d'élèves utilisent un téléphone familial partagé (frère,
+    # sœur, parent) plutôt qu'un appareil personnel -- une session
+    # valide 30 jours multiplie le risque qu'un autre membre de la
+    # famille retombe sur le compte de l'élève précédent sans jamais
+    # avoir vu d'écran de connexion. 7 jours réduit nettement cette
+    # fenêtre sans gêner un usage normal (l'élève qui revient chaque
+    # jour ou presque reste connecté).
+    PERMANENT_SESSION_LIFETIME=timedelta(days=7),
 )
     # ═══════════════════════════════════════════════════════
 # AUTHENTIFICATION GOOGLE
@@ -797,6 +805,16 @@ def admin_regenerer_index():
 @app.route('/connexion/google')
 @limiter_debit(max_requetes=15, fenetre_sec=600)
 def connexion_google():
+    # NOUVEAU (16/09/2026, durcissement session) : session.clear() AVANT
+    # de lancer le flux OAuth -- sans ça, un cookie de session valide
+    # déjà présent dans ce navigateur (session d'un précédent élève sur
+    # un appareil familial partagé, jamais explicitement fermée) reste
+    # actif pendant tout l'aller-retour Google, et rien ne garantit que
+    # connexion_google_callback() écrase proprement l'ancien eleve_id.
+    # Repartir d'une session vide à chaque clic sur "Se connecter" est
+    # la seule garantie fiable : après ce point, la session ne peut
+    # contenir que ce que CE flux de connexion y aura mis.
+    session.clear()
     next_url = redirection_sure(request.args.get('next'))
     session['next_apres_connexion'] = next_url
     redirect_uri = url_for('connexion_google_callback', _external=True)
@@ -867,7 +885,14 @@ def completer_profil_vue():
 
 @app.route('/deconnexion')
 def deconnexion():
-    session.pop('eleve_id', None)
+    # MODIFIÉ (16/09/2026, durcissement session) : session.clear() au
+    # lieu de session.pop('eleve_id', None) seul -- sur un appareil
+    # familial partagé, ne retirer QUE eleve_id pouvait laisser
+    # d'autres clés de session (tokens OAuth temporaires,
+    # next_apres_connexion, csrf_token_*) accessibles à la personne
+    # suivante qui ouvre le site sur ce même navigateur. Une
+    # déconnexion doit repartir d'un état totalement vierge.
+    session.clear()
     return redirect('/')
 
 # ═══════════════════════════════════════

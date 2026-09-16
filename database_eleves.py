@@ -199,6 +199,17 @@ def completer_profil(eleve_id: int, prenom: str, nom: str, niveau: str,
     impossible à coût nul), mais un geste de consentement déclaratif
     tracé avec horodatage, préférable à une absence totale de mention.
     """
+    # MODIFIÉ (16/09/2026, correctif niveau/série) : la série est
+    # forcée à None ICI, avant validation et avant stockage, dès que
+    # le niveau est BEPC -- ne JAMAIS faire confiance à ce que le
+    # front envoie. Le BEPC n'a pas de série au Cameroun ; un champ
+    # <select> caché côté front continue de soumettre sa dernière
+    # valeur sélectionnée même invisible, donc un incident front (JS
+    # qui ne réinitialise pas le champ) ne doit jamais pouvoir
+    # produire une ligne incohérente en base.
+    if niveau == 'BEPC':
+        serie = None
+
     erreurs = valider_profil(prenom, nom, niveau, serie, etablissement)
     if erreurs:
         return " ".join(erreurs)
@@ -262,6 +273,16 @@ def modifier_profil(eleve_id: int, prenom: Optional[str] = None, nom: Optional[s
     serie_final = serie if serie is not None else eleve['serie']
     classe_final = classe if classe is not None else eleve['classe']
     etablissement_final = etablissement if etablissement is not None else eleve.get('etablissement')
+
+    # MODIFIÉ (16/09/2026, correctif niveau/série) : même règle que
+    # completer_profil() -- BEPC n'a jamais de série, quelle que soit
+    # la valeur reçue du formulaire (voir commentaire détaillé
+    # ci-dessus). Corrige au passage tout compte déjà pollué par
+    # l'ancien bug front (serie non réinitialisée en repassant à
+    # BEPC) : dès qu'un élève modifie son profil, la ligne se nettoie
+    # d'elle-même.
+    if niveau_final == 'BEPC':
+        serie_final = None
 
     erreurs = valider_profil(prenom_final, nom_final, niveau_final, serie_final, etablissement_final)
     if erreurs:
