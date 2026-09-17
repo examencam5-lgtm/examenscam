@@ -8,30 +8,25 @@ sur le programme et le calendrier camerounais.
 
 Meme stack que database.py : Postgres gere chez Neon via DATABASE_URL,
 psycopg2, RealDictCursor, placeholders %s, rollback() explicite sur erreur
-d'ecriture (Postgres abandonne la transaction en cours des qu'une requete
-echoue, contrairement a SQLite -- oublier le rollback() bloque tout appel
-suivant sur la meme connexion).
+d'ecriture.
 
-Choix Postgres (et non un JSON charge en memoire) : Muhammad alimente ce
-systeme matiere par matiere (Maths fait, Physique/Chimie/SVT a venir).
-Postgres permet de croiser facilement (ex: "quelles matieres ont un chapitre
-qui commence cette semaine en Tle C") sans reecrire un moteur de recherche
-JSON a la main, et reste coherent avec le reste du projet deja migre.
-
-CE QUI NE CHANGE PAS : les noms de fonctions et leurs signatures publiques,
-pour rester appelables depuis chat_contexte.py sans adaptation si jamais tu
-changes encore d'implementation plus tard.
+CORRECTIF (17/09/2026) -- normalisation lecons + chapitres simultanes :
+1. Le JSON Maths utilise lecons=[str,...], le JSON Physique utilise
+   lecons=[{"titre":..., "duree_heures":...}]. L'ancienne version stockait
+   le format brut tel quel (json.dumps direct) -- texte_pour_prompt_systeme()
+   plantait en TypeError des le premier ', '.join(lecons) sur une liste de
+   dicts, ce qui aurait casse toute injection Physique en production. Voir
+   _normaliser_lecons().
+2. Le JSON source contient des chapitres avec la MEME semaine (ex: Physique
+   Terminale C, ordres 16/17/18 tous "15-19 mars 2027") -- l'ancien
+   obtenir_progression_du_jour() faisait ORDER BY ordre LIMIT 1 et perdait
+   silencieusement les chapitres paralleles. Retourne desormais TOUJOURS une
+   liste sous la cle 'chapitres', meme s'il n'y en a qu'un seul.
 
 CORRECTIF (07/09/2026) -- ajout de la table progressions_niveaux :
 horaire_hebdo et nombre_chapitres existent dans le JSON source (au niveau
 du contenu, avant la liste "chapitres") mais n'etaient stockes nulle part
-en base -- progressions_chapitres est au niveau du CHAPITRE, pas du
-niveau/serie. Consequence concrete observee : un eleve de Terminale C a
-demande son horaire hebdomadaire officiel, et Gemini a invente "6h"
-(l'horaire de Premiere C, une autre serie) au lieu de repondre "7h" (la
-vraie valeur, presente dans le JSON mais absente de la base). Cette
-table comble ce trou -- voir _inserer_meta_niveau() et
-obtenir_horaire_hebdo().
+en base -- voir _inserer_meta_niveau() et obtenir_horaire_hebdo().
 """
 
 import json
@@ -69,14 +64,7 @@ def get_connection():
 
 def create_table():
     """Idempotent -- appelable au demarrage de app.py comme les autres
-    create_table() du projet, jamais destructive sur une table existante.
-
-    UNE SEULE definition de create_table() dans ce fichier -- l'ancienne
-    version dupliquee plus bas (avec du SQL tronque "...") a ete
-    supprimee : en Python, deux fonctions du meme nom dans le meme
-    module ne cohabitent jamais, la seconde ecrase silencieusement la
-    premiere. C'etait le bug qui aurait fini par casser la creation de
-    progressions_chapitres au prochain redemarrage."""
+    create_table() du projet, jamais destructive sur une table existante."""
     conn = get_connection()
     try:
         cur = conn.cursor()
@@ -89,13 +77,26 @@ def create_table():
                 serie           TEXT,
                 ordre           INTEGER NOT NULL,
                 nom_chapitre    TEXT NOT NULL,
-                lecons          TEXT NOT NULL,      -- JSON liste de titres, stocke en texte
+                lecons          TEXT NOT NULL,      -- JSON liste de titres (str), stocke en texte
                 semaine_texte   TEXT,
                 date_debut      DATE,
                 date_fin        DATE,
                 evaluation      TEXT,
                 UNIQUE(annee_scolaire, matiere, niveau, serie, ordre)
             );
+        """)
+        # CORRECTIF (17/09/2026) : lecons_detail conserve duree_heures
+        # (present dans le JSON Physique, absent du JSON Maths) sans
+        # jamais l'inventer pour les chapitres qui ne l'ont pas -- voir
+        # _normaliser_lecons(). ADD COLUMN IF NOT EXISTS : idempotent
+        # sur une base deja peuplee, ne touche a aucune ligne existante.
+        cur.execute("""
+            ALTER TABLE progressions_chapitres
+            ADD COLUMN IF NOT EXISTS lecons_detail TEXT;
+        """)
+        cur.execute("""
+            ALTER TABLE progressions_niveaux
+            ADD COLUMN IF NOT EXISTS volume_horaire_calcule INTEGER;
         """)
         cur.execute("""
             CREATE TABLE IF NOT EXISTS progressions_evenements (
@@ -107,11 +108,6 @@ def create_table():
                 UNIQUE(annee_scolaire, date_debut, label)
             );
         """)
-        # NOUVEAU (07/09/2026) : voir note de correctif en tete de
-        # fichier -- horaire_hebdo/nombre_chapitres/evaluation_fin_annee
-        # sont des metadonnees au niveau NIVEAU/SERIE (pas chapitre),
-        # d'ou une table separee plutot qu'une colonne repetee sur
-        # chaque ligne de progressions_chapitres.
         cur.execute("""
             CREATE TABLE IF NOT EXISTS progressions_niveaux (
                 id                    INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -203,15 +199,44 @@ def parser_semaine(semaine_texte: str):
     return debut, fin
 
 
-def _inserer_meta_niveau(cur, annee_scolaire, matiere, niveau, serie, contenu):
-    """NOUVEAU (07/09/2026) -- voir note de correctif en tete de
-    fichier. Capture horaire_hebdo/nombre_chapitres/evaluation_fin_annee
-    depuis le meme dict `contenu` que celui deja parcouru pour les
-    chapitres (contenu["chapitres"]) ou sous_contenu -- rien a relire
-    depuis le fichier JSON, juste les champs voisins deja en memoire.
+def _normaliser_lecons(lecons_brutes: list) -> tuple[list[str], list[dict]]:
+    """CORRECTIF (17/09/2026) : le JSON Maths utilise lecons=[str,...],
+    le JSON Physique utilise lecons=[{"titre":..., "duree_heures":...}].
+    Sans cette normalisation, json.dumps() stockait le format brut tel
+    quel, et texte_pour_prompt_systeme() plantait (TypeError) au premier
+    ', '.join(lecons) sur une liste de dicts -- bug qui aurait casse
+    toute injection Physique en production des le premier appel.
 
-    ON CONFLICT DO UPDATE : reimporter une version corrigee du JSON
-    ecrase les anciennes valeurs, meme logique que _inserer_chapitres."""
+    Retourne (titres, detail) :
+      - titres : liste de str, compatible avec tout le code existant qui
+        fait ', '.join(lecons) -- format de sortie UNIQUE quelle que soit
+        la matiere source.
+      - detail : liste de {titre, duree_heures} uniquement quand
+        duree_heures existe dans le JSON source, sinon [] -- jamais
+        invente pour une matiere (ex: Maths) qui ne fournit pas cette
+        info."""
+    titres, detail = [], []
+    for l in lecons_brutes:
+        if isinstance(l, str):
+            titres.append(l)
+        elif isinstance(l, dict):
+            titre = l.get("titre", "")
+            titres.append(titre)
+            if "duree_heures" in l:
+                detail.append({"titre": titre, "duree_heures": l["duree_heures"]})
+    return titres, detail
+
+
+def _inserer_meta_niveau(cur, annee_scolaire, matiere, niveau, serie, contenu):
+    """Capture horaire_hebdo/nombre_chapitres/evaluation_fin_annee depuis
+    le meme dict `contenu` que celui deja parcouru pour les chapitres --
+    rien a relire depuis le fichier JSON.
+
+    NOTE : le JSON Physique fourni par Muhammad n'a PAS ces champs au
+    niveau serie (contrairement au JSON Maths) -- contenu.get() renvoie
+    alors None et rien n'est invente. obtenir_horaire_hebdo() renverra
+    'disponible': False pour la Physique tant que le JSON source n'est
+    pas complete avec horaire_hebdo/nombre_chapitres."""
     cur.execute("""
         INSERT INTO progressions_niveaux
         (annee_scolaire, matiere, niveau, serie, horaire_hebdo, nombre_chapitres, evaluation_fin_annee)
@@ -230,20 +255,21 @@ def _inserer_meta_niveau(cur, annee_scolaire, matiere, niveau, serie, contenu):
 
 def importer_json_progression(chemin_json: str, matiere: str, annee_scolaire: str):
     """Importe un fichier JSON structure (format progression_minesec_2026_2027.json)
-    dans Postgres pour une matiere donnee. Reutilisable pour Physique, SVT,
+    dans Postgres pour une matiere donnee. Reutilisable pour Chimie, SVT,
     etc. : il suffit de produire un JSON avec la meme structure
     (niveaux -> chapitres -> lecons) et d'appeler cette fonction avec
-    matiere='PCT' par exemple.
+    matiere='Chimie' par exemple.
 
-    ON CONFLICT DO UPDATE (equivalent Postgres du INSERT OR REPLACE SQLite) :
-    si on reimporte une version corrigee du meme fichier, on ecrase l'ancienne
-    ligne au lieu de la dupliquer ou de la laisser perimee.
+    ON CONFLICT DO UPDATE : si on reimporte une version corrigee du meme
+    fichier, on ecrase l'ancienne ligne au lieu de la dupliquer.
 
-    CORRECTIF (07/09/2026) : une SEULE boucle sur niveaux.items() --
-    une version precedente de ce fichier avait cette boucle dupliquee
-    par erreur de copier-coller (une fois avec l'appel a
-    _inserer_meta_niveau, une fois sans), ce qui doublait inutilement
-    le travail d'insertion des chapitres a chaque import."""
+    Le calendrier commun (meta.calendrier_commun) n'existe que dans le
+    JSON Maths -- le JSON Physique n'a pas de bloc "meta" avec ce
+    contenu. Ce n'est pas un probleme : progressions_evenements n'a pas
+    de colonne matiere (le calendrier scolaire est national, pas
+    specifique a une matiere), donc l'importer une seule fois via
+    n'importe quel JSON qui le contient suffit -- ON CONFLICT DO NOTHING
+    evite toute duplication si on l'importe plusieurs fois."""
     conn = get_connection()
     try:
         create_table()
@@ -309,27 +335,36 @@ def importer_json_progression(chemin_json: str, matiere: str, annee_scolaire: st
 
 
 def _inserer_chapitres(cur, matiere, annee_scolaire, niveau, serie, chapitres):
+    """CORRECTIF (17/09/2026) : normalise `lecons` via _normaliser_lecons()
+    avant stockage -- accepte indifferemment le format Maths (liste de
+    str) et le format Physique (liste de dicts avec duree_heures), et
+    stocke toujours des titres en str dans `lecons` (compatibilite avec
+    tout le code existant), plus le detail complet dans `lecons_detail`
+    quand il existe."""
     non_parses = 0
     for chap in chapitres:
         debut, fin = parser_semaine(chap.get("semaine", ""))
         if debut is None:
             non_parses += 1
+        titres_lecons, detail_lecons = _normaliser_lecons(chap.get("lecons", []))
         cur.execute("""
             INSERT INTO progressions_chapitres
             (annee_scolaire, matiere, niveau, serie, ordre, nom_chapitre,
-             lecons, semaine_texte, date_debut, date_fin, evaluation)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+             lecons, lecons_detail, semaine_texte, date_debut, date_fin, evaluation)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (annee_scolaire, matiere, niveau, serie, ordre)
             DO UPDATE SET
                 nom_chapitre = EXCLUDED.nom_chapitre,
                 lecons = EXCLUDED.lecons,
+                lecons_detail = EXCLUDED.lecons_detail,
                 semaine_texte = EXCLUDED.semaine_texte,
                 date_debut = EXCLUDED.date_debut,
                 date_fin = EXCLUDED.date_fin,
                 evaluation = EXCLUDED.evaluation
         """, (
             annee_scolaire, matiere, niveau, serie, chap["ordre"], chap["nom"],
-            json.dumps(chap.get("lecons", []), ensure_ascii=False),
+            json.dumps(titres_lecons, ensure_ascii=False),
+            json.dumps(detail_lecons, ensure_ascii=False),
             chap.get("semaine"), debut, fin, chap.get("evaluation"),
         ))
     return non_parses
@@ -340,7 +375,19 @@ def obtenir_progression_du_jour(matiere: str, niveau: str, serie: Optional[str] 
     """Fonction principale a appeler depuis chat_contexte.py avant de
     construire le prompt systeme. Retourne un dict avec 'disponible': False
     si rien n'est trouve -- dans ce cas ne JAMAIS laisser Gemini deviner un
-    contenu de programme a la place."""
+    contenu de programme a la place.
+
+    CORRECTIF (17/09/2026) : retourne desormais TOUS les chapitres actifs
+    a cette date sous la cle 'chapitres' (toujours une liste, meme a un
+    seul element) -- le JSON Physique a des chapitres qui partagent la
+    meme semaine (ex: Terminale C, ordres 16/17/18 tous "15-19 mars 2027"),
+    et l'ancien ORDER BY ordre LIMIT 1 en perdait deux sur trois
+    silencieusement.
+
+    Cles retro-compat conservees (chapitre_nom, lecons, periode,
+    evaluation) pointant sur le PREMIER chapitre par ordre -- pour ne pas
+    casser un appelant qui ne gere pas encore la liste, mais tout nouveau
+    code (chat_contexte.py) doit lire 'chapitres' pour ne rien perdre."""
     date_reference = date_reference or date.today()
     conn = get_connection()
     resultat = {"disponible": False, "date_reference": date_reference.isoformat()}
@@ -348,26 +395,34 @@ def obtenir_progression_du_jour(matiere: str, niveau: str, serie: Optional[str] 
     try:
         cur = conn.cursor()
 
-        # serie IS NULL cote base ne matche pas '= %s' en SQL standard :
-        # meme logique que get_annales() dans database.py.
         cur.execute("""
             SELECT * FROM progressions_chapitres
             WHERE matiere = %s AND niveau = %s
               AND (serie = %s OR (%s IS NULL AND serie IS NULL))
               AND date_debut IS NOT NULL AND date_fin IS NOT NULL
               AND date_debut <= %s AND date_fin >= %s
-            ORDER BY ordre LIMIT 1
+            ORDER BY ordre
         """, (matiere, niveau, serie, serie, date_reference, date_reference))
-        row = cur.fetchone()
+        rows = cur.fetchall()
 
-        if row:
+        if rows:
+            resultat["disponible"] = True
+            resultat["chapitres"] = [{
+                "ordre": r["ordre"],
+                "nom_chapitre": r["nom_chapitre"],
+                "lecons": json.loads(r["lecons"]),
+                "lecons_detail": json.loads(r["lecons_detail"] or "[]"),  # AJOUT
+                "periode": f"{r['date_debut']} au {r['date_fin']}",
+                "evaluation": r["evaluation"],
+            } for r in rows]
+
+            premier = resultat["chapitres"][0]
             resultat.update({
-                "disponible": True,
-                "chapitre_ordre": row["ordre"],
-                "chapitre_nom": row["nom_chapitre"],
-                "lecons": json.loads(row["lecons"]),
-                "periode": f"{row['date_debut']} au {row['date_fin']}",
-                "evaluation": row["evaluation"],
+                "chapitre_ordre": premier["ordre"],
+                "chapitre_nom": premier["nom_chapitre"],
+                "lecons": premier["lecons"],
+                "periode": premier["periode"],
+                "evaluation": premier["evaluation"],
             })
         else:
             cur.execute("""
@@ -397,17 +452,58 @@ def obtenir_progression_du_jour(matiere: str, niveau: str, serie: Optional[str] 
 
     return resultat
 
-
-def obtenir_horaire_hebdo(matiere: str, niveau: str, serie: Optional[str] = None) -> dict:
-    """NOUVEAU (07/09/2026) -- lecture de progressions_niveaux, voir
-    note de correctif en tete de fichier. Retourne {'disponible': False}
-    si rien n'est trouve -- meme discipline anti-hallucination que
-    obtenir_progression_du_jour() : jamais de valeur devinee en aval."""
+def recalculer_volume_horaire_calcule(matiere: str, annee_scolaire: str = "2026-2027"):
+    """Calcule, pour chaque niveau/serie, le volume horaire TOTAL annuel
+    en sommant duree_heures depuis lecons_detail -- donnee deductible du
+    JSON source (Physique en a, Maths n'en a pas). STOCKE DANS UNE
+    COLONNE DEDIEE volume_horaire_calcule, JAMAIS confondue avec
+    horaire_hebdo (donnee MINESEC officielle, distincte par nature : un
+    rythme hebdomadaire fixe vs une somme annuelle calculee). Les
+    confondre serait exactement le type d'hallucination que le prompt
+    doit empecher -- donc deux champs, deux libelles distincts injectes
+    separement dans texte_pour_prompt_systeme()."""
     conn = get_connection()
     try:
         cur = conn.cursor()
         cur.execute("""
-            SELECT horaire_hebdo, nombre_chapitres, evaluation_fin_annee
+            SELECT niveau, serie, lecons_detail
+            FROM progressions_chapitres
+            WHERE matiere = %s AND annee_scolaire = %s
+        """, (matiere, annee_scolaire))
+        rows = cur.fetchall()
+
+        totaux = {}
+        for r in rows:
+            detail = json.loads(r["lecons_detail"] or "[]")
+            if not detail:
+                continue
+            cle = (r["niveau"], r["serie"])
+            totaux[cle] = totaux.get(cle, 0) + sum(d.get("duree_heures", 0) for d in detail)
+
+        for (niveau, serie), total in totaux.items():
+            cur.execute("""
+                INSERT INTO progressions_niveaux
+                (annee_scolaire, matiere, niveau, serie, volume_horaire_calcule)
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (annee_scolaire, matiere, niveau, serie)
+                DO UPDATE SET volume_horaire_calcule = EXCLUDED.volume_horaire_calcule
+            """, (annee_scolaire, matiere, niveau, serie, total))
+
+        conn.commit()
+        print(f"Volume horaire calcule pour {len(totaux)} niveau(x)/serie(s) en {matiere}.")
+    except Exception as e:
+        conn.rollback()
+        print(f"recalculer_volume_horaire_calcule error: {e}")
+    finally:
+        conn.close()
+
+
+def obtenir_horaire_hebdo(matiere: str, niveau: str, serie: Optional[str] = None) -> dict:
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT horaire_hebdo, nombre_chapitres, evaluation_fin_annee, volume_horaire_calcule
             FROM progressions_niveaux
             WHERE matiere = %s AND niveau = %s
               AND (serie = %s OR (%s IS NULL AND serie IS NULL))
@@ -422,16 +518,15 @@ def obtenir_horaire_hebdo(matiere: str, niveau: str, serie: Optional[str] = None
         return {"disponible": False}
     finally:
         conn.close()
-
-
 def obtenir_chronologie(matiere: str, niveau: str, serie: Optional[str] = None,
                          annee_scolaire: str = "2026-2027") -> list[dict]:
-    """Retourne TOUS les chapitres d'un niveau/serie, dans l'ordre, avec
-    leurs dates -- pour repondre a une demande de calendrier complet
+    """Retourne TOUS les chapitres d'un niveau/serie/matiere, dans l'ordre,
+    avec leurs dates -- pour repondre a une demande de calendrier complet
     ou de trimestre, par opposition a obtenir_progression_du_jour() qui
-    ne regarde QUE la date du jour meme. Reponse deterministe depuis la
-    base, jamais laissee a l'improvisation du modele sur un long bloc
-    de texte (voir chat_contexte.py: repondre_chronologie_datee)."""
+    ne regarde QUE la date du jour meme. Filtre strictement par matiere :
+    un eleve BAC C Physique ne recoit jamais une ligne de BAC C
+    Mathematiques ou de BAC D Physique, la clause WHERE matiere=%s AND
+    niveau=%s AND serie=%s l'exclut structurellement au niveau SQL."""
     conn = get_connection()
     try:
         cur = conn.cursor()
@@ -455,46 +550,58 @@ def obtenir_chapitre_a_date(matiere: str, niveau: str, serie: Optional[str],
     """Meme logique que obtenir_progression_du_jour() mais pour une
     date ARBITRAIRE (passee ou future dans l'annee scolaire), pas
     seulement aujourd'hui -- reponse a 'le 12 janvier on fait quoi'.
-    Simple alias explicite : obtenir_progression_du_jour() accepte deja
-    date_reference en parametre, ce wrapper documente juste l'usage
-    different (date choisie par l'eleve, pas date.today())."""
+    Simple alias explicite."""
     return obtenir_progression_du_jour(matiere, niveau, serie, date_reference=date_cible)
 
 
 def texte_pour_prompt_systeme(matiere: str, niveau: str, serie: Optional[str] = None,
                                date_reference: Optional[date] = None) -> str:
-    """Formate obtenir_progression_du_jour() (+ obtenir_horaire_hebdo(),
-    NOUVEAU 07/09/2026) en un bloc de texte pret a coller dans le prompt
-    systeme Gemini. Garde-fou : si rien n'est disponible, le dit
-    explicitement plutot que de laisser un trou que le modele pourrait
-    combler par hallucination."""
     info = obtenir_progression_du_jour(matiere, niveau, serie, date_reference)
     jour_lisible = datetime.fromisoformat(info["date_reference"]).strftime("%d/%m/%Y")
 
     lignes = [f"[PROGRESSION NATIONALE MINESEC - {matiere} - {niveau}"
               + (f" serie {serie}" if serie else "") + f" - date du jour: {jour_lisible}]"]
 
-    # NOUVEAU (07/09/2026) : horaire_hebdo/nombre_chapitres injectes
-    # systematiquement quand disponibles -- c'est precisement la
-    # donnee que Gemini avait inventee ("6h" au lieu de "7h" pour
-    # Terminale C) faute d'etre presente ici auparavant.
     meta = obtenir_horaire_hebdo(matiere, niveau, serie)
     if meta.get("disponible"):
         if meta.get("horaire_hebdo"):
-            lignes.append(f"- Horaire hebdomadaire officiel : {meta['horaire_hebdo']}")
+            lignes.append(f"- Horaire hebdomadaire officiel MINESEC : {meta['horaire_hebdo']}")
+        elif meta.get("volume_horaire_calcule"):
+            lignes.append(f"- Volume horaire total ANNUEL calculé depuis le découpage du "
+                           f"programme (PAS un rythme hebdomadaire officiel) : "
+                           f"{meta['volume_horaire_calcule']}h sur l'année")
         if meta.get("nombre_chapitres"):
             lignes.append(f"- Nombre total de chapitres au programme : {meta['nombre_chapitres']}")
 
     for ev in info.get("evenements_du_jour", []):
         lignes.append(f"- Evenement du jour: {ev['label']}")
 
+    def _ligne_lecons(c: dict) -> str:
+        """AJOUT : affiche la durée par leçon quand lecons_detail existe
+        (cas Physique), sinon juste les titres (cas Maths, qui n'a pas
+        cette granularité dans son JSON source -- jamais inventé)."""
+        if c.get("lecons_detail"):
+            return ", ".join(f"{d['titre']} ({d['duree_heures']}h)" for d in c["lecons_detail"])
+        return ", ".join(c["lecons"])
+
     if info["disponible"]:
-        lignes.append(f"- Chapitre officiel en cours (semaine du {info['periode']}): "
-                       f"{info['chapitre_nom']}")
-        lignes.append(f"- Lecons de ce chapitre: {', '.join(info['lecons'])}")
-        if info.get("evaluation"):
-            lignes.append(f"- Evaluation prevue: {info['evaluation']}")
-        lignes.append("- Consigne: base tes reponses pedagogiques sur ce chapitre en "
+        chapitres = info["chapitres"]
+        if len(chapitres) == 1:
+            c = chapitres[0]
+            lignes.append(f"- Chapitre officiel en cours (semaine du {c['periode']}): "
+                           f"{c['nom_chapitre']}")
+            lignes.append(f"- Lecons de ce chapitre: {_ligne_lecons(c)}")
+            if c.get("evaluation"):
+                lignes.append(f"- Evaluation prevue: {c['evaluation']}")
+        else:
+            lignes.append(f"- {len(chapitres)} chapitres officiels menes en parallele "
+                           f"cette periode :")
+            for c in chapitres:
+                ligne = f"  - {c['nom_chapitre']} (lecons: {_ligne_lecons(c)})"
+                if c.get("evaluation"):
+                    ligne += f" -- evaluation: {c['evaluation']}"
+                lignes.append(ligne)
+        lignes.append("- Consigne: base tes reponses pedagogiques sur ce(s) chapitre(s) en "
                        "priorite si l'eleve ne precise pas un autre sujet.")
     else:
         if info.get("prochain_chapitre"):
@@ -514,3 +621,40 @@ if __name__ == "__main__":
     # Test rapide : python database_progressions.py
     create_table()
     print(texte_pour_prompt_systeme("Mathematiques", "terminale", "C"))
+    print()
+    print(texte_pour_prompt_systeme("Physique", "terminale", "C"))
+
+def recalculer_nombre_chapitres(matiere: str, annee_scolaire: str = "2026-2027"):
+    """Deduit nombre_chapitres directement de progressions_chapitres
+    (COUNT reel) plutot que de dependre d'un champ JSON source qui peut
+    manquer (cas du JSON Physique actuel) ou se desynchroniser d'un futur
+    ajout/suppression de chapitre. Ne touche PAS horaire_hebdo ni
+    evaluation_fin_annee -- ces deux champs restent des donnees MINESEC
+    officielles qui ne peuvent pas etre deduites, seulement fournies."""
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT niveau, serie, COUNT(*) AS nb
+            FROM progressions_chapitres
+            WHERE matiere = %s AND annee_scolaire = %s
+            GROUP BY niveau, serie
+        """, (matiere, annee_scolaire))
+        lignes = cur.fetchall()
+
+        for l in lignes:
+            cur.execute("""
+                INSERT INTO progressions_niveaux
+                (annee_scolaire, matiere, niveau, serie, nombre_chapitres)
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (annee_scolaire, matiere, niveau, serie)
+                DO UPDATE SET nombre_chapitres = EXCLUDED.nombre_chapitres
+            """, (annee_scolaire, matiere, l["niveau"], l["serie"], l["nb"]))
+
+        conn.commit()
+        print(f"nombre_chapitres recalcule pour {len(lignes)} niveau(x)/serie(s) en {matiere}.")
+    except Exception as e:
+        conn.rollback()
+        print(f"recalculer_nombre_chapitres error: {e}")
+    finally:
+        conn.close()

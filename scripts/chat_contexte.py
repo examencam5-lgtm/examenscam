@@ -29,22 +29,27 @@ l'exercice.
 BRANCHEMENT CRÉDITS (05/09/2026) :
 generer_texte_avec_fallback() (mode bloc) retourne désormais 5
 valeurs -- (texte, fournisseur, source, tokens_entree, tokens_sortie)
-au lieu de 3 -- voir scripts/chat_llm_client.py. repondre_eleve() est
-mise à jour pour ce nouveau contrat et retourne ces deux champs en
-plus, au cas où un futur appelant non-streaming voudrait aussi
-facturer un usage bloc (aujourd'hui le chat élève passe uniquement en
-streaming côté app.py -- voir assistant_eleve_repondre -- mais casser
-silencieusement le contrat de repondre_eleve() serait une régression
-non détectée pour le prochain script qui l'utiliserait en CLI, voir
-le bloc `if __name__ == "__main__"` plus bas).
+au lieu de 3 -- voir scripts/chat_llm_client.py.
 
-repondre_eleve_stream() accepte maintenant `stats: dict | None = None`
-et le transmet tel quel à generer_texte_stream_avec_fallback(), qui
-y écrit 'fournisseur', 'source', 'tokens_entree', 'tokens_sortie' une
-fois le flux terminé avec succès (voir sa docstring dans
-chat_llm_client.py). C'est un dict mutable passé par référence -- rien
-à retourner explicitement ici, l'appelant (app.py) lit le même objet
-qu'il a construit et passé en argument après la fin du `yield from`.
+CORRECTIF (17/09/2026) -- FUITE CROISÉE MATIÈRE SUR LA CHRONOLOGIE :
+repondre_chronologie_datee() appelait auparavant
+_obtenir_chapitre_a_date(MATIERE_DEFAUT, ...) -- MATIERE_DEFAUT =
+"Mathematiques" en dur, quelle que soit la matière réellement active
+dans la conversation. Un élève en train de discuter Physique qui
+demandait "on fait quoi le 12 janvier" recevait silencieusement la
+chronologie de Mathématiques. C'était la SEULE vraie fuite croisée
+matière du système -- database_progressions.py filtre déjà
+correctement par matiere en SQL partout ailleurs (voir
+obtenir_progression_du_jour). Corrigé en ajoutant `matiere` à la
+signature -- l'appelant (app.py, assistant_eleve_repondre) doit
+transmettre la matière active, voir le correctif correspondant dans
+app.py.
+
+Ajout aussi de detecter_date_relative() pour "aujourd'hui", "demain",
+"semaine prochaine", "dans N semaines" -- calcul par Python
+(timedelta), jamais demandé à Gemini, même discipline que le reste
+du fichier (voir CORRESPONDANCE_NIVEAU_PROGRESSION plus bas : aucune
+arithmétique de calendrier n'est jamais confiée au modèle).
 """
 
 import re
@@ -101,10 +106,6 @@ LIMITE_CARACTERES_EXEMPLE_CHAT = 1200
 
 MATIERE_DEFAUT = "Mathematiques"
 
-# Nombre maximal de références d'épreuves officielles injectées par
-# leçon détectée -- reste volontairement bas (même logique de budget
-# de prompt que NB_EXEMPLES_CONTEXTE) : le but est de signaler qu'un
-# vrai exercice existe, pas de dresser une liste exhaustive.
 NB_REFERENCES_EPREUVES_OFFICIELLES = 3
 LIMITE_CARACTERES_JUSTIFICATION = 180
 
@@ -169,10 +170,6 @@ def detecter_themes_mentionnes(
 ) -> list[str]:
     """
     Retourne les noms de thèmes correspondant à la matière demandée.
-
-    La recherche est limitée à la matière sélectionnée afin d'éviter
-    qu'une question posée dans une autre matière récupère des thèmes
-    de Mathématiques par erreur.
     """
     question_normalisee = _normaliser(question)
 
@@ -187,8 +184,6 @@ def detecter_themes_mentionnes(
             (matiere,),
         )
     except sqlite3.OperationalError:
-        # Compatibilité avec une ancienne base où la colonne matiere
-        # pourrait ne pas encore exister.
         cur = conn.execute(
             "SELECT nom_theme FROM themes"
         )
@@ -213,16 +208,6 @@ def detecter_lecons_mentionnees(
 ) -> list[dict]:
     """
     Détecte directement les leçons correspondant à la matière choisie.
-
-    Retourne une liste de dicts :
-        {
-            "identifiant": ...,
-            "titre": ...,
-            "chapitre_numero": ...,
-            "lecon_numero": ...
-        }
-
-    Si la table `lecons` n'existe pas encore, dégradation silencieuse.
     """
     question_normalisee = _normaliser(question)
 
@@ -357,32 +342,8 @@ def construire_references_epreuves_officielles(
     lecons_detectees: list[dict],
 ) -> str:
     """
-    Cherche, pour les leçons précises détectées (table `lecons`, via
-    detecter_lecons_mentionnees), de vrais exercices de BAC officiel
-    déjà tagués (tags_exercices_bac -> sections_bac_officielles ->
-    epreuves_bac_officielles).
-
-    Volontairement branché sur `lecons_detectees` plutôt que sur des
-    thèmes : plus précis, et évite une seconde détection redondante
-    puisque `_construire_prompt_systeme` calcule déjà cette liste pour
-    construire_contexte_lecon().
-
-    Contrairement à construire_contexte_camerounais() (qui donne des
-    extraits comme simple repère de STYLE, jamais cités), ce bloc donne
-    des références NOMMÉES et RÉELLES (session, série, identifiant)
-    que le tuteur peut activement recommander à l'élève pour
-    s'entraîner -- d'où un prompt différent, qui autorise explicitement
-    la recommandation par son nom exact.
-
-    Priorité aux épreuves qualite='verifie_vision' (retranscrites
-    fidèlement) sur celles encore en 'ocr_brut', sans les exclure --
-    un signalement imprécis reste préférable à l'absence totale de
-    référence, du moment que ce n'est jamais présenté comme une
-    citation exacte du texte source.
-
-    Dégradation gracieuse : chaîne vide si aucune leçon détectée, ou
-    si aucune référence taguée n'existe encore pour ces leçons, ou si
-    les tables attendues n'existent pas dans une base plus ancienne.
+    Cherche, pour les leçons précises détectées, de vrais exercices de
+    BAC officiel déjà tagués.
     """
     if not lecons_detectees:
         return ""
@@ -747,31 +708,11 @@ def construire_contexte_eleve(
 # CORRESPONDANCE NIVEAU COMPTE ÉLÈVE -> NIVEAU PROGRESSION MINESEC
 # ═══════════════════════════════════════════════════════
 
-# database_eleves.NIVEAUX_VALIDES stocke 'BEPC' / 'Probatoire' / 'BAC'
-# (voir database_eleves.py). database_progressions.py, lui, utilise le
-# decoupage du JSON source MINESEC : '3e' / 'premiere' / 'terminale'.
-# Sans cette correspondance, niveau_norm = 'bac' ne matche jamais
-# ('terminale' attendu) et construire_bloc_progression_nationale()
-# retourne toujours "" silencieusement -- aucune exception, aucun log,
-# juste une progression jamais injectee dans le prompt.
 CORRESPONDANCE_NIVEAU_PROGRESSION = {
     "bepc": "3e",
     "probatoire": "premiere",
     "bac": "terminale",
 }
-
-# ═══════════════════════════════════════════════════════
-# REMPLACE integralement construire_bloc_progression_nationale() ET
-# le dict NIVEAU_VERS_PROGRESSION dans chat_contexte.py.
-#
-# AJOUT : SERIE_VERS_PROGRESSION -- la serie stockee cote ExamensCam
-# (probablement "A4", alignee sur CATALOGUE dans app.py et sur le
-# SCOPE_ACTIF etendu de chat_scope.py) ne correspond plus a la cle
-# "A" utilisee dans database_progressions.py (renommee ainsi sur
-# demande explicite pour eviter l'ambiguite "A4 vs A-ABI" -- voir
-# l'echange precedent). Sans ce second mapping, un eleve A4 ne
-# recevrait jamais sa progression meme apres correction du niveau.
-# ═══════════════════════════════════════════════════════
 
 NIVEAU_VERS_PROGRESSION = {
     "bepc": "3e",
@@ -790,18 +731,9 @@ SERIE_VERS_PROGRESSION = {
     "TI": "TI",
 }
 
-
-# ═══════════════════════════════════════════════════════
-# A ajouter juste avant construire_bloc_progression_nationale()
-# (a cote de NIVEAU_VERS_PROGRESSION / SERIE_VERS_PROGRESSION)
-# ═══════════════════════════════════════════════════════
-
-# Matieres pour lesquelles une fiche de progression a ete importee
-# dans database_progressions -- a completer au fur et a mesure
-# (Chimie, SVT, etc.). Une matiere absente d'ici n'appelle jamais
-# Postgres pour rien : pas de requete inutile, pas de bruit dans le
-# prompt avec un message "aucune donnee disponible" pour une matiere
-# qui n'a simplement jamais ete alimentee.
+# Matieres pour lesquelles une fiche de progression a ete importee dans
+# database_progressions -- a completer au fur et a mesure (Chimie, SVT,
+# etc.). Une matiere absente d'ici n'appelle jamais Postgres pour rien.
 MATIERES_AVEC_PROGRESSION = {"Mathematiques", "Physique"}
 
 
@@ -812,46 +744,13 @@ def construire_bloc_progression_nationale(
 ) -> str:
     """
     Injecte le chapitre officiel MINESEC en cours a la date du jour,
-    pour le niveau/serie/matiere exact de l'eleve (source:
-    database_progressions.py, alimentee par les fiches de progression
-    harmonisee nationale 2026-2027).
-
-    Prend niveau/serie deja extraits par _construire_prompt_systeme()
-    (memes variables que celles passees a chat_scope.mode_pour()) plutot
-    que de re-extraire depuis le dict eleve -- evite une deuxieme logique
-    de valeurs par defaut divergente de celle deja en place.
-
-    Traduit DEUX nomenclatures distinctes vers celle de la base
-    progression :
-      - niveau : ExamensCam (BEPC/Probatoire/BAC) -> MINESEC classe
-        (3e/premiere/terminale), voir NIVEAU_VERS_PROGRESSION.
-      - serie : ExamensCam (A4/C/D/TI) -> base progression (A/C/D/TI),
-        voir SERIE_VERS_PROGRESSION. Necessaire car la serie A4 a ete
-        renommee "A" dans database_progressions.py pour lever une
-        ambiguite avec la classe source "A-ABI" du document MINESEC --
-        ce renommage est un choix interne a cette base, jamais visible
-        cote eleve/ExamensCam, d'ou la traduction ici.
-
-    Pour BEPC, serie sera generalement None ou vide -- pas de mapping
-    necessaire, database_progressions gere deja serie=None pour "3e".
-
-    MATIERES_AVEC_PROGRESSION filtre en amont : seules les matieres
-    reellement importees declenchent une requete Postgres -- evite un
-    appel reseau et un bloc de prompt "aucune donnee disponible" pour
-    une matiere jamais alimentee (Chimie, SVT, etc. tant qu'elles ne
-    sont pas importees).
+    pour le niveau/serie/matiere exact de l'eleve.
 
     Degradation gracieuse totale : si le niveau, la serie ou la matiere
     ne sont pas reconnus/couverts, si database_progressions n'a pas pu
     etre importe, ou si la requete Postgres echoue pour une raison
-    quelconque (perte reseau a Maroua, Neon indisponible), cette
-    fonction retourne une chaine vide -- elle ne doit JAMAIS faire
-    planter une reponse eleve.
-
-    Garde-fou anti-hallucination : le texte retourne par
-    texte_pour_prompt_systeme() dit deja explicitement a Gemini de ne
-    pas se positionner dans le programme s'il n'y a aucune donnee pour
-    cette date/serie -- rien a dupliquer ici.
+    quelconque, cette fonction retourne une chaine vide -- elle ne doit
+    JAMAIS faire planter une reponse eleve.
     """
     if _progression_du_jour is None:
         return ""
@@ -871,9 +770,6 @@ def construire_bloc_progression_nationale(
     else:
         serie_norm = SERIE_VERS_PROGRESSION.get(serie_brute)
         if serie_norm is None and niveau_norm != "3e":
-            # Serie fournie mais non reconnue (typo, nouvelle serie
-            # jamais mappee) -- on prefere ne rien afficher plutot que
-            # de risquer une correspondance fausse.
             return ""
 
     try:
@@ -883,6 +779,8 @@ def construire_bloc_progression_nationale(
         return ""
 
     return "\n" + bloc + "\n"
+
+
 # ═══════════════════════════════════════════════════════
 # SOMMAIRE DU PROGRAMME
 # ═══════════════════════════════════════════════════════
@@ -970,8 +868,6 @@ def construire_sommaire_programme(
 
 
 # ═══════════════════════════════════════════════════════
-# ══════════════
-# ═══════════════════════════════════════════════════════
 # PROMPT GÉNÉRIQUE
 # ═══════════════════════════════════════════════════════
 
@@ -1019,9 +915,6 @@ def _construire_prompt_systeme(
 ) -> str:
     """
     Construction commune utilisée par la réponse normale et le streaming.
- 
-    Cette fonction centralise le choix RAG/générique afin que les deux
-    modes aient exactement le même comportement.
     """
  
     niveau = (eleve or {}).get("niveau") or "BAC"
@@ -1038,10 +931,6 @@ def _construire_prompt_systeme(
             )
         except Exception:
             mode = None
- 
-    # ═══════════════════════════════════════════════════
-    # MODE RAG
-    # ═══════════════════════════════════════════════════
  
     mode_rag = (
         chat_scope is not None
@@ -1103,10 +992,6 @@ def _construire_prompt_systeme(
             + references_officielles
         )
  
-    # ═══════════════════════════════════════════════════
-    # MODE GÉNÉRIQUE
-    # ═══════════════════════════════════════════════════
- 
     else:
  
         prompt_matiere = (
@@ -1115,28 +1000,16 @@ def _construire_prompt_systeme(
             )
         )
  
-    # ═══════════════════════════════════════════════════
-    # PROFIL ÉLÈVE
-    # ═══════════════════════════════════════════════════
- 
     contexte_eleve = construire_contexte_eleve(
         eleve,
         historique,
     )
- 
-    # ═══════════════════════════════════════════════════
-    # PROGRESSION NATIONALE MINESEC (04/09/2026)
-    # ═══════════════════════════════════════════════════
  
     bloc_progression = construire_bloc_progression_nationale(
         niveau,
         serie,
         matiere,
     )
- 
-    # ═══════════════════════════════════════════════════
-    # CORRECTION FIDÈLE
-    # ═══════════════════════════════════════════════════
  
     instruction_correction = (
         INSTRUCTION_CORRECTION_FIDELE
@@ -1164,17 +1037,6 @@ def repondre_eleve(
 ) -> tuple[str, str, str, int, int]:
     """
     Point d'entrée classique du chat élève.
-
-    `matiere` est désormais transmis jusqu'au RAG et au prompt.
-
-    MODIFIÉ (05/09/2026) : generer_texte_avec_fallback() (voir
-    chat_llm_client.py) retourne désormais 5 valeurs au lieu de 3 --
-    (texte, fournisseur, source, tokens_entree, tokens_sortie). Cette
-    fonction répercute ce changement dans sa propre signature de
-    retour, pour ne pas masquer silencieusement l'info de tokens à un
-    futur appelant CLI/bloc qui voudrait aussi facturer des crédits
-    (voir le bloc `if __name__ == "__main__"` plus bas, mis à jour en
-    conséquence).
     """
 
     if not DB_PATH.exists():
@@ -1238,29 +1100,6 @@ def repondre_eleve_stream(
 ):
     """
     Version streaming SSE du chat élève.
-
-    IMPORTANT :
-    Cette fonction accepte maintenant `matiere=...`.
-
-    C'est précisément le correctif qui élimine :
-
-        TypeError:
-        repondre_eleve_stream() got an unexpected keyword argument 'matiere'
-
-    BRANCHEMENT CRÉDITS (05/09/2026) :
-    Accepte désormais `stats: dict | None = None`, transmis tel quel
-    à generer_texte_stream_avec_fallback() (voir chat_llm_client.py).
-    C'est un dict MUTABLE -- cette fonction ne le retourne pas
-    explicitement (un générateur ne peut pas `return` une valeur
-    consommable en plus de ses `yield`), l'appelant (app.py,
-    assistant_eleve_repondre -> flux_evenements) doit construire ce
-    dict AVANT d'appeler `yield from repondre_eleve_stream(...)`, et
-    le relire APRÈS que la boucle `yield from` est terminée pour
-    connaître 'fournisseur', 'source', 'tokens_entree',
-    'tokens_sortie' et appeler consommer_credits() en conséquence.
-    Si `stats` n'est pas fourni, comportement inchangé (rien n'est
-    calculé côté crédits) -- rétro-compatible avec tout appelant qui
-    n'a pas encore ce besoin.
     """
 
     if not DB_PATH.exists():
@@ -1306,13 +1145,15 @@ def repondre_eleve_stream(
         messages,
         stats=stats,
     )
+
+
 # ═══════════════════════════════════════════════════════
 # DEMANDE DE CHRONOLOGIE / DATE PRÉCISE — réponse déterministe,
-# jamais laissée à l'improvisation du modèle sur un long historique.
+# jamais laissée à l'improvisation du modèle.
 # ═══════════════════════════════════════════════════════
 
 import re as _re
-from datetime import date as _date
+from datetime import date as _date, timedelta as _timedelta
 try:
     from database_progressions import (
         obtenir_chronologie as _obtenir_chronologie,
@@ -1324,6 +1165,11 @@ except Exception:
     _obtenir_chapitre_a_date = None
 
 MOTS_DECLENCHEURS_CHRONOLOGIE = ["trimestre", "chronologie", "calendrier", "semaine par semaine"]
+
+# CORRECTIF (17/09/2026) : intentions temporelles relatives, en plus de
+# la date explicite deja geree par detecter_date_precise(). Toujours
+# calcule en Python (timedelta) -- jamais demande a Gemini.
+MOTIF_DANS_N_SEMAINES = _re.compile(r"dans\s+(\d+)\s+semaines?", _re.IGNORECASE)
 
 
 def detecter_date_precise(question: str):
@@ -1344,17 +1190,61 @@ def detecter_date_precise(question: str):
         return None
 
 
+def detecter_date_relative(question: str):
+    """NOUVEAU (17/09/2026) : 'aujourd'hui', 'demain', 'semaine
+    prochaine', 'dans N semaines' -- toutes calculees depuis
+    date.today() en Python, jamais laissees a Gemini. Retourne None si
+    aucune intention relative n'est detectee (auquel cas
+    detecter_date_precise reste la seule voie pour une date
+    explicite)."""
+    q = _normaliser(question)
+    today = _date.today()
+
+    if "aujourdhui" in q or "aujourd hui" in q:
+        return today
+    if "demain" in q:
+        return today + _timedelta(days=1)
+    if "semaine prochaine" in q:
+        return today + _timedelta(weeks=1)
+
+    m = MOTIF_DANS_N_SEMAINES.search(q)
+    if m:
+        return today + _timedelta(weeks=int(m.group(1)))
+
+    return None
+
+
 def detecter_demande_chronologie(question: str) -> bool:
     q_norm = _normaliser(question)
     return any(mot in q_norm for mot in MOTS_DECLENCHEURS_CHRONOLOGIE)
 
-def repondre_chronologie_datee(question: str, eleve: dict | None) -> str | None:
-    """Point d'entrée à appeler AVANT tout appel Gemini (comme
-    detecter_demande_epreuve dans app.py). Retourne un texte de
-    réponse déterministe si la question porte sur une date précise ou
-    une chronologie complète/trimestre, None sinon (auquel cas le
-    flux normal RAG/générique continue)."""
+
+def repondre_chronologie_datee(
+    question: str,
+    eleve: dict | None,
+    matiere: str = MATIERE_DEFAUT,
+) -> str | None:
+    """Point d'entrée à appeler AVANT tout appel Gemini.
+
+    CORRECTIF CRITIQUE (17/09/2026) : `matiere` était absente de la
+    signature -- _obtenir_chapitre_a_date() était toujours appelée avec
+    MATIERE_DEFAUT="Mathematiques" en dur, quelle que soit la matière
+    réellement active dans la conversation. Un élève en scope Physique
+    qui demandait "on fait quoi le 12 janvier" recevait silencieusement
+    la chronologie de Maths -- seule vraie fuite croisée matière du
+    système (database_progressions.py filtre déjà correctement partout
+    ailleurs). L'appelant (app.py, assistant_eleve_repondre) DOIT
+    transmettre la matière active de la conversation ici.
+
+    Gère aussi désormais 'chapitres' (liste, voir
+    obtenir_progression_du_jour côté database_progressions.py) au lieu
+    d'un seul chapitre -- un élève qui demande sa date pendant une
+    période à chapitres multiples (ex: Physique Terminale C mi-mars,
+    3 chapitres en parallèle) reçoit la liste complète, pas juste le
+    premier."""
     if _obtenir_chronologie is None or not eleve:
+        return None
+    if matiere not in MATIERES_AVEC_PROGRESSION:
         return None
 
     niveau = CORRESPONDANCE_NIVEAU_PROGRESSION.get((eleve.get("niveau") or "").strip().lower())
@@ -1362,25 +1252,34 @@ def repondre_chronologie_datee(question: str, eleve: dict | None) -> str | None:
     if niveau is None:
         return None
 
-    date_cible = detecter_date_precise(question)
+    date_cible = detecter_date_precise(question) or detecter_date_relative(question)
     if date_cible:
-        info = _obtenir_chapitre_a_date(MATIERE_DEFAUT, niveau, serie, date_cible)
+        info = _obtenir_chapitre_a_date(matiere, niveau, serie, date_cible)
         jour_lisible = date_cible.strftime("%d/%m/%Y")
+
         if info.get("disponible"):
-            return (f"Le {jour_lisible}, tu es censé être sur le chapitre "
-                    f"« {info['chapitre_nom']} » (semaine du {info['periode']}).")
+            chapitres = info["chapitres"]
+            if len(chapitres) == 1:
+                c = chapitres[0]
+                return (f"Le {jour_lisible} en {matiere}, tu es censé être sur le chapitre "
+                        f"« {c['nom_chapitre']} » (semaine du {c['periode']}).")
+            noms = ", ".join(f"« {c['nom_chapitre']} »" for c in chapitres)
+            return (f"Le {jour_lisible} en {matiere}, {len(chapitres)} chapitres sont menés "
+                    f"en parallèle selon le calendrier officiel MINESEC : {noms}.")
+
         if info.get("prochain_chapitre"):
-            return (f"Le {jour_lisible}, aucun chapitre officiel n'est en cours "
-                    f"(vacances ou hors calendrier). Le prochain chapitre prévu "
-                    f"est « {info['prochain_chapitre']} », à partir du "
+            return (f"Le {jour_lisible} en {matiere}, aucun chapitre officiel n'est en cours "
+                    f"(vacances ou hors calendrier). Prochain chapitre prévu : "
+                    f"« {info['prochain_chapitre']} », à partir du "
                     f"{info['prochain_chapitre_debut']}.")
-        return f"Je n'ai pas de donnée de progression officielle pour le {jour_lisible}."
+
+        return f"Je n'ai pas de donnée de progression officielle en {matiere} pour le {jour_lisible}."
 
     if detecter_demande_chronologie(question):
-        chapitres = _obtenir_chronologie(MATIERE_DEFAUT, niveau, serie)
+        chapitres = _obtenir_chronologie(matiere, niveau, serie)
         if not chapitres:
-            return None  # pas de donnée -> laisser le flux normal répondre prudemment
-        lignes = [f"Voici la chronologie complète pour {eleve.get('niveau')} "
+            return None
+        lignes = [f"Voici la chronologie complète en {matiere} pour {eleve.get('niveau')} "
                   f"{serie or ''} :\n"]
         for c in chapitres:
             periode = c.get("semaine_texte") or "période non précisée"

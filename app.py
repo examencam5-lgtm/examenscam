@@ -1070,7 +1070,7 @@ def assistant_eleve_repondre():
         return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
 
     historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
-    reponse_chronologie = repondre_chronologie_datee(question, eleve)
+    reponse_chronologie = repondre_chronologie_datee(question, eleve, matiere)
     if reponse_chronologie is not None:
         return jsonify({'reponse': reponse_chronologie})
 
