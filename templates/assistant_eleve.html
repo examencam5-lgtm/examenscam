@@ -19,6 +19,7 @@
 
   body.page-app-plein-ecran {
     height: 100vh;
+    height: calc(var(--vh-app, 1vh) * 100);
     height: 100dvh;
     overflow: hidden;
     background: var(--ec-surface, #fff);
@@ -30,6 +31,7 @@
     max-width: 100%;
     min-width: 0;
     height: 100vh;
+    height: calc(var(--vh-app, 1vh) * 100);
     height: 100dvh;
     overflow: hidden;
     box-sizing: border-box;
@@ -229,6 +231,44 @@
 
   .sidebar-compte-lien:hover {
     background: var(--ec-accent-soft, #F1F5F9);
+  }
+
+  /* NOUVEAU : bouton de connexion plein, visible -- remplace l'ancien
+     lien texte plat (voir sidebar-compte-lien ci-dessus) qui se
+     fondait dans le fond de la sidebar et passait inaperçu,
+     particulièrement en bas d'un long menu sur mobile. */
+  .sidebar-connexion-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.72rem 1rem;
+    border-radius: 10px;
+    background: var(--ec-accent, #2563EB);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .sidebar-connexion-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  }
+
+  .sidebar-connexion-btn svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .sidebar-compte-avatar {
@@ -439,6 +479,52 @@
     color: var(--ec-ink, #0F172A);
   }
 
+  /* NOUVEAU : CTA de connexion mis en avant sur l'accueil (mode
+     démo) -- placé juste sous le message de bienvenue, donc visible
+     sans défiler, contrairement au lien "Se connecter" de la sidebar
+     ou au composer tout en bas de l'écran. */
+  .welcome-connexion-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin: 1.1rem 0 0;
+    padding: 0.82rem 1.4rem;
+    border-radius: 12px;
+    background: var(--ec-accent, #2563EB);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 3px 12px rgba(37, 99, 235, 0.28);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .welcome-connexion-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(37, 99, 235, 0.32);
+  }
+
+  .welcome-connexion-btn svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .assistant-welcome.centree .welcome-connexion-btn {
+    display: flex;
+    width: 100%;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .welcome-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -572,11 +658,13 @@
     overflow-wrap: anywhere;
   }
 
-  .msg-bot-corps h3 {
+    .msg-bot-corps h3 {
     font-size: 1.04rem;
     margin: 0.8rem 0 0.35rem;
   }
 
+  /* Titre d'exercice (ex: "### Exercice 3 : Utilisation des savoirs")
+     mis en avant avec un accent visuel distinct du texte normal */
   .msg-bot-corps h3.titre-exercice {
     display: inline-block;
     margin: 1.1rem 0 0.6rem;
@@ -592,6 +680,8 @@
     margin-top: 0;
   }
 
+  /* Titre de partie (ex: "#### Partie A") -- plus discret qu'un
+     exercice, sert juste à scinder visuellement un long problème */
   .msg-bot-corps h4.titre-partie {
     margin: 0.9rem 0 0.4rem;
     padding-left: 0.6rem;
@@ -603,6 +693,12 @@
     letter-spacing: 0.03em;
   }
 
+  /* Titre de sous-partie numérotée (ex: "1. Pendule simple / 2 points")
+     -- un cran en dessous du titre d'exercice : pas de pastille pleine
+     (pour ne pas surcharger visuellement quand il y en a plusieurs à
+     la suite), mais un texte coloré et une petite puce d'accent pour
+     bien la détacher du reste, notamment utile en physique où chaque
+     sous-partie correspond à un thème différent (pendule, ondes...). */
   .msg-bot-corps h3.titre-sous-partie {
     display: flex;
     align-items: baseline;
@@ -628,16 +724,26 @@
     margin-top: 0;
   }
 
+  /* Chaque question numérotée démarre clairement sur sa propre ligne,
+     avec le numéro légèrement détaché du texte */
   .msg-bot-corps p.question-numerotee {
     margin: 0.55rem 0;
   }
 
+  /* Numéro de question (ex: "2.", "2.1.", "(a)") mis en couleur pour
+     le repérer d'un coup d'œil, qu'il soit au tout début d'un
+     paragraphe ou glissé au milieu d'un long énoncé */
   .msg-bot-corps .numero-question {
     font-weight: 700;
     color: var(--ec-accent, #2563EB);
     margin-right: 0.3rem;
   }
 
+  /* NOUVEAU : les sous-questions lettrées (a), b), c)...) sont
+     indentées sous leur numéro de question parent -- convention
+     MINESEC : la lettre n'est jamais au même niveau visuel que le
+     chiffre. La classe est posée sur le <p> englobant par
+     rendreReponseAssistant() (post-traitement après marked.parse()). */
   .msg-bot-corps p.sous-question {
     margin-left: 1.4rem;
   }
@@ -1118,6 +1224,14 @@
       font-size: 0.98rem;
     }
 
+    /* CORRECTIF (rendu mobile) : le centrage vertical de l'accueil
+       (justify-content: center, hérité du style desktop) laissait un
+       grand vide au-dessus de "Bonjour ..." sur téléphone -- le
+       contenu flottait au milieu d'un écran presque vide au lieu de
+       démarrer juste sous la barre du haut, comme un vrai espace de
+       chat (WhatsApp, ChatGPT). On ancre en haut sur mobile
+       uniquement -- le desktop garde son centrage, plus adapté à un
+       écran large. */
     .assistant-fenetre.mode-accueil {
       justify-content: flex-start;
     }
@@ -1255,158 +1369,161 @@
 
   <aside class="assistant-sidebar" id="assistant-sidebar">
 
-    <a href="/" class="sidebar-marque">
-      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="ExamensCam">
-      <span>ExamensCam</span>
-    </a>
+<a href="/" class="sidebar-marque">
+  <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="ExamensCam">
+  <span>ExamensCam</span>
+</a>
 
-    <nav class="sidebar-nav-site">
-      {% if eleve %}
-        {% if eleve.niveau == 'BEPC' %}
-          <a href="{{ url_for('bepc') }}" class="actif">BEPC</a>
-        {% elif eleve.niveau == 'Probatoire' %}
-          <a href="{{ url_for('probatoire_serie', serie=eleve.serie) if eleve.serie else url_for('probatoire') }}" class="actif">
-            Probatoire{% if eleve.serie %} {{ eleve.serie }}{% endif %}
-          </a>
-        {% elif eleve.niveau == 'BAC' %}
-          <a href="{{ url_for('bac_serie', serie=eleve.serie) if eleve.serie else url_for('bac') }}" class="actif">
-            BAC{% if eleve.serie %} {{ eleve.serie }}{% endif %}
-          </a>
-        {% endif %}
-      {% else %}
-        <a href="/bepc" class="{{ 'actif' if 'bepc' in request.path|lower else '' }}">BEPC</a>
-        <a href="/probatoire" class="{{ 'actif' if 'probatoire' in request.path|lower else '' }}">Probatoire</a>
-        <a href="/bac" class="{{ 'actif' if 'bac' in request.path|lower else '' }}">BAC</a>
-      {% endif %}
-
-      <a href="/a-propos" class="{{ 'actif' if 'a-propos' in request.path|lower else '' }}">À propos</a>
-      <a href="/conditions" class="{{ 'actif' if 'conditions' in request.path|lower else '' }}">Conditions</a>
-    </nav>
-
-    <button type="button" class="sidebar-item sidebar-item-nouvelle" id="btn-nouvelle-conversation">
-      <span class="sidebar-icone" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
-      </span>
-      Nouvelle conversation
-    </button>
-
-    {% if not mode_demo and matieres_dispo %}
-    <div class="sidebar-separateur">Matière</div>
-
-    <div class="sidebar-matieres" id="sidebar-matieres">
-      {% for m in matieres_dispo %}
-      <button
-        type="button"
-        class="chip-matiere"
-        data-matiere="{{ m }}">
-        {{ m }}
-      </button>
-      {% endfor %}
-    </div>
+<nav class="sidebar-nav-site">
+  {% if eleve %}
+    {% if eleve.niveau == 'BEPC' %}
+      <a href="{{ url_for('bepc') }}" class="actif">BEPC</a>
+    {% elif eleve.niveau == 'Probatoire' %}
+      <a href="{{ url_for('probatoire_serie', serie=eleve.serie) if eleve.serie else url_for('probatoire') }}" class="actif">
+        Probatoire{% if eleve.serie %} {{ eleve.serie }}{% endif %}
+      </a>
+    {% elif eleve.niveau == 'BAC' %}
+      <a href="{{ url_for('bac_serie', serie=eleve.serie) if eleve.serie else url_for('bac') }}" class="actif">
+        BAC{% if eleve.serie %} {{ eleve.serie }}{% endif %}
+      </a>
     {% endif %}
+  {% else %}
+    <a href="/bepc" class="{{ 'actif' if 'bepc' in request.path|lower else '' }}">BEPC</a>
+    <a href="/probatoire" class="{{ 'actif' if 'probatoire' in request.path|lower else '' }}">Probatoire</a>
+    <a href="/bac" class="{{ 'actif' if 'bac' in request.path|lower else '' }}">BAC</a>
+  {% endif %}
 
-    <div class="sidebar-separateur">Générer</div>
+  <a href="/a-propos" class="{{ 'actif' if 'a-propos' in request.path|lower else '' }}">À propos</a>
+  <a href="/conditions" class="{{ 'actif' if 'conditions' in request.path|lower else '' }}">Conditions</a>
+</nav>
 
-    <button
-      type="button"
-      class="sidebar-item"
-      id="btn-sidebar-examen"
-      {% if not disponible %}
-      disabled
-      title="Bientôt disponible pour ta série"
-      {% endif %}>
-      <span class="sidebar-icone" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M4 19.5V6.8a1.8 1.8 0 0 1 1.8-1.8h12.4A1.8 1.8 0 0 1 20 6.8v12.7"/>
-          <path d="M4 18.5c1.2-.8 2.7-1.1 4.2-.8l3.8.8 3.8-.8c1.5-.3 3 0 4.2.8"/>
-          <path d="M8 9h8M8 12h6"/>
-        </svg>
-      </span>
-      Examen officiel (Bac blanc)
-    </button>
+<button type="button" class="sidebar-item sidebar-item-nouvelle" id="btn-nouvelle-conversation">
+  <span class="sidebar-icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+  </span>
+  Nouvelle conversation
+</button>
 
-    <button
-      type="button"
-      class="sidebar-item"
-      id="btn-sidebar-sequence"
-      {% if not disponible %}
-      disabled
-      title="Bientôt disponible pour ta série"
-      {% endif %}>
-      <span class="sidebar-icone" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M5 4h10l4 4v12H5z"/>
-          <path d="M15 4v5h4M8 13h8M8 16h6"/>
-        </svg>
-      </span>
-      Épreuve de séquence
-    </button>
+{% if not mode_demo and matieres_dispo %}
+<div class="sidebar-separateur">Matière</div>
 
-    <div class="sidebar-separateur">Consulter</div>
+<div class="sidebar-matieres" id="sidebar-matieres">
+  {% for m in matieres_dispo %}
+  <button
+    type="button"
+    class="chip-matiere"
+    data-matiere="{{ m }}">
+    {{ m }}
+  </button>
+  {% endfor %}
+</div>
+{% endif %}
 
-    <button type="button" class="sidebar-item" id="btn-sidebar-parcourir">
-      <span class="sidebar-icone" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/>
-          <path d="M4 5.5v15M8 7h8M8 10h8"/>
-        </svg>
-      </span>
-      Parcourir les épreuves
-    </button>
+<div class="sidebar-separateur">Générer</div>
 
-    {% if eleve %}
-    <div class="sidebar-separateur">Compte</div>
+<button
+  type="button"
+  class="sidebar-item"
+  id="btn-sidebar-examen"
+  {% if not disponible %}
+  disabled
+  title="Bientôt disponible pour ta série"
+  {% endif %}>
+  <span class="sidebar-icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <path d="M4 19.5V6.8a1.8 1.8 0 0 1 1.8-1.8h12.4A1.8 1.8 0 0 1 20 6.8v12.7"/>
+      <path d="M4 18.5c1.2-.8 2.7-1.1 4.2-.8l3.8.8 3.8-.8c1.5-.3 3 0 4.2.8"/>
+      <path d="M8 9h8M8 12h6"/>
+    </svg>
+  </span>
+  Examen officiel (Bac blanc)
+</button>
 
-    <a href="{{ url_for('mes_credits') }}" class="sidebar-item" style="text-decoration:none;">
-      <span class="sidebar-icone" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M9 12h6M12 9v6"/>
-        </svg>
-      </span>
-      Mes crédits
-    </a>
+<button
+  type="button"
+  class="sidebar-item"
+  id="btn-sidebar-sequence"
+  {% if not disponible %}
+  disabled
+  title="Bientôt disponible pour ta série"
+  {% endif %}>
+  <span class="sidebar-icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <path d="M5 4h10l4 4v12H5z"/>
+      <path d="M15 4v5h4M8 13h8M8 16h6"/>
+    </svg>
+  </span>
+  Épreuve de séquence
+</button>
 
-    <div class="sidebar-compte">
-      <a href="/mon-compte" class="sidebar-compte-lien">
-        <div class="sidebar-compte-avatar">
-          {{ eleve.nom[0]|upper }}
-        </div>
+<div class="sidebar-separateur">Consulter</div>
 
-        <div class="sidebar-compte-info">
-          <span class="sidebar-compte-nom">{{ eleve.nom }}</span>
-          <span class="sidebar-compte-niveau">
-            {{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}
-          </span>
-        </div>
-      </a>
+<button type="button" class="sidebar-item" id="btn-sidebar-parcourir">
+  <span class="sidebar-icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/>
+      <path d="M4 5.5v15M8 7h8M8 10h8"/>
+    </svg>
+  </span>
+  Parcourir les épreuves
+</button>
 
-      <a
-        href="/deconnexion"
-        class="sidebar-compte-deco"
-        title="Se déconnecter"
-        aria-label="Se déconnecter">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 3v8"/>
-          <path d="M7.5 5.8a8 8 0 1 0 9 0"/>
-        </svg>
-      </a>
+{% if eleve %}
+<div class="sidebar-separateur">Compte</div>
+
+<a href="{{ url_for('mes_credits') }}" class="sidebar-item" style="text-decoration:none;">
+  <span class="sidebar-icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M9 12h6M12 9v6"/>
+    </svg>
+  </span>
+  Mes crédits
+</a>
+
+<div class="sidebar-compte">
+  <a href="/mon-compte" class="sidebar-compte-lien">
+    <div class="sidebar-compte-avatar">
+      {{ eleve.nom[0]|upper }}
     </div>
 
-    {% else %}
-
-    <div class="sidebar-compte">
-      <a
-       href="{{ url_for('connexion_google') }}"
-        class="sidebar-compte-lien"
-        style="justify-content:center;">
-        <span class="sidebar-compte-nom">Se connecter</span>
-      </a>
+    <div class="sidebar-compte-info">
+      <span class="sidebar-compte-nom">{{ eleve.nom }}</span>
+      <span class="sidebar-compte-niveau">
+        {{ eleve.niveau }}{% if eleve.serie %} {{ eleve.serie }}{% endif %}
+      </span>
     </div>
+  </a>
 
-    {% endif %}
+  <a
+    href="/deconnexion"
+    class="sidebar-compte-deco"
+    title="Se déconnecter"
+    aria-label="Se déconnecter">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 3v8"/>
+      <path d="M7.5 5.8a8 8 0 1 0 9 0"/>
+    </svg>
+  </a>
+</div>
+
+{% else %}
+
+<div class="sidebar-compte">
+  <a
+    href="{{ url_for('connexion_google') }}"
+    class="sidebar-connexion-btn">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14"/>
+      <path d="M13 6l6 6-6 6"/>
+    </svg>
+    <span>Se connecter</span>
+  </a>
+</div>
+
+{% endif %}
 
   </aside>
 
@@ -1414,160 +1531,163 @@
 
   <section class="assistant-page">
 
-    <header class="assistant-topbar">
+<header class="assistant-topbar">
 
-      <div class="assistant-topbar-identite">
+  <div class="assistant-topbar-identite">
 
-        <button
-          type="button"
-          class="assistant-hamburger"
-          id="btn-sidebar-toggle-mobile"
-          aria-label="Ouvrir le menu"
-          aria-expanded="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16"/>
-          </svg>
-        </button>
+    <button
+      type="button"
+      class="assistant-hamburger"
+      id="btn-sidebar-toggle-mobile"
+      aria-label="Ouvrir le menu"
+      aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+    </button>
 
-        <div style="min-width:0;">
-          <h1 class="assistant-topbar-titre">
-            Tuteur EXAMENSCAM
-          </h1>
+    <div style="min-width:0;">
+      <h1 class="assistant-topbar-titre">
+        Tuteur EXAMENSCAM
+      </h1>
 
-          <p class="assistant-topbar-contexte">
-            {% if eleve %}
-              {{ eleve.niveau }}
-              {% if eleve.serie %} - {{ eleve.serie }}{% endif %}
-            {% else %}
-              Espace d'accompagnement
-            {% endif %}
-          </p>
-        </div>
-
-      </div>
-
-      <button
-        type="button"
-        class="header-action"
-        id="btn-header-menu"
-        aria-label="Options de la conversation">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="5" cy="12" r="1"/>
-          <circle cx="12" cy="12" r="1"/>
-          <circle cx="19" cy="12" r="1"/>
-        </svg>
-      </button>
-
-    </header>
-
-    <div class="assistant-fenetre" id="assistant-fenetre"></div>
-
-    <div class="assistant-saisie" id="assistant-saisie">
-
-      {% if mode_demo %}
-
-      <a
-        href="{{ url_for('connexion_google') }}"
-        class="assistant-input-form"
-        style="text-decoration:none; justify-content:center; color:var(--ec-accent,#2563EB); font-weight:600;">
-
-        <svg
-          class="demo-lock-icon"
-          viewBox="0 0 24 24"
-          aria-hidden="true">
-          <rect x="5" y="10" width="14" height="10" rx="2"/>
-          <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-        </svg>
-
-        Connecte-toi pour poser tes questions
-
-      </a>
-
-      {% else %}
-
-      <div class="panneau-ajouter" id="panneau-ajouter" hidden>
-
-        <div class="panneau-ajouter-titre">
-          Ajouter
-        </div>
-
-        <button type="button" class="ajouter-option" id="btn-ajouter-epreuve">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 4h10l4 4v12H5z"/>
-            <path d="M15 4v5h4M8 13h8M8 16h6"/>
-          </svg>
-          <span>Épreuve</span>
-        </button>
-
-        <button type="button" class="ajouter-option" id="btn-ajouter-photo">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16v13H4z"/>
-            <circle cx="12" cy="13.5" r="3"/>
-            <path d="M8 7l1.2-2h5.6L16 7"/>
-          </svg>
-          <span>Photo</span>
-        </button>
-        <input type="file" id="input-photo-exercice" accept="image/*" capture="environment" hidden>
-
-        <button
-          type="button"
-          class="ajouter-option"
-          disabled
-          title="Bientôt disponible">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 3h9l4 4v14H6z"/>
-            <path d="M15 3v5h4M9 13h6M9 16h5"/>
-          </svg>
-          <span>Document</span>
-        </button>
-
-      </div>
-
-      <form class="assistant-input-form" id="form-saisie">
-
-        <button
-          type="button"
-          class="composer-action"
-          id="btn-ajouter"
-          aria-label="Ajouter"
-          aria-expanded="false">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-
-        </button>
-
-        <textarea
-          id="input-question"
-          placeholder="Écris ta question..."
-          autocomplete="off"
-          rows="1"
-          required></textarea>
-
-        <button
-          type="submit"
-          class="btn-envoyer"
-          id="btn-envoyer"
-          aria-label="Envoyer"
-          disabled>
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 4l16 8-16 8 3-8z"/>
-            <path d="M7 12h13"/>
-          </svg>
-
-        </button>
-
-      </form>
-
-      <p class="composer-note">
-        EXAMENSCAM · un accompagnement adapté à ton niveau
+      <p class="assistant-topbar-contexte">
+        {% if eleve %}
+          {{ eleve.niveau }}
+          {% if eleve.serie %} - {{ eleve.serie }}{% endif %}
+        {% else %}
+          Espace d'accompagnement
+        {% endif %}
       </p>
-
-      {% endif %}
-
     </div>
+
+  </div>
+
+  <button
+    type="button"
+    class="header-action"
+    id="btn-header-menu"
+    aria-label="Options de la conversation">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="5" cy="12" r="1"/>
+      <circle cx="12" cy="12" r="1"/>
+      <circle cx="19" cy="12" r="1"/>
+    </svg>
+  </button>
+
+</header>
+
+<div class="assistant-fenetre" id="assistant-fenetre"></div>
+
+<div class="assistant-saisie" id="assistant-saisie">
+
+  {% if mode_demo %}
+
+  <a
+    href="{{ url_for('connexion_google') }}"
+    class="assistant-input-form"
+    style="text-decoration:none; justify-content:center; color:var(--ec-accent,#2563EB); font-weight:600;">
+
+    <svg
+      class="demo-lock-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true">
+      <rect x="5" y="10" width="14" height="10" rx="2"/>
+      <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+    </svg>
+
+    Connecte-toi pour poser tes questions
+
+  </a>
+
+  {% else %}
+
+  <div class="panneau-ajouter" id="panneau-ajouter" hidden>
+
+    <div class="panneau-ajouter-titre">
+      Ajouter
+    </div>
+
+    <button type="button" class="ajouter-option" id="btn-ajouter-epreuve">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 4h10l4 4v12H5z"/>
+        <path d="M15 4v5h4M8 13h8M8 16h6"/>
+      </svg>
+      <span>Épreuve</span>
+    </button>
+
+    <button
+      type="button"
+      class="ajouter-option"
+      disabled
+      title="Bientôt disponible">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7h16v13H4z"/>
+        <circle cx="12" cy="13.5" r="3"/>
+        <path d="M8 7l1.2-2h5.6L16 7"/>
+      </svg>
+      <span>Photo</span>
+    </button>
+
+    <button
+      type="button"
+      class="ajouter-option"
+      disabled
+      title="Bientôt disponible">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 3h9l4 4v14H6z"/>
+        <path d="M15 3v5h4M9 13h6M9 16h5"/>
+      </svg>
+      <span>Document</span>
+    </button>
+
+  </div>
+
+  <form class="assistant-input-form" id="form-saisie">
+
+    <button
+      type="button"
+      class="composer-action"
+      id="btn-ajouter"
+      aria-label="Ajouter"
+      aria-expanded="false">
+
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+
+    </button>
+
+    <textarea
+      id="input-question"
+      placeholder="Écris ta question..."
+      autocomplete="off"
+      rows="1"
+      required></textarea>
+
+    <button
+      type="submit"
+      class="btn-envoyer"
+      id="btn-envoyer"
+      aria-label="Envoyer"
+      disabled>
+
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 4l16 8-16 8 3-8z"/>
+        <path d="M7 12h13"/>
+      </svg>
+
+    </button>
+
+  </form>
+
+  <p class="composer-note">
+    EXAMENSCAM · un accompagnement adapté à ton niveau
+  </p>
+
+  {% endif %}
+
+</div>
 
   </section>
 
@@ -1580,6 +1700,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<script>
+  /*
+   * CORRECTIF (composer trop bas sur mobile) : 100dvh est censé
+   * s'adapter à la barre d'adresse du navigateur, mais certains
+   * navigateurs/WebView Android (fréquents sur les téléphones bas de
+   * gamme) le gèrent mal ou pas du tout -- ils retombent alors sur
+   * 100vh, qui compte la hauteur AVANT masquage de la barre
+   * d'adresse. Résultat : la mise en page se pense plus haute que
+   * l'écran réellement visible, et le composer (champ de saisie / le
+   * lien "Connecte-toi") se retrouve poussé sous le bas visible de
+   * l'écran -- il faut alors défiler pour l'atteindre.
+   *
+   * Ce petit script calcule la VRAIE hauteur visible via
+   * window.innerHeight (fiable sur tous les navigateurs) et l'expose
+   * en variable CSS --vh-app, utilisée comme valeur intermédiaire
+   * entre 100vh (repli le plus ancien) et 100dvh (le plus précis,
+   * prioritaire quand supporté) dans body.page-app-plein-ecran et
+   * .assistant-layout. Recalculé au chargement et à chaque
+   * redimensionnement/rotation -- notamment quand la barre d'adresse
+   * apparaît/disparaît pendant le défilement.
+   */
+  (function () {
+    function definirHauteurViewport() {
+      document.documentElement.style.setProperty(
+        '--vh-app',
+        (window.innerHeight * 0.01) + 'px'
+      );
+    }
+
+    definirHauteurViewport();
+
+    window.addEventListener('resize', definirHauteurViewport);
+    window.addEventListener('orientationchange', definirHauteurViewport);
+  })();
+</script>
 
 <script>
 (function () {
@@ -1597,8 +1753,6 @@
   const btnAjouter = document.getElementById('btn-ajouter');
   const panneauAjouter = document.getElementById('panneau-ajouter');
   const btnAjouterEpreuve = document.getElementById('btn-ajouter-epreuve');
-  const btnAjouterPhoto = document.getElementById('btn-ajouter-photo');
-  const inputPhotoExercice = document.getElementById('input-photo-exercice');
 
   const btnHeaderMenu = document.getElementById('btn-header-menu');
   const btnSidebarToggleMobile =
@@ -1695,6 +1849,34 @@
     question.className = 'welcome-question';
     question.textContent = 'Que veux-tu faire ?';
 
+    /*
+     * NOUVEAU (visiteur non connecté) : avant ce correctif, le seul
+     * moyen de se connecter depuis l'accueil était le lien "Se
+     * connecter" tout en bas de la sidebar (texte plat, facilement
+     * raté) ou le composer en bas de l'écran (loin sous un grand vide
+     * quand le contenu d'accueil est court, voir captures). Ce bouton
+     * est placé juste sous le message d'accueil, donc visible sans
+     * défiler sur n'importe quel téléphone.
+     */
+    let btnConnexionAccueil = null;
+
+    if (MODE_DEMO) {
+      btnConnexionAccueil =
+        document.createElement('a');
+
+      btnConnexionAccueil.href =
+        "{{ url_for('connexion_google') }}";
+
+      btnConnexionAccueil.className =
+        'welcome-connexion-btn';
+
+      btnConnexionAccueil.innerHTML =
+        '<span>Se connecter avec Google</span>' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>' +
+        '</svg>';
+    }
+
     const actions = document.createElement('div');
     actions.className = 'welcome-actions';
 
@@ -1721,7 +1903,10 @@
 
       if (desactivee) {
         bouton.disabled = true;
-        bouton.title = 'Bientôt disponible pour ta série';
+        bouton.title =
+          MODE_DEMO
+            ? 'Connecte-toi pour accéder à cette fonctionnalité'
+            : 'Bientôt disponible pour ta série';
       } else {
         bouton.addEventListener('click', action);
       }
@@ -1752,7 +1937,7 @@
         );
       },
       '<path d="M4 19.5V6.8a1.8 1.8 0 0 1 1.8-1.8h12.4A1.8 1.8 0 0 1 20 6.8v12.7"/><path d="M4 18.5c1.2-.8 2.7-1.1 4.2-.8l3.8.8 3.8-.8c1.5-.3 3 0 4.2.8"/>',
-      !ELEVE.disponible
+      MODE_DEMO || !ELEVE.disponible
     );
 
     creerAction(
@@ -1763,7 +1948,7 @@
         afficherChoixSequence();
       },
       '<path d="M5 4h10l4 4v12H5z"/><path d="M15 4v5h4M8 13h8M8 16h6"/>',
-      !ELEVE.disponible
+      MODE_DEMO || !ELEVE.disponible
     );
 
     creerAction(
@@ -1793,7 +1978,14 @@
     accueil.append(
       kicker,
       titre,
-      contexte,
+      contexte
+    );
+
+    if (btnConnexionAccueil) {
+      accueil.append(btnConnexionAccueil);
+    }
+
+    accueil.append(
       question,
       actions,
       note
@@ -1834,18 +2026,26 @@
 
   function structurerTexteExercice(texte) {
     /*
-     * GÉNÉRICITÉ : doit fonctionner sur toute matière/niveau.
-     * RÈGLE MARKDOWN CRITIQUE : un seul saut de ligne (\n) ne crée
-     * JAMAIS un nouveau paragraphe pour marked.js, seule une ligne
-     * vide (\n\n) le fait. Cette version insère TOUJOURS \n\n, sans
-     * condition, et nettoie l'excès de sauts de ligne en toute fin.
+     * GÉNÉRICITÉ : doit fonctionner sur toute matière/niveau -- voir
+     * commentaire précédent. RÈGLE MARKDOWN CRITIQUE : un seul saut de
+     * ligne (\n) ne crée JAMAIS un nouveau paragraphe pour marked.js,
+     * seule une ligne vide (\n\n) le fait. Cette version insère
+     * TOUJOURS \n\n, sans condition, et nettoie l'excès de sauts de
+     * ligne en toute fin de fonction.
      *
      * CORRECTIF (transcription en base) : certaines épreuves
      * retranscrites contiennent des séquences "\n" LITTÉRALES
      * (backslash + n, DEUX caractères imprimables) au lieu d'un vrai
-     * saut de ligne -- artefact du pipeline de transcription. On les
-     * convertit ICI, en tout premier, en vrais sauts de paragraphe,
-     * avant toute autre règle de structuration.
+     * saut de ligne -- artefact du pipeline de transcription
+     * (probablement une chaîne échappée jamais re-décodée avant
+     * l'écriture en base, voir contenu_integral dans
+     * sections_bac_officielles). Comme ce n'est pas un vrai \n
+     * JavaScript, aucune des règles ci-dessous ne peut le voir comme
+     * un saut de paragraphe -- pour marked.parse(), c'est juste du
+     * texte plat. On les convertit ICI, en tout premier, en vrais
+     * sauts de paragraphe, avant toute autre règle de structuration.
+     * Se déclenche uniquement si le motif existe réellement dans le
+     * texte -- aucun effet sur les épreuves déjà propres.
      */
 
     let resultat = texte;
@@ -1908,7 +2108,6 @@
 
     return resultat;
   }
-
   function rendreReponseAssistant(conteneur, texte) {
     if (!conteneur) return;
 
@@ -1993,7 +2192,6 @@
       });
     }
   }
-
   function ajouterMessageUtilisateur(texte) {
     if (!fenetre) return;
 
@@ -2592,83 +2790,6 @@
     }
   }
 
-  async function envoyerImageExercice(fichier) {
-    if (etat.enAttente) return;
-
-    masquerAccueil();
-    fermerPanneauAjouter();
-
-    // Affichage immédiat côté élève : la photo elle-même dans la bulle
-    // utilisateur, pas juste un texte -- confirme visuellement ce qui
-    // a été envoyé, avant même la réponse du serveur.
-    const urlApercu = URL.createObjectURL(fichier);
-    const ligneUser = document.createElement('div');
-    ligneUser.className = 'msg msg-user';
-    const bulleUser = document.createElement('div');
-    bulleUser.className = 'msg-user-bulle';
-    const imgApercu = document.createElement('img');
-    imgApercu.src = urlApercu;
-    imgApercu.style.cssText = 'max-width:220px; border-radius:10px; display:block;';
-    bulleUser.appendChild(imgApercu);
-    ligneUser.appendChild(bulleUser);
-    fenetre.appendChild(ligneUser);
-    fenetre.scrollTop = fenetre.scrollHeight;
-
-    etat.enAttente = true;
-    if (btnEnvoyer) btnEnvoyer.disabled = true;
-
-    const ligneAttente = ajouterMessageAssistant('', true);
-
-    // Question textuelle éventuellement déjà tapée par l'élève avant
-    // de choisir la photo -- si le champ contient du texte, on l'envoie
-    // avec l'image plutôt que de le perdre.
-    const questionAccompagnante = input ? input.value.trim() : '';
-    if (input) {
-      input.value = '';
-      redimensionnerTextarea();
-      synchroniserEtatEnvoi();
-    }
-
-    try {
-      const formulaire = new FormData();
-      formulaire.append('image', fichier);
-      formulaire.append('question', questionAccompagnante);
-      formulaire.append('matiere', etat.matiere || 'Mathematiques');
-
-      const reponseServeur = await fetch(
-        "{{ url_for('assistant_eleve_repondre_image') }}",
-        { method: 'POST', body: formulaire }
-      );
-
-      let resultat;
-      try {
-        resultat = await reponseServeur.json();
-      } catch {
-        throw new Error('Le serveur a renvoyé une réponse invalide.');
-      }
-
-      retirerLigneAttente(ligneAttente);
-
-      if (!reponseServeur.ok) {
-        throw new Error(resultat.erreur || 'Une erreur est survenue.');
-      }
-
-      ajouterMessageAssistant(resultat.reponse || "Je n'ai pas reçu de réponse.", false);
-
-    } catch (erreur) {
-      console.error('Erreur envoi image :', erreur);
-      retirerLigneAttente(ligneAttente);
-      ajouterMessageAssistant(
-        erreur.message || "Je n'arrive pas à traiter cette image pour l'instant. Réessaie.",
-        false
-      );
-    } finally {
-      URL.revokeObjectURL(urlApercu);
-      etat.enAttente = false;
-      synchroniserEtatEnvoi();
-    }
-  }
-
   function synchroniserEtatEnvoi() {
     if (!btnEnvoyer) {
       return;
@@ -2848,24 +2969,6 @@
         }
       }
     );
-  }
-
-  if (btnAjouterPhoto && inputPhotoExercice) {
-    btnAjouterPhoto.addEventListener('click', () => {
-      fermerPanneauAjouter();
-      inputPhotoExercice.click();
-    });
-
-    inputPhotoExercice.addEventListener('change', () => {
-      const fichier = inputPhotoExercice.files && inputPhotoExercice.files[0];
-      if (fichier) {
-        envoyerImageExercice(fichier);
-      }
-      // Réinitialise la valeur pour permettre de renvoyer la même
-      // photo une seconde fois si besoin (sinon 'change' ne se
-      // redéclenche pas pour un fichier identique).
-      inputPhotoExercice.value = '';
-    });
   }
 
   if (btnHeaderMenu) {

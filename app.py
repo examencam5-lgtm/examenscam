@@ -146,7 +146,15 @@ google = oauth.register(
     client_id=_GOOGLE_CLIENT_ID,
     client_secret=_GOOGLE_CLIENT_SECRET,
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={'scope': 'openid email'},
+    # MODIFIÉ (17/09/2026, minimisation de la friction d'inscription) :
+    # ajout du scope 'profile' -- Google fournit alors given_name et
+    # family_name dans userinfo, ce qui permet de ne plus jamais
+    # demander le prénom/nom par formulaire (voir
+    # connexion_google_callback ci-dessous). Reste conforme au
+    # principe de minimisation : on ne demande toujours QUE
+    # l'identité (email/sub) et le nom d'affichage, jamais les
+    # contacts, photos ou l'agenda.
+    client_kwargs={'scope': 'openid email profile'},
 )
 with app.app_context():
     create_table()
@@ -833,9 +841,30 @@ def connexion_google_callback():
     if not userinfo or not userinfo.get('sub') or not userinfo.get('email'):
         return redirect(url_for('connexion_google', erreur='profil_google_incomplet'))
 
+    # MODIFIÉ (17/09/2026, minimisation de la friction d'inscription) :
+    # prénom/nom viennent directement de Google (given_name/family_name,
+    # disponibles grâce au scope 'profile' ajouté ci-dessus) -- on ne
+    # les demande plus jamais par formulaire, exactement comme
+    # Anthropic/OpenAI le font pour leurs propres comptes. Repli sur
+    # 'name' (découpé au premier espace) si given_name/family_name
+    # manquent pour ce compte Google (rare, mais possible sur certains
+    # comptes Workspace restreints) -- ne bloque jamais la connexion,
+    # juste un profil moins précis que l'élève pourra de toute façon
+    # voir sur /mon-compte.
+    prenom_google = (userinfo.get('given_name') or '').strip()
+    nom_google = (userinfo.get('family_name') or '').strip()
+    if not prenom_google and not nom_google:
+        nom_complet = (userinfo.get('name') or '').strip()
+        if nom_complet:
+            morceaux = nom_complet.split(' ', 1)
+            prenom_google = morceaux[0]
+            nom_google = morceaux[1] if len(morceaux) > 1 else ''
+
     eleve = creer_ou_recuperer_compte_google(
         google_sub=userinfo['sub'],
         email=userinfo['email'],
+        prenom=prenom_google or None,
+        nom=nom_google or None,
     )
 
     session.permanent = True
@@ -862,8 +891,12 @@ def completer_profil_vue():
 
     erreur = None
     if request.method == 'POST':
-        prenom = request.form.get('prenom', '').strip()
-        nom = request.form.get('nom', '').strip()
+        # MODIFIÉ (17/09/2026) : prenom/nom ne sont plus lus depuis le
+        # formulaire -- ils ont déjà été fixés à la création du compte
+        # depuis les données Google (voir connexion_google_callback).
+        # Seuls le niveau/série/classe/établissement/consentement
+        # restent à renseigner par l'élève -- c'est la seule
+        # information que Google ne peut pas fournir.
         niveau = request.form.get('niveau', '')
         serie = request.form.get('serie') or None
         classe = request.form.get('classe', '').strip() or None
@@ -871,7 +904,7 @@ def completer_profil_vue():
         consentement_parental = request.form.get('consentement_parental') == 'on'
 
         erreur = completer_profil(
-            eleve_id, prenom, nom, niveau, serie, classe,
+            eleve_id, niveau, serie, classe,
             etablissement, consentement_parental
         )
         if not erreur:
@@ -1300,10 +1333,11 @@ def mon_compte():
         if not token_attendu or not secrets.compare_digest(token_soumis, token_attendu):
             erreur = "Session expirée, réessaie."
         else:
+            # MODIFIÉ (17/09/2026) : prenom/nom viennent de Google et ne
+            # sont plus modifiables ici -- seuls niveau/série/classe/
+            # établissement restent éditables par l'élève.
             erreur = modifier_profil(
                 g.eleve['id'],
-                prenom=request.form.get('prenom'),
-                nom=request.form.get('nom'),
                 niveau=request.form.get('niveau'),
                 serie=request.form.get('serie') or None,
                 classe=request.form.get('classe'),

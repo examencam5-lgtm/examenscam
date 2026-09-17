@@ -84,6 +84,11 @@
     display: inline-block;
   }
 
+  .compte-hint {
+    font-family: 'Inter', sans-serif; font-size: 11.5px; color: var(--ink-soft);
+    line-height: 1.5; margin: 6px 4px 0;
+  }
+
   .zone-danger {
     border: 1px solid #E5B8B8; background: #FFF7F7; border-radius: 16px;
     padding: 20px 22px; margin-top: 8px;
@@ -114,6 +119,7 @@
       {% if eleve.classe %}<span class="fiche-badge">{{ eleve.classe }}</span>{% endif %}
     </div>
     <p class="fiche-meta">
+      {{ eleve.prenom or '' }} {{ eleve.nom or '' }}<br>
       Connecté avec {{ eleve.email }}<br>
       {% if eleve.etablissement %}{{ eleve.etablissement }}<br>{% endif %}
       {% if eleve.messages_ce_mois %}
@@ -131,18 +137,10 @@
 
     <p class="compte-section-titre">Mon profil</p>
 
-    <div class="compte-row">
-      <div class="compte-field">
-        <label class="compte-label" for="prenom">Prénom</label>
-        <input type="text" id="prenom" name="prenom" class="compte-input"
-               value="{{ eleve.prenom or '' }}" autocomplete="given-name" maxlength="50" required>
-      </div>
-      <div class="compte-field">
-        <label class="compte-label" for="nom">Nom</label>
-        <input type="text" id="nom" name="nom" class="compte-input"
-               value="{{ eleve.nom or '' }}" autocomplete="family-name" maxlength="50" required>
-      </div>
-    </div>
+    <!-- Prénom/nom ne sont plus des champs éditables ici : ils sont
+         récupérés automatiquement depuis ton compte Google à chaque
+         connexion, comme sur la plupart des services que tu utilises
+         déjà. Rien à ressaisir, rien à maintenir à jour toi-même. -->
 
     <div class="compte-row">
       <div class="compte-field">
@@ -176,6 +174,13 @@
       <label class="compte-label" for="etablissement">Établissement <span style="font-weight:400;">(facultatif)</span></label>
       <input type="text" id="etablissement" name="etablissement" class="compte-input"
              value="{{ eleve.etablissement or '' }}" placeholder="ex. Lycée Bilingue de Maroua" maxlength="120">
+      <p class="compte-hint">
+        Pourquoi on demande ça : ça aide le tuteur à donner des exemples
+        plus proches de ta réalité (ex. formulations utilisées dans ton
+        établissement, contexte régional) — jamais obligatoire, jamais
+        partagé, et tu peux laisser vide sans que rien ne change à ce
+        que tu peux faire sur le site.
+      </p>
     </div>
 
     <button type="submit" class="compte-btn">Enregistrer le profil</button>
@@ -213,6 +218,14 @@
     var estBepc = (niveau === 'BEPC');
     groupe.style.display = estBepc ? 'none' : 'block';
     champSerie.required = !estBepc;
+    // CORRECTIF (17/09/2026) : un <select> caché (display:none)
+    // continue de soumettre sa dernière valeur sélectionnée -- sans
+    // ce reset, un élève qui repasse en BEPC après avoir eu une série
+    // choisie envoyait quand même niveau=BEPC + serie=C au serveur.
+    // Le serveur bloque déjà cette incohérence (voir
+    // database_eleves.py, modifier_profil), mais ce reset évite aussi
+    // l'aller-retour d'erreur inutile côté élève.
+    if (estBepc) { champSerie.value = ''; }
   }
   basculerSerie(document.getElementById('niveau').value);
 

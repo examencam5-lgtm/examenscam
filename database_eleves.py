@@ -114,19 +114,18 @@ def create_table():
 # VALIDATION DU PROFIL (post-connexion Google)
 # ═══════════════════════════════════════════════════════
 
-def valider_profil(prenom: str, nom: str, niveau: str, serie: Optional[str],
+# MODIFIÉ (17/09/2026, minimisation de la friction d'inscription) :
+# prenom/nom ne sont plus des champs de formulaire -- ils viennent
+# directement de Google (given_name/family_name, scope 'profile', voir
+# app.py) et ne sont donc plus validés ici. valider_profil() ne
+# contrôle plus que ce que Google NE PEUT PAS fournir : le contexte
+# scolaire (niveau/série/établissement), la seule information encore
+# demandée à l'élève. Même principe que Claude, ChatGPT et la plupart
+# des produits grand public : le nom d'affichage vient du fournisseur
+# d'identité, jamais ressaisi.
+def valider_profil(niveau: str, serie: Optional[str],
                     etablissement: Optional[str] = None) -> list[str]:
     erreurs = []
-
-    if not prenom or not prenom.strip():
-        erreurs.append("Le prénom est obligatoire.")
-    elif len(prenom.strip()) > LONGUEUR_MAX_NOM_PRENOM:
-        erreurs.append("Le prénom est trop long.")
-
-    if not nom or not nom.strip():
-        erreurs.append("Le nom est obligatoire.")
-    elif len(nom.strip()) > LONGUEUR_MAX_NOM_PRENOM:
-        erreurs.append("Le nom est trop long.")
 
     if etablissement and len(etablissement.strip()) > LONGUEUR_MAX_ETABLISSEMENT:
         erreurs.append("Le nom de l'établissement est trop long.")
@@ -145,15 +144,26 @@ def valider_profil(prenom: str, nom: str, niveau: str, serie: Optional[str],
 # AUTHENTIFICATION GOOGLE
 # ═══════════════════════════════════════════════════════
 
-def creer_ou_recuperer_compte_google(google_sub: str, email: str) -> dict:
+def creer_ou_recuperer_compte_google(google_sub: str, email: str,
+                                      prenom: Optional[str] = None,
+                                      nom: Optional[str] = None) -> dict:
     """Point d'entrée unique après vérification réussie du token Google
     côté route Flask (voir app.py: /connexion/google/callback).
 
-    Ne prend QUE google_sub et email -- rien d'autre n'est extrait du
-    token Google, conformément au principe de minimisation. Si un
-    compte existe déjà pour ce google_sub, on le retourne tel quel
-    (pas de mise à jour de l'email à chaque connexion : si l'élève
-    change d'email Google, google_sub reste la clé stable).
+    MODIFIÉ (17/09/2026) : accepte désormais prenom/nom, lus par
+    app.py depuis given_name/family_name du token Google -- ce ne sont
+    plus des champs que l'élève ressaisit lui-même. Toujours
+    conforme au principe de minimisation : rien d'autre n'est extrait
+    du token (pas de photo, pas de locale, pas de contacts).
+
+    Sur un compte déjà existant, prenom/nom sont resynchronisés avec
+    les valeurs Google actuelles à chaque connexion -- cohérent
+    puisque ces champs ne sont plus modifiables ailleurs dans
+    l'application : la seule source de vérité possible est Google
+    lui-même, donc autant refléter un éventuel changement de nom fait
+    côté Google plutôt que de garder une valeur figée au premier
+    login. L'email n'est volontairement PAS resynchronisé (voir
+    commentaire plus bas) : google_sub reste seul juge de l'identité.
 
     Retourne toujours un dict complet de la ligne eleves -- jamais
     None, puisque cette fonction crée le compte s'il n'existe pas.
@@ -164,13 +174,28 @@ def creer_ou_recuperer_compte_google(google_sub: str, email: str) -> dict:
         cur.execute("SELECT * FROM eleves WHERE google_sub = %s AND actif = 1", (google_sub,))
         ligne = cur.fetchone()
         if ligne:
+            # Resynchronise prenom/nom si Google renvoie une valeur --
+            # jamais d'écrasement par une valeur vide (un scope
+            # 'profile' qui échouerait un jour ne doit pas effacer un
+            # nom déjà connu). L'email n'est pas touché ici : voir
+            # docstring, google_sub reste la seule clé d'identité.
+            if prenom or nom:
+                cur.execute("""
+                    UPDATE eleves SET
+                        prenom = COALESCE(%s, prenom),
+                        nom = COALESCE(%s, nom)
+                    WHERE id = %s
+                    RETURNING *
+                """, (prenom, nom, ligne['id']))
+                ligne = cur.fetchone()
+                conn.commit()
             return dict(ligne)
 
         cur.execute("""
-            INSERT INTO eleves (google_sub, email)
-            VALUES (%s, %s)
+            INSERT INTO eleves (google_sub, email, prenom, nom)
+            VALUES (%s, %s, %s, %s)
             RETURNING *
-        """, (google_sub, email))
+        """, (google_sub, email, prenom, nom))
         nouvelle_ligne = cur.fetchone()
         conn.commit()
         return dict(nouvelle_ligne)
@@ -186,12 +211,17 @@ def creer_ou_recuperer_compte_google(google_sub: str, email: str) -> dict:
         conn.close()
 
 
-def completer_profil(eleve_id: int, prenom: str, nom: str, niveau: str,
-                      serie: Optional[str], classe: Optional[str] = None,
+def completer_profil(eleve_id: int, niveau: str, serie: Optional[str],
+                      classe: Optional[str] = None,
                       etablissement: Optional[str] = None,
                       consentement_parental: bool = False) -> Optional[str]:
     """Appelée juste après la première connexion Google, quand l'élève
     renseigne son profil scolaire (niveau/série/établissement).
+
+    MODIFIÉ (17/09/2026) : ne prend plus prenom/nom -- déjà fixés à la
+    création du compte (voir creer_ou_recuperer_compte_google). Cette
+    fonction ne demande donc plus que ce que Google ne peut pas
+    fournir : le contexte scolaire.
 
     `consentement_parental` : case à cocher explicite côté formulaire
     pour les élèves mineurs -- voir la politique de confidentialité.
@@ -210,7 +240,7 @@ def completer_profil(eleve_id: int, prenom: str, nom: str, niveau: str,
     if niveau == 'BEPC':
         serie = None
 
-    erreurs = valider_profil(prenom, nom, niveau, serie, etablissement)
+    erreurs = valider_profil(niveau, serie, etablissement)
     if erreurs:
         return " ".join(erreurs)
 
@@ -219,13 +249,13 @@ def completer_profil(eleve_id: int, prenom: str, nom: str, niveau: str,
         cur = conn.cursor()
         cur.execute("""
             UPDATE eleves SET
-                prenom = %s, nom = %s, niveau = %s, serie = %s,
+                niveau = %s, serie = %s,
                 classe = %s, etablissement = %s,
                 profil_complet = 1,
                 consentement_parental = %s,
                 consentement_parental_le = CASE WHEN %s THEN NOW()::text ELSE consentement_parental_le END
             WHERE id = %s
-        """, (prenom.strip(), nom.strip(), niveau, serie, classe,
+        """, (niveau, serie, classe,
               (etablissement or '').strip() or None,
               1 if consentement_parental else 0,
               consentement_parental, eleve_id))
@@ -260,15 +290,17 @@ def get_eleve_par_id(eleve_id: int) -> Optional[dict]:
         conn.close()
 
 
-def modifier_profil(eleve_id: int, prenom: Optional[str] = None, nom: Optional[str] = None,
-                     niveau: Optional[str] = None, serie: Optional[str] = None,
+def modifier_profil(eleve_id: int, niveau: Optional[str] = None, serie: Optional[str] = None,
                      classe: Optional[str] = None, etablissement: Optional[str] = None) -> Optional[str]:
+    """MODIFIÉ (17/09/2026) : ne prend plus prenom/nom -- l'élève ne
+    peut plus modifier son nom d'affichage depuis /mon-compte, il vient
+    toujours de Google (voir creer_ou_recuperer_compte_google, qui le
+    resynchronise à chaque connexion). Seul le contexte scolaire reste
+    éditable ici."""
     eleve = get_eleve_par_id(eleve_id)
     if not eleve:
         return "Compte introuvable."
 
-    prenom_final = prenom.strip() if prenom else eleve.get('prenom')
-    nom_final = nom.strip() if nom else eleve.get('nom')
     niveau_final = niveau or eleve['niveau']
     serie_final = serie if serie is not None else eleve['serie']
     classe_final = classe if classe is not None else eleve['classe']
@@ -284,7 +316,7 @@ def modifier_profil(eleve_id: int, prenom: Optional[str] = None, nom: Optional[s
     if niveau_final == 'BEPC':
         serie_final = None
 
-    erreurs = valider_profil(prenom_final, nom_final, niveau_final, serie_final, etablissement_final)
+    erreurs = valider_profil(niveau_final, serie_final, etablissement_final)
     if erreurs:
         return " ".join(erreurs)
 
@@ -292,9 +324,9 @@ def modifier_profil(eleve_id: int, prenom: Optional[str] = None, nom: Optional[s
     try:
         cur = conn.cursor()
         cur.execute("""
-            UPDATE eleves SET prenom = %s, nom = %s, niveau = %s, serie = %s, classe = %s, etablissement = %s
+            UPDATE eleves SET niveau = %s, serie = %s, classe = %s, etablissement = %s
             WHERE id = %s
-        """, (prenom_final, nom_final, niveau_final, serie_final, classe_final,
+        """, (niveau_final, serie_final, classe_final,
               (etablissement_final or '').strip() or None, eleve_id))
         conn.commit()
         return None

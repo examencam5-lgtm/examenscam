@@ -71,7 +71,9 @@
 
 <div class="compte-wrap">
   <p class="compte-eyebrow">ExamensCam</p>
-  <h1 class="compte-title">Dernière étape</h1>
+  <h1 class="compte-title">
+    {% if eleve.prenom %}Bienvenue, {{ eleve.prenom }}{% else %}Dernière étape{% endif %}
+  </h1>
   <p class="compte-soustitre">
     Le chat et les annales s'adaptent ensuite automatiquement à ton niveau.
   </p>
@@ -81,22 +83,11 @@
   {% endif %}
 
   <form method="POST" id="form-profil">
-    <div class="compte-section">
-      <p class="compte-section-titre">Qui es-tu ?</p>
-
-      <div class="compte-row">
-        <div class="compte-field">
-          <label class="compte-label" for="prenom">Prénom</label>
-          <input type="text" id="prenom" name="prenom" class="compte-input"
-                 autocomplete="given-name" maxlength="50" required value="{{ eleve.prenom or '' }}">
-        </div>
-        <div class="compte-field">
-          <label class="compte-label" for="nom">Nom</label>
-          <input type="text" id="nom" name="nom" class="compte-input"
-                 autocomplete="family-name" maxlength="50" required value="{{ eleve.nom or '' }}">
-        </div>
-      </div>
-    </div>
+    <!-- Prénom/nom ne sont plus demandés ici : ils viennent
+         automatiquement de ton compte Google (voir la connexion que
+         tu viens de faire). Il ne reste plus que ton contexte
+         scolaire à renseigner, la seule chose que Google ne peut pas
+         nous donner. -->
 
     <div class="compte-section">
       <p class="compte-section-titre">Profil scolaire</p>
@@ -134,6 +125,12 @@
         <label class="compte-label" for="etablissement">Établissement <span style="font-weight:400;">(facultatif)</span></label>
         <input type="text" id="etablissement" name="etablissement" class="compte-input"
                placeholder="ex. Lycée Bilingue de Maroua" maxlength="120" value="{{ eleve.etablissement or '' }}">
+        <p class="compte-hint">
+          Pourquoi on demande ça : ça aide le tuteur à donner des exemples
+          plus proches de ta réalité (ex. formulations utilisées dans ton
+          établissement, contexte régional) — jamais obligatoire, jamais
+          partagé.
+        </p>
       </div>
     </div>
 
