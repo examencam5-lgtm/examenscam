@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Assistant Élève - ExamensCam{% endblock %}
 
-{% block navbar %}{% endblock %}
+{% blok navbar %}{% endblock %}
 {% block barre_recherche %}{% endblock %}
 {% block pied_de_page %}{% endblock %}
 
@@ -9,8 +9,7 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/katex/katex.min.css') }}">
 <style>
   :root {
     --tuteur-header-h: 56px;
@@ -1692,16 +1691,11 @@
   </section>
 
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.6/purify.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-
-<script>
+<script src="{{ url_for('static', filename='vendor/marked.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/purify.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/katex/katex.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/katex/contrib/auto-render.min.js') }}"></script>
+</script>
   /*
    * CORRECTIF (composer trop bas sur mobile) : 100dvh est censé
    * s'adapter à la barre d'adresse du navigateur, mais certains
