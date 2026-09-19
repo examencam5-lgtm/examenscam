@@ -725,7 +725,7 @@ NIVEAU_VERS_PROGRESSION = {
 
 # Cle en MAJUSCULES car serie_brute est deja .upper() avant consultation.
 SERIE_VERS_PROGRESSION = {
-    "A4": "A",
+    "A4": "A4",
     "C": "C",
     "D": "D",
     "TI": "TI",
@@ -1218,6 +1218,25 @@ def detecter_demande_chronologie(question: str) -> bool:
     q_norm = _normaliser(question)
     return any(mot in q_norm for mot in MOTS_DECLENCHEURS_CHRONOLOGIE)
 
+MOTS_DECLENCHEURS_RENTREE = [
+    "rentree", "la rentree", "debut de l'annee", "commence l'annee",
+    "quand commence", "debut des cours", "debut du programme",
+]
+
+MOTS_DECLENCHEURS_PROGRAMME_GENERAL = [
+    "quel est mon programme", "mon programme", "programme complet", "tout le programme",
+]
+
+
+def detecter_question_programme_general(question: str) -> bool:
+    q = _normaliser(question)
+    return any(_normaliser(m) in q for m in MOTS_DECLENCHEURS_PROGRAMME_GENERAL)
+
+
+def detecter_question_rentree(question: str) -> bool:
+    q = _normaliser(question)
+    return any(_normaliser(m) in q for m in MOTS_DECLENCHEURS_RENTREE)
+
 
 def repondre_chronologie_datee(
     question: str,
@@ -1251,6 +1270,27 @@ def repondre_chronologie_datee(
     serie = (eleve.get("serie") or "").strip().upper() or None
     if niveau is None:
         return None
+    if detecter_question_rentree(question):
+        try:
+            from database_progressions import obtenir_date_rentree
+        except Exception:
+             return None
+        date_rentree = obtenir_date_rentree(matiere, niveau, serie)
+        if date_rentree:
+            return (f"D'après le calendrier officiel MINESEC, les cours de {matiere} "
+                    f"pour ta classe ont commencé le {date_rentree.strftime('%d/%m/%Y')}.")
+        return f"Je n'ai pas de date de rentrée vérifiée en {matiere} pour ta classe."
+
+    if detecter_question_programme_general(question):
+        chapitres = _obtenir_chronologie(matiere, niveau, serie)
+        if not chapitres:
+            return None
+        lignes = [f"Voici ton programme officiel MINESEC en {matiere} ({eleve.get('niveau')} "
+                  f"{serie or ''}) :\n"]
+        for c in chapitres:
+            periode = c.get("semaine_texte") or "période non précisée"
+            lignes.append(f"{c['ordre']}. {c['nom_chapitre']} — {periode}")
+        return "\n".join(lignes)
 
     date_cible = detecter_date_precise(question) or detecter_date_relative(question)
     if date_cible:

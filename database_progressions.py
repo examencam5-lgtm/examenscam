@@ -552,6 +552,29 @@ def obtenir_chapitre_a_date(matiere: str, niveau: str, serie: Optional[str],
     seulement aujourd'hui -- reponse a 'le 12 janvier on fait quoi'.
     Simple alias explicite."""
     return obtenir_progression_du_jour(matiere, niveau, serie, date_reference=date_cible)
+def obtenir_date_rentree(matiere: str, niveau: str, serie: Optional[str] = None,
+                          annee_scolaire: str = "2026-2027") -> Optional[date]:
+    """Retourne la date de debut du PREMIER chapitre (date la plus basse
+    connue) pour ce niveau/serie/matiere -- reponse deterministe a 'la
+    rentree c'est quand', jamais laissee a Gemini qui n'a aucune raison
+    de connaitre cette date avec precision."""
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT MIN(date_debut) AS premiere_date
+            FROM progressions_chapitres
+            WHERE matiere = %s AND niveau = %s AND annee_scolaire = %s
+              AND (serie = %s OR (%s IS NULL AND serie IS NULL))
+              AND date_debut IS NOT NULL
+        """, (matiere, niveau, annee_scolaire, serie, serie))
+        row = cur.fetchone()
+        return row["premiere_date"] if row else None
+    except Exception as e:
+        print(f"obtenir_date_rentree error: {e}")
+        return None
+    finally:
+        conn.close()
 
 
 def texte_pour_prompt_systeme(matiere: str, niveau: str, serie: Optional[str] = None,
