@@ -1,6 +1,8 @@
 name: Telecharger vendor une fois
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 
 jobs:
   vendor:
