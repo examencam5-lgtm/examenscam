@@ -1,0 +1,24 @@
+name: Telecharger vendor une fois
+on:
+  workflow_dispatch:
+
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Telecharger les fichiers CDN
+        run: python scripts/telecharger_vendor.py
+
+      - name: Commit et push
+        run: |
+          git config user.name "examenscam-bot"
+          git config user.email "bot@examenscam.local"
+          git add static/vendor static/fonts
+          git commit -m "vendor: ressources CDN rapatriees en local" || echo "rien a commit"
+          git push
