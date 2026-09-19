@@ -1545,7 +1545,7 @@ def recharger_credits():
     )
 @app.route('/sw.js')
 def service_worker():
-    reponse = send_file('static/sw.js', mimetype='application/javascript')
+    reponse = send_file('sw.js', mimetype='application/javascript')
     reponse.headers['Cache-Control'] = 'no-cache'
     return reponse
 
