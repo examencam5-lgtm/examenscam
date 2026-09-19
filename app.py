@@ -1544,5 +1544,41 @@ def service_worker():
 @app.route('/.well-known/assetlinks.json')
 def asset_links():
     return send_file('static/.well-known/assetlinks.json', mimetype='application/json')
+
+@app.route('/admin/audit-sqlite-local')
+@admin_requis
+def audit_sqlite_local():
+    import sqlite3
+    from pathlib import Path
+
+    resultat = {}
+    # Cherche tous les fichiers .db sous le dossier de travail --
+    # capture data/annales.db, data/rag_maths_bac_c/rag.db, et
+    # tout autre fichier .db qu'on aurait oublié.
+    for chemin_db in Path('.').rglob('*.db'):
+        cle = str(chemin_db)
+        try:
+            conn = sqlite3.connect(chemin_db)
+            cur = conn.cursor()
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            tables = [row[0] for row in cur.fetchall()]
+
+            detail_tables = {}
+            for table in tables:
+                try:
+                    cur.execute(f"SELECT COUNT(*) FROM {table}")
+                    detail_tables[table] = cur.fetchone()[0]
+                except sqlite3.OperationalError as e:
+                    detail_tables[table] = f"erreur: {e}"
+
+            resultat[cle] = {
+                'taille_octets': chemin_db.stat().st_size,
+                'tables': detail_tables,
+            }
+            conn.close()
+        except Exception as e:
+            resultat[cle] = {'erreur': str(e)}
+
+    return jsonify(resultat)
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
