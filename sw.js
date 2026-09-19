@@ -19,6 +19,8 @@ const CACHE_NAME = "examenscam-static-v1";
 // ajoute-le à cette liste.
 const FICHIERS_A_METTRE_EN_CACHE = [
   "/static/css/nouvelles_pages.css",
+  "/static/css/assistant_eleve.css",
+  "/static/js/assistant_eleve.js",
   "/static/img/logo.svg",
   "/static/icons/icon-192.png",
   "/static/icons/icon-512.png",
