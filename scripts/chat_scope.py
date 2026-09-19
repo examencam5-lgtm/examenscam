@@ -16,8 +16,7 @@ introduit deux modes explicites par matière :
 
   - MODE_RAG       : corpus réel disponible (thèmes + extraits MINESEC
                       authentiques injectés dans le prompt) -- voir
-                      chat_contexte.py. Uniquement Mathématiques pour
-                      l'instant (voir MATIERE_RAG_PRINCIPALE).
+                      chat_contexte.py.
   - MODE_GENERIQUE : aucun corpus dédié, mais le tuteur reste actif
                       avec un prompt calibré (FCFA, ancrage
                       camerounais, fidélité au programme MINESEC) --
@@ -25,22 +24,52 @@ introduit deux modes explicites par matière :
                       annoncée au modèle lui-même (voir
                       chat_contexte.construire_prompt_systeme_generique).
 
+CORRECTIF (13/09/2026) : ("Probatoire", "C")["Mathematiques"] passe de
+MODE_GENERIQUE à MODE_RAG -- le corpus rag.db contient désormais 25
+épreuves Probatoire C Mathématiques réellement transcrites
+(PROB-MATH-1999 à PROB-MATH-2025), ainsi que la progression MINESEC
+Première C importée dans themes/lecons. Laisser ce niveau/série en
+MODE_GENERIQUE alors que la donnée réelle existait déjà en base était
+la cause du bug observé en production.
+
+CORRECTIF (19/09/2026) -- DÉCOUPLAGE GÉNÉRATION PDF / MODE RAG :
+jusqu'ici, `chat_disponible_pour(niveau, serie)` déduisait la
+disponibilité de la génération PDF (boutons Examen/Séquence) du mode
+RAG de Mathématiques pour ce niveau/série. Ça marchait tant que seul
+BAC C avait Mathématiques en MODE_RAG. Le jour où Probatoire D
+Mathématiques est passé en MODE_RAG (corpus réel : 26 sessions
+1999-2025, verifie_vision), ce raccourci aurait activé À TORT les
+boutons de génération PDF pour Probatoire D, alors que
+generer_epreuve_json.py ne sait générer un PDF calibré (barème,
+format) que pour BAC C.
+
+Le mode RAG d'une matière (peut-on discuter avec un vrai corpus ?) et
+la capacité de génération PDF (peut-on produire un examen structuré
+en PDF pour ce niveau/série ?) sont deux choses indépendantes -- l'une
+ne doit jamais se déduire de l'autre. GENERATION_PDF_ACTIF ci-dessous
+remplace cette déduction implicite par une liste explicite.
+
+CORRECTIF (19/09/2026) -- PROBATOIRE D COMPLET : les 5 matières
+importées et transcrites pour Probatoire D (Mathematiques 1999-2025,
+Physique, Informatique 2018-2025, SVT 2014-2025, Chimie 2014-2026)
+sont toutes verifie_vision en base -- confirmé par requête directe.
+Seules Physique était en MODE_RAG ; les 4 autres étaient absentes ou
+en MODE_GENERIQUE alors que leurs corpus complets existaient déjà --
+même piège que le correctif du 13/09 pour Probatoire C. Les 5
+matières passent en MODE_RAG.
+
 RÉTROCOMPATIBILITÉ (important) : `chat_disponible_pour(niveau, serie)`
 et `message_indisponible(niveau, serie)` gardent EXACTEMENT leur
-signature à 2 arguments -- app.py les appelle ainsi à 2 endroits qui
-concernent la génération de PDF (toujours Mathématiques uniquement,
-voir generer_epreuve_json.py) et jamais la matière choisie dans le
-chat :
+signature à 2 arguments -- app.py les appelle ainsi à 2 endroits :
   - route `/`                        : active/désactive les boutons de
     génération (Examen/Séquence) + ton du message d'accueil.
   - route `/assistant-eleve/generer` : génération de PDF elle-même.
-Ces deux fonctions équivalent maintenant à "le mode RAG Mathématiques
-est actif pour ce niveau/série" -- comportement bit à bit identique à
-la version précédente de ce fichier (qui ne connaissait que ça).
+Depuis le 19/09/2026, ces deux fonctions répondent uniquement d'après
+GENERATION_PDF_ACTIF -- plus aucun lien avec le mode RAG.
 
-Le nouveau contrôle par matière (chat conversationnel, pas génération)
-passe par `matiere_disponible_pour(niveau, serie, matiere)`, utilisé
-UNIQUEMENT par `/assistant-eleve/repondre`.
+Le contrôle par matière pour le chat conversationnel passe par
+`matiere_disponible_pour(niveau, serie, matiere)`, utilisé UNIQUEMENT
+par `/assistant-eleve/repondre`.
 
 POURQUOI CETTE VÉRIFICATION EXISTE : sans elle, un élève pourrait
 déclencher un appel Gemini réel (coût réel, quota réel) sur un
@@ -48,32 +77,33 @@ niveau/série/matière que le site ne couvre pas du tout -- le tuteur
 répondrait alors avec des connaissances génériques du modèle, SANS
 AUCUN calibrage MINESEC/camerounais. Mieux vaut un message honnête
 "pas encore disponible" qu'une réponse plausible mais non calibrée.
-
-CORRECTIF (13/09/2026) : ("Probatoire", "C")["Mathematiques"] passe de
-MODE_GENERIQUE à MODE_RAG -- le corpus rag.db contient désormais 25
-épreuves Probatoire C Mathématiques réellement transcrites
-(PROB-MATH-1999 à PROB-MATH-2025, voir
-scripts/creer_squelettes_maths_probatoire.py et
-scripts/transcrire_maths_probatoire.py), ainsi que la progression
-MINESEC Première C importée dans themes/lecons (voir
-scripts/importer_maths_progression.py). Laisser ce niveau/série en
-MODE_GENERIQUE alors que la donnée réelle existe déjà en base était la
-cause du bug observé en production : le chat en scope Probatoire C
-Maths ne consultait jamais rag.db, et une demande d'exercice précis
-retombait sur une détection non filtrée par niveau côté
-chat_bac_officiel.obtenir_exercice_bac() (voir correctif du même jour
-dans ce fichier).
 """
 
 MODE_RAG = "rag"
 MODE_GENERIQUE = "generique"
 
-# Seule matière avec un corpus RAG réel aujourd'hui -- référencée par
-# nom plutôt que codée en dur à chaque usage, pour qu'un futur second
-# corpus RAG (ex: Physique, le jour où il existera) n'oblige pas à
-# fouiller tout le fichier pour trouver où "Mathematiques" est
-# supposé implicitement.
+# Seule matière avec un corpus RAG "historique" -- conservée pour
+# rétrocompatibilité de mode_pour(), mais n'a plus aucun lien avec la
+# génération PDF depuis le découplage du 19/09/2026 (voir
+# GENERATION_PDF_ACTIF).
 MATIERE_RAG_PRINCIPALE = "Mathematiques"
+
+# ═══════════════════════════════════════════════════════
+# Génération de PDF (Examen/Séquence) -- INDÉPENDANT de SCOPE_ACTIF.
+#
+# SCOPE_ACTIF dit "je peux discuter avec un corpus RAG sur cette
+# matière" ; ça ne dit RIEN sur la capacité de generer_epreuve_json.py
+# à produire un PDF avec le bon barème/format pour ce niveau/série.
+# Ne JAMAIS déduire l'un de l'autre implicitement (voir piège du
+# 19/09/2026 documenté en tête de fichier).
+#
+# Pour activer la génération PDF sur un nouveau niveau/série, il faut
+# D'ABORD étendre generer_epreuve_json.py pour ce niveau/série, PUIS
+# ajouter l'entrée ici -- jamais l'inverse.
+# ═══════════════════════════════════════════════════════
+GENERATION_PDF_ACTIF = {
+    ("BAC", "C"),
+}
 
 # Clé : (niveau, serie). serie=None signifie "toutes les séries de ce
 # niveau" (utile le jour où un niveau sans distinction de série, comme
@@ -85,23 +115,6 @@ MATIERE_RAG_PRINCIPALE = "Mathematiques"
 # matière par oubli plutôt que par décision explicite.
 #
 # Noms de matières alignés sur CATALOGUE['BAC']['C'] dans app.py.
-# ═══════════════════════════════════════════════════════
-# REMPLACE integralement le bloc SCOPE_ACTIF dans chat_scope.py.
-#
-# Principe : MODE_RAG reste reserve aux niveau/serie/matiere pour
-# lesquels un corpus reel existe dans rag.db. L'etendre sans donnee
-# reelle afficherait des extraits non representatifs du programme
-# reel de l'eleve.
-#
-# En revanche, MODE_GENERIQUE + le bloc progression nationale
-# (branche independamment du mode RAG/generique dans chat_contexte.py,
-# voir construire_bloc_progression_nationale) suffit a donner a ces
-# eleves un tuteur calibre ET au courant du chapitre exact du jour --
-# largement mieux que le message_indisponible() actuel, qui bloque
-# tout accord au chat pour les classes non couvertes alors que la
-# donnee officielle existe deja en base.
-# ═══════════════════════════════════════════════════════
-
 SCOPE_ACTIF = {
     ("BAC", "C"): {
         "Mathematiques": MODE_RAG,
@@ -128,8 +141,11 @@ SCOPE_ACTIF = {
         "Physique": MODE_RAG,
     },
     ("Probatoire", "D"): {
-        "Mathematiques": MODE_GENERIQUE,
+        "Mathematiques": MODE_RAG,
         "Physique": MODE_RAG,
+        "Informatique": MODE_RAG,
+        "SVT": MODE_RAG,
+        "Chimie": MODE_RAG,
     },
     ("Probatoire", "TI"): {
         "Mathematiques": MODE_GENERIQUE,
@@ -142,6 +158,7 @@ SCOPE_ACTIF = {
         "Mathematiques": MODE_GENERIQUE,
     },
 }
+
 
 def _matieres_du_scope(niveau: str, serie: str | None) -> dict | None:
     """Retourne le dict {matiere: mode} applicable, en tenant compte
@@ -165,10 +182,10 @@ def mode_pour(niveau: str, serie: str | None, matiere: str) -> str | None:
 
 
 def matiere_disponible_pour(niveau: str, serie: str | None, matiere: str) -> bool:
-    """NOUVEAU (29/08/2026) -- True si CETTE matière précise est
-    couverte (RAG ou générique) pour ce niveau/série. Utilisé
-    uniquement par /assistant-eleve/repondre, où l'élève choisit sa
-    matière de discussion dans la sidebar."""
+    """True si CETTE matière précise est couverte (RAG ou générique)
+    pour ce niveau/série. Utilisé uniquement par
+    /assistant-eleve/repondre, où l'élève choisit sa matière de
+    discussion dans la sidebar."""
     return mode_pour(niveau, serie, matiere) is not None
 
 
@@ -182,14 +199,13 @@ def matieres_disponibles(niveau: str, serie: str | None) -> list[str]:
 
 
 def chat_disponible_pour(niveau: str, serie: str | None) -> bool:
-    """SIGNATURE INCHANGÉE (2 arguments) depuis avant l'extension
-    multi-matières -- voir note de rétrocompatibilité en tête de
-    fichier. Équivaut à : le mode RAG Mathématiques est actif pour ce
-    niveau/série. NE PAS étendre cette fonction à un 3e argument --
-    créer plutôt une fonction dédiée (voir matiere_disponible_pour)
-    pour ne jamais changer le comportement des 2 appelants existants
-    par effet de bord."""
-    return mode_pour(niveau, serie, MATIERE_RAG_PRINCIPALE) == MODE_RAG
+    """SIGNATURE INCHANGÉE (2 arguments). DEPUIS LE 19/09/2026 :
+    contrôle UNIQUEMENT la génération de PDF (Examen/Séquence) via
+    GENERATION_PDF_ACTIF -- découplé du mode RAG du chat
+    conversationnel (voir piège Probatoire D documenté en tête de
+    fichier). NE PAS réintroduire de lien avec SCOPE_ACTIF/mode_pour
+    ici : ça recréerait exactement le bug corrigé."""
+    return (niveau, serie) in GENERATION_PDF_ACTIF
 
 
 def message_indisponible(niveau: str, serie: str | None, matiere: str | None = None) -> str:
