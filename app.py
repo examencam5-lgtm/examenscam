@@ -51,7 +51,7 @@ from database_externes import (
     CORRESPONDANCE_NIVEAU_SERIE
 )
 from database import (get_annales, get_matieres, increment_vues, get_stats,
-                      get_derniere_maj, create_table)
+                      get_derniere_maj, create_table, get_connection)
 from database_search import rechercher_avec_scoring, enregistrer_recherche_infructueuse
 
 from analytics import (
@@ -161,8 +161,7 @@ with app.app_context():
     create_table_eleves()
     create_table_conversations()
     create_table_credits()
-
-ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico')
+ROUTES_IGNOREES_TRACKING = ('/static/', '/api/', '/admin/', '/favicon.ico', '/ping')
 SERIES_VALIDES = ['C', 'D', 'TI', 'A4']
 
 CATALOGUE = {
@@ -365,6 +364,15 @@ def a_propos():
 @app.route('/confidentialite')
 def confidentialite():
     return render_template('confidentialite.html')
+
+@app.route('/ping')
+def ping():
+    conn = get_connection()
+    try:
+        conn.cursor().execute("SELECT 1")
+    finally:
+        conn.close()
+    return '', 204
 
 def scope_eleve_autorise(niveau, serie=None):
     eleve_id = session.get('eleve_id')
