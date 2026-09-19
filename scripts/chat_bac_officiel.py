@@ -121,7 +121,7 @@ LIBELLE_NIVEAU_AFFICHAGE = {
     "premiere": "Probatoire",
     "3e": "BEPC",
 }
-
+CHIFFRES_ROMAINS = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI"}
 
 def detecter_demande_correction(question: str) -> bool:
     q_norm = _normaliser(question)
@@ -233,12 +233,22 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
             return None
 
         if numero is not None:
-            row = conn.execute("""
+            numero_romain = CHIFFRES_ROMAINS.get(numero)
+            motifs = [f"%EXERCICE {numero}%"]
+            if numero_romain:
+                motifs.append(f"%EXERCICE {numero_romain}%")
+
+            conditions = " OR ".join(["(identifiant LIKE ? OR titre LIKE ?)"] * len(motifs))
+            params = [epreuve["id"]]
+            for m in motifs:
+                params.extend([m, m])
+
+            row = conn.execute(f"""
                 SELECT titre, contenu_integral, bareme_annonce FROM sections_bac_officielles
-                WHERE epreuve_id=? AND LOWER(type)='exercice'
-                AND (identifiant LIKE ? OR titre LIKE ?)
+                WHERE epreuve_id=? AND LOWER(type) IN ('exercice', 'partie')
+                AND ({conditions})
                 ORDER BY ordre LIMIT 1
-            """, (epreuve["id"], f"%EXERCICE {numero}%", f"%EXERCICE {numero}%")).fetchone()
+            """, params).fetchone()
         else:
             row = conn.execute("""
                 SELECT titre, contenu_integral, bareme_annonce FROM sections_bac_officielles
