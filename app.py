@@ -1085,10 +1085,15 @@ def assistant_eleve_repondre():
     if detecter_demande_epreuve(question):
         resultat_recherche = chercher_epreuves(question)
         return jsonify(preparer_resultats_epreuves(resultat_recherche))
+
     criteres_bac = detecter_demande_exercice_bac(question)
     if criteres_bac is not None:
-        exercice = obtenir_exercice_bac(criteres_bac['annee'], criteres_bac['numero'], matiere, eleve['niveau'])
+        exercice = obtenir_exercice_bac(
+            criteres_bac['annee'], criteres_bac['numero'], matiere,
+            eleve['niveau'], criteres_bac.get('partie')
+        )
         texte_bac = formuler_reponse_exercice_bac(exercice, criteres_bac['annee'], criteres_bac['numero'])
+        enregistrer_tour(eleve_id, matiere, question, texte_bac)
         return jsonify({'reponse': texte_bac})
 
     # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
@@ -1126,8 +1131,6 @@ def assistant_eleve_repondre():
         mimetype='text/event-stream',
         headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'},
     )
-
-
 # NOUVEAU : historique persistant de la conversation (eleve_id, matiere)
 # -- utilisée par le front au chargement de la page et à chaque
 # changement de matière dans la sidebar. Route manquante en prod : le

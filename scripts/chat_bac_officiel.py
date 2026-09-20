@@ -18,42 +18,43 @@ interne -- seule la décision de déclenchement changerait de place.
 
 GÉNÉRIQUE PAR MATIÈRE (12/09/2026, extension Physique) :
 obtenir_exercice_bac() accepte désormais `matiere`, transmis par
-app.py depuis la matière active de la conversation élève -- sans ce
-paramètre, toute recherche d'exercice réel restait câblée sur
-Mathematiques quelle que soit la matière choisie par l'élève.
-Défaut 'Mathematiques' conservé pour rétrocompatibilité avec tout
-appelant qui ne le précise pas encore.
+app.py depuis la matière active de la conversation élève.
 
 FILTRE NIVEAU (13/09/2026, correctif Probatoire Maths) :
-obtenir_exercice_bac() accepte désormais aussi `niveau`. AVANT ce
-correctif, la requête ne filtrait que sur (session, matiere) -- avec
-plusieurs niveaux désormais présents en base pour la même matière/année
-(ex: BAC-2024-XX niveau='terminale' ET PROB-MATH-2024
-niveau='premiere', tous deux matiere='Mathematiques', session=2024),
-`fetchone()` retournait une ligne arbitraire selon l'ordre physique en
-base -- un élève en scope Probatoire pouvait ainsi recevoir une
-épreuve de Terminale, et inversement. NIVEAU_VERS_TABLE traduit le
-niveau tel que stocké côté compte élève ('BAC'/'Probatoire'/'BEPC',
-voir database_eleves.py) vers celui utilisé dans
-epreuves_bac_officielles ('terminale'/'premiere'/'3e', issu du JSON
-source MINESEC). `niveau=None` (rétrocompatibilité totale) conserve le
-comportement historique -- tout appelant qui ne le transmet pas encore
-n'est pas cassé, mais reste exposé au même risque de collision décrit
-ci-dessus tant qu'il n'est pas mis à jour (voir app.py,
-assistant_eleve_repondre, qui le transmet désormais).
+obtenir_exercice_bac() accepte désormais aussi `niveau`, traduit via
+NIVEAU_VERS_TABLE, pour éviter qu'une collision entre plusieurs
+niveaux sur la même (session, matiere) ne retourne une épreuve du
+mauvais niveau.
 
-CORRECTIF AFFICHAGE (13/09/2026, suite du fix ci-dessus) : le filtre
-niveau corrigeait bien la RECHERCHE (la bonne épreuve était déjà
-trouvée), mais formuler_reponse_exercice_bac() affichait toujours
-l'en-tête "BAC {series} — ..." EN DUR, quel que soit le niveau réel de
-l'épreuve trouvée -- un exercice Probatoire s'affichait donc avec un
-titre "BAC", создant une fausse impression de bug de recherche alors
-que seul l'étiquetage était faux. obtenir_exercice_bac() renvoie
-désormais `niveau` (valeur brute de la table, 'terminale'/'premiere'
-/'3e') dans son dict de retour, et LIBELLE_NIVEAU_AFFICHAGE traduit
-cette valeur vers le libellé correct affiché à l'élève ('BAC'/
-'Probatoire'/'BEPC') -- indépendant de NIVEAU_VERS_TABLE (qui va dans
-l'autre sens : compte élève -> table).
+CORRECTIF AFFICHAGE (13/09/2026) : le libellé affiché ("BAC"/
+"Probatoire"/"BEPC") vient de exercice['niveau'] traduit via
+LIBELLE_NIVEAU_AFFICHAGE, plus jamais codé en dur.
+
+CORRECTIF NUMÉROTATION ROMAINE + PARTIES (19/09/2026, Probatoire D) :
+- Informatique numérote ses exercices en chiffres romains (EXERCICE I,
+  II, III) -- MOTIF_NUMERO_EXERCICE ne capturait que des chiffres
+  arabes, donc aucune requête n'aboutissait jamais pour cette matière.
+  CHIFFRES_ROMAINS convertit le numéro arabe détecté dans la question
+  vers son équivalent romain pour élargir le matching.
+- SVT répète "Exercice 1", "Exercice 2" IDENTIQUEMENT sous Partie A et
+  sous Partie B -- sans distinction, la requête retombait toujours sur
+  la première occurrence (Partie A), rendant la Partie B invisible.
+  Le nouveau paramètre `partie` ('A' ou 'B') filtre sur la bonne
+  occurrence ; sans lui, repli sur la première trouvée (comportement
+  historique).
+- Le filtre `type` est élargi à ('exercice', 'sous_partie') pour
+  couvrir les variantes de structuration observées selon les PDFs
+  sources (voir guide d'import, section "Format type hétérogène").
+
+CORRECTIF HONNÊTETÉ TRANSCRIPTION (19/09/2026) : certaines sections
+contiennent des figures/graphiques/tableaux que Gemini Vision n'a pas
+pu transcrire avec confiance (scan flou, valeurs illisibles) --
+retranscrire_epreuve_vision.py consigne désormais cette limite dans
+`elements_non_transcrits` au lieu de l'ignorer silencieusement ou
+d'inventer une description. formuler_reponse_exercice_bac() affiche
+cet avertissement à l'élève et l'oriente vers "Parcourir les épreuves"
+pour consulter l'épreuve originale scannée -- déjà disponible ailleurs
+sur le site, donc jamais un vrai blocage pour l'élève.
 
 Table SOURCE : sections_bac_officielles / epreuves_bac_officielles
 (contenu réel, OCR intégral, PAS le corpus de style 'epreuves' utilisé
@@ -81,6 +82,7 @@ MOTS_ENTRAINEMENT = [
 
 MOTIF_ANNEE = re.compile(r"\b(19[9]\d|20[0-2]\d)\b")
 MOTIF_NUMERO_EXERCICE = re.compile(r"exercice\s*n?°?\s*(\d)", re.IGNORECASE)
+MOTIF_PARTIE = re.compile(r"partie\s*([ab])\b", re.IGNORECASE)
 
 NB_RESULTATS_MAX = 1  # un seul exercice par défaut -- pas toute l'épreuve d'un coup
 
@@ -88,10 +90,10 @@ NB_RESULTATS_MAX = 1  # un seul exercice par défaut -- pas toute l'épreuve d'u
 # consigne de fidélité renforcée dans chat_contexte.py (voir
 # INSTRUCTION_CORRECTION_FIDELE), PAS un nouvel appel Gemini ici :
 # l'énoncé réel montré au tour précédent est déjà dans l'historique de
-# conversation envoyé par le front à chaque tour (voir
-# assistant_eleve.html, etat.historique) -- Gemini l'a donc déjà sous
-# les yeux, il ne manque qu'une consigne stricte pour qu'il ne dérive
-# pas vers un exercice générique similaire.
+# conversation envoyé par le front à chaque tour, À CONDITION que ce
+# tour ait bien été enregistré (voir app.py, correctif du 19/09/2026 :
+# enregistrer_tour() doit être appelé aussi pour ce chemin, pas
+# seulement pour les réponses Gemini en streaming).
 MOTS_CORRECTION = [
     "corrige", "correction", "resous", "résous", "resoudre", "résoudre",
     "solution", "aide moi a resoudre", "comment resoudre",
@@ -100,11 +102,6 @@ MOTS_CORRECTION = [
 
 # Correspondance niveau compte élève -> niveau tel que stocké dans
 # epreuves_bac_officielles (issu du découpage du JSON source MINESEC).
-# Même logique que CORRESPONDANCE_NIVEAU_PROGRESSION /
-# NIVEAU_VERS_PROGRESSION dans chat_contexte.py -- dupliquée ici plutôt
-# qu'importée pour éviter un couplage circulaire entre les deux
-# modules (chat_contexte.py importe déjà detecter_demande_correction
-# depuis ce fichier).
 NIVEAU_VERS_TABLE = {
     "bepc": "3e",
     "probatoire": "premiere",
@@ -112,16 +109,15 @@ NIVEAU_VERS_TABLE = {
 }
 
 # Sens inverse de NIVEAU_VERS_TABLE -- utilisé uniquement pour
-# l'affichage du libellé à l'élève (voir formuler_reponse_exercice_bac),
-# jamais pour une requête SQL. Une valeur de niveau absente de ce dict
-# (base ancienne, valeur inattendue) retombe sur "BAC" par défaut --
-# comportement historique avant ce correctif, jamais pire qu'avant.
+# l'affichage du libellé à l'élève, jamais pour une requête SQL.
 LIBELLE_NIVEAU_AFFICHAGE = {
     "terminale": "BAC",
     "premiere": "Probatoire",
     "3e": "BEPC",
 }
+
 CHIFFRES_ROMAINS = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI"}
+
 
 def detecter_demande_correction(question: str) -> bool:
     q_norm = _normaliser(question)
@@ -141,7 +137,8 @@ def detecter_demande_exercice_bac(question: str) -> dict | None:
     présents ensemble. L'année seule ne suffit jamais (éviter de
     détourner "en 2020, la population camerounaise était de...").
 
-    Retourne {'annee': int, 'numero': int|None} ou None."""
+    Retourne {'annee': int, 'numero': int|None, 'partie': str|None}
+    ou None."""
     q_norm = _normaliser(question)
 
     match_annee = MOTIF_ANNEE.search(question)
@@ -152,56 +149,49 @@ def detecter_demande_exercice_bac(question: str) -> dict | None:
         return None
 
     match_numero = MOTIF_NUMERO_EXERCICE.search(q_norm)
+    match_partie = MOTIF_PARTIE.search(q_norm)
 
     return {
         "annee": int(match_annee.group()),
         "numero": int(match_numero.group(1)) if match_numero else None,
+        "partie": match_partie.group(1).upper() if match_partie else None,
     }
 
 
-def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "Mathematiques", niveau: str | None = None) -> dict | None:
+def obtenir_exercice_bac(
+    annee: int,
+    numero: int | None = None,
+    matiere: str = "Mathematiques",
+    niveau: str | None = None,
+    partie: str | None = None,
+) -> dict | None:
     """Retrouve UNE section (exercice) réelle pour cette session et
     cette matière.
 
-    `matiere='Mathematiques'` par défaut -- rétrocompatible avec tout
-    appelant qui ne la précise pas encore. app.py doit transmettre la
-    matière active de la conversation élève (voir route
-    /assistant-eleve/repondre).
+    `matiere='Mathematiques'` par défaut -- rétrocompatible.
 
-    `niveau` (ex: 'BAC', 'Probatoire', 'BEPC' -- format compte élève,
-    voir database_eleves.py) est traduit via NIVEAU_VERS_TABLE vers le
-    format stocké en base ('terminale'/'premiere'/'3e') et utilisé pour
-    filtrer la requête. Si `niveau` est None ou non reconnu, la requête
-    ne filtre pas sur le niveau (comportement historique,
-    rétrocompatible avec tout appelant qui ne le transmet pas encore --
-    voir avertissement de collision en tête de fichier).
+    `niveau` (ex: 'BAC', 'Probatoire', 'BEPC') est traduit via
+    NIVEAU_VERS_TABLE. `niveau=None` conserve le comportement
+    historique sans filtre.
 
-    Si `numero` est fourni, cherche le titre contenant "EXERCICE {numero}"
-    (insensible à la casse) -- correspond au format réel observé dans
-    le corpus OCR ("EXERCICE 1 : 5,5 points..."). Sinon, retourne le
-    premier exercice de l'épreuve (le plus petit `ordre` de type
-    'exercice') -- jamais l'épreuve entière par défaut, pour ne pas
-    noyer l'élève sous plusieurs pages d'un coup.
+    `partie` (ex: 'A' ou 'B') -- filtre sur la bonne occurrence quand
+    un même numéro d'exercice apparaît sous plusieurs parties (cas
+    SVT). Sans `partie`, repli sur la première occurrence trouvée.
 
-    Retourne None si la session n'existe pas dans le corpus pour cette
-    matière/niveau, ou si le numéro demandé n'existe pas pour cette
-    session -- jamais une approximation sur une autre année, un autre
-    numéro, un autre niveau, ou une autre matière.
+    Le matching du numéro couvre les chiffres arabes ET romains
+    (Informatique utilise EXERCICE I/II/III), avec vérification de
+    frontière pour éviter qu'"exercice I" ne matche "exercice II".
 
-    Le dict retourné inclut désormais `niveau` (valeur brute de la
-    table, ex: 'terminale', 'premiere', '3e') -- voir
-    LIBELLE_NIVEAU_AFFICHAGE dans formuler_reponse_exercice_bac() pour
-    la traduction en libellé affiché à l'élève."""
+    Retourne None si rien ne correspond. Le dict retourné inclut
+    `niveau` et `elements_non_transcrits` (None si tout a été transcrit
+    avec confiance, sinon description de ce qui manque -- voir
+    retranscrire_epreuve_vision.py)."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     try:
         niveau_table = NIVEAU_VERS_TABLE.get((niveau or "").strip().lower())
 
         if niveau_table:
-            # 'qualite' peut ne pas exister sur une base jamais passée par
-            # retranscrire_epreuve_vision.py -- fallback 'ocr_brut' explicite
-            # via try/except plutôt qu'un SELECT qui planterait sur une
-            # colonne absente.
             try:
                 epreuve = conn.execute(
                     "SELECT id, session, series, qualite, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
@@ -213,11 +203,6 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
                     (annee, matiere, niveau_table)
                 ).fetchone()
         else:
-            # Retro-compatibilite : niveau non fourni ou non reconnu par
-            # l'appelant -- comportement historique (risque de collision
-            # documente en tete de fichier si plusieurs niveaux existent
-            # pour la meme session/matiere, mais ne casse aucun appelant
-            # existant qui ne passe pas encore ce parametre).
             try:
                 epreuve = conn.execute(
                     "SELECT id, session, series, qualite, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
@@ -232,26 +217,74 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
         if not epreuve:
             return None
 
+        # Colonne elements_non_transcrits ajoutee par
+        # retranscrire_epreuve_vision.py -- absente sur une base pas
+        # encore migree, fallback explicite plutot qu'un SELECT qui
+        # planterait.
+        try:
+            colonnes_ok = True
+            conn.execute("SELECT elements_non_transcrits FROM sections_bac_officielles LIMIT 1")
+        except sqlite3.OperationalError:
+            colonnes_ok = False
+
+        champs_section = "identifiant, titre, type, contenu_integral, bareme_annonce, ordre"
+        if colonnes_ok:
+            champs_section += ", elements_non_transcrits"
+
         if numero is not None:
+            toutes_sections = conn.execute(f"""
+                SELECT {champs_section}
+                FROM sections_bac_officielles
+                WHERE epreuve_id=?
+                ORDER BY ordre
+            """, (epreuve["id"],)).fetchall()
+
             numero_romain = CHIFFRES_ROMAINS.get(numero)
-            motifs = [f"%EXERCICE {numero}%"]
-            if numero_romain:
-                motifs.append(f"%EXERCICE {numero_romain}%")
 
-            conditions = " OR ".join(["(identifiant LIKE ? OR titre LIKE ?)"] * len(motifs))
-            params = [epreuve["id"]]
-            for m in motifs:
-                params.extend([m, m])
+            def _matche_numero(identifiant, titre):
+                cible = f"exercice {numero}".lower()
+                cible_romain = f"exercice {numero_romain}".lower() if numero_romain else None
+                texte = f"{identifiant or ''} {titre or ''}".lower()
+                if cible in texte:
+                    return True
+                if cible_romain and cible_romain in texte:
+                    idx = texte.find(cible_romain)
+                    fin = idx + len(cible_romain)
+                    if fin >= len(texte) or not texte[fin].isalpha():
+                        return True
+                return False
 
-            row = conn.execute(f"""
-                SELECT titre, contenu_integral, bareme_annonce FROM sections_bac_officielles
-                WHERE epreuve_id=? AND LOWER(type) IN ('exercice', 'partie')
-                AND ({conditions})
-                ORDER BY ordre LIMIT 1
-            """, params).fetchone()
+            partie_courante = None
+            candidats = []
+
+            for row in toutes_sections:
+                type_section = (row["type"] or "").lower()
+
+                if type_section == "partie":
+                    texte_partie = f"{row['identifiant'] or ''} {row['titre'] or ''}"
+                    m = MOTIF_PARTIE.search(_normaliser(texte_partie))
+                    if m:
+                        partie_courante = m.group(1).upper()
+                    continue
+
+                if type_section in ("exercice", "sous_partie"):
+                    if _matche_numero(row["identifiant"], row["titre"]):
+                        candidats.append((partie_courante, row))
+
+            row = None
+            if partie:
+                for p, r in candidats:
+                    if p == partie.upper():
+                        row = r
+                        break
+                if row is None and candidats:
+                    row = candidats[0][1]
+            elif candidats:
+                row = candidats[0][1]
+
         else:
-            row = conn.execute("""
-                SELECT titre, contenu_integral, bareme_annonce FROM sections_bac_officielles
+            row = conn.execute(f"""
+                SELECT {champs_section} FROM sections_bac_officielles
                 WHERE epreuve_id=? AND LOWER(type)='exercice'
                 ORDER BY ordre LIMIT 1
             """, (epreuve["id"],)).fetchone()
@@ -265,6 +298,9 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
             "bareme_annonce": row["bareme_annonce"],
             "qualite": epreuve["qualite"] if "qualite" in epreuve.keys() else "ocr_brut",
             "niveau": epreuve["niveau"] if "niveau" in epreuve.keys() else None,
+            "elements_non_transcrits": (
+                row["elements_non_transcrits"] if "elements_non_transcrits" in row.keys() else None
+            ),
         }
     finally:
         conn.close()
@@ -272,34 +308,20 @@ def obtenir_exercice_bac(annee: int, numero: int | None = None, matiere: str = "
 
 def formuler_reponse_exercice_bac(exercice: dict | None, annee: int, numero: int | None) -> str:
     """Texte Markdown prêt pour le chat -- même contrat que les autres
-    court-circuits déterministes ({'reponse': texte}), pas de nouveau
-    format front à gérer.
+    court-circuits déterministes ({'reponse': texte}).
 
-    CORRECTIF (28/08/2026) : le contenu brut est du texte OCR (voir
-    contenu_integral_ocr) -- jamais réécrit ou reformulé, MAIS jamais
-    envoyé tel quel non plus. Deux problèmes constatés sur un vrai
-    test (BAC C 2023 Exercice 3) :
-      1. Le front passe la réponse assistant par marked.parse() --
-         "1.", "2.", "3." en début de ligne sont interprétés comme une
-         liste Markdown numérotée, qui RENUMÉROTE et réorganise le
-         texte, cassant la numérotation réelle des questions.
-      2. Artefacts de scan qui n'apportent rien à l'élève ("Scanné
-         avec CamScanner", "page 1 sur 2") polluent visuellement.
-    Fix : nettoyage des artefacts connus (jamais du contenu
-    mathématique, uniquement du bruit de scan identifié), puis
-    affichage dans un bloc de code Markdown (```) -- rendu en
-    monospace préformaté par marked.js, donc IMMUNISÉ contre toute
-    réinterprétation de "1.", "2." etc. comme liste, et préserve les
-    sauts de ligne exacts du texte source.
+    CORRECTIF (28/08/2026) : nettoyage des artefacts de scan connus,
+    puis affichage en bloc de code Markdown pour l'OCR brut non
+    vérifié (protège contre la renumérotation par marked.parse()).
 
-    CORRECTIF (13/09/2026) : l'en-tête affichait "BAC" EN DUR quel que
-    soit le niveau réel de l'épreuve -- un exercice Probatoire
-    s'affichait "BAC C — 2024 — ..." alors que la RECHERCHE elle-même
-    était déjà correcte (voir obtenir_exercice_bac). Le libellé vient
-    maintenant de exercice['niveau'] traduit via
-    LIBELLE_NIVEAU_AFFICHAGE, avec repli sur "BAC" si le niveau est
-    absent ou non reconnu (comportement identique à avant ce
-    correctif dans ce cas de repli uniquement)."""
+    CORRECTIF (13/09/2026) : le libellé niveau vient de
+    exercice['niveau'] traduit via LIBELLE_NIVEAU_AFFICHAGE.
+
+    CORRECTIF (19/09/2026) : si `elements_non_transcrits` est renseigné
+    (figure/tableau/graphique que Gemini Vision n'a pas pu transcrire
+    avec confiance), l'élève en est informé explicitement et orienté
+    vers "Parcourir les épreuves" pour consulter le PDF original --
+    déjà disponible ailleurs sur le site, jamais un vrai blocage."""
     if not exercice:
         precision = f" (exercice {numero})" if numero else ""
         return (
@@ -310,22 +332,21 @@ def formuler_reponse_exercice_bac(exercice: dict | None, annee: int, numero: int
     libelle_niveau = LIBELLE_NIVEAU_AFFICHAGE.get(exercice.get("niveau"), "BAC")
     entete = f"**{libelle_niveau} {exercice['series']} — {exercice['session']} — {exercice['titre']}**"
 
-    # CORRECTIF (29/08/2026) : maintenant que retranscrire_epreuve_vision.py
-    # produit du vrai LaTeX propre ($...$), le bloc de code Markdown qui
-    # protégeait contre la casse de numérotation devient CONTRE-PRODUCTIF
-    # sur ce texte -- il empêche aussi KaTeX de rendre les formules (un
-    # bloc ``` est affiché en monospace brut, jamais interprété comme
-    # LaTeX), donc l'élève voit "$\\frac{29}{36}$" en texte au lieu de la
-    # fraction affichée. Sur du texte vérifié (qualite='verifie_vision'),
-    # on rend en Markdown normal -- exactement le même pipeline que les
-    # réponses de Gemini (marked.parse() + KaTeX auto-render côté front),
-    # numérotation propre car transcription propre. Le bloc de code reste
-    # la protection par défaut UNIQUEMENT sur l'OCR brut non vérifié,
-    # où la numérotation peut encore être cassée ou incohérente.
+    note_elements_manquants = ""
+    if exercice.get("elements_non_transcrits"):
+        note_elements_manquants = (
+            "\n\n⚠️ *(Cet exercice contient un élément (figure, tableau ou graphique) que je "
+            "n'ai pas pu retranscrire avec certitude : "
+            f"{exercice['elements_non_transcrits']}. Pour être sûr de travailler sur l'énoncé "
+            "exact, va dans « Consulter les épreuves » dans le menu pour voir le sujet original "
+            "scanné.)*"
+        )
+
     if exercice.get("qualite") == "verifie_vision":
         note = (
             "\n\n*(Énoncé réel officiel MINESEC, relu et vérifié. "
             "Entraîne-toi dessus, puis demande-moi de le corriger si tu veux.)*"
+            + note_elements_manquants
         )
         return f"{entete}\n\n{exercice['contenu_integral']}{note}"
 
@@ -338,12 +359,14 @@ def formuler_reponse_exercice_bac(exercice: dict | None, annee: int, numero: int
             "illisibles ci-dessus. Si tu me demandes de corriger, je te dirai clairement quelles "
             "valeurs je ne peux pas garantir plutôt que d'inventer un résultat. Le plus sûr "
             "reste de vérifier ces valeurs sur ton propre support papier.)*"
+            + note_elements_manquants
         )
     else:
         note = (
             "\n\n*(Énoncé réel officiel MINESEC, extrait par OCR -- la mise en page brute est "
             "préservée telle quelle, certains caractères peuvent être mal reconnus par le scanner "
             "d'origine. Entraîne-toi dessus, puis demande-moi de le corriger si tu veux.)*"
+            + note_elements_manquants
         )
     return f"{entete}\n\n```\n{texte_propre}\n```{note}"
 
@@ -358,23 +381,6 @@ MOTIFS_BRUIT_OCR = [
 ]
 
 
-# CORRECTIF (28/08/2026, après retour terrain sur BAC C/E 2024 Ex.2 et
-# BAC C/E 2025 Ex.1) : certaines sections sont tellement corrompues
-# par l'OCR que même la consigne de fidélité (voir
-# chat_contexte.INSTRUCTION_CORRECTION_FIDELE) ne suffit pas à faire
-# réagir Gemini -- au lieu de s'arrêter net, il reste vague/générique
-# sans jamais donner de vrais chiffres, ce qui est PIRE qu'un arrêt
-# franc (ça a l'air rigoureux sans l'être). Détection locale, gratuite,
-# de ce niveau de corruption AVANT même la demande de correction, pour
-# avertir l'élève dès l'affichage de l'énoncé plutôt que de découvrir
-# le problème seulement après une tentative de correction ratée.
-#
-# "@" n'apparaît JAMAIS dans un vrai énoncé de maths camerounais --
-# marqueur quasi certain de corruption OCR sévère dans ce corpus
-# (ex: "op(f)=21+;+ketp(k)=3-3k" au lieu des vraies images de la base
-# f(i), f(j), f(k) de l'endomorphisme). 3+ occurrences de "|" isolé
-# au milieu du texte sont un artefact de colonne de scan très
-# caractéristique du même phénomène.
 def texte_ocr_douteux(texte: str) -> bool:
     if "@" in texte:
         return True
@@ -392,9 +398,6 @@ def nettoyer_texte_ocr_pour_affichage(texte: str) -> str:
     for motif in MOTIFS_BRUIT_OCR:
         resultat = motif.sub("", resultat)
 
-    # Normalise les sauts de ligne multiples (3+ -> 2) laissés par le
-    # retrait des artefacts ci-dessus, sans aplatir la structure
-    # normale en paragraphes du texte.
     resultat = re.sub(r"\n{3,}", "\n\n", resultat)
     resultat = re.sub(r"[ \t]{2,}", " ", resultat)
 
