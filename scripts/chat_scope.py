@@ -26,37 +26,42 @@ introduit deux modes explicites par matière :
 
 CORRECTIF (13/09/2026) : ("Probatoire", "C")["Mathematiques"] passe de
 MODE_GENERIQUE à MODE_RAG -- le corpus rag.db contient désormais 25
-épreuves Probatoire C Mathématiques réellement transcrites
-(PROB-MATH-1999 à PROB-MATH-2025), ainsi que la progression MINESEC
-Première C importée dans themes/lecons. Laisser ce niveau/série en
-MODE_GENERIQUE alors que la donnée réelle existait déjà en base était
-la cause du bug observé en production.
+épreuves Probatoire C Mathématiques réellement transcrites, ainsi que
+la progression MINESEC Première C importée dans themes/lecons. Laisser
+ce niveau/série en MODE_GENERIQUE alors que la donnée réelle existait
+déjà en base était la cause du bug observé en production.
 
 CORRECTIF (19/09/2026) -- DÉCOUPLAGE GÉNÉRATION PDF / MODE RAG :
-jusqu'ici, `chat_disponible_pour(niveau, serie)` déduisait la
+`chat_disponible_pour(niveau, serie)` déduisait auparavant la
 disponibilité de la génération PDF (boutons Examen/Séquence) du mode
 RAG de Mathématiques pour ce niveau/série. Ça marchait tant que seul
-BAC C avait Mathématiques en MODE_RAG. Le jour où Probatoire D
-Mathématiques est passé en MODE_RAG (corpus réel : 26 sessions
-1999-2025, verifie_vision), ce raccourci aurait activé À TORT les
-boutons de génération PDF pour Probatoire D, alors que
+BAC C avait Mathématiques en MODE_RAG. Dès qu'un autre niveau/série a
+Mathématiques en MODE_RAG (chat conversationnel), ce raccourci
+activerait À TORT les boutons de génération PDF, alors que
 generer_epreuve_json.py ne sait générer un PDF calibré (barème,
-format) que pour BAC C.
-
-Le mode RAG d'une matière (peut-on discuter avec un vrai corpus ?) et
-la capacité de génération PDF (peut-on produire un examen structuré
-en PDF pour ce niveau/série ?) sont deux choses indépendantes -- l'une
-ne doit jamais se déduire de l'autre. GENERATION_PDF_ACTIF ci-dessous
-remplace cette déduction implicite par une liste explicite.
+format) que pour BAC C. Le mode RAG d'une matière (peut-on discuter
+avec un vrai corpus ?) et la capacité de génération PDF (peut-on
+produire un examen structuré en PDF pour ce niveau/série ?) sont deux
+choses indépendantes -- l'une ne doit jamais se déduire de l'autre.
+GENERATION_PDF_ACTIF ci-dessous remplace cette déduction implicite par
+une liste explicite.
 
 CORRECTIF (19/09/2026) -- PROBATOIRE D COMPLET : les 5 matières
 importées et transcrites pour Probatoire D (Mathematiques 1999-2025,
-Physique, Informatique 2018-2025, SVT 2014-2025, Chimie 2014-2026)
-sont toutes verifie_vision en base -- confirmé par requête directe.
-Seules Physique était en MODE_RAG ; les 4 autres étaient absentes ou
-en MODE_GENERIQUE alors que leurs corpus complets existaient déjà --
-même piège que le correctif du 13/09 pour Probatoire C. Les 5
-matières passent en MODE_RAG.
+Physique, Informatique, SVT, Chimie) sont toutes verifie_vision en
+base -- confirmé par requête directe. Passées en MODE_RAG.
+
+CORRECTIF (19/09/2026) -- BAC D COMPLET : même travail que Probatoire D
+appliqué à Bac D -- import et transcription des 5 matières (79
+sessions au total : Mathematiques 1999-2024, Physique, Chimie, SVT,
+Informatique), toutes verifie_vision sauf une session isolée (SVT
+2015, échec de segmentation Gemini après 3 tentatives -- ligne en
+base non écrasée, à retenter plus tard). Les 5 matières passent en
+MODE_RAG malgré ce trou isolé : une session manquante ou en échec
+d'une matière ne bloque jamais le mode RAG de la matière entière, elle
+sera simplement absente des résultats de recherche d'exercice réel
+pour cette année précise (voir chat_bac_officiel.obtenir_exercice_bac,
+qui retourne None proprement dans ce cas, jamais une erreur).
 
 RÉTROCOMPATIBILITÉ (important) : `chat_disponible_pour(niveau, serie)`
 et `message_indisponible(niveau, serie)` gardent EXACTEMENT leur
@@ -126,8 +131,11 @@ SCOPE_ACTIF = {
         "Anglais": MODE_GENERIQUE,
     },
     ("BAC", "D"): {
-        "Mathematiques": MODE_GENERIQUE,
+        "Mathematiques": MODE_RAG,
         "Physique": MODE_RAG,
+        "Chimie": MODE_RAG,
+        "SVT": MODE_RAG,
+        "Informatique": MODE_RAG,
     },
     ("BAC", "TI"): {
         "Mathematiques": MODE_GENERIQUE,
@@ -202,9 +210,9 @@ def chat_disponible_pour(niveau: str, serie: str | None) -> bool:
     """SIGNATURE INCHANGÉE (2 arguments). DEPUIS LE 19/09/2026 :
     contrôle UNIQUEMENT la génération de PDF (Examen/Séquence) via
     GENERATION_PDF_ACTIF -- découplé du mode RAG du chat
-    conversationnel (voir piège Probatoire D documenté en tête de
-    fichier). NE PAS réintroduire de lien avec SCOPE_ACTIF/mode_pour
-    ici : ça recréerait exactement le bug corrigé."""
+    conversationnel (voir piège documenté en tête de fichier). NE PAS
+    réintroduire de lien avec SCOPE_ACTIF/mode_pour ici : ça
+    recréerait exactement le bug corrigé."""
     return (niveau, serie) in GENERATION_PDF_ACTIF
 
 
