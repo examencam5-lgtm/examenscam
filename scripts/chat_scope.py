@@ -124,8 +124,9 @@ SCOPE_ACTIF = {
     ("BAC", "C"): {
         "Mathematiques": MODE_RAG,
         "Physique": MODE_RAG,
-        "Chimie": MODE_GENERIQUE,
-        "SVT": MODE_GENERIQUE,
+        "Chimie": MODE_RAG,
+        "SVT": MODE_RAG,
+        "Informatique": MODE_RAG,
         "Philosophie": MODE_GENERIQUE,
         "Français": MODE_GENERIQUE,
         "Anglais": MODE_GENERIQUE,
@@ -166,7 +167,6 @@ SCOPE_ACTIF = {
         "Mathematiques": MODE_GENERIQUE,
     },
 }
-
 
 def _matieres_du_scope(niveau: str, serie: str | None) -> dict | None:
     """Retourne le dict {matiere: mode} applicable, en tenant compte
