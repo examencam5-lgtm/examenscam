@@ -36,11 +36,21 @@
 
   const MATIERES_DISPO = window.APP_CONFIG.matieresDispo;
 
+  // Contrôleur d'abandon de la requête en cours (null = rien à interrompre)
+  let controleurAbandon = null;
+
+  const ICONE_ENVOYER =
+    '<path d="M4 4l16 8-16 8 3-8z"/><path d="M7 12h13"/>';
+
+  const ICONE_STOP =
+    '<rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" stroke="none"/>';
+
   const etat = {
     enAttente: false,
     panneauOuvert: false,
     matiere: null,
-    chargementHistorique: false
+    chargementHistorique: false,
+    suivreDefilement: true
   };
 
   const SERIE_GENERATION_DISPONIBLE = 'C';
@@ -53,6 +63,48 @@
       MATIERES_DISPO.includes('Mathematiques')
         ? 'Mathematiques'
         : MATIERES_DISPO[0];
+  }
+
+  // L'utilisateur est-il déjà proche du bas de la fenêtre ?
+  // Sert à décider si on continue de suivre le flux ou si on le laisse lire tranquille.
+  function estAncreEnBas() {
+    if (!fenetre) return true;
+    return (
+      fenetre.scrollHeight -
+        fenetre.scrollTop -
+        fenetre.clientHeight 
+      60
+    );
+  }
+
+  function basculerBoutonEnvoyer(mode) {
+    if (!btnEnvoyer) return;
+
+    const svg = btnEnvoyer.querySelector('svg');
+
+    if (mode === 'stop') {
+      btnEnvoyer.classList.add('btn-envoyer--stop');
+      btnEnvoyer.setAttribute(
+        'aria-label',
+        'Interrompre la génération'
+      );
+      btnEnvoyer.disabled = false;
+
+      if (svg) svg.innerHTML = ICONE_STOP;
+    } else {
+      btnEnvoyer.classList.remove('btn-envoyer--stop');
+      btnEnvoyer.setAttribute('aria-label', 'Envoyer');
+
+      if (svg) svg.innerHTML = ICONE_ENVOYER;
+
+      synchroniserEtatEnvoi();
+    }
+  }
+
+  function interrompreGeneration() {
+    if (controleurAbandon) {
+      controleurAbandon.abort();
+    }
   }
 
   function genererMessageAccueil() {
@@ -380,7 +432,15 @@
     ligne.appendChild(bulle);
     fenetre.appendChild(ligne);
 
-    fenetre.scrollTop = fenetre.scrollHeight;
+    // On place le début de l'échange en haut du viewport plutôt que de
+    // sauter directement au bas de la fenêtre : c'est ce qui laisse la
+    // place de lire la réponse depuis son début pendant qu'elle arrive.
+    requestAnimationFrame(() => {
+      ligne.scrollIntoView({
+        block: 'start',
+        behavior: 'smooth'
+      });
+    });
   }
 
   function ajouterMessageAssistant(
@@ -456,8 +516,9 @@
     ligne.appendChild(corps);
     fenetre.appendChild(ligne);
 
-    fenetre.scrollTop =
-      fenetre.scrollHeight;
+    if (estAncreEnBas()) {
+      fenetre.scrollTop = fenetre.scrollHeight;
+    }
 
     return ligne;
   }
@@ -662,16 +723,24 @@
     );
 
     etat.enAttente = true;
+    etat.suivreDefilement = true;
 
-    if (btnEnvoyer) {
-      btnEnvoyer.disabled = true;
-    }
+    basculerBoutonEnvoyer('stop');
 
     const ligneAttente =
       ajouterMessageAssistant(
         '',
         true
       );
+
+    // Références partagées entre le bloc try et le catch (abandon possible
+    // à tout moment : avant, pendant ou après le début du streaming).
+    let corpsFlux = null;
+    let curseurFlux = null;
+    let texteAccumule = '';
+    let erreurRecue = null;
+
+    controleurAbandon = new AbortController();
 
     try {
       const reponseServeur =
@@ -690,7 +759,8 @@
               niveau: ELEVE.niveau,
               serie: ELEVE.serie,
               matiere: etat.matiere
-            })
+            }),
+            signal: controleurAbandon.signal
           }
         );
 
@@ -767,26 +837,26 @@
         'msg-attente'
       );
 
-      const corps =
+      corpsFlux =
         ligneAttente.querySelector(
           '.msg-bot-corps'
         );
 
-      if (!corps) {
+      if (!corpsFlux) {
         throw new Error(
           'Conteneur de réponse introuvable.'
         );
       }
 
-      corps.innerHTML = '';
+      corpsFlux.innerHTML = '';
 
-      const curseur =
+      curseurFlux =
         document.createElement('span');
 
-      curseur.className =
+      curseurFlux.className =
         'curseur-streaming';
 
-      corps.appendChild(curseur);
+      corpsFlux.appendChild(curseurFlux);
 
       const lecteur =
         reponseServeur.body.getReader();
@@ -795,8 +865,6 @@
         new TextDecoder();
 
       let tampon = '';
-      let texteAccumule = '';
-      let erreurRecue = null;
 
       function traiterEvenementSSE(
         evenementBrut
@@ -836,15 +904,19 @@
           texteAccumule +=
             evenement.texte || '';
 
-          corps.textContent =
+          corpsFlux.textContent =
             texteAccumule;
 
-          corps.appendChild(
-            curseur
+          corpsFlux.appendChild(
+            curseurFlux
           );
 
-          fenetre.scrollTop =
-            fenetre.scrollHeight;
+          // On ne force le défilement que si l'utilisateur suit déjà
+          // le bas de la conversation -- sinon on le laisse lire en paix.
+          if (etat.suivreDefilement) {
+            fenetre.scrollTop =
+              fenetre.scrollHeight;
+          }
 
         } else if (
           evenement.type ===
@@ -904,10 +976,10 @@
         );
       }
 
-      curseur.remove();
+      curseurFlux.remove();
 
       rendreReponseAssistant(
-        corps,
+        corpsFlux,
         texteAccumule ||
           erreurRecue ||
           "Je n’ai pas pu générer de réponse."
@@ -926,31 +998,53 @@
         noteErreur.textContent =
           erreurRecue;
 
-        corps.appendChild(
+        corpsFlux.appendChild(
           noteErreur
         );
       }
 
     } catch (erreur) {
-      console.error(
-        'Erreur assistant :',
-        erreur
-      );
+      if (erreur && erreur.name === 'AbortError') {
+        // Interruption volontaire par l'utilisateur : on garde ce qui a
+        // déjà été reçu, ce n'est pas une erreur à afficher comme telle.
+        if (curseurFlux) {
+          curseurFlux.remove();
+        }
 
-      retirerLigneAttente(
-        ligneAttente
-      );
+        if (corpsFlux) {
+          rendreReponseAssistant(
+            corpsFlux,
+            texteAccumule || 'Génération interrompue.'
+          );
+        } else {
+          retirerLigneAttente(ligneAttente);
+          ajouterMessageAssistant(
+            'Génération interrompue.',
+            false
+          );
+        }
+      } else {
+        console.error(
+          'Erreur assistant :',
+          erreur
+        );
 
-      ajouterMessageAssistant(
-        erreur.message ||
-        "Je n’arrive pas à répondre pour l’instant. Réessaie dans un instant.",
-        false
-      );
+        retirerLigneAttente(
+          ligneAttente
+        );
+
+        ajouterMessageAssistant(
+          erreur.message ||
+          "Je n’arrive pas à répondre pour l’instant. Réessaie dans un instant.",
+          false
+        );
+      }
 
     } finally {
       etat.enAttente = false;
+      controleurAbandon = null;
 
-      synchroniserEtatEnvoi();
+      basculerBoutonEnvoyer('envoyer');
     }
   }
 
@@ -1006,6 +1100,20 @@
               );
             }
           }
+        }
+      }
+    );
+  }
+
+  if (btnEnvoyer) {
+    // Clic sur le bouton pendant la génération = interruption, pas envoi.
+    // On coupe ici avant que le submit du formulaire ne se déclenche.
+    btnEnvoyer.addEventListener(
+      'click',
+      (e) => {
+        if (etat.enAttente) {
+          e.preventDefault();
+          interrompreGeneration();
         }
       }
     );
@@ -2616,6 +2724,21 @@
       fermerSidebar();
     }
   );
+
+  // Défilement manuel de l'utilisateur (molette/tactile) = intention réelle
+  // de lire ; on distingue ça de nos propres scrolls programmatiques pour
+  // savoir quand arrêter de suivre automatiquement le flux.
+  if (fenetre) {
+    ['wheel', 'touchmove'].forEach((evt) => {
+      fenetre.addEventListener(
+        evt,
+        () => {
+          etat.suivreDefilement = estAncreEnBas();
+        },
+        { passive: true }
+      );
+    });
+  }
 
   chargerEtAfficherHistorique();
 
