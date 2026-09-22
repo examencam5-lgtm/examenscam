@@ -1,9 +1,9 @@
 # scripts/retranscrire_lot_robuste.py
 """
-Scanne data/pdfs_rag/<niveau>/<serie>/<matiere>/*.pdf, retranscrit
-tout ce qui n'est pas déjà verifie_vision (ou qui l'est mais date
-d'avant le correctif honnêteté tableaux/figures du 19/09/2026 --
-détecté via colonne prompt_version), et journalise un résumé complet.
+Scanne data/pdfs_rag/<niveau>/<serie>/<matiere>/*.pdf (ou
+data/pdfs_rag/<niveau>/<matiere>/*.pdf pour BEPC, sans série),
+retranscrit tout ce qui n'est pas déjà verifie_vision avec la version
+de prompt actuelle, et journalise un résumé complet.
 
 ROBUSTESSE : un fichier qui échoue (réseau, PDF corrompu, quota
 Gemini) n'interrompt JAMAIS la boucle -- il est noté échoué et le
@@ -34,19 +34,25 @@ RACINE_PDFS = Path("data/pdfs_rag")
 
 MOTIF_ANNEE = re.compile(r"(19[9]\d|20[0-3]\d)")
 
-# Version du prompt actuellement en usage -- incrémenter ce numéro à
-# chaque fois que PROMPT_TRANSCRIPTION change de façon significative,
-# pour permettre de re-cibler uniquement les épreuves transcrites avec
-# une version antérieure sans tout re-scanner à l'aveugle.
 VERSION_PROMPT_ACTUELLE = "2026-09-19-honnetete-figures"
 
-# Correspondance nom de dossier niveau -> valeur stockée en base
-# (déjà la même convention que le reste du projet).
-NIVEAUX_VALIDES = {"3e", "premiere", "terminale"}
-# Les noms de dossiers ne correspondent pas toujours exactement au
-# nom de matière stocké en base (casse, abréviation, variante
-# orthographique historique) -- ce dict fait la traduction. Clé en
-# minuscule pour un matching insensible à la casse du dossier.
+# Correspondance nom de dossier niveau -> valeur stockée en base.
+# "troisieme" ajouté pour BEPC -- le dossier physique s'appelle
+# "troisieme" mais la base stocke "3e".
+NIVEAUX_VALIDES = {"3e", "premiere", "terminale", "troisieme"}
+
+NORMALISATION_NIVEAU = {
+    "troisieme": "3e",
+    "3e": "3e",
+    "premiere": "premiere",
+    "terminale": "terminale",
+}
+
+
+def normaliser_niveau(nom_dossier: str) -> str:
+    return NORMALISATION_NIVEAU.get(nom_dossier.strip().lower(), nom_dossier)
+
+
 NORMALISATION_MATIERE = {
     "maths": "Mathematiques",
     "mathematiques": "Mathematiques",
@@ -55,24 +61,22 @@ NORMALISATION_MATIERE = {
     "svteehb": "SVT",
     "svt": "SVT",
     "chimie": "Chimie",
+    "pct": "PCT",
 }
 
 
 def normaliser_matiere(nom_dossier: str) -> str:
     return NORMALISATION_MATIERE.get(nom_dossier.strip().lower(), nom_dossier)
 
+
 def lister_pdfs():
     """Parcourt data/pdfs_rag/<niveau>/<serie>/<matiere>/*.pdf et
     retourne une liste de dicts {chemin, niveau, serie, matiere}.
-    Ignore silencieusement toute arborescence qui ne respecte pas
-    exactement 3 niveaux de dossiers sous la racine.
 
-    CORRECTIF (19/09/2026) : le nom du dossier matière ne correspond
-    pas toujours exactement au nom stocké en base (ex: dossier
-    "maths" / "physique" / "SVTEEHB" vs colonne "Mathematiques" /
-    "Physique" / "SVT") -- voir normaliser_matiere(). Sans ça, la
-    recherche en base échouait silencieusement pour toutes ces
-    matières malgré des lignes bien présentes."""
+    CAS BEPC (19/09/2026) : niveau '3e' n'a pas de série -- structure
+    troisieme/<matiere>/*.pdf directement (2 niveaux, pas 3). Détecté
+    si le dossier sous le niveau contient des PDFs directement plutôt
+    que des sous-dossiers ; dans ce cas serie='NA'."""
     resultats = []
 
     if not RACINE_PDFS.exists():
@@ -82,27 +86,43 @@ def lister_pdfs():
     for chemin_niveau in RACINE_PDFS.iterdir():
         if not chemin_niveau.is_dir():
             continue
-        niveau = chemin_niveau.name
+
+        niveau = normaliser_niveau(chemin_niveau.name)
         if niveau not in NIVEAUX_VALIDES:
             print(f"⚠️  Dossier niveau ignoré (nom inattendu) : {chemin_niveau}")
             continue
 
-        for chemin_serie in chemin_niveau.iterdir():
-            if not chemin_serie.is_dir():
+        for chemin_intermediaire in chemin_niveau.iterdir():
+            if not chemin_intermediaire.is_dir():
                 continue
-            serie = chemin_serie.name
 
-            for chemin_matiere in chemin_serie.iterdir():
+            pdfs_directs = list(chemin_intermediaire.glob("*.pdf"))
+            sous_dossiers = [d for d in chemin_intermediaire.iterdir() if d.is_dir()]
+
+            if pdfs_directs and not sous_dossiers:
+                matiere = normaliser_matiere(chemin_intermediaire.name)
+                for pdf in pdfs_directs:
+                    resultats.append({
+                        "chemin": pdf,
+                        "niveau": niveau,
+                        "serie": "NA",
+                        "matiere": matiere,
+                    })
+                continue
+
+            serie = chemin_intermediaire.name
+
+            for chemin_matiere in chemin_intermediaire.iterdir():
                 if not chemin_matiere.is_dir():
                     continue
-                matiere = chemin_matiere.name
+                matiere = normaliser_matiere(chemin_matiere.name)
 
                 for pdf in chemin_matiere.glob("*.pdf"):
                     resultats.append({
                         "chemin": pdf,
                         "niveau": niveau,
                         "serie": serie,
-                        "matiere": normaliser_matiere(matiere),
+                        "matiere": matiere,
                     })
 
     return resultats
@@ -120,8 +140,8 @@ def _colonne_existe(conn, table, colonne) -> bool:
 
 def epreuve_deja_a_jour(conn, epreuve_id: str, forcer: bool) -> bool:
     """True si cette épreuve est déjà transcrite avec la version de
-    prompt actuelle -- on ne la retranscrit pas (économie Gemini),
-    sauf si --forcer-tout est passé."""
+    prompt actuelle -- on ne la retranscrit pas, sauf si --forcer-tout
+    est passé."""
     if forcer:
         return False
 
@@ -134,9 +154,6 @@ def epreuve_deja_a_jour(conn, epreuve_id: str, forcer: bool) -> bool:
         return False
 
     if not _colonne_existe(conn, "epreuves_bac_officielles", "version_prompt"):
-        # Colonne pas encore posée -- une épreuve verifie_vision sans
-        # traçabilité de version est considérée comme transcrite AVANT
-        # le correctif honnêteté, donc pas à jour.
         return False
 
     version_row = conn.execute(
@@ -252,9 +269,6 @@ def main():
         try:
             resultat = traiter_un_pdf(clients, conn, item, args.forcer_tout, args.dry_run)
         except Exception as exc:
-            # Filet de sécurité absolu -- même une erreur totalement
-            # inattendue (bug dans le script lui-même) ne doit jamais
-            # arrêter la boucle sur les fichiers restants.
             print(f"   ❌ Erreur inattendue, fichier ignoré : {exc}")
             resultat = "echec"
 

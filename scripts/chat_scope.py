@@ -164,8 +164,9 @@ SCOPE_ACTIF = {
         "Mathematiques": MODE_GENERIQUE,
     },
     ("BEPC", None): {
-        "Mathematiques": MODE_GENERIQUE,
-    },
+    "Mathematiques": MODE_RAG,
+    "PCT": MODE_RAG,
+},
 }
 
 def _matieres_du_scope(niveau: str, serie: str | None) -> dict | None:
