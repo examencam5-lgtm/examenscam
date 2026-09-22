@@ -1313,3 +1313,28 @@ body.page-app-plein-ecran {
     transition-duration: 0.01ms !important;
   }
 }
+.btn-envoyer {
+  transition: background 0.18s ease, transform 0.15s ease;
+}
+
+.btn-envoyer svg {
+  transition: transform 0.15s ease;
+}
+
+.btn-envoyer--stop {
+  background: var(--ec-ink, #0F172A);
+  animation: pulse-stop 1.6s ease-in-out infinite;
+}
+
+.btn-envoyer--stop svg {
+  transform: scale(0.8);
+}
+
+@keyframes pulse-stop {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(15, 23, 42, 0);
+  }
+}
