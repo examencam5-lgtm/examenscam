@@ -1089,9 +1089,12 @@ def assistant_eleve_repondre():
     criteres_bac = detecter_demande_exercice_bac(question)
     if criteres_bac is not None:
         exercice = obtenir_exercice_bac(
-            criteres_bac['annee'], criteres_bac['numero'], matiere,
-            eleve['niveau'], criteres_bac.get('partie')
-        )
+        annee=criteres_bac['annee'],
+        numero=criteres_bac['numero'],
+        matiere=matiere,
+        niveau=eleve['niveau'],
+        partie=criteres_bac.get('partie'),
+    )    
         texte_bac = formuler_reponse_exercice_bac(exercice, criteres_bac['annee'], criteres_bac['numero'])
         enregistrer_tour(eleve_id, matiere, question, texte_bac)
         return jsonify({'reponse': texte_bac})

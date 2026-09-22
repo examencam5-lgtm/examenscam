@@ -32,19 +32,13 @@ LIBELLE_NIVEAU_AFFICHAGE, plus jamais codé en dur.
 
 CORRECTIF NUMÉROTATION ROMAINE + PARTIES (19/09/2026, Probatoire D) :
 - Informatique numérote ses exercices en chiffres romains (EXERCICE I,
-  II, III) -- MOTIF_NUMERO_EXERCICE ne capturait que des chiffres
-  arabes, donc aucune requête n'aboutissait jamais pour cette matière.
-  CHIFFRES_ROMAINS convertit le numéro arabe détecté dans la question
-  vers son équivalent romain pour élargir le matching.
+  II, III) -- le matching du numéro couvre les chiffres arabes ET
+  romains, avec vérification de frontière (\\b) pour éviter qu'
+  "exercice I" ne matche "exercice II".
 - SVT répète "Exercice 1", "Exercice 2" IDENTIQUEMENT sous Partie A et
-  sous Partie B -- sans distinction, la requête retombait toujours sur
-  la première occurrence (Partie A), rendant la Partie B invisible.
-  Le nouveau paramètre `partie` ('A' ou 'B') filtre sur la bonne
-  occurrence ; sans lui, repli sur la première trouvée (comportement
-  historique).
-- Le filtre `type` est élargi à ('exercice', 'sous_partie') pour
-  couvrir les variantes de structuration observées selon les PDFs
-  sources (voir guide d'import, section "Format type hétérogène").
+  sous Partie B -- le paramètre `partie` ('A' à 'D', voir 22/09/2026)
+  filtre sur la bonne occurrence ; sans lui, repli sur la première
+  trouvée (comportement historique).
 
 CORRECTIF HONNÊTETÉ TRANSCRIPTION (19/09/2026) : certaines sections
 contiennent des figures/graphiques/tableaux que Gemini Vision n'a pas
@@ -55,6 +49,44 @@ d'inventer une description. formuler_reponse_exercice_bac() affiche
 cet avertissement à l'élève et l'oriente vers "Parcourir les épreuves"
 pour consulter l'épreuve originale scannée -- déjà disponible ailleurs
 sur le site, donc jamais un vrai blocage pour l'élève.
+
+═══════════════════════════════════════════════════════════════════
+CHANTIER CORRESPONDANCE ÉLÈVE <-> EXERCICES BAC, ÉTAPE 2 (22/09/2026)
+═══════════════════════════════════════════════════════════════════
+Un audit complet du corpus a montré que la structure interne des
+épreuves varie énormément selon la matière : SECTION A-D (Anglais),
+Teil I-IV (Allemand), PARTIE A/B (Maths/Chimie), Sujet de type I/II/III
+(Littérature), parfois une seule section sans découpage du tout
+(Littérature 2017/2020). Trois correctifs apportés ici :
+
+a) DÉTECTION ÉLARGIE -- un élève ne connaît pas le mot exact utilisé
+   par SA matière : il dit "partie 2" ou "section 2" aussi
+   naturellement que "exercice 2". MOTIF_NUMERO_EXERCICE couvre
+   maintenant exercice/partie/section/sujet, et MOTIF_PARTIE couvre
+   A-D (pas seulement A-B) pour SECTION A-D en Anglais.
+
+b) PARAMÈTRE `serie` AJOUTÉ à obtenir_exercice_bac() -- sans lui,
+   Chimie C et Chimie D (même matiere, même niveau) pouvaient se
+   mélanger au hasard de l'ordre retourné par SQLite. Repli en LIKE
+   si aucune série EXACTE ne correspond, pour couvrir les séries
+   composites observées dans l'audit ('C et E', 'C/E' coexistant avec
+   'C' pour Maths Terminale). Pour le BEPC (niveau_table == '3e'), la
+   série est forcée à 'NA' en interne (comportement de stockage
+   observé dans retranscrire_lot_robuste.lister_pdfs()).
+
+c) FILTRAGE PAR LISTE NOIRE + REPLI ORDINAL -- l'ancienne liste
+   blanche ("exercice", "sous_partie") excluait par un simple
+   `continue` tout ce qui était type='partie', cassant Espagnol /
+   Langue Française / Littérature, où le contenu réel de l'exercice
+   est stocké DIRECTEMENT sous type='partie' (identifiants I, II,
+   III, IV), sans sous-niveau 'exercice' en dessous. TYPES_FRONT_MATTER
+   liste au contraire ce qui n'est JAMAIS du contenu exploitable
+   (en-tête, texte introductif...) -- tout le reste devient candidat.
+   Un repli ORDINAL (n-ième section de contenu dans l'ordre
+   d'apparition, colonne `ordre`) prend le relais quand aucune
+   correspondance textuelle n'est trouvée -- nécessaire pour
+   SECTION A-D / Teil I-IV / Sujet de type I-III que l'élève ne
+   nommera jamais littéralement ainsi dans sa question.
 
 Table SOURCE : sections_bac_officielles / epreuves_bac_officielles
 (contenu réel, OCR intégral, PAS le corpus de style 'epreuves' utilisé
@@ -81,8 +113,21 @@ MOTS_ENTRAINEMENT = [
 ]
 
 MOTIF_ANNEE = re.compile(r"\b(19[9]\d|20[0-2]\d)\b")
-MOTIF_NUMERO_EXERCICE = re.compile(r"exercice\s*n?°?\s*(\d)", re.IGNORECASE)
-MOTIF_PARTIE = re.compile(r"partie\s*([ab])\b", re.IGNORECASE)
+
+# ÉLARGI (étape 2a, 22/09/2026) : un élève dit aussi naturellement
+# "partie 2" ou "section 2" que "exercice 2" -- il ne connaît pas la
+# structure interne de sa matière. Les quatre mots sont acceptés
+# indifféremment pour capturer le numéro.
+MOTIF_NUMERO_EXERCICE = re.compile(
+    r"(?:exercice|partie|section|sujet)\s*n?°?\s*(\d)", re.IGNORECASE
+)
+# ÉLARGI A-D (étape 2a, 22/09/2026), pas seulement A-B : SECTION A-D
+# en Anglais notamment. "section" accepté en plus de "partie" pour la
+# même raison que ci-dessus.
+MOTIF_PARTIE = re.compile(r"(?:partie|section)\s*([a-d])\b", re.IGNORECASE)
+
+LETTRE_VERS_ORDINAL = {"A": 1, "B": 2, "C": 3, "D": 4}
+ROMAIN_VERS_ORDINAL = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6}
 
 NB_RESULTATS_MAX = 1  # un seul exercice par défaut -- pas toute l'épreuve d'un coup
 
@@ -118,6 +163,21 @@ LIBELLE_NIVEAU_AFFICHAGE = {
 
 CHIFFRES_ROMAINS = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI"}
 
+# NOUVEAU (étape 2c, 22/09/2026) : liste NOIRE des types de section qui
+# ne sont JAMAIS du contenu d'exercice exploitable -- tout type absent
+# de cette liste devient un candidat valable. Remplace l'ancienne
+# liste BLANCHE ("exercice", "sous_partie") qui excluait par erreur
+# type='partie' quand celui-ci PORTE directement le contenu réel
+# (Espagnol, Littérature, Langue Française). Comparé sur texte
+# normalisé (accents retirés, "_"/"-" réduits à un espace) pour
+# absorber la corruption d'encodage connue sur cette colonne (voir
+# chantier, étape 3 -- "en-tÛte" etc.) sans dépendre de la graphie
+# exacte stockée.
+TYPES_FRONT_MATTER = {
+    "entete", "en tete", "header",
+    "texte introductif", "texte support", "texte principal", "texte",
+}
+
 
 def detecter_demande_correction(question: str) -> bool:
     q_norm = _normaliser(question)
@@ -130,12 +190,28 @@ def _normaliser(texte: str) -> str:
     return "".join(c for c in texte if not unicodedata.combining(c))
 
 
+def _colonne_existe(conn: sqlite3.Connection, table: str, colonne: str) -> bool:
+    """Vrai si `colonne` existe dans `table` -- utilisé pour dégrader
+    gracieusement sur une base plus ancienne pas encore migrée
+    (colonnes 'qualite', 'elements_non_transcrits'), sans dépendre
+    d'un try/except SELECT différent à chaque endroit du fichier."""
+    try:
+        cur = conn.execute(f"PRAGMA table_info({table})")
+        return any(row[1] == colonne for row in cur.fetchall())
+    except sqlite3.OperationalError:
+        return False
+
+
 def detecter_demande_exercice_bac(question: str) -> dict | None:
     """Détection LOCALE, gratuite -- voir note en tête de fichier.
     Déclenche si une année plausible (1990-2029, large marge autour
     des sessions réellement couvertes) ET un mot d'entraînement sont
     présents ensemble. L'année seule ne suffit jamais (éviter de
     détourner "en 2020, la population camerounaise était de...").
+
+    ÉLARGI (étape 2a) : `numero` peut venir de "exercice N", "partie N",
+    "section N" ou "sujet N" -- l'élève ne connaît pas le mot exact de
+    sa matière. `partie` couvre les lettres A à D.
 
     Retourne {'annee': int, 'numero': int|None, 'partie': str|None}
     ou None."""
@@ -158,12 +234,196 @@ def detecter_demande_exercice_bac(question: str) -> dict | None:
     }
 
 
+# ═══════════════════════════════════════════════════════
+# SÉLECTION DE L'ÉPREUVE (session + matiere + niveau + serie)
+# ═══════════════════════════════════════════════════════
+
+def _selectionner_epreuve(
+    conn: sqlite3.Connection,
+    annee: int,
+    matiere: str,
+    niveau_table: str | None,
+    serie_recherche: str | None,
+) -> sqlite3.Row | None:
+    """Retrouve LA ligne d'épreuve pour (session, matiere[, niveau][,
+    serie]). Voir docstring de obtenir_exercice_bac() pour le
+    raisonnement complet sur `serie` (étape 2b) : tentative EXACTE
+    d'abord, repli LIKE ensuite pour les séries composites, jamais de
+    repli silencieux sur n'importe quelle série si `serie_recherche`
+    est fourni et qu'aucune des deux tentatives n'aboutit -- mieux
+    vaut retourner None (message "je n'ai pas cet exercice") qu'une
+    épreuve de la mauvaise série."""
+    champs = "id, session, series, niveau"
+    if _colonne_existe(conn, "epreuves_bac_officielles", "qualite"):
+        champs += ", qualite"
+
+    conditions = ["session=?", "matiere=?"]
+    params = [annee, matiere]
+    if niveau_table:
+        conditions.append("niveau=?")
+        params.append(niveau_table)
+
+    base_where = " AND ".join(conditions)
+
+    if serie_recherche:
+        row = conn.execute(
+            f"SELECT {champs} FROM epreuves_bac_officielles WHERE {base_where} AND series=?",
+            params + [serie_recherche],
+        ).fetchone()
+        if row:
+            return row
+
+        row = conn.execute(
+            f"SELECT {champs} FROM epreuves_bac_officielles WHERE {base_where} AND series LIKE ?",
+            params + [f"%{serie_recherche}%"],
+        ).fetchone()
+        if row:
+            return row
+
+        # Aucune série ne correspond, ni exactement ni en LIKE -- on
+        # ne relâche PAS la contrainte série ici : c'est exactement le
+        # bug que `serie` est censé corriger (mélange Chimie C/D).
+        return None
+
+    return conn.execute(
+        f"SELECT {champs} FROM epreuves_bac_officielles WHERE {base_where}", params
+    ).fetchone()
+
+
+# ═══════════════════════════════════════════════════════
+# SÉLECTION DE LA SECTION (numéro / partie, liste noire + repli ordinal)
+# ═══════════════════════════════════════════════════════
+
+def _type_est_front_matter(type_section: str) -> bool:
+    t = (type_section or "").replace("_", " ").replace("-", " ")
+    t = re.sub(r"\s+", " ", t).strip()
+    return _normaliser(t) in TYPES_FRONT_MATTER
+
+
+def _matche_numero_texte(identifiant, titre, numero: int, numero_romain: str | None) -> bool:
+    """Vrai si l'identifiant/titre de la section nomme explicitement
+    ce numéro, sous n'importe laquelle des étiquettes plausibles
+    (exercice/partie/section/sujet -- l'élève ne connaît pas le mot
+    exact utilisé par sa matière), en chiffres arabes OU romains, avec
+    frontière de mot (\\b) pour ne jamais confondre "exercice I" et
+    "exercice II"."""
+    texte = _normaliser(f"{identifiant or ''} {titre or ''}")
+    etiquettes = ("exercice", "partie", "section", "sujet")
+
+    motifs = [rf"\b{etq}\s*{numero}\b" for etq in etiquettes]
+    if numero_romain:
+        motifs += [rf"\b{etq}\s*{numero_romain.lower()}\b" for etq in etiquettes]
+
+    return any(re.search(m, texte) for m in motifs)
+
+
+def _selectionner_section(
+    toutes_sections: list[sqlite3.Row],
+    numero: int | None,
+    partie: str | None,
+):
+    """Sélectionne LA section correspondant à la demande de l'élève
+    parmi toutes les sections d'une épreuve (déjà triées par `ordre`).
+
+    Remplace l'ancienne liste BLANCHE de types ('exercice',
+    'sous_partie') par une liste NOIRE (TYPES_FRONT_MATTER) : tout
+    type de section qui n'est pas explicitement du "front-matter"
+    (en-tête, texte introductif...) est un candidat valable -- corrige
+    le cas Espagnol/Littérature/Langue Française où le contenu réel
+    est stocké directement sous type='partie' (identifiants I/II/III/IV),
+    sans sous-niveau 'exercice' en dessous.
+
+    Stratégie, dans l'ordre :
+      1. Correspondance TEXTUELLE explicite (l'identifiant/titre de la
+         section nomme littéralement le numéro ou la lettre demandés)
+         -- la plus fiable quand elle existe.
+      2. Repli ORDINAL : n-ième section de contenu dans l'ordre
+         d'apparition (colonne `ordre`) -- nécessaire pour
+         SECTION A-D / Teil I-IV / Sujet de type I-III, que l'élève ne
+         nommera jamais littéralement ainsi dans sa question.
+
+    Retourne None si rien ne correspond, y compris après repli
+    ordinal (ex: numéro demandé au-delà du nombre de sections réelles)."""
+    candidats_ordonnes: list[tuple[str | None, sqlite3.Row]] = []
+    partie_courante: str | None = None
+    sections_partie_elles_memes: dict[str, sqlite3.Row] = {}
+
+    for row in toutes_sections:
+        type_section = row["type"] or ""
+
+        if _type_est_front_matter(type_section):
+            continue
+
+        if _normaliser(type_section) == "partie":
+            texte_partie = f"{row['identifiant'] or ''} {row['titre'] or ''}"
+            m = MOTIF_PARTIE.search(_normaliser(texte_partie))
+            if m:
+                partie_courante = m.group(1).upper()
+                sections_partie_elles_memes[partie_courante] = row
+            # Une section type='partie' est TOUJOURS elle-même un
+            # candidat de contenu potentiel (cas Espagnol/Littérature),
+            # en plus de servir de marqueur pour les sous-sections
+            # suivantes -- c'est exactement le correctif de l'étape 2c.
+            candidats_ordonnes.append((partie_courante, row))
+            continue
+
+        candidats_ordonnes.append((partie_courante, row))
+
+    if not candidats_ordonnes:
+        return None
+
+    numero_romain = CHIFFRES_ROMAINS.get(numero) if numero else None
+
+    # ── 1. Un numéro est demandé ─────────────────────────────────
+    if numero is not None:
+        candidats_numero = [
+            (p, r) for p, r in candidats_ordonnes
+            if _matche_numero_texte(r["identifiant"], r["titre"], numero, numero_romain)
+        ]
+
+        if candidats_numero:
+            if partie:
+                for p, r in candidats_numero:
+                    if p == partie.upper():
+                        return r
+            # Repli historique : première occurrence trouvée si la
+            # partie précisée ne matche aucun candidat textuel (comme
+            # avant l'étape 2, pour ne jamais renvoyer un échec sec
+            # sur un simple souci de partie mal reconnue).
+            return candidats_numero[0][1]
+
+        # Aucune correspondance textuelle -- repli ORDINAL, dans le
+        # sous-ensemble de la bonne partie si elle est précisée.
+        sous_ensemble = (
+            [(p, r) for p, r in candidats_ordonnes if p == partie.upper()]
+            if partie else candidats_ordonnes
+        )
+        if 1 <= numero <= len(sous_ensemble):
+            return sous_ensemble[numero - 1][1]
+        return None
+
+    # ── 2. Pas de numéro, juste une partie/section-lettre ────────
+    if partie:
+        lettre = partie.upper()
+        if lettre in sections_partie_elles_memes:
+            return sections_partie_elles_memes[lettre]
+        ordinal = LETTRE_VERS_ORDINAL.get(lettre)
+        if ordinal and 1 <= ordinal <= len(candidats_ordonnes):
+            return candidats_ordonnes[ordinal - 1][1]
+        return None
+
+    # ── 3. Ni numéro ni partie : comportement historique -- la
+    # première section de contenu, peu importe son type exact.
+    return candidats_ordonnes[0][1]
+
+
 def obtenir_exercice_bac(
     annee: int,
     numero: int | None = None,
     matiere: str = "Mathematiques",
     niveau: str | None = None,
     partie: str | None = None,
+    serie: str | None = None,
 ) -> dict | None:
     """Retrouve UNE section (exercice) réelle pour cette session et
     cette matière.
@@ -174,13 +434,31 @@ def obtenir_exercice_bac(
     NIVEAU_VERS_TABLE. `niveau=None` conserve le comportement
     historique sans filtre.
 
-    `partie` (ex: 'A' ou 'B') -- filtre sur la bonne occurrence quand
+    `partie` (ex: 'A' à 'D') -- filtre sur la bonne occurrence quand
     un même numéro d'exercice apparaît sous plusieurs parties (cas
-    SVT). Sans `partie`, repli sur la première occurrence trouvée.
+    SVT), ou sélectionne directement le contenu d'une partie/section
+    lettrée quand `numero` n'est pas fourni (cas Anglais SECTION A-D).
+    Sans `partie`, repli sur la première occurrence trouvée.
 
-    Le matching du numéro couvre les chiffres arabes ET romains
-    (Informatique utilise EXERCICE I/II/III), avec vérification de
-    frontière pour éviter qu'"exercice I" ne matche "exercice II".
+    `serie` (NOUVEAU, étape 2b, 22/09/2026) : filtre la série (ex:
+    'C', 'D') pour éviter qu'une collision entre deux séries de la
+    même (session, matiere, niveau) -- fréquent en Chimie/Physique --
+    ne retourne une épreuve au hasard de l'ordre SQLite. Repli en LIKE
+    si aucune correspondance EXACTE n'est trouvée, pour couvrir les
+    séries composites observées dans l'audit ('C et E', 'C/E'
+    coexistant avec 'C' pour Maths Terminale). Pour le BEPC
+    (niveau_table == '3e'), la série de recherche est forcée à 'NA' en
+    interne quelle que soit la valeur de `serie` fournie par
+    l'appelant (comportement de stockage observé dans
+    retranscrire_lot_robuste.lister_pdfs()) -- un niveau qui ne
+    distingue pas de série ne doit jamais filtrer dessus par erreur.
+    `serie=None` (comportement historique) ne filtre pas.
+
+    Le matching du numéro couvre désormais exercice/partie/section/
+    sujet, en chiffres arabes ET romains (étape 2a), et la sélection
+    de section remplace l'ancienne liste blanche de types par une
+    liste noire de "front-matter" + un repli ordinal (étape 2c) --
+    voir _selectionner_section().
 
     Retourne None si rien ne correspond. Le dict retourné inclut
     `niveau` et `elements_non_transcrits` (None si tout a été transcrit
@@ -191,104 +469,29 @@ def obtenir_exercice_bac(
     try:
         niveau_table = NIVEAU_VERS_TABLE.get((niveau or "").strip().lower())
 
-        if niveau_table:
-            try:
-                epreuve = conn.execute(
-                    "SELECT id, session, series, qualite, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
-                    (annee, matiere, niveau_table)
-                ).fetchone()
-            except sqlite3.OperationalError:
-                epreuve = conn.execute(
-                    "SELECT id, session, series, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=? AND niveau=?",
-                    (annee, matiere, niveau_table)
-                ).fetchone()
-        else:
-            try:
-                epreuve = conn.execute(
-                    "SELECT id, session, series, qualite, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
-                    (annee, matiere)
-                ).fetchone()
-            except sqlite3.OperationalError:
-                epreuve = conn.execute(
-                    "SELECT id, session, series, niveau FROM epreuves_bac_officielles WHERE session=? AND matiere=?",
-                    (annee, matiere)
-                ).fetchone()
+        serie_recherche = (serie or "").strip() or None
+        if niveau_table == "3e":
+            serie_recherche = "NA"
 
+        epreuve = _selectionner_epreuve(conn, annee, matiere, niveau_table, serie_recherche)
         if not epreuve:
             return None
 
-        # Colonne elements_non_transcrits ajoutee par
-        # retranscrire_epreuve_vision.py -- absente sur une base pas
-        # encore migree, fallback explicite plutot qu'un SELECT qui
-        # planterait.
-        try:
-            colonnes_ok = True
-            conn.execute("SELECT elements_non_transcrits FROM sections_bac_officielles LIMIT 1")
-        except sqlite3.OperationalError:
-            colonnes_ok = False
-
         champs_section = "identifiant, titre, type, contenu_integral, bareme_annonce, ordre"
-        if colonnes_ok:
+        if _colonne_existe(conn, "sections_bac_officielles", "elements_non_transcrits"):
             champs_section += ", elements_non_transcrits"
 
-        if numero is not None:
-            toutes_sections = conn.execute(f"""
-                SELECT {champs_section}
-                FROM sections_bac_officielles
-                WHERE epreuve_id=?
-                ORDER BY ordre
-            """, (epreuve["id"],)).fetchall()
+        toutes_sections = conn.execute(
+            f"""
+            SELECT {champs_section}
+            FROM sections_bac_officielles
+            WHERE epreuve_id=?
+            ORDER BY ordre
+            """,
+            (epreuve["id"],),
+        ).fetchall()
 
-            numero_romain = CHIFFRES_ROMAINS.get(numero)
-
-            def _matche_numero(identifiant, titre):
-                cible = f"exercice {numero}".lower()
-                cible_romain = f"exercice {numero_romain}".lower() if numero_romain else None
-                texte = f"{identifiant or ''} {titre or ''}".lower()
-                if cible in texte:
-                    return True
-                if cible_romain and cible_romain in texte:
-                    idx = texte.find(cible_romain)
-                    fin = idx + len(cible_romain)
-                    if fin >= len(texte) or not texte[fin].isalpha():
-                        return True
-                return False
-
-            partie_courante = None
-            candidats = []
-
-            for row in toutes_sections:
-                type_section = (row["type"] or "").lower()
-
-                if type_section == "partie":
-                    texte_partie = f"{row['identifiant'] or ''} {row['titre'] or ''}"
-                    m = MOTIF_PARTIE.search(_normaliser(texte_partie))
-                    if m:
-                        partie_courante = m.group(1).upper()
-                    continue
-
-                if type_section in ("exercice", "sous_partie"):
-                    if _matche_numero(row["identifiant"], row["titre"]):
-                        candidats.append((partie_courante, row))
-
-            row = None
-            if partie:
-                for p, r in candidats:
-                    if p == partie.upper():
-                        row = r
-                        break
-                if row is None and candidats:
-                    row = candidats[0][1]
-            elif candidats:
-                row = candidats[0][1]
-
-        else:
-            row = conn.execute(f"""
-                SELECT {champs_section} FROM sections_bac_officielles
-                WHERE epreuve_id=? AND LOWER(type)='exercice'
-                ORDER BY ordre LIMIT 1
-            """, (epreuve["id"],)).fetchone()
-
+        row = _selectionner_section(toutes_sections, numero, partie)
         if not row:
             return None
 
