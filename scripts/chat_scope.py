@@ -142,8 +142,14 @@ SCOPE_ACTIF = {
         "Mathematiques": MODE_GENERIQUE,
         "Physique": MODE_RAG,
     },
-    ("BAC", "A4"): {
+       ("BAC", "A4"): {
         "Mathematiques": MODE_GENERIQUE,
+        "Philosophie": MODE_RAG,
+        "Allemand": MODE_RAG,
+        "Anglais": MODE_RAG,
+        "Espagnol": MODE_RAG,
+        "Langue Francaise": MODE_RAG,
+        "Litterature": MODE_RAG,
     },
     ("Probatoire", "C"): {
         "Mathematiques": MODE_RAG,
