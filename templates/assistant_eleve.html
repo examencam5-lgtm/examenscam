@@ -144,7 +144,7 @@
     </div>
   </a>
 
-  <a
+  
     href="/deconnexion"
     class="sidebar-compte-deco"
     title="Se déconnecter"
@@ -159,7 +159,7 @@
 {% else %}
 
 <div class="sidebar-compte">
-  <a
+  
     href="{{ url_for('connexion_google') }}"
     class="sidebar-connexion-btn">
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -230,7 +230,7 @@
 
   {% if mode_demo %}
 
-  <a
+  
     href="{{ url_for('connexion_google') }}"
     class="assistant-input-form"
     style="text-decoration:none; justify-content:center; color:var(--ec-accent,#2563EB); font-weight:600;">
@@ -359,7 +359,7 @@
     window.addEventListener('resize', definirHauteurViewport);
     window.addEventListener('orientationchange', definirHauteurViewport);
 
-    // visualViewport détecte plus fiablement l'ouverture/fermeture du
+    // visualViewport detecte plus fiablement l'ouverture/fermeture du
     // clavier mobile et le repli de la barre d'adresse que 'resize' seul --
     // c'est ce qui laissait un espace vide en bas apres l'envoi d'un message.
     if (window.visualViewport) {
@@ -372,16 +372,18 @@
     // Recalcule aussi juste apres la fermeture du clavier (perte de focus
     // du champ de saisie), avec un leger delai le temps que le navigateur
     // termine sa propre animation de redimensionnement.
-    const champSaisie =
-      document.getElementById('input-question');
+    document.addEventListener('DOMContentLoaded', function () {
+      const champSaisie = document.getElementById('input-question');
 
-    if (champSaisie) {
-      champSaisie.addEventListener('blur', () => {
-        setTimeout(definirHauteurViewport, 300);
-      });
-    }
+      if (champSaisie) {
+        champSaisie.addEventListener('blur', function () {
+          setTimeout(definirHauteurViewport, 300);
+        });
+      }
+    });
   })();
 </script>
+
 <script>
   window.APP_CONFIG = {
     modeDemo: {{ mode_demo | tojson }},
