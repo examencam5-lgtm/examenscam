@@ -358,9 +358,30 @@
 
     window.addEventListener('resize', definirHauteurViewport);
     window.addEventListener('orientationchange', definirHauteurViewport);
+
+    // visualViewport détecte plus fiablement l'ouverture/fermeture du
+    // clavier mobile et le repli de la barre d'adresse que 'resize' seul --
+    // c'est ce qui laissait un espace vide en bas apres l'envoi d'un message.
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener(
+        'resize',
+        definirHauteurViewport
+      );
+    }
+
+    // Recalcule aussi juste apres la fermeture du clavier (perte de focus
+    // du champ de saisie), avec un leger delai le temps que le navigateur
+    // termine sa propre animation de redimensionnement.
+    const champSaisie =
+      document.getElementById('input-question');
+
+    if (champSaisie) {
+      champSaisie.addEventListener('blur', () => {
+        setTimeout(definirHauteurViewport, 300);
+      });
+    }
   })();
 </script>
-
 <script>
   window.APP_CONFIG = {
     modeDemo: {{ mode_demo | tojson }},

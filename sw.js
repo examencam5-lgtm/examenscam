@@ -25,7 +25,7 @@
 // repasseront jamais par un hard-refresh. C'est la seule vraie
 // protection contre le bug qu'on vient de debugger.
 
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const CACHE_NAME = `examenscam-static-${CACHE_VERSION}`;
 
 // Fichiers a forte volatilite -- toujours verifies au reseau d'abord.
