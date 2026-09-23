@@ -67,7 +67,7 @@
 
   // L'utilisateur est-il déjà proche du bas de la fenêtre ?
   // Sert à décider si on continue de suivre le flux ou si on le laisse lire tranquille.
-  function estAncreEnBas() {
+ function estAncreEnBas() {
     if (!fenetre) return true;
     return (
       fenetre.scrollHeight -
