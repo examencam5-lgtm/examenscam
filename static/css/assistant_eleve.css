@@ -47,9 +47,9 @@ html {
    trop grande. `min-height:0` neutralise explicitement l'heritage de
    base.html pour cette page precise, sans toucher au reste du site. */
 body.page-app-plein-ecran {
-  height: 100vh;
-  height: calc(var(--vh-app, 1vh) * 100);
-  height: 100dvh;
+  height: 100vh;              /* filet ancien navigateurs */
+  height: 100dvh;              /* filet avant que le JS ne s'execute */
+  height: calc(var(--vh-app, 1vh) * 100);  /* valeur fiable, mise a jour par le JS (visualViewport.height) */
   min-height: 0;
   overflow: hidden;
   background: var(--ec-surface, #fff);
@@ -61,8 +61,8 @@ body.page-app-plein-ecran {
   max-width: 100%;
   min-width: 0;
   height: 100vh;
-  height: calc(var(--vh-app, 1vh) * 100);
   height: 100dvh;
+  height: calc(var(--vh-app, 1vh) * 100);
   overflow: hidden;
   box-sizing: border-box;
   background: var(--ec-surface, #fff);

@@ -279,7 +279,19 @@
 <script>
   (function () {
     function definirHauteurViewport() {
-      document.documentElement.style.setProperty('--vh-app', (window.innerHeight * 0.01) + 'px');
+      // CORRIGÉ (23/09/2026, bug "espace blanc apres fermeture clavier") :
+      // window.innerHeight n'est pas fiable pour detecter l'etat reel du
+      // clavier virtuel sur mobile -- selon la version de Chrome/Android,
+      // cette valeur ne reflete pas toujours la zone visible quand le
+      // clavier s'ouvre ou se ferme. window.visualViewport.height, lui,
+      // reflete TOUJOURS la zone reellement visible a l'ecran, cote
+      // Android comme cote iOS. On l'utilise en priorite, avec
+      // window.innerHeight seulement comme filet de securite pour les
+      // tres vieux navigateurs qui n'exposent pas visualViewport.
+      const hauteurReelle = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+      document.documentElement.style.setProperty('--vh-app', (hauteurReelle * 0.01) + 'px');
     }
 
     definirHauteurViewport();
@@ -289,6 +301,12 @@
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', definirHauteurViewport);
+      // NOUVEAU (23/09/2026) : sur certains appareils, seul l'evenement
+      // 'scroll' de visualViewport se declenche lors de l'ouverture du
+      // clavier (le viewport visuel se deplace sans forcement redimensionner
+      // au meme instant) -- on recalcule aussi dans ce cas pour ne rater
+      // aucune transition.
+      window.visualViewport.addEventListener('scroll', definirHauteurViewport);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
