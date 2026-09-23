@@ -30,10 +30,27 @@ html {
   --tuteur-content-max: 900px;
 }
 
+/* CORRIGÉ (23/09/2026, bug "espace blanc sous le chat", cause reelle) :
+   base.html applique globalement `body { min-height:100vh; display:flex;
+   flex-direction:column; }` a TOUT le site. Cette regle generique
+   n'est jamais annulee par le `height:100dvh` ci-dessous : height et
+   min-height sont deux proprietes differentes, donc les deux
+   s'appliquent en meme temps sur <body>. Or par la spec CSS, quand
+   min-height > height, c'est min-height qui l'emporte pour la taille
+   reelle de la boite. Sur mobile, 100vh (hauteur "statique", barre
+   d'adresse comprise) est generalement PLUS GRAND que 100dvh (hauteur
+   "dynamique", barre d'adresse exclue) -- donc <body> se retrouvait
+   plus haut que ce que .assistant-layout occupe reellement (lui,
+   correctement cale sur 100dvh), laissant un espace vide en dessous.
+   `overflow:hidden` ne resout rien ici : ce n'est pas un contenu qui
+   deborde qu'il faut cacher, c'est la boite <body> elle-meme qui est
+   trop grande. `min-height:0` neutralise explicitement l'heritage de
+   base.html pour cette page precise, sans toucher au reste du site. */
 body.page-app-plein-ecran {
   height: 100vh;
   height: calc(var(--vh-app, 1vh) * 100);
   height: 100dvh;
+  min-height: 0;
   overflow: hidden;
   background: var(--ec-surface, #fff);
 }
