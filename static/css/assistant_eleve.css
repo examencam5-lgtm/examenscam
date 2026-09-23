@@ -1,3 +1,16 @@
+/* Correction du <main> générique de base.html : par défaut il n'est
+   qu'un flex:1 simple, pensé pour du contenu qui défile normalement.
+   Sur cette page precise (plein ecran fixe), il doit devenir un vrai
+   conteneur flex avec hauteur stricte, sinon l'espace en trop
+   apparait en blanc sous le chat au lieu d'etre rempli par lui. */
+body.page-app-plein-ecran main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
 :root {
   --tuteur-header-h: 56px;
   --tuteur-content-max: 900px;
