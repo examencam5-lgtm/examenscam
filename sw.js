@@ -23,7 +23,7 @@
 // ci-dessous. Ca force tous les telephones a jeter leur ancien cache
 // au prochain chargement.
 
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const CACHE_NAME = `examenscam-static-${CACHE_VERSION}`;
 
 const FICHIERS_RESEAU_DABORD = [

@@ -11,6 +11,20 @@ body.page-app-plein-ecran main {
   overflow: hidden;
 }
 
+/* CORRIGÉ (23/09/2026, bug affichage "espace blanc sous le chat") :
+   `main { height:100% }` (juste au-dessus) exige que TOUT ancêtre
+   jusqu'à <html> ait une hauteur définie pour que le pourcentage se
+   résolve de façon fiable sur tous les moteurs de rendu -- body a
+   bien une hauteur explicite (100dvh, voir règle .page-app-plein-ecran
+   plus bas), mais <html> n'en avait aucune, ce qui rendait toute la
+   chaîne "height:100%" fragile dès qu'une autre feuille de style
+   (nouvelles_pages.css) touche <html> ou <body>. Cette règle ne
+   s'applique qu'à cette page (fichier chargé uniquement ici), donc
+   aucun risque de casser autre chose sur le site. */
+html {
+  height: 100%;
+}
+
 :root {
   --tuteur-header-h: 56px;
   --tuteur-content-max: 900px;
@@ -40,6 +54,17 @@ body.page-app-plein-ecran {
 .assistant-sidebar {
   width: 232px;
   flex: 0 0 232px;
+  /* CORRIGÉ (23/09/2026) : hauteur explicite + min-height:0, en plus
+     du stretch flex par défaut hérité de .assistant-layout -- avant,
+     la sidebar ne comptait QUE sur align-items:stretch (implicite)
+     pour occuper toute la hauteur, ce qui est le maillon le plus
+     fragile de la chaîne (aucune propriété de hauteur écrite en dur
+     dessus). Redondant par rapport au stretch quand tout va bien,
+     mais ça évite que la sidebar retombe à la hauteur de son contenu
+     si le stretch est neutralisé pour une raison quelconque. */
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
   min-width: 0;
   background: var(--ec-line-soft, #F8FAFC);
   border-right: 1px solid var(--ec-line, #E2E8F0);
@@ -326,6 +351,10 @@ body.page-app-plein-ecran {
   min-width: 0;
   min-height: 0;
   height: 100%;
+  /* CORRIGÉ (23/09/2026) : stretch explicite en plus du height:100%
+     déjà présent -- même logique de redondance défensive que pour
+     .assistant-sidebar juste au-dessus. */
+  align-self: stretch;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
