@@ -1571,7 +1571,22 @@
 
   chargerEtAfficherHistorique();
 
-  if (input) {
+  // CORRIGE (23/09/2026, suspect du bug "espace blanc apres clavier") :
+  // input.focus() au chargement forcait l'ouverture automatique du
+  // clavier virtuel des l'arrivee sur la page, AVANT que la mise en
+  // page (et le calcul --vh-app) ne soit stabilisee -- particulierement
+  // problematique en TWA (app installee), ou le lancement depuis
+  // l'icone compte comme un "geste utilisateur" actif pendant un court
+  // instant, ce qui autorise Chrome a honorer ce focus programmatique
+  // et donc a ouvrir le clavier tout seul. Resultat possible : premier
+  // calcul de hauteur fausse (clavier deja ouvert au moment du calcul),
+  // qui reste incorrect meme une fois le clavier referme. Sur
+  // ordinateur (pas de clavier virtuel a l'ecran) ce focus ne posait
+  // aucun probleme -- d'ou la condition ci-dessous : on ne garde
+  // l'auto-focus QUE sur les appareils sans ecran tactile (desktop), ou
+  // forcer le clavier au chargement n'a jamais ete un souci de toute
+  // facon.
+  if (input && !('ontouchstart' in window)) {
     input.focus();
   }
 
