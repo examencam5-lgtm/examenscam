@@ -30,27 +30,38 @@ html {
   --tuteur-content-max: 900px;
 }
 
-/* CORRIGÉ (23/09/2026, bug "espace blanc sous le chat", cause reelle) :
-   base.html applique globalement `body { min-height:100vh; display:flex;
-   flex-direction:column; }` a TOUT le site. Cette regle generique
-   n'est jamais annulee par le `height:100dvh` ci-dessous : height et
-   min-height sont deux proprietes differentes, donc les deux
-   s'appliquent en meme temps sur <body>. Or par la spec CSS, quand
-   min-height > height, c'est min-height qui l'emporte pour la taille
-   reelle de la boite. Sur mobile, 100vh (hauteur "statique", barre
-   d'adresse comprise) est generalement PLUS GRAND que 100dvh (hauteur
-   "dynamique", barre d'adresse exclue) -- donc <body> se retrouvait
-   plus haut que ce que .assistant-layout occupe reellement (lui,
-   correctement cale sur 100dvh), laissant un espace vide en dessous.
-   `overflow:hidden` ne resout rien ici : ce n'est pas un contenu qui
-   deborde qu'il faut cacher, c'est la boite <body> elle-meme qui est
-   trop grande. `min-height:0` neutralise explicitement l'heritage de
-   base.html pour cette page precise, sans toucher au reste du site. */
+/* CORRIGÉ (24/09/2026, bug "espace blanc au-dessus du clavier") :
+   L'ancienne approche (`height: calc(var(--vh-app,1vh) * 100)`, la
+   hauteur recalculée en JS à partir de visualViewport.height) se
+   battait avec le comportement natif du navigateur : à l'ouverture du
+   clavier virtuel, Chrome/Android tente AUSSI, de son propre chef, de
+   faire défiler la PAGE pour amener le champ de saisie au-dessus du
+   clavier ("scroll into view" natif du focus). Le temps que notre JS
+   recalcule --vh-app, le body se retrouvait décalé par ce scroll natif
+   ET redimensionné par notre calcul -- résultat : tout le contenu
+   (header, chat, zone de saisie) se retrouvait compressé en haut de
+   l'écran, avec une grande zone blanche entre lui et le clavier (voir
+   capture d'écran du 24/09/2026).
+
+   La solution robuste et standard pour ce cas précis : `position:fixed`
+   sur le body. Un élément fixed ne peut PAS être scrollé par le
+   navigateur (il est retiré du flux de défilement de la page), ce qui
+   supprime totalement le scroll natif concurrent -- et les moteurs
+   modernes (Chrome/Android, Safari/iOS) repositionnent automatiquement
+   les éléments fixed sur la zone visuelle réelle quand le clavier
+   s'ouvre, sans même avoir besoin du JS --vh-app. `inset:0` fixe à lui
+   seul les 4 côtés sur la fenêtre visible : on n'a donc plus besoin de
+   déclarer explicitement `height` ici (une hauteur explicite en plus
+   de top/bottom risquerait de rendre la boîte "over-constrained" et de
+   réintroduire le même genre de bug). Le calcul JS --vh-app est laissé
+   en place (voir assistant_eleve.js) comme filet de sécurité pour les
+   très vieux navigateurs qui ne suivent pas encore ce comportement --
+   il est utilisé plus bas par .assistant-layout, qui prend maintenant
+   sa taille de CE body déjà correctement calé, plutôt que de recalculer
+   sa propre hauteur indépendamment. */
 body.page-app-plein-ecran {
-  height: 100vh;              /* filet ancien navigateurs */
-  height: 100dvh;              /* filet avant que le JS ne s'execute */
-  height: calc(var(--vh-app, 1vh) * 100);  /* valeur fiable, mise a jour par le JS (visualViewport.height) */
-  min-height: 0;
+  position: fixed;
+  inset: 0;
   overflow: hidden;
   background: var(--ec-surface, #fff);
 }
@@ -60,9 +71,7 @@ body.page-app-plein-ecran {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  height: 100vh;
-  height: 100dvh;
-  height: calc(var(--vh-app, 1vh) * 100);
+  height: 100%;
   overflow: hidden;
   box-sizing: border-box;
   background: var(--ec-surface, #fff);
@@ -1185,7 +1194,7 @@ body.page-app-plein-ecran {
 
 @media (max-width: 760px) {
   .assistant-layout {
-    height: 100dvh;
+    height: 100%;
   }
 
   .assistant-sidebar {
@@ -1193,7 +1202,7 @@ body.page-app-plein-ecran {
     top: 0;
     left: 0;
     width: min(280px, 84vw);
-    height: 100dvh;
+    height: 100%;
     transform: translateX(-102%);
     transition: transform 0.22s ease;
     box-shadow: 5px 0 24px rgba(15,23,42,0.12);
