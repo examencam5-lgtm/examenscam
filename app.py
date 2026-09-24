@@ -15,7 +15,10 @@ from flask import send_file
 from authlib.integrations.flask_client import OAuth
 from scripts.generer_epreuve_json import generer_epreuve_json
 from scripts.construire_pdf_officiel import construire_pdf
-from scripts.chat_contexte import repondre_eleve, repondre_eleve_stream, repondre_chronologie_datee
+from scripts.chat_contexte import (
+    repondre_eleve, repondre_eleve_stream, repondre_chronologie_datee,
+    construire_contexte_systeme_image,
+)
 from generer_search_index import generer as generer_index
 from scripts.chat_parcourir import get_niveaux, get_series, lister_epreuves, get_annees
 from scripts.image_utils import compresser_image_pour_gemini, ImageInvalideError
@@ -1077,6 +1080,13 @@ def assistant_eleve_repondre():
     if not matiere_disponible_pour(eleve['niveau'], eleve['serie'], matiere):
         return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
 
+    # NOUVEAU (23/09/2026, principe pédagogique de friction) : toggle
+    # "Révision rapide" -- persistant côté élève tant qu'il ne le
+    # désactive pas lui-même (option B, décidée par Mohamadou), donc
+    # transmis à chaque appel comme un simple booléen sans état côté
+    # serveur. Voir chat_contexte.obtenir_bloc_pedagogique().
+    mode_revision = bool(payload.get('mode_revision'))
+
     historique = charger_historique(eleve_id, matiere, limite_tours=LIMITE_HISTORIQUE_TOURS)
     reponse_chronologie = repondre_chronologie_datee(question, eleve, matiere)
     if reponse_chronologie is not None:
@@ -1101,7 +1111,9 @@ def assistant_eleve_repondre():
 
     # Streaming (SSE) -- `matiere` est transmis pour que chat_contexte
     # choisisse le bon mode (RAG Maths/Physique vs générique), voir
-    # chat_scope.py.
+    # chat_scope.py. `mode_revision` transmis pour que le prompt
+    # système bascule entre le principe de friction pédagogique et la
+    # réponse directe assumée.
     #
     # NOTE (chantier en cours, crédits) : contrairement à
     # assistant_eleve_generer() et assistant_eleve_repondre_image(),
@@ -1115,7 +1127,10 @@ def assistant_eleve_repondre():
     def flux_evenements():
         texte_complet = []
         try:
-            for morceau in repondre_eleve_stream(question, historique, eleve=eleve, matiere=matiere):
+            for morceau in repondre_eleve_stream(
+                question, historique, eleve=eleve, matiere=matiere,
+                mode_revision=mode_revision,
+            ):
                 texte_complet.append(morceau)
                 yield f"data: {json.dumps({'type': 'morceau', 'texte': morceau})}\n\n"
         except Exception as e:
@@ -1167,11 +1182,22 @@ def assistant_eleve_nouvelle_conversation():
 
 
 TAILLE_MAX_UPLOAD_OCTETS = 15 * 1024 * 1024  # 15 Mo -- voir POIDS_MAX_ENTREE_MO dans image_utils.py, cohérent
- 
- 
+
+
 @app.route('/assistant-eleve/repondre-image', methods=['POST'])
 @limiter_debit(max_requetes=10, fenetre_sec=600)
 def assistant_eleve_repondre_image():
+    # CORRIGÉ (23/09/2026) : cette route n'avait aucun bouton câblé côté
+    # front (voir assistant_eleve.html/.js -- l'option "Photo" était
+    # `disabled` en dur) et construisait un contexte_systeme codé en
+    # dur qui disait explicitement de donner la résolution complète
+    # "sans juste donner le résultat final" -- l'inverse du principe
+    # pédagogique de friction appliqué partout ailleurs. Remplacé par
+    # construire_contexte_systeme_image(), qui applique le même
+    # principe (et le même mode révision) que le chat texte. Ajout
+    # aussi de enregistrer_tour/incrementer_usage_mensuel, absents ici
+    # jusqu'à présent -- une photo n'apparaissait donc jamais dans
+    # l'historique de conversation ni dans le compteur d'usage mensuel.
     eleve_id = session.get('eleve_id')
     if not eleve_id:
         return jsonify({'erreur': "Connecte-toi pour utiliser l'assistant.", 'code': 'non_connecte'}), 401
@@ -1179,46 +1205,42 @@ def assistant_eleve_repondre_image():
     if not eleve:
         session.pop('eleve_id', None)
         return jsonify({'erreur': "Session invalide, reconnecte-toi.", 'code': 'non_connecte'}), 401
- 
+
     if not peut_poser_question(eleve_id):
         return jsonify({
             'erreur': "Crédits épuisés. Recharge ton compte pour continuer.",
             'code': 'credits_epuises',
         }), 402
- 
+
     fichier_image = request.files.get('image')
     if not fichier_image or fichier_image.filename == '':
         return jsonify({'erreur': "Aucune image reçue."}), 400
- 
+
     donnees_brutes = fichier_image.read()
     if len(donnees_brutes) > TAILLE_MAX_UPLOAD_OCTETS:
         return jsonify({'erreur': "Image trop lourde (maximum 15 Mo)."}), 413
- 
+
     question = (request.form.get('question') or '').strip()
     if not question:
         question = "Aide-moi à résoudre cet exercice."
     if len(question) > 2000:
         return jsonify({'erreur': "Message trop long."}), 400
- 
+
     matiere = (request.form.get('matiere') or 'Mathematiques').strip()
     if not matiere_disponible_pour(eleve['niveau'], eleve['serie'], matiere):
         return jsonify({'reponse': message_indisponible(eleve['niveau'], eleve['serie'], matiere)})
- 
+
+    mode_revision = (request.form.get('mode_revision') or '').strip().lower() in ('1', 'true', 'on')
+
     try:
         image_compressee = compresser_image_pour_gemini(donnees_brutes)
     except ImageInvalideError as e:
         return jsonify({'erreur': str(e)}), 400
     finally:
         del donnees_brutes
- 
-    contexte_systeme = (
-        f"Tu es le tuteur ExamensCam pour un élève de {eleve['niveau']}"
-        + (f" série {eleve['serie']}" if eleve.get('serie') else "")
-        + f", en {matiere}. L'élève a photographié un exercice. "
-        "Aide-le à comprendre et résoudre, en expliquant le raisonnement "
-        "étape par étape, comme au tableau, sans juste donner le résultat final."
-    )
- 
+
+    contexte_systeme = construire_contexte_systeme_image(matiere, eleve, mode_revision)
+
     try:
         resultat = envoyer_image_gemini(image_compressee, question, contexte_systeme)
     except RuntimeError as e:
@@ -1226,7 +1248,7 @@ def assistant_eleve_repondre_image():
         return jsonify({'erreur': "Le tuteur est momentanément indisponible, réessaie dans un instant."}), 503
     finally:
         del image_compressee
- 
+
     consommer_credits(
         eleve_id,
         resultat['tokens_entree'],
@@ -1234,9 +1256,11 @@ def assistant_eleve_repondre_image():
         fournisseur=resultat['fournisseur'],
         source_modele=resultat['modele'],
     )
- 
+
+    enregistrer_tour(eleve_id, matiere, f"[Photo] {question}", resultat['texte'])
+    incrementer_usage_mensuel(eleve_id)
+
     return jsonify({'reponse': resultat['texte']})
- 
 
 
 @app.route('/assistant-eleve/generer', methods=['POST'])

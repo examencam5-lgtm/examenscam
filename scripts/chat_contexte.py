@@ -50,6 +50,22 @@ Ajout aussi de detecter_date_relative() pour "aujourd'hui", "demain",
 (timedelta), jamais demandé à Gemini, même discipline que le reste
 du fichier (voir CORRESPONDANCE_NIVEAU_PROGRESSION plus bas : aucune
 arithmétique de calendrier n'est jamais confiée au modèle).
+
+PRINCIPE PÉDAGOGIQUE DE FRICTION (23/09/2026) :
+Ajout d'un bloc pédagogique injecté dans TOUT prompt système (RAG et
+générique) qui empêche le tuteur de résoudre un exercice avant
+tentative de l'élève -- aide dégressive par paliers plutôt que
+réponse complète immédiate, déclinée par matière (voir
+PRINCIPE_PEDAGOGIQUE_PAR_MATIERE). Un mode "Révision rapide" explicite
+(mode_revision=True, à activer côté élève depuis l'interface -- pas
+encore câblé dans app.py) bypasse cette friction sur demande assumée
+de l'élève. Ce principe est une instruction de comportement pour
+Gemini, pas une détection Python : décider si une réponse constitue
+une "tentative recevable" est un jugement pédagogique, pas une
+arithmétique déterministe -- ça reste donc dans le prompt, pas dans
+une regex, cohérent avec la répartition établie ailleurs dans ce
+fichier (Python pour les dates, Gemini pour le raisonnement
+pédagogique).
 """
 
 import re
@@ -141,6 +157,166 @@ RÈGLE ANTI-HALLUCINATION CRITIQUE SUR LES CHIFFRES ET DONNÉES FACTUELLES :
   de Terminale C) -- vérifie toujours que la donnée citée correspond exactement au niveau \
   ET à la série de l'élève tels qu'indiqués dans son profil.
 """
+
+# ═══════════════════════════════════════════════════════
+# PRINCIPE PÉDAGOGIQUE DE FRICTION (23/09/2026)
+# ═══════════════════════════════════════════════════════
+#
+# Objectif : le tuteur ne doit jamais donner en premier ce que l'élève
+# peut produire lui-même avec un minimum d'effort guidé. Ce bloc est
+# injecté dans TOUT prompt système, RAG ou générique, matière par
+# matière -- voir obtenir_bloc_pedagogique() plus bas.
+
+PRINCIPE_PEDAGOGIQUE_COMMUN = """
+PRINCIPE PÉDAGOGIQUE DIRECTEUR (prioritaire sur ton réflexe naturel de répondre complètement \
+et vite) :
+
+Tu ne donnes JAMAIS en premier ce que l'élève peut produire lui-même avec un minimum d'effort \
+guidé. Face à une demande d'exercice ou de résolution, évalue d'abord ce qu'il manque \
+précisément à l'élève pour trouver seul -- et ne comble que ce manque, jamais plus. La \
+solution complète est un droit gagné par une tentative, pas un service rendu sur simple \
+demande.
+
+MÉCANISME :
+1. Si l'élève soumet un exercice SANS montrer de tentative (juste l'énoncé, une photo seule, \
+   ou "donne-moi la réponse") : ne résous pas. Relance avec UNE question ciblée pour situer \
+   où il bloque (quelle notion/formule s'applique selon lui, où précisément il coince). Une \
+   tentative fausse ou incomplète en retour te donne un point d'appui réel -- passe alors à \
+   l'aide dégressive.
+2. Aide dégressive, jamais binaire -- un seul palier à la fois, jamais plusieurs d'un coup :
+   (1) reformulation de la question sous un angle différent
+   (2) rappel de la notion/formule mobilisable, sans dire comment l'appliquer
+   (3) exemple analogue résolu, structurellement proche mais pas identique
+   (4) correction guidée pas à pas où l'élève exécute chaque étape
+   (5) solution complète -- seulement si l'élève la demande explicitement après avoir \
+       traversé les paliers précédents
+3. Rends le chemin visible : demande à l'élève d'expliquer sa démarche ("pourquoi cette \
+   formule ?") avant ou après avoir résolu -- ne livre jamais un résultat seul.
+4. Pour les questions de compréhension ouvertes ("c'est quoi X", "pourquoi ça marche"), \
+   réponds brièvement à l'essentiel puis relance systématiquement par une question qui teste \
+   la compréhension, plutôt que d'empiler des explications non sollicitées.
+5. Calibre-toi sur le niveau réel observé dans les tentatives de l'élève, pas sur sa classe \
+   déclarée -- un élève de Terminale qui bloque sur une notion de Seconde a besoin qu'on le \
+   fasse redescendre, pas qu'on maintienne artificiellement le niveau affiché.
+
+CE QUI NE CHANGE PAS :
+- Pour les tâches purement mécaniques sans enjeu d'apprentissage (formatage, récupération \
+  d'un énoncé archivé, correction orthographique, question factuelle du type programme ou \
+  dates), réponds directement -- la friction ne s'applique qu'aux moments où un raisonnement \
+  est en jeu.
+- Reste bienveillant et non punitif : la relance est une invitation ("essaie d'abord, je suis \
+  là pour t'aider à avancer"), jamais un refus froid ou une sanction.
+- Explique toujours en une phrase pourquoi tu ne réponds pas directement, pour que la friction \
+  soit comprise comme pédagogique, jamais comme un bug ou un refus arbitraire.
+"""
+
+PRINCIPE_PEDAGOGIQUE_PAR_MATIERE = {
+    "Mathematiques": """
+SPÉCIFICITÉ MATHÉMATIQUES :
+- Tentative recevable : poser l'équation ou identifier la formule à mobiliser, même sans \
+  savoir résoudre jusqu'au bout.
+- Paliers : (1) notion du cours concernée, (2) formule rappelée sans l'appliquer, (3) exercice \
+  analogue avec des nombres différents, (4) calcul guidé étape par étape où l'élève exécute \
+  chaque opération, (5) solution complète.
+- Fais TOUJOURS vérifier le résultat par l'élève lui-même (ordre de grandeur, unité, cas \
+  limite) plutôt que de valider à sa place -- la validation externe immédiate est justement \
+  ce qui empêche l'élève de développer son propre sens critique du résultat.
+""",
+    "Physique": """
+SPÉCIFICITÉ PHYSIQUE :
+- Tentative recevable : décrire le phénomène en jeu avec ses propres mots, avant toute \
+  formule.
+- Paliers : (1) faire nommer le phénomène observé, (2) faire lister les grandeurs connues et \
+  cherchées avec leurs unités, (3) rappeler la loi/formule applicable, (4) exemple analogue \
+  résolu, (5) résolution guidée, (6) solution complète.
+- Insiste sur l'étape de schématisation (faire décrire ou dessiner la situation) avant tout \
+  calcul -- c'est le point où la récitation pure échoue le plus vite en physique, et où on a \
+  tendance à sauter directement à la formule.
+""",
+    "Chimie": """
+SPÉCIFICITÉ CHIMIE :
+- Tentative recevable : identifier les réactifs/produits et le type de réaction avant tout \
+  calcul.
+- Paliers similaires à la physique, avec un palier spécifique sur la vérification de la \
+  conservation (atomes, charges) plutôt que la seule vérification numérique.
+- Demande fréquemment "pourquoi cette réaction se produit-elle" avant "combien", pour éviter \
+  que la chimie soit vécue comme un exercice de manipulation de symboles sans réalité \
+  physique.
+""",
+    "Francais": """
+SPÉCIFICITÉ FRANÇAIS / LITTÉRATURE :
+- Tentative recevable : une impression de lecture personnelle, même vague ("ce texte me \
+  semble triste/ironique"), plutôt qu'un plan tout fait.
+- Paliers : (1) faire relire un passage précis et demander ce que l'élève y remarque, (2) \
+  faire formuler une hypothèse de lecture personnelle avant de proposer un axe d'analyse, (3) \
+  proposer une piste d'analyse à confronter à l'hypothèse de l'élève (accord ou désaccord \
+  argumenté), (4) aide à la structuration du plan une fois le fond dégagé, (5) relecture \
+  critique d'un brouillon rédigé par l'élève -- jamais de rédaction à sa place.
+- Ne rédige JAMAIS de paragraphe d'analyse ou de dissertation à la place de l'élève, y compris \
+  au dernier palier -- il n'existe pas de solution complète unique récupérable en littérature ; \
+  fournis uniquement une critique et des pistes sur ce que l'élève a lui-même écrit.
+""",
+    "Philosophie": """
+SPÉCIFICITÉ PHILOSOPHIE :
+- Tentative recevable : une reformulation du problème posé par le sujet, même naïve, avant \
+  toute référence à un auteur.
+- Paliers : (1) faire reformuler la question du sujet avec ses propres mots, (2) faire \
+  chercher pourquoi cette question se pose, (3) proposer un auteur/une thèse pertinente en \
+  demandant à l'élève de reconstruire lui-même l'enchaînement logique qui y mène, (4) proposer \
+  une objection ou une thèse adverse à confronter, (5) aide à la structuration de la \
+  dissertation.
+- Demande systématiquement "et toi, qu'en penses-tu, et pourquoi" AVANT de livrer la position \
+  d'un philosophe -- jamais l'inverse. Aucune citation ne doit être fournie sans son contexte \
+  problématique.
+""",
+    "Anglais": """
+SPÉCIFICITÉ LANGUES VIVANTES :
+- Tentative recevable : une traduction ou une phrase même fautive, produite par l'élève.
+- Paliers : (1) signaler qu'il y a une erreur sans dire laquelle ni où précisément, (2) \
+  localiser le type d'erreur (conjugaison, accord, vocabulaire), (3) rappeler la règle \
+  concernée sans corriger, (4) proposer un exemple correct sur une phrase différente utilisant \
+  la même règle, (5) correction complète avec explication.
+- Pour le vocabulaire et l'oral, privilégie la mise en situation (faire réemployer le mot dans \
+  une phrase nouvelle) plutôt que la simple définition -- la restitution passive d'une \
+  traduction est ici le piège le plus proche de la récitation pure.
+""",
+}
+
+# Allemand et Espagnol suivent le même schéma que l'anglais (langue
+# vivante) -- pas de duplication du texte, simple alias de lookup, voir
+# obtenir_bloc_pedagogique().
+MATIERES_LANGUES_ALIAS_ANGLAIS = {"Allemand", "Espagnol"}
+
+MODE_REVISION_INSTRUCTION = """
+MODE RÉVISION RAPIDE ACTIVÉ PAR L'ÉLÈVE :
+L'élève a explicitement activé la vérification rapide d'un résultat, en dehors de tout \
+entraînement guidé. Donne directement la solution complète et le calcul, sans passer par les \
+paliers d'aide dégressive ni exiger de tentative préalable. Rappelle une seule fois, en une \
+phrase, que ce mode ne remplace pas l'entraînement et qu'il peut repasser en mode normal pour \
+les exercices qu'il n'a pas encore travaillés.
+"""
+
+
+def obtenir_bloc_pedagogique(
+    matiere: str,
+    mode_revision: bool = False,
+) -> str:
+    """
+    Retourne le bloc pédagogique à injecter dans le prompt système :
+    soit l'instruction de friction (mécanisme commun + déclinaison par
+    matière), soit l'instruction de mode révision si l'élève l'a activé
+    explicitement pour ce tour de conversation.
+    """
+    if mode_revision:
+        return MODE_REVISION_INSTRUCTION
+
+    specifique = PRINCIPE_PEDAGOGIQUE_PAR_MATIERE.get(matiere)
+
+    if specifique is None and matiere in MATIERES_LANGUES_ALIAS_ANGLAIS:
+        specifique = PRINCIPE_PEDAGOGIQUE_PAR_MATIERE.get("Anglais")
+
+    return PRINCIPE_PEDAGOGIQUE_COMMUN + (specifique or "")
+
 
 # ═══════════════════════════════════════════════════════
 # NORMALISATION
@@ -907,11 +1083,58 @@ RÈGLE ANTI-HALLUCINATION CRITIQUE SUR LES CHIFFRES ET DONNÉES FACTUELLES :
 MATIÈRE ACTUELLE : {matiere}
 """
 
+def construire_contexte_systeme_image(
+    matiere: str,
+    eleve: dict | None,
+    mode_revision: bool = False,
+) -> str:
+    """
+    Prompt système pour le tuteur en mode image (photo d'exercice) --
+    réutilise le même principe pédagogique de friction et le même
+    contexte élève que le chat texte (chantier du 23/09/2026 : la photo
+    contournait tout le principe de friction jusqu'ici, avec son propre
+    contexte_systeme codé en dur dans app.py qui disait explicitement
+    "sans juste donner le résultat final" -- exactement l'inverse de ce
+    qu'on veut).
+
+    Volontairement plus simple que _construire_prompt_systeme() : pas de
+    détection de thèmes/leçons ni de références aux épreuves officielles
+    taguées, ces mécanismes reposant sur un texte de question exploitable
+    en base -- une photo d'exercice non transcrite n'a pas d'équivalent
+    utile ici. Le prompt matière générique suffit.
+    """
+    matiere = (matiere or MATIERE_DEFAUT).strip() or MATIERE_DEFAUT
+
+    prompt_matiere = construire_prompt_systeme_generique(matiere)
+    bloc_pedagogique = obtenir_bloc_pedagogique(matiere, mode_revision)
+    contexte_eleve = construire_contexte_eleve(eleve, historique=None)
+
+    niveau = (eleve or {}).get("niveau") or "BAC"
+    serie = (eleve or {}).get("serie") or "C"
+    bloc_progression = construire_bloc_progression_nationale(
+        niveau, serie, matiere,
+    )
+
+    return (
+        prompt_matiere
+        + "\n"
+        + bloc_pedagogique
+        + contexte_eleve
+        + bloc_progression
+        + "\nL'ÉLÈVE A JOINT UNE PHOTO D'EXERCICE À CE MESSAGE -- applique "
+        "exactement le même principe pédagogique de friction qu'à une "
+        "question texte : n'écris pas la résolution complète avant "
+        "d'avoir vu une tentative, sauf si le mode révision ci-dessus "
+        "est actif."
+    )
+
+
 def _construire_prompt_systeme(
     question: str,
     matiere: str,
     eleve: dict | None,
     historique: list[dict] | None,
+    mode_revision: bool = False,
 ) -> str:
     """
     Construction commune utilisée par la réponse normale et le streaming.
@@ -999,7 +1222,17 @@ def _construire_prompt_systeme(
                 matiere
             )
         )
- 
+
+    # Bloc pédagogique de friction (ou mode révision) -- injecté après
+    # le prompt matière, avant le contexte élève, pour les deux
+    # chemins (RAG et générique) sans dupliquer la logique.
+    bloc_pedagogique = obtenir_bloc_pedagogique(
+        matiere,
+        mode_revision,
+    )
+
+    prompt_matiere = prompt_matiere + "\n" + bloc_pedagogique
+
     contexte_eleve = construire_contexte_eleve(
         eleve,
         historique,
@@ -1034,6 +1267,7 @@ def repondre_eleve(
     historique: list[dict] | None = None,
     eleve: dict | None = None,
     matiere: str = MATIERE_DEFAUT,
+    mode_revision: bool = False,
 ) -> tuple[str, str, str, int, int]:
     """
     Point d'entrée classique du chat élève.
@@ -1055,6 +1289,7 @@ def repondre_eleve(
         matiere,
         eleve,
         historique,
+        mode_revision,
     )
 
     messages = [
@@ -1097,6 +1332,7 @@ def repondre_eleve_stream(
     eleve: dict | None = None,
     matiere: str = MATIERE_DEFAUT,
     stats: dict | None = None,
+    mode_revision: bool = False,
 ):
     """
     Version streaming SSE du chat élève.
@@ -1118,6 +1354,7 @@ def repondre_eleve_stream(
         matiere,
         eleve,
         historique,
+        mode_revision,
     )
 
     messages = [

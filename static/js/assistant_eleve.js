@@ -14,6 +14,17 @@
   const panneauAjouter = document.getElementById('panneau-ajouter');
   const btnAjouterEpreuve = document.getElementById('btn-ajouter-epreuve');
 
+  // NOUVEAU (23/09/2026, upload photo d'exercice)
+  const btnAjouterPhoto = document.getElementById('btn-ajouter-photo');
+  const inputPhoto = document.getElementById('input-photo-exercice');
+  const apercuImageAttachee = document.getElementById('apercu-image-attachee');
+  const apercuImageMiniature = document.getElementById('apercu-image-miniature');
+  const btnRetirerImage = document.getElementById('btn-retirer-image');
+
+  // NOUVEAU (23/09/2026, mode révision -- option B : persistant tant
+  // que l'élève ne le désactive pas lui-même)
+  const btnModeRevision = document.getElementById('btn-mode-revision');
+
   const btnHeaderMenu = document.getElementById('btn-header-menu');
   const btnSidebarToggleMobile = document.getElementById('btn-sidebar-toggle-mobile');
 
@@ -36,7 +47,9 @@
     panneauOuvert: false,
     matiere: null,
     chargementHistorique: false,
-    suivreDefilement: true
+    suivreDefilement: true,
+    imageAttachee: null,
+    modeRevision: false
   };
 
   const SERIE_GENERATION_DISPONIBLE = 'C';
@@ -72,6 +85,22 @@
     if (controleurAbandon) {
       controleurAbandon.abort();
     }
+  }
+
+  // NOUVEAU (23/09/2026, mode révision) : toggle simple, aucun reset
+  // automatique au changement de matière ni à "Nouvelle conversation"
+  // -- option B décidée par Mohamadou, reste actif jusqu'à ce que
+  // l'élève le désactive lui-même.
+  function basculerModeRevision() {
+    etat.modeRevision = !etat.modeRevision;
+    if (btnModeRevision) {
+      btnModeRevision.classList.toggle('actif', etat.modeRevision);
+      btnModeRevision.setAttribute('aria-pressed', String(etat.modeRevision));
+    }
+  }
+
+  if (btnModeRevision) {
+    btnModeRevision.addEventListener('click', basculerModeRevision);
   }
 
   function genererMessageAccueil() {
@@ -343,6 +372,38 @@
     });
   }
 
+  // NOUVEAU (23/09/2026, upload photo) : bulle utilisateur avec
+  // vignette de l'image jointe + texte optionnel de l'élève.
+  function ajouterMessageUtilisateurAvecImage(texte, fichierImage) {
+    if (!fenetre) return;
+    fenetre.classList.remove('mode-accueil');
+
+    const ligne = document.createElement('div');
+    ligne.className = 'msg msg-user';
+
+    const bulle = document.createElement('div');
+    bulle.className = 'msg-user-bulle';
+
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(fichierImage);
+    img.alt = 'Exercice photographié';
+    img.className = 'msg-user-image';
+    bulle.appendChild(img);
+
+    if (texte) {
+      const p = document.createElement('p');
+      p.textContent = texte;
+      bulle.appendChild(p);
+    }
+
+    ligne.appendChild(bulle);
+    fenetre.appendChild(ligne);
+
+    requestAnimationFrame(() => {
+      ligne.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+
   function ajouterMessageAssistant(texte, enAttente) {
     if (!fenetre) return null;
 
@@ -538,7 +599,8 @@
           question: texte,
           niveau: ELEVE.niveau,
           serie: ELEVE.serie,
-          matiere: etat.matiere
+          matiere: etat.matiere,
+          mode_revision: etat.modeRevision
         }),
         signal: controleurAbandon.signal
       });
@@ -694,6 +756,103 @@
     }
   }
 
+  // NOUVEAU (23/09/2026, upload photo) : envoi multipart, pas de
+  // streaming côté serveur pour ce chemin (voir
+  // assistant_eleve_repondre_image dans app.py) -- réponse directe en
+  // JSON une fois Gemini terminé.
+  async function envoyerMessageAvecImage(texte, fichierImage) {
+    if (etat.enAttente) return;
+
+    masquerAccueil();
+    fermerPanneauAjouter();
+    ajouterMessageUtilisateurAvecImage(texte || 'Photo d’un exercice', fichierImage);
+
+    etat.enAttente = true;
+    basculerBoutonEnvoyer('stop');
+
+    const ligneAttente = ajouterMessageAssistant('', true);
+
+    const formData = new FormData();
+    formData.append('image', fichierImage);
+    formData.append('question', texte);
+    formData.append('matiere', etat.matiere || 'Mathematiques');
+    formData.append('mode_revision', etat.modeRevision ? '1' : '0');
+
+    try {
+      const reponseServeur = await fetch(window.APP_URLS.repondreImage, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      });
+
+      let resultat;
+      try {
+        resultat = await reponseServeur.json();
+      } catch {
+        throw new Error('Le serveur a renvoyé une réponse invalide.');
+      }
+
+      retirerLigneAttente(ligneAttente);
+
+      if (!reponseServeur.ok) {
+        throw new Error(resultat.erreur || 'Une erreur est survenue.');
+      }
+
+      ajouterMessageAssistant(resultat.reponse || 'Je n’ai pas reçu de réponse.', false);
+
+    } catch (erreur) {
+      console.error('Erreur assistant (image) :', erreur);
+      retirerLigneAttente(ligneAttente);
+      ajouterMessageAssistant(
+        erreur.message || 'Je n’arrive pas à traiter cette image pour l’instant.',
+        false
+      );
+    } finally {
+      etat.enAttente = false;
+      basculerBoutonEnvoyer('envoyer');
+    }
+  }
+
+  // NOUVEAU (23/09/2026, upload photo) : aperçu avant envoi -- l'élève
+  // choisit/prend une photo, elle reste en attente dans le composer
+  // avec la possibilité d'écrire une question et de la retirer, elle
+  // n'est jamais envoyée automatiquement au moment du choix.
+  function afficherApercuImage(fichier) {
+    if (!apercuImageAttachee || !apercuImageMiniature) return;
+    apercuImageMiniature.src = URL.createObjectURL(fichier);
+    apercuImageAttachee.hidden = false;
+  }
+
+  function retirerImageAttachee() {
+    etat.imageAttachee = null;
+    if (inputPhoto) inputPhoto.value = '';
+    if (apercuImageAttachee) apercuImageAttachee.hidden = true;
+    if (apercuImageMiniature) apercuImageMiniature.src = '';
+    synchroniserEtatEnvoi();
+  }
+
+  if (btnAjouterPhoto) {
+    btnAjouterPhoto.addEventListener('click', () => {
+      fermerPanneauAjouter();
+      if (inputPhoto) inputPhoto.click();
+    });
+  }
+
+  if (inputPhoto) {
+    inputPhoto.addEventListener('change', () => {
+      const fichier = inputPhoto.files && inputPhoto.files[0];
+      if (!fichier) return;
+      etat.imageAttachee = fichier;
+      afficherApercuImage(fichier);
+      synchroniserEtatEnvoi();
+      if (input) input.focus();
+    });
+  }
+
+  if (btnRetirerImage) {
+    btnRetirerImage.addEventListener('click', retirerImageAttachee);
+  }
+
   function synchroniserEtatEnvoi() {
     if (!btnEnvoyer) return;
 
@@ -702,7 +861,9 @@
       return;
     }
 
-    btnEnvoyer.disabled = !input.value.trim() || etat.enAttente;
+    const aTexte = input.value.trim().length > 0;
+    const aImage = !!etat.imageAttachee;
+    btnEnvoyer.disabled = (!aTexte && !aImage) || etat.enAttente;
   }
 
   function redimensionnerTextarea() {
@@ -746,14 +907,21 @@
       e.preventDefault();
 
       const texte = input.value.trim();
+      if ((!texte && !etat.imageAttachee) || etat.enAttente) return;
 
-      if (!texte || etat.enAttente) return;
+      const imagePourEnvoi = etat.imageAttachee;
 
       input.value = '';
       redimensionnerTextarea();
       fermerPanneauGenerer();
-      synchroniserEtatEnvoi();
-      envoyerMessage(texte);
+
+      if (imagePourEnvoi) {
+        retirerImageAttachee();
+        envoyerMessageAvecImage(texte, imagePourEnvoi);
+      } else {
+        synchroniserEtatEnvoi();
+        envoyerMessage(texte);
+      }
     });
   }
 

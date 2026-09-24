@@ -183,6 +183,14 @@
 
       </div>
 
+      {% if not mode_demo %}
+      <button type="button" class="mode-revision-toggle" id="btn-mode-revision"
+        aria-pressed="false" title="Mode révision : réponse directe, sans passer par les étapes guidées">
+        <span class="mode-revision-point" aria-hidden="true"></span>
+        <span>Révision rapide</span>
+      </button>
+      {% endif %}
+
       <button type="button" class="header-action" id="btn-header-menu" aria-label="Options de la conversation">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="5" cy="12" r="1"/>
@@ -222,7 +230,7 @@
           <span>Épreuve</span>
         </button>
 
-        <button type="button" class="ajouter-option" disabled title="Bientôt disponible">
+        <button type="button" class="ajouter-option" id="btn-ajouter-photo">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 7h16v13H4z"/>
             <circle cx="12" cy="13.5" r="3"/>
@@ -240,6 +248,13 @@
         </button>
       </div>
 
+      <input type="file" id="input-photo-exercice" accept="image/*" hidden>
+
+      <div class="apercu-image-attachee" id="apercu-image-attachee" hidden>
+        <img id="apercu-image-miniature" alt="Image jointe">
+        <button type="button" id="btn-retirer-image" aria-label="Retirer l'image">×</button>
+      </div>
+
       <form class="assistant-input-form" id="form-saisie">
 
         <button type="button" class="composer-action" id="btn-ajouter" aria-label="Ajouter" aria-expanded="false">
@@ -248,7 +263,7 @@
           </svg>
         </button>
 
-        <textarea id="input-question" placeholder="Écris ta question..." autocomplete="off" rows="1" required></textarea>
+        <textarea id="input-question" placeholder="Écris ta question..." autocomplete="off" rows="1"></textarea>
 
         <button type="submit" class="btn-envoyer" id="btn-envoyer" aria-label="Envoyer" disabled>
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -335,6 +350,7 @@
   window.APP_URLS = {
     historique: {{ url_for('assistant_eleve_historique') | tojson }},
     repondre: {{ url_for('assistant_eleve_repondre') | tojson }},
+    repondreImage: {{ url_for('assistant_eleve_repondre_image') | tojson }},
     chatAnnees: {{ url_for('chat_annees') | tojson }},
     chatNiveaux: {{ url_for('chat_niveaux') | tojson }},
     chatSeries: {{ url_for('chat_series') | tojson }},
