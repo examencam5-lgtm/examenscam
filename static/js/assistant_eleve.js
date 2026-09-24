@@ -14,93 +14,45 @@
   const panneauAjouter = document.getElementById('panneau-ajouter');
   const btnAjouterEpreuve = document.getElementById('btn-ajouter-epreuve');
 
-  // NOUVEAU (23/09/2026, upload photo d'exercice)
-  const btnAjouterPhoto = document.getElementById('btn-ajouter-photo');
-  const inputPhoto = document.getElementById('input-photo-exercice');
-  const apercuImageAttachee = document.getElementById('apercu-image-attachee');
-  const apercuImageMiniature = document.getElementById('apercu-image-miniature');
-  const btnRetirerImage = document.getElementById('btn-retirer-image');
-
-  // NOUVEAU (23/09/2026, mode révision -- option B : persistant tant
-  // que l'élève ne le désactive pas lui-même)
-  const btnModeRevision = document.getElementById('btn-mode-revision');
-
   const btnHeaderMenu = document.getElementById('btn-header-menu');
-  const btnSidebarToggleMobile = document.getElementById('btn-sidebar-toggle-mobile');
+  const btnSidebarToggleMobile =
+    document.getElementById('btn-sidebar-toggle-mobile');
 
-  const btnNouvelleConversation = document.getElementById('btn-nouvelle-conversation');
-  const btnSidebarExamen = document.getElementById('btn-sidebar-examen');
-  const btnSidebarSequence = document.getElementById('btn-sidebar-sequence');
-  const btnSidebarParcourir = document.getElementById('btn-sidebar-parcourir');
+  const btnNouvelleConversation =
+    document.getElementById('btn-nouvelle-conversation');
+
+  const btnSidebarExamen =
+    document.getElementById('btn-sidebar-examen');
+
+  const btnSidebarSequence =
+    document.getElementById('btn-sidebar-sequence');
+
+  const btnSidebarParcourir =
+    document.getElementById('btn-sidebar-parcourir');
 
   const MODE_DEMO = window.APP_CONFIG.modeDemo;
+
   const ELEVE = window.APP_CONFIG.eleve;
+
   const MATIERES_DISPO = window.APP_CONFIG.matieresDispo;
-
-  let controleurAbandon = null;
-
-  const ICONE_ENVOYER = '<path d="M4 4l16 8-16 8 3-8z"/><path d="M7 12h13"/>';
-  const ICONE_STOP = '<rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" stroke="none"/>';
 
   const etat = {
     enAttente: false,
     panneauOuvert: false,
     matiere: null,
-    chargementHistorique: false,
-    suivreDefilement: true,
-    imageAttachee: null,
-    modeRevision: false
+    chargementHistorique: false
   };
 
   const SERIE_GENERATION_DISPONIBLE = 'C';
 
-  if (Array.isArray(MATIERES_DISPO) && MATIERES_DISPO.length) {
-    etat.matiere = MATIERES_DISPO.includes('Mathematiques') ? 'Mathematiques' : MATIERES_DISPO[0];
-  }
-
-  function estAncreEnBas() {
-    if (!fenetre) { return true; }
-    var ecart = fenetre.scrollHeight - fenetre.scrollTop - fenetre.clientHeight;
-    return ecart < 60;
-  }
-
-  function basculerBoutonEnvoyer(mode) {
-    if (!btnEnvoyer) return;
-    const svg = btnEnvoyer.querySelector('svg');
-
-    if (mode === 'stop') {
-      btnEnvoyer.classList.add('btn-envoyer--stop');
-      btnEnvoyer.setAttribute('aria-label', 'Interrompre la génération');
-      btnEnvoyer.disabled = false;
-      if (svg) svg.innerHTML = ICONE_STOP;
-    } else {
-      btnEnvoyer.classList.remove('btn-envoyer--stop');
-      btnEnvoyer.setAttribute('aria-label', 'Envoyer');
-      if (svg) svg.innerHTML = ICONE_ENVOYER;
-      synchroniserEtatEnvoi();
-    }
-  }
-
-  function interrompreGeneration() {
-    if (controleurAbandon) {
-      controleurAbandon.abort();
-    }
-  }
-
-  // NOUVEAU (23/09/2026, mode révision) : toggle simple, aucun reset
-  // automatique au changement de matière ni à "Nouvelle conversation"
-  // -- option B décidée par Mohamadou, reste actif jusqu'à ce que
-  // l'élève le désactive lui-même.
-  function basculerModeRevision() {
-    etat.modeRevision = !etat.modeRevision;
-    if (btnModeRevision) {
-      btnModeRevision.classList.toggle('actif', etat.modeRevision);
-      btnModeRevision.setAttribute('aria-pressed', String(etat.modeRevision));
-    }
-  }
-
-  if (btnModeRevision) {
-    btnModeRevision.addEventListener('click', basculerModeRevision);
+  if (
+    Array.isArray(MATIERES_DISPO) &&
+    MATIERES_DISPO.length
+  ) {
+    etat.matiere =
+      MATIERES_DISPO.includes('Mathematiques')
+        ? 'Mathematiques'
+        : MATIERES_DISPO[0];
   }
 
   function genererMessageAccueil() {
@@ -137,7 +89,11 @@
 
     const messageAccueil = genererMessageAccueil();
 
-    contexte.textContent = messageAccueil.replace(`Bonjour ${ELEVE.prenom}. `, '');
+    contexte.textContent =
+      messageAccueil.replace(
+        `Bonjour ${ELEVE.prenom}. `,
+        ''
+      );
 
     const question = document.createElement('p');
     question.className = 'welcome-question';
@@ -146,9 +102,15 @@
     let btnConnexionAccueil = null;
 
     if (MODE_DEMO) {
-      btnConnexionAccueil = document.createElement('a');
-      btnConnexionAccueil.href = window.APP_URLS.connexionGoogle;
-      btnConnexionAccueil.className = 'welcome-connexion-btn';
+      btnConnexionAccueil =
+        document.createElement('a');
+
+      btnConnexionAccueil.href =
+        window.APP_URLS.connexionGoogle;
+
+      btnConnexionAccueil.className =
+        'welcome-connexion-btn';
+
       btnConnexionAccueil.innerHTML =
         '<span>Se connecter avec Google</span>' +
         '<svg viewBox="0 0 24 24" aria-hidden="true">' +
@@ -159,8 +121,14 @@
     const actions = document.createElement('div');
     actions.className = 'welcome-actions';
 
-    const creerAction = (label, action, svgPath, desactivee) => {
+    const creerAction = (
+      label,
+      action,
+      svgPath,
+      desactivee
+    ) => {
       const bouton = document.createElement('button');
+
       bouton.type = 'button';
       bouton.className = 'welcome-action';
 
@@ -176,9 +144,10 @@
 
       if (desactivee) {
         bouton.disabled = true;
-        bouton.title = MODE_DEMO
-          ? 'Connecte-toi pour accéder à cette fonctionnalité'
-          : 'Bientôt disponible pour ta série';
+        bouton.title =
+          MODE_DEMO
+            ? 'Connecte-toi pour accéder à cette fonctionnalité'
+            : 'Bientôt disponible pour ta série';
       } else {
         bouton.addEventListener('click', action);
       }
@@ -201,7 +170,10 @@
       'Générer un examen officiel (Bac blanc)',
       () => {
         lancerGeneration(
-          { type_document: 'Examen', serie: SERIE_GENERATION_DISPONIBLE },
+          {
+            type_document: 'Examen',
+            serie: SERIE_GENERATION_DISPONIBLE
+          },
           'Génère-moi un Examen officiel (Bac blanc)'
         );
       },
@@ -225,8 +197,12 @@
       () => {
         fermerSidebar();
         ouvrirPanneauVide();
+
         if (!MODE_DEMO && ELEVE.niveau) {
-          afficherChoixMatiere(ELEVE.niveau, ELEVE.serie || null);
+          afficherChoixMatiere(
+            ELEVE.niveau,
+            ELEVE.serie || null
+          );
         } else {
           afficherChoixNiveau();
         }
@@ -237,24 +213,36 @@
 
     const note = document.createElement('p');
     note.className = 'welcome-note';
-    note.textContent = 'Annales officielles indexées par lycée et collège. Les épreuves générées suivent le programme et le barème réels de ta série.';
+    note.textContent =
+      'Annales officielles indexées par lycée et collège. Les épreuves générées suivent le programme et le barème réels de ta série.';
 
-    accueil.append(kicker, titre, contexte);
+    accueil.append(
+      kicker,
+      titre,
+      contexte
+    );
 
     if (btnConnexionAccueil) {
       accueil.append(btnConnexionAccueil);
     }
 
-    accueil.append(question, actions, note);
+    accueil.append(
+      question,
+      actions,
+      note
+    );
 
     fenetre.appendChild(accueil);
   }
 
   function masquerAccueil() {
-    const accueil = document.getElementById('assistant-welcome');
+    const accueil =
+      document.getElementById('assistant-welcome');
+
     if (accueil) {
       accueil.remove();
     }
+
     if (fenetre) {
       fenetre.classList.remove('mode-accueil');
     }
@@ -262,10 +250,19 @@
 
   function commencerAvecTexte(texte) {
     masquerAccueil();
-    if (!input) return;
+
+    if (!input) {
+      return;
+    }
+
     input.value = texte;
     input.focus();
-    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    input.dispatchEvent(
+      new Event('input', {
+        bubbles: true
+      })
+    );
   }
 
   function structurerTexteExercice(texte) {
@@ -308,11 +305,14 @@
 
     return resultat;
   }
-
   function rendreReponseAssistant(conteneur, texte) {
     if (!conteneur) return;
 
-    const texteSecurise = typeof texte === 'string' ? texte : String(texte || '');
+    const texteSecurise =
+      typeof texte === 'string'
+        ? texte
+        : String(texte || '');
+
     const blocsLatex = [];
 
     const texteProtege = texteSecurise.replace(
@@ -328,18 +328,32 @@
 
     let html = marked.parse(texteStructure);
 
-    html = html.replace(/<h3>MARQUEUREXO ([\s\S]*?)<\/h3>/g, '<h3 class="titre-exercice">$1</h3>');
-    html = html.replace(/<h4>MARQUEURPARTIE ([\s\S]*?)<\/h4>/g, '<h4 class="titre-partie">$1</h4>');
-    html = html.replace(/<h3>MARQUEURSOUS ([\s\S]*?)<\/h3>/g, '<h3 class="titre-sous-partie">$1</h3>');
-    html = html.replace(/<p>MARQUEURLETTRE/g, '<p class="sous-question">');
+    html = html.replace(
+      /<h3>MARQUEUREXO ([\s\S]*?)<\/h3>/g,
+      '<h3 class="titre-exercice">$1</h3>'
+    );
+    html = html.replace(
+      /<h4>MARQUEURPARTIE ([\s\S]*?)<\/h4>/g,
+      '<h4 class="titre-partie">$1</h4>'
+    );
+    html = html.replace(
+      /<h3>MARQUEURSOUS ([\s\S]*?)<\/h3>/g,
+      '<h3 class="titre-sous-partie">$1</h3>'
+    );
+
+    html = html.replace(
+      /<p>MARQUEURLETTRE/g,
+      '<p class="sous-question">'
+    );
 
     blocsLatex.forEach((bloc, i) => {
       html = html.split(`@@LATEX${i}@@`).join(bloc);
     });
 
-    conteneur.innerHTML = window.DOMPurify
-      ? DOMPurify.sanitize(html, { ADD_ATTR: ['class'] })
-      : html;
+    conteneur.innerHTML =
+      window.DOMPurify
+        ? DOMPurify.sanitize(html, { ADD_ATTR: ['class'] })
+        : html;
 
     if (window.renderMathInElement) {
       renderMathInElement(conteneur, {
@@ -351,7 +365,6 @@
       });
     }
   }
-
   function ajouterMessageUtilisateur(texte) {
     if (!fenetre) return;
 
@@ -367,48 +380,20 @@
     ligne.appendChild(bulle);
     fenetre.appendChild(ligne);
 
-    requestAnimationFrame(() => {
-      ligne.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    });
+    fenetre.scrollTop = fenetre.scrollHeight;
   }
 
-  // NOUVEAU (23/09/2026, upload photo) : bulle utilisateur avec
-  // vignette de l'image jointe + texte optionnel de l'élève.
-  function ajouterMessageUtilisateurAvecImage(texte, fichierImage) {
-    if (!fenetre) return;
-    fenetre.classList.remove('mode-accueil');
-
-    const ligne = document.createElement('div');
-    ligne.className = 'msg msg-user';
-
-    const bulle = document.createElement('div');
-    bulle.className = 'msg-user-bulle';
-
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(fichierImage);
-    img.alt = 'Exercice photographié';
-    img.className = 'msg-user-image';
-    bulle.appendChild(img);
-
-    if (texte) {
-      const p = document.createElement('p');
-      p.textContent = texte;
-      bulle.appendChild(p);
-    }
-
-    ligne.appendChild(bulle);
-    fenetre.appendChild(ligne);
-
-    requestAnimationFrame(() => {
-      ligne.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    });
-  }
-
-  function ajouterMessageAssistant(texte, enAttente) {
+  function ajouterMessageAssistant(
+    texte,
+    enAttente
+  ) {
     if (!fenetre) return null;
 
     const ligne = document.createElement('div');
-    ligne.className = 'msg msg-bot' + (enAttente ? ' msg-attente' : '');
+
+    ligne.className =
+      'msg msg-bot' +
+      (enAttente ? ' msg-attente' : '');
 
     const avatar = document.createElement('div');
     avatar.className = 'msg-avatar';
@@ -418,51 +403,83 @@
     corps.className = 'msg-bot-corps';
 
     if (enAttente) {
-      corps.innerHTML =
-        '<div class="indicateur-reflexion">' +
-          '<div class="points-typing"><span></span><span></span><span></span></div>' +
-          '<span class="texte-progression">Je réfléchis...</span>' +
-        '</div>';
+      corps.innerHTML = `
+        <div class="indicateur-reflexion">
+          <div class="points-typing">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="texte-progression">
+            Je réfléchis...
+          </span>
+        </div>
+      `;
 
-      const phrases = ['Je réfléchis...', 'Je vérifie le calcul...', 'Je prépare la réponse...'];
+      const phrases = [
+        'Je réfléchis...',
+        'Je vérifie le calcul...',
+        'Je prépare la réponse...'
+      ];
+
       let i = 0;
 
-      const spanTexte = corps.querySelector('.texte-progression');
+      const spanTexte =
+        corps.querySelector(
+          '.texte-progression'
+        );
 
-      ligne._intervalReflexion = setInterval(() => {
-        if (!spanTexte) return;
-        i = (i + 1) % phrases.length;
-        spanTexte.style.animation = 'none';
-        void spanTexte.offsetHeight;
-        spanTexte.textContent = phrases[i];
-        spanTexte.style.animation = 'fondu 0.3s ease';
-      }, 2200);
+      ligne._intervalReflexion =
+        setInterval(() => {
+          if (!spanTexte) return;
+
+          i = (i + 1) % phrases.length;
+
+          spanTexte.style.animation = 'none';
+
+          void spanTexte.offsetHeight;
+
+          spanTexte.textContent = phrases[i];
+          spanTexte.style.animation =
+            'fondu 0.3s ease';
+
+        }, 2200);
 
     } else {
-      rendreReponseAssistant(corps, texte);
+      rendreReponseAssistant(
+        corps,
+        texte
+      );
     }
 
     ligne.appendChild(avatar);
     ligne.appendChild(corps);
     fenetre.appendChild(ligne);
 
-    if (estAncreEnBas()) {
-      fenetre.scrollTop = fenetre.scrollHeight;
-    }
+    fenetre.scrollTop =
+      fenetre.scrollHeight;
 
     return ligne;
   }
 
   function retirerLigneAttente(ligne) {
     if (!ligne) return;
+
     if (ligne._intervalReflexion) {
-      clearInterval(ligne._intervalReflexion);
+      clearInterval(
+        ligne._intervalReflexion
+      );
+
       ligne._intervalReflexion = null;
     }
+
     ligne.remove();
   }
 
-  function ajouterCarteResultats(intro, resultats) {
+  function ajouterCarteResultats(
+    intro,
+    resultats
+  ) {
     if (!fenetre) return null;
 
     const ligne = document.createElement('div');
@@ -477,6 +494,7 @@
 
     const p = document.createElement('p');
     p.textContent = intro;
+
     corps.appendChild(p);
 
     const liste = document.createElement('div');
@@ -484,33 +502,62 @@
 
     if (Array.isArray(resultats)) {
       resultats.forEach((r) => {
-        if (!r || !r.destination) return;
+        if (!r || !r.destination) {
+          return;
+        }
 
         const carte = document.createElement('a');
-        carte.className = 'carte-resultat';
-        carte.href = r.destination;
 
-        const titre = document.createElement('span');
-        titre.className = 'carte-resultat-titre';
-        titre.textContent = r.libelle || 'Épreuve';
+        carte.className =
+          'carte-resultat';
 
-        const badge = document.createElement('span');
-        const estOfficiel = r.type_source === 'officiel';
-        badge.className = 'carte-resultat-badge ' + (estOfficiel ? 'officiel' : 'externe');
-        badge.textContent = estOfficiel ? 'Officiel' : 'Externe';
+        carte.href =
+          r.destination;
+
+        const titre =
+          document.createElement('span');
+
+        titre.className =
+          'carte-resultat-titre';
+
+        titre.textContent =
+          r.libelle || 'Épreuve';
+
+        const badge =
+          document.createElement('span');
+
+        const estOfficiel =
+          r.type_source === 'officiel';
+
+        badge.className =
+          'carte-resultat-badge ' +
+          (
+            estOfficiel
+              ? 'officiel'
+              : 'externe'
+          );
+
+        badge.textContent =
+          estOfficiel
+            ? 'Officiel'
+            : 'Externe';
 
         carte.appendChild(titre);
         carte.appendChild(badge);
+
         liste.appendChild(carte);
       });
     }
 
     corps.appendChild(liste);
+
     ligne.appendChild(avatar);
     ligne.appendChild(corps);
+
     fenetre.appendChild(ligne);
 
-    fenetre.scrollTop = fenetre.scrollHeight;
+    fenetre.scrollTop =
+      fenetre.scrollHeight;
 
     return ligne;
   }
@@ -520,7 +567,10 @@
 
     fenetre.innerHTML = '';
 
-    if (MODE_DEMO || !etat.matiere) {
+    if (
+      MODE_DEMO ||
+      !etat.matiere
+    ) {
       afficherAccueil();
       return;
     }
@@ -528,37 +578,66 @@
     etat.chargementHistorique = true;
 
     try {
-      const params = new URLSearchParams({ matiere: etat.matiere });
+      const params =
+        new URLSearchParams({
+          matiere: etat.matiere
+        });
 
-      const reponseServeur = await fetch(`${window.APP_URLS.historique}?${params}`, {
-        headers: { 'Accept': 'application/json' }
-      });
+      const reponseServeur =
+        await fetch(
+          `${window.APP_URLS.historique}?${params}`,
+          {
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        );
 
       if (!reponseServeur.ok) {
-        throw new Error('Historique indisponible');
+        throw new Error(
+          'Historique indisponible'
+        );
       }
 
-      const donnees = await reponseServeur.json();
-      const historique = donnees.historique;
+      const donnees =
+        await reponseServeur.json();
 
-      if (!Array.isArray(historique) || historique.length === 0) {
+      const historique =
+        donnees.historique;
+
+      if (
+        !Array.isArray(historique) ||
+        historique.length === 0
+      ) {
         afficherAccueil();
         return;
       }
 
-      fenetre.classList.remove('mode-accueil');
+      fenetre.classList.remove(
+        'mode-accueil'
+      );
 
       historique.forEach((tour) => {
         if (!tour) return;
+
         if (tour.role === 'user') {
-          ajouterMessageUtilisateur(tour.content || '');
+          ajouterMessageUtilisateur(
+            tour.content || ''
+          );
         } else {
-          ajouterMessageAssistant(tour.content || '', false);
+          ajouterMessageAssistant(
+            tour.content || '',
+            false
+          );
         }
       });
 
     } catch (erreur) {
-      console.error('Erreur historique :', erreur);
+      console.error(
+        'Erreur historique :',
+        erreur
+      );
+
       fenetre.innerHTML = '';
       afficherAccueil();
 
@@ -568,863 +647,1463 @@
   }
 
   async function envoyerMessage(texte) {
-    if (!texte || etat.enAttente) return;
+    if (
+      !texte ||
+      etat.enAttente
+    ) {
+      return;
+    }
 
     masquerAccueil();
     fermerPanneauAjouter();
-    ajouterMessageUtilisateur(texte);
+
+    ajouterMessageUtilisateur(
+      texte
+    );
 
     etat.enAttente = true;
-    etat.suivreDefilement = true;
 
-    basculerBoutonEnvoyer('stop');
+    if (btnEnvoyer) {
+      btnEnvoyer.disabled = true;
+    }
 
-    const ligneAttente = ajouterMessageAssistant('', true);
-
-    let corpsFlux = null;
-    let curseurFlux = null;
-    let texteAccumule = '';
-    let erreurRecue = null;
-
-    controleurAbandon = new AbortController();
+    const ligneAttente =
+      ajouterMessageAssistant(
+        '',
+        true
+      );
 
     try {
-      const reponseServeur = await fetch(window.APP_URLS.repondre, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'text/event-stream, application/json'
-        },
-        body: JSON.stringify({
-          question: texte,
-          niveau: ELEVE.niveau,
-          serie: ELEVE.serie,
-          matiere: etat.matiere,
-          mode_revision: etat.modeRevision
-        }),
-        signal: controleurAbandon.signal
-      });
+      const reponseServeur =
+        await fetch(
+          window.APP_URLS.repondre,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/json',
+              'Accept':
+                'text/event-stream, application/json'
+            },
+            body: JSON.stringify({
+              question: texte,
+              niveau: ELEVE.niveau,
+              serie: ELEVE.serie,
+              matiere: etat.matiere
+            })
+          }
+        );
 
-      const typeContenu = reponseServeur.headers.get('Content-Type') || '';
+      const typeContenu =
+        reponseServeur.headers
+          .get('Content-Type') || '';
 
-      if (!typeContenu.includes('text/event-stream')) {
+      if (
+        !typeContenu.includes(
+          'text/event-stream'
+        )
+      ) {
         let resultat;
 
         try {
-          resultat = await reponseServeur.json();
+          resultat =
+            await reponseServeur.json();
         } catch {
-          throw new Error('Le serveur a renvoyé une réponse invalide.');
+          throw new Error(
+            'Le serveur a renvoyé une réponse invalide.'
+          );
         }
 
-        retirerLigneAttente(ligneAttente);
+        retirerLigneAttente(
+          ligneAttente
+        );
 
         if (!reponseServeur.ok) {
-          throw new Error(resultat.erreur || 'Une erreur est survenue.');
+          throw new Error(
+            resultat.erreur ||
+            'Une erreur est survenue.'
+          );
         }
 
-        if (resultat.type === 'resultats') {
+        if (
+          resultat.type ===
+          'resultats'
+        ) {
           ajouterCarteResultats(
-            resultat.intro || 'Voici ce que j’ai trouvé :',
+            resultat.intro ||
+              'Voici ce que j’ai trouvé :',
             resultat.resultats || []
           );
         } else {
-          ajouterMessageAssistant(resultat.reponse || "Je n’ai pas reçu de réponse.", false);
+          ajouterMessageAssistant(
+            resultat.reponse ||
+              "Je n’ai pas reçu de réponse.",
+            false
+          );
         }
 
         return;
       }
 
       if (!reponseServeur.body) {
-        throw new Error('Le serveur n’a fourni aucun flux de réponse.');
+        throw new Error(
+          'Le serveur n’a fourni aucun flux de réponse.'
+        );
       }
 
-      if (ligneAttente && ligneAttente._intervalReflexion) {
-        clearInterval(ligneAttente._intervalReflexion);
-        ligneAttente._intervalReflexion = null;
+      if (
+        ligneAttente &&
+        ligneAttente._intervalReflexion
+      ) {
+        clearInterval(
+          ligneAttente._intervalReflexion
+        );
+
+        ligneAttente._intervalReflexion =
+          null;
       }
 
-      ligneAttente.classList.remove('msg-attente');
+      ligneAttente.classList.remove(
+        'msg-attente'
+      );
 
-      corpsFlux = ligneAttente.querySelector('.msg-bot-corps');
+      const corps =
+        ligneAttente.querySelector(
+          '.msg-bot-corps'
+        );
 
-      if (!corpsFlux) {
-        throw new Error('Conteneur de réponse introuvable.');
+      if (!corps) {
+        throw new Error(
+          'Conteneur de réponse introuvable.'
+        );
       }
 
-      corpsFlux.innerHTML = '';
+      corps.innerHTML = '';
 
-      curseurFlux = document.createElement('span');
-      curseurFlux.className = 'curseur-streaming';
-      corpsFlux.appendChild(curseurFlux);
+      const curseur =
+        document.createElement('span');
 
-      const lecteur = reponseServeur.body.getReader();
-      const decodeur = new TextDecoder();
+      curseur.className =
+        'curseur-streaming';
+
+      corps.appendChild(curseur);
+
+      const lecteur =
+        reponseServeur.body.getReader();
+
+      const decodeur =
+        new TextDecoder();
 
       let tampon = '';
+      let texteAccumule = '';
+      let erreurRecue = null;
 
-      function traiterEvenementSSE(evenementBrut) {
-        if (!evenementBrut || !evenementBrut.startsWith('data: ')) return;
+      function traiterEvenementSSE(
+        evenementBrut
+      ) {
+        if (
+          !evenementBrut ||
+          !evenementBrut.startsWith(
+            'data: '
+          )
+        ) {
+          return;
+        }
 
-        const contenu = evenementBrut.slice(6).trim();
+        const contenu =
+          evenementBrut.slice(6).trim();
+
         if (!contenu) return;
 
         let evenement;
 
         try {
-          evenement = JSON.parse(contenu);
+          evenement =
+            JSON.parse(contenu);
         } catch (erreur) {
-          console.error('Événement SSE invalide :', contenu, erreur);
+          console.error(
+            'Événement SSE invalide :',
+            contenu,
+            erreur
+          );
           return;
         }
 
-        if (evenement.type === 'morceau') {
-          texteAccumule += evenement.texte || '';
-          corpsFlux.textContent = texteAccumule;
-          corpsFlux.appendChild(curseurFlux);
+        if (
+          evenement.type ===
+          'morceau'
+        ) {
+          texteAccumule +=
+            evenement.texte || '';
 
-          if (etat.suivreDefilement) {
-            fenetre.scrollTop = fenetre.scrollHeight;
-          }
+          corps.textContent =
+            texteAccumule;
 
-        } else if (evenement.type === 'erreur') {
-          erreurRecue = evenement.texte || 'Une erreur est survenue.';
+          corps.appendChild(
+            curseur
+          );
 
-        } else if (evenement.type === 'fin') {
-          if (typeof evenement.texte_complet === 'string') {
-            texteAccumule = evenement.texte_complet;
+          fenetre.scrollTop =
+            fenetre.scrollHeight;
+
+        } else if (
+          evenement.type ===
+          'erreur'
+        ) {
+          erreurRecue =
+            evenement.texte ||
+            'Une erreur est survenue.';
+
+        } else if (
+          evenement.type ===
+          'fin'
+        ) {
+          if (
+            typeof evenement.texte_complet ===
+            'string'
+          ) {
+            texteAccumule =
+              evenement.texte_complet;
           }
         }
       }
 
       while (true) {
-        const { done, value } = await lecteur.read();
-        if (done) break;
+        const { done, value } =
+          await lecteur.read();
 
-        tampon += decodeur.decode(value, { stream: true });
+        if (done) {
+          break;
+        }
 
-        const evenements = tampon.split('\n\n');
-        tampon = evenements.pop() || '';
+        tampon +=
+          decodeur.decode(
+            value,
+            { stream: true }
+          );
 
-        for (const evenementBrut of evenements) {
-          traiterEvenementSSE(evenementBrut);
+        const evenements =
+          tampon.split('\n\n');
+
+        tampon =
+          evenements.pop() || '';
+
+        for (
+          const evenementBrut
+          of evenements
+        ) {
+          traiterEvenementSSE(
+            evenementBrut
+          );
         }
       }
 
       if (tampon.trim()) {
-        traiterEvenementSSE(tampon.trim());
-      }
-
-      curseurFlux.remove();
-
-      rendreReponseAssistant(
-        corpsFlux,
-        texteAccumule || erreurRecue || "Je n’ai pas pu générer de réponse."
-      );
-
-      if (erreurRecue && texteAccumule) {
-        const noteErreur = document.createElement('p');
-        noteErreur.style.cssText = 'font-size:0.82rem;color:var(--ec-ink-soft,#64748B);font-style:italic;margin-top:0.4rem;';
-        noteErreur.textContent = erreurRecue;
-        corpsFlux.appendChild(noteErreur);
-      }
-
-    } catch (erreur) {
-      if (erreur && erreur.name === 'AbortError') {
-        if (curseurFlux) {
-          curseurFlux.remove();
-        }
-
-        if (corpsFlux) {
-          rendreReponseAssistant(corpsFlux, texteAccumule || 'Génération interrompue.');
-        } else {
-          retirerLigneAttente(ligneAttente);
-          ajouterMessageAssistant('Génération interrompue.', false);
-        }
-      } else {
-        console.error('Erreur assistant :', erreur);
-        retirerLigneAttente(ligneAttente);
-        ajouterMessageAssistant(
-          erreur.message || "Je n’arrive pas à répondre pour l’instant. Réessaie dans un instant.",
-          false
+        traiterEvenementSSE(
+          tampon.trim()
         );
       }
 
-    } finally {
-      etat.enAttente = false;
-      controleurAbandon = null;
-      basculerBoutonEnvoyer('envoyer');
-    }
-  }
+      curseur.remove();
 
-  // NOUVEAU (23/09/2026, upload photo) : envoi multipart, pas de
-  // streaming côté serveur pour ce chemin (voir
-  // assistant_eleve_repondre_image dans app.py) -- réponse directe en
-  // JSON une fois Gemini terminé.
-  async function envoyerMessageAvecImage(texte, fichierImage) {
-    if (etat.enAttente) return;
+      rendreReponseAssistant(
+        corps,
+        texteAccumule ||
+          erreurRecue ||
+          "Je n’ai pas pu générer de réponse."
+      );
 
-    masquerAccueil();
-    fermerPanneauAjouter();
-    ajouterMessageUtilisateurAvecImage(texte || 'Photo d’un exercice', fichierImage);
+      if (
+        erreurRecue &&
+        texteAccumule
+      ) {
+        const noteErreur =
+          document.createElement('p');
 
-    etat.enAttente = true;
-    basculerBoutonEnvoyer('stop');
+        noteErreur.style.cssText =
+          'font-size:0.82rem;color:var(--ec-ink-soft,#64748B);font-style:italic;margin-top:0.4rem;';
 
-    const ligneAttente = ajouterMessageAssistant('', true);
+        noteErreur.textContent =
+          erreurRecue;
 
-    const formData = new FormData();
-    formData.append('image', fichierImage);
-    formData.append('question', texte);
-    formData.append('matiere', etat.matiere || 'Mathematiques');
-    formData.append('mode_revision', etat.modeRevision ? '1' : '0');
-
-    try {
-      const reponseServeur = await fetch(window.APP_URLS.repondreImage, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: formData
-      });
-
-      let resultat;
-      try {
-        resultat = await reponseServeur.json();
-      } catch {
-        throw new Error('Le serveur a renvoyé une réponse invalide.');
+        corps.appendChild(
+          noteErreur
+        );
       }
-
-      retirerLigneAttente(ligneAttente);
-
-      if (!reponseServeur.ok) {
-        throw new Error(resultat.erreur || 'Une erreur est survenue.');
-      }
-
-      ajouterMessageAssistant(resultat.reponse || 'Je n’ai pas reçu de réponse.', false);
 
     } catch (erreur) {
-      console.error('Erreur assistant (image) :', erreur);
-      retirerLigneAttente(ligneAttente);
+      console.error(
+        'Erreur assistant :',
+        erreur
+      );
+
+      retirerLigneAttente(
+        ligneAttente
+      );
+
       ajouterMessageAssistant(
-        erreur.message || 'Je n’arrive pas à traiter cette image pour l’instant.',
+        erreur.message ||
+        "Je n’arrive pas à répondre pour l’instant. Réessaie dans un instant.",
         false
       );
+
     } finally {
       etat.enAttente = false;
-      basculerBoutonEnvoyer('envoyer');
-    }
-  }
 
-  // NOUVEAU (23/09/2026, upload photo) : aperçu avant envoi -- l'élève
-  // choisit/prend une photo, elle reste en attente dans le composer
-  // avec la possibilité d'écrire une question et de la retirer, elle
-  // n'est jamais envoyée automatiquement au moment du choix.
-  function afficherApercuImage(fichier) {
-    if (!apercuImageAttachee || !apercuImageMiniature) return;
-    apercuImageMiniature.src = URL.createObjectURL(fichier);
-    apercuImageAttachee.hidden = false;
-  }
-
-  function retirerImageAttachee() {
-    etat.imageAttachee = null;
-    if (inputPhoto) inputPhoto.value = '';
-    if (apercuImageAttachee) apercuImageAttachee.hidden = true;
-    if (apercuImageMiniature) apercuImageMiniature.src = '';
-    synchroniserEtatEnvoi();
-  }
-
-  if (btnAjouterPhoto) {
-    btnAjouterPhoto.addEventListener('click', () => {
-      fermerPanneauAjouter();
-      if (inputPhoto) inputPhoto.click();
-    });
-  }
-
-  if (inputPhoto) {
-    inputPhoto.addEventListener('change', () => {
-      const fichier = inputPhoto.files && inputPhoto.files[0];
-      if (!fichier) return;
-      etat.imageAttachee = fichier;
-      afficherApercuImage(fichier);
       synchroniserEtatEnvoi();
-      if (input) input.focus();
-    });
-  }
-
-  if (btnRetirerImage) {
-    btnRetirerImage.addEventListener('click', retirerImageAttachee);
+    }
   }
 
   function synchroniserEtatEnvoi() {
-    if (!btnEnvoyer) return;
-
-    if (!input) {
-      btnEnvoyer.disabled = etat.enAttente;
+    if (!btnEnvoyer) {
       return;
     }
 
-    const aTexte = input.value.trim().length > 0;
-    const aImage = !!etat.imageAttachee;
-    btnEnvoyer.disabled = (!aTexte && !aImage) || etat.enAttente;
+    if (!input) {
+      btnEnvoyer.disabled =
+        etat.enAttente;
+
+      return;
+    }
+
+    btnEnvoyer.disabled =
+      !input.value.trim() ||
+      etat.enAttente;
   }
 
   function redimensionnerTextarea() {
     if (!input) return;
+
     input.style.height = 'auto';
-    input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+    input.style.height =
+      Math.min(input.scrollHeight, 160) + 'px';
   }
 
   if (input) {
-    input.addEventListener('input', () => {
-      synchroniserEtatEnvoi();
-      redimensionnerTextarea();
-    });
+    input.addEventListener(
+      'input',
+      () => {
+        synchroniserEtatEnvoi();
+        redimensionnerTextarea();
+      }
+    );
 
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
+    input.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
 
-        if (form) {
-          if (form.requestSubmit) {
-            form.requestSubmit();
-          } else {
-            form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+          if (form) {
+            if (form.requestSubmit) {
+              form.requestSubmit();
+            } else {
+              form.dispatchEvent(
+                new Event('submit', {
+                  cancelable: true,
+                  bubbles: true
+                })
+              );
+            }
           }
         }
       }
-    });
-  }
-
-  if (btnEnvoyer) {
-    btnEnvoyer.addEventListener('click', (e) => {
-      if (etat.enAttente) {
-        e.preventDefault();
-        interrompreGeneration();
-      }
-    });
+    );
   }
 
   if (form && input) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+    form.addEventListener(
+      'submit',
+      (e) => {
+        e.preventDefault();
 
-      const texte = input.value.trim();
-      if ((!texte && !etat.imageAttachee) || etat.enAttente) return;
+        const texte =
+          input.value.trim();
 
-      const imagePourEnvoi = etat.imageAttachee;
+        if (
+          !texte ||
+          etat.enAttente
+        ) {
+          return;
+        }
 
-      input.value = '';
-      redimensionnerTextarea();
-      fermerPanneauGenerer();
+        input.value = '';
+        redimensionnerTextarea();
 
-      if (imagePourEnvoi) {
-        retirerImageAttachee();
-        envoyerMessageAvecImage(texte, imagePourEnvoi);
-      } else {
+        fermerPanneauGenerer();
+
         synchroniserEtatEnvoi();
+
         envoyerMessage(texte);
       }
-    });
+    );
   }
 
   function fermerPanneauGenerer() {
-    const existant = document.getElementById('panneau-generer');
+    const existant =
+      document.getElementById(
+        'panneau-generer'
+      );
+
     if (existant) {
       existant.remove();
     }
+
     etat.panneauOuvert = false;
   }
 
   function fermerPanneauAjouter() {
-    if (!panneauAjouter) return;
+    if (!panneauAjouter) {
+      return;
+    }
+
     panneauAjouter.hidden = true;
+
     if (btnAjouter) {
-      btnAjouter.setAttribute('aria-expanded', 'false');
+      btnAjouter.setAttribute(
+        'aria-expanded',
+        'false'
+      );
     }
   }
 
   function basculerPanneauAjouter() {
-    if (!panneauAjouter) return;
-    const ouvert = panneauAjouter.hidden;
-    panneauAjouter.hidden = !ouvert;
+    if (!panneauAjouter) {
+      return;
+    }
+
+    const ouvert =
+      panneauAjouter.hidden;
+
+    panneauAjouter.hidden =
+      !ouvert;
+
     if (btnAjouter) {
-      btnAjouter.setAttribute('aria-expanded', String(ouvert));
+      btnAjouter.setAttribute(
+        'aria-expanded',
+        String(ouvert)
+      );
     }
   }
 
   if (btnAjouter) {
-    btnAjouter.addEventListener('click', (e) => {
-      e.stopPropagation();
-      basculerPanneauAjouter();
-    });
+    btnAjouter.addEventListener(
+      'click',
+      (e) => {
+        e.stopPropagation();
+        basculerPanneauAjouter();
+      }
+    );
   }
 
   if (btnAjouterEpreuve) {
-    btnAjouterEpreuve.addEventListener('click', () => {
-      fermerPanneauAjouter();
-      fermerSidebar();
-      ouvrirPanneauVide();
+    btnAjouterEpreuve.addEventListener(
+      'click',
+      () => {
+        fermerPanneauAjouter();
+        fermerSidebar();
+        ouvrirPanneauVide();
 
-      if (!MODE_DEMO && ELEVE.niveau) {
-        afficherChoixMatiere(ELEVE.niveau, ELEVE.serie || null);
-      } else {
-        afficherChoixNiveau();
+        if (
+          !MODE_DEMO &&
+          ELEVE.niveau
+        ) {
+          afficherChoixMatiere(
+            ELEVE.niveau,
+            ELEVE.serie || null
+          );
+        } else {
+          afficherChoixNiveau();
+        }
       }
-    });
+    );
   }
 
   if (btnHeaderMenu) {
-    btnHeaderMenu.addEventListener('click', () => {
-      if (!sidebar) return;
-      if (sidebar.classList.contains('ouverte')) {
-        fermerSidebar();
-      } else {
-        ouvrirSidebar();
+    btnHeaderMenu.addEventListener(
+      'click',
+      () => {
+        if (!sidebar) return;
+
+        if (
+          sidebar.classList.contains(
+            'ouverte'
+          )
+        ) {
+          fermerSidebar();
+        } else {
+          ouvrirSidebar();
+        }
       }
-    });
+    );
   }
 
   function ouvrirPanneauVide() {
-    if (!saisie) return null;
+    if (!saisie) {
+      return null;
+    }
 
     fermerPanneauGenerer();
 
-    const panneau = document.createElement('div');
-    panneau.className = 'panneau-generer';
-    panneau.id = 'panneau-generer';
+    const panneau =
+      document.createElement('div');
 
-    saisie.appendChild(panneau);
+    panneau.className =
+      'panneau-generer';
+
+    panneau.id =
+      'panneau-generer';
+
+    saisie.appendChild(
+      panneau
+    );
+
     etat.panneauOuvert = true;
 
     return panneau;
   }
 
   function afficherChoixSequence() {
-    const panneau = document.getElementById('panneau-generer');
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
     if (!panneau) return;
 
     panneau.innerHTML = '';
 
-    const texte = document.createElement('p');
-    texte.textContent = 'Pour quelle séquence ?';
-    panneau.appendChild(texte);
+    const texte =
+      document.createElement('p');
 
-    const options = document.createElement('div');
-    options.className = 'panneau-generer-options';
+    texte.textContent =
+      'Pour quelle séquence ?';
 
-    const ordinaux = { 1: '1re', 2: '2e', 3: '3e', 4: '4e', 5: '5e', 6: '6e' };
+    panneau.appendChild(
+      texte
+    );
 
-    [1, 2, 3, 4, 5, 6].forEach((n) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'chip-option';
-      btn.textContent = `${ordinaux[n]} séquence`;
+    const options =
+      document.createElement('div');
 
-      btn.addEventListener('click', () => {
-        fermerPanneauGenerer();
-        lancerGeneration(
-          { type_document: 'Sequence', sequence: n },
-          `Génère-moi une épreuve de la ${ordinaux[n]} séquence`
+    options.className =
+      'panneau-generer-options';
+
+    const ordinaux = {
+      1: '1re',
+      2: '2e',
+      3: '3e',
+      4: '4e',
+      5: '5e',
+      6: '6e'
+    };
+
+    [1, 2, 3, 4, 5, 6]
+      .forEach((n) => {
+        const btn =
+          document.createElement(
+            'button'
+          );
+
+        btn.type = 'button';
+        btn.className =
+          'chip-option';
+
+        btn.textContent =
+          `${ordinaux[n]} séquence`;
+
+        btn.addEventListener(
+          'click',
+          () => {
+            fermerPanneauGenerer();
+
+            lancerGeneration(
+              {
+                type_document:
+                  'Sequence',
+                sequence: n
+              },
+              `Génère-moi une épreuve de la ${ordinaux[n]} séquence`
+            );
+          }
+        );
+
+        options.appendChild(
+          btn
         );
       });
 
-      options.appendChild(btn);
-    });
-
-    panneau.appendChild(options);
+    panneau.appendChild(
+      options
+    );
   }
 
   async function afficherChoixAnneeExerciceOfficiel() {
-    const panneau = document.getElementById('panneau-generer');
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
     if (!panneau) return;
 
-    panneau.innerHTML = '<p>Chargement...</p>';
+    panneau.innerHTML =
+      '<p>Chargement...</p>';
 
-    const matiereCible = etat.matiere || 'Mathematiques';
+    const matiereCible =
+      etat.matiere || 'Mathematiques';
 
     try {
-      const params = new URLSearchParams({ niveau: ELEVE.niveau, matiere: matiereCible });
+      const params =
+        new URLSearchParams({
+          niveau: ELEVE.niveau,
+          matiere: matiereCible
+        });
 
       if (ELEVE.serie) {
-        params.set('serie', ELEVE.serie);
+        params.set(
+          'serie',
+          ELEVE.serie
+        );
       }
 
-      const reponse = await fetch(`${window.APP_URLS.chatAnnees}?${params}`, {
-        headers: { 'Accept': 'application/json' }
-      });
+      const reponse =
+        await fetch(
+          `${window.APP_URLS.chatAnnees}?${params}`,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
 
       if (!reponse.ok) {
-        throw new Error('Impossible de charger les années.');
+        throw new Error(
+          'Impossible de charger les années.'
+        );
       }
 
-      const donnees = await reponse.json();
-      const annees = Array.isArray(donnees.annees) ? donnees.annees : [];
+      const donnees =
+        await reponse.json();
+
+      const annees =
+        Array.isArray(donnees.annees)
+          ? donnees.annees
+          : [];
 
       panneau.innerHTML = '';
 
-      const texte = document.createElement('p');
-      texte.textContent = annees.length
-        ? `Exercice officiel de ${matiereCible} -- quelle année ?`
-        : 'Aucune année indexée pour l’instant pour ta série/matière. Essaie une autre matière.';
-      panneau.appendChild(texte);
+      const texte =
+        document.createElement('p');
 
-      const options = document.createElement('div');
-      options.className = 'panneau-generer-options';
+      texte.textContent =
+        annees.length
+          ? `Exercice officiel de ${matiereCible} -- quelle année ?`
+          : 'Aucune année indexée pour l’instant pour ta série/matière. Essaie une autre matière.';
 
-      annees.forEach((annee) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'chip-option';
-        btn.textContent = String(annee);
+      panneau.appendChild(
+        texte
+      );
 
-        btn.addEventListener('click', () => afficherChoixNumeroExerciceOfficiel(annee, matiereCible));
+      const options =
+        document.createElement('div');
 
-        options.appendChild(btn);
-      });
+      options.className =
+        'panneau-generer-options';
 
-      panneau.appendChild(options);
+      annees.forEach(
+        (annee) => {
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.type = 'button';
+          btn.className =
+            'chip-option';
+
+          btn.textContent =
+            String(annee);
+
+          btn.addEventListener(
+            'click',
+            () =>
+              afficherChoixNumeroExerciceOfficiel(
+                annee,
+                matiereCible
+              )
+          );
+
+          options.appendChild(
+            btn
+          );
+        }
+      );
+
+      panneau.appendChild(
+        options
+      );
 
     } catch (erreur) {
-      console.error('Erreur années (exercice officiel) :', erreur);
-      panneau.innerHTML = '<p>Impossible de charger les années. Réessaie dans un instant.</p>';
+      console.error(
+        'Erreur années (exercice officiel) :',
+        erreur
+      );
+
+      panneau.innerHTML =
+        '<p>Impossible de charger les années. Réessaie dans un instant.</p>';
     }
   }
 
-  function afficherChoixNumeroExerciceOfficiel(annee, matiereCible) {
-    const panneau = document.getElementById('panneau-generer');
+  function afficherChoixNumeroExerciceOfficiel(
+    annee,
+    matiereCible
+  ) {
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
     if (!panneau) return;
 
     panneau.innerHTML = '';
 
-    const libelleSerie = ELEVE.serie ? ` ${ELEVE.serie}` : '';
+    const libelleSerie =
+      ELEVE.serie
+        ? ` ${ELEVE.serie}`
+        : '';
 
-    const texte = document.createElement('p');
-    texte.textContent = `${ELEVE.niveau}${libelleSerie} ${annee} -- quel exercice ?`;
-    panneau.appendChild(texte);
+    const texte =
+      document.createElement('p');
 
-    const options = document.createElement('div');
-    options.className = 'panneau-generer-options';
+    texte.textContent =
+      `${ELEVE.niveau}${libelleSerie} ${annee} -- quel exercice ?`;
 
-    const envoyerDemande = (question) => {
+    panneau.appendChild(
+      texte
+    );
+
+    const options =
+      document.createElement('div');
+
+    options.className =
+      'panneau-generer-options';
+
+    const envoyerDemande = (
+      question
+    ) => {
       fermerPanneauGenerer();
       masquerAccueil();
       envoyerMessage(question);
     };
 
-    [1, 2, 3, 4, 5, 6].forEach((n) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'chip-option';
-      btn.textContent = `Exercice ${n}`;
+    [1, 2, 3, 4, 5, 6]
+      .forEach((n) => {
+        const btn =
+          document.createElement(
+            'button'
+          );
 
-      btn.addEventListener('click', () =>
-        envoyerDemande(`Donne-moi l’exercice ${n} du ${ELEVE.niveau}${libelleSerie} ${annee} en ${matiereCible}.`)
-      );
+        btn.type = 'button';
+        btn.className =
+          'chip-option';
 
-      options.appendChild(btn);
-    });
+        btn.textContent =
+          `Exercice ${n}`;
 
-    panneau.appendChild(options);
+        btn.addEventListener(
+          'click',
+          () =>
+            envoyerDemande(
+              `Donne-moi l’exercice ${n} du ${ELEVE.niveau}${libelleSerie} ${annee} en ${matiereCible}.`
+            )
+        );
 
-    const btnInconnu = document.createElement('button');
-    btnInconnu.type = 'button';
-    btnInconnu.className = 'chip-option';
-    btnInconnu.textContent = 'Je ne connais pas le numéro';
+        options.appendChild(
+          btn
+        );
+      });
 
-    btnInconnu.addEventListener('click', () =>
-      envoyerDemande(`Propose-moi un exercice officiel du ${ELEVE.niveau}${libelleSerie} ${annee} en ${matiereCible}.`)
+    panneau.appendChild(
+      options
     );
 
-    panneau.appendChild(document.createElement('br'));
-    panneau.appendChild(btnInconnu);
+    const btnInconnu =
+      document.createElement(
+        'button'
+      );
+
+    btnInconnu.type =
+      'button';
+
+    btnInconnu.className =
+      'chip-option';
+
+    btnInconnu.textContent =
+      'Je ne connais pas le numéro';
+
+    btnInconnu.addEventListener(
+      'click',
+      () =>
+        envoyerDemande(
+          `Propose-moi un exercice officiel du ${ELEVE.niveau}${libelleSerie} ${annee} en ${matiereCible}.`
+        )
+    );
+
+    panneau.appendChild(
+      document.createElement('br')
+    );
+
+    panneau.appendChild(
+      btnInconnu
+    );
   }
 
   async function afficherChoixNiveau() {
-    const panneau = document.getElementById('panneau-generer');
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
     if (!panneau) return;
 
-    panneau.innerHTML = '<p>Chargement...</p>';
+    panneau.innerHTML =
+      '<p>Chargement...</p>';
 
     try {
-      const reponse = await fetch(window.APP_URLS.chatNiveaux, {
-        headers: { 'Accept': 'application/json' }
-      });
+      const reponse =
+        await fetch(
+          window.APP_URLS.chatNiveaux,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
 
       if (!reponse.ok) {
-        throw new Error('Impossible de charger les niveaux.');
+        throw new Error(
+          'Impossible de charger les niveaux.'
+        );
       }
 
-      const donnees = await reponse.json();
-      const niveaux = Array.isArray(donnees.niveaux) ? donnees.niveaux : [];
+      const donnees =
+        await reponse.json();
+
+      const niveaux =
+        Array.isArray(donnees.niveaux)
+          ? donnees.niveaux
+          : [];
 
       panneau.innerHTML = '';
 
-      const texte = document.createElement('p');
-      texte.textContent = 'Quel niveau ?';
-      panneau.appendChild(texte);
+      const texte =
+        document.createElement('p');
 
-      const options = document.createElement('div');
-      options.className = 'panneau-generer-options';
+      texte.textContent =
+        'Quel niveau ?';
 
-      niveaux.forEach((niveau) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'chip-option';
-        btn.textContent = niveau;
+      panneau.appendChild(
+        texte
+      );
 
-        btn.addEventListener('click', () => afficherChoixSerie(niveau));
+      const options =
+        document.createElement('div');
 
-        options.appendChild(btn);
-      });
+      options.className =
+        'panneau-generer-options';
 
-      panneau.appendChild(options);
+      niveaux.forEach(
+        (niveau) => {
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.type = 'button';
+          btn.className =
+            'chip-option';
+
+          btn.textContent =
+            niveau;
+
+          btn.addEventListener(
+            'click',
+            () =>
+              afficherChoixSerie(
+                niveau
+              )
+          );
+
+          options.appendChild(
+            btn
+          );
+        }
+      );
+
+      panneau.appendChild(
+        options
+      );
 
     } catch (erreur) {
-      console.error('Erreur niveaux :', erreur);
-      panneau.innerHTML = '<p>Impossible de charger les niveaux. Réessaie dans un instant.</p>';
+      console.error(
+        'Erreur niveaux :',
+        erreur
+      );
+
+      panneau.innerHTML =
+        '<p>Impossible de charger les niveaux. Réessaie dans un instant.</p>';
     }
   }
 
-  async function afficherChoixSerie(niveau) {
-    const panneau = document.getElementById('panneau-generer');
+  async function afficherChoixSerie(
+    niveau
+  ) {
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
     if (!panneau) return;
 
-    panneau.innerHTML = '<p>Chargement...</p>';
+    panneau.innerHTML =
+      '<p>Chargement...</p>';
 
     try {
-      const reponse = await fetch(`${window.APP_URLS.chatSeries}?niveau=${encodeURIComponent(niveau)}`, {
-        headers: { 'Accept': 'application/json' }
-      });
+      const reponse =
+        await fetch(
+          `${window.APP_URLS.chatSeries}?niveau=${encodeURIComponent(niveau)}`,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
 
       if (!reponse.ok) {
-        throw new Error('Impossible de charger les séries.');
+        throw new Error(
+          'Impossible de charger les séries.'
+        );
       }
 
-      const donnees = await reponse.json();
-      const series = Array.isArray(donnees.series) ? donnees.series : [];
+      const donnees =
+        await reponse.json();
+
+      const series =
+        Array.isArray(donnees.series)
+          ? donnees.series
+          : [];
 
       if (series.length === 0) {
-        afficherChoixMatiere(niveau, null);
-        return;
-      }
-
-      panneau.innerHTML = '';
-
-      const texte = document.createElement('p');
-      texte.textContent = 'Quelle série ?';
-      panneau.appendChild(texte);
-
-      const options = document.createElement('div');
-      options.className = 'panneau-generer-options';
-
-      series.forEach((serie) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'chip-option';
-        btn.textContent = serie;
-
-        btn.addEventListener('click', () => afficherChoixMatiere(niveau, serie));
-
-        options.appendChild(btn);
-      });
-
-      panneau.appendChild(options);
-
-    } catch (erreur) {
-      console.error('Erreur séries :', erreur);
-      panneau.innerHTML = '<p>Impossible de charger les séries. Réessaie dans un instant.</p>';
-    }
-  }
-
-  async function afficherChoixMatiere(niveau, serie) {
-    const panneau = document.getElementById('panneau-generer');
-    if (!panneau) return;
-
-    panneau.innerHTML = '<p>Chargement...</p>';
-
-    try {
-      const params = new URLSearchParams({ niveau });
-
-      if (serie) {
-        params.set('serie', serie);
-      }
-
-      const reponse = await fetch(`${window.APP_URLS.chatMatieres}?${params}`, {
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!reponse.ok) {
-        throw new Error('Impossible de charger les matières.');
-      }
-
-      const donnees = await reponse.json();
-      const matieres = Array.isArray(donnees.matieres) ? donnees.matieres : [];
-
-      panneau.innerHTML = '';
-
-      const texte = document.createElement('p');
-      texte.textContent = matieres.length ? 'Quelle matière ?' : 'Aucune matière indexée pour l’instant.';
-      panneau.appendChild(texte);
-
-      const options = document.createElement('div');
-      options.className = 'panneau-generer-options';
-
-      matieres.forEach((matiere) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'chip-option';
-        btn.textContent = matiere;
-
-        btn.addEventListener('click', () => afficherChoixAnnee(niveau, serie, matiere));
-
-        options.appendChild(btn);
-      });
-
-      panneau.appendChild(options);
-
-      if (!MODE_DEMO && ELEVE.niveau && niveau === ELEVE.niveau) {
-        const btnAutre = document.createElement('button');
-        btnAutre.type = 'button';
-        btnAutre.className = 'chip-option';
-        btnAutre.textContent = 'Voir un autre niveau';
-
-        btnAutre.addEventListener('click', afficherChoixNiveau);
-
-        panneau.appendChild(document.createElement('br'));
-        panneau.appendChild(btnAutre);
-      }
-
-    } catch (erreur) {
-      console.error('Erreur matières :', erreur);
-      panneau.innerHTML = '<p>Impossible de charger les matières. Réessaie dans un instant.</p>';
-    }
-  }
-
-  async function afficherChoixAnnee(niveau, serie, matiere) {
-    const panneau = document.getElementById('panneau-generer');
-    if (!panneau) return;
-
-    panneau.innerHTML = '<p>Chargement...</p>';
-
-    try {
-      const params = new URLSearchParams({ niveau, matiere });
-
-      if (serie) {
-        params.set('serie', serie);
-      }
-
-      const reponse = await fetch(`${window.APP_URLS.chatAnnees}?${params}`, {
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!reponse.ok) {
-        throw new Error('Impossible de charger les années.');
-      }
-
-      const donnees = await reponse.json();
-      const annees = Array.isArray(donnees.annees) ? donnees.annees : [];
-
-      if (annees.length === 0) {
-        lancerParcourir(niveau, serie, matiere, null);
-        return;
-      }
-
-      panneau.innerHTML = '';
-
-      const texte = document.createElement('p');
-      texte.textContent = 'Quelle année ?';
-      panneau.appendChild(texte);
-
-      const options = document.createElement('div');
-      options.className = 'panneau-generer-options';
-
-      annees.forEach((annee) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'chip-option';
-        btn.textContent = String(annee);
-
-        btn.addEventListener('click', () => lancerParcourir(niveau, serie, matiere, annee));
-
-        options.appendChild(btn);
-      });
-
-      const btnToutes = document.createElement('button');
-      btnToutes.type = 'button';
-      btnToutes.className = 'chip-option';
-      btnToutes.textContent = 'Toutes les années';
-
-      btnToutes.addEventListener('click', () => lancerParcourir(niveau, serie, matiere, null));
-
-      options.appendChild(btnToutes);
-      panneau.appendChild(options);
-
-    } catch (erreur) {
-      console.error('Erreur années :', erreur);
-      panneau.innerHTML = '<p>Impossible de charger les années. Réessaie dans un instant.</p>';
-    }
-  }
-
-  async function lancerParcourir(niveau, serie, matiere, annee) {
-    fermerPanneauGenerer();
-    masquerAccueil();
-
-    const suffixeAnnee = annee ? ` ${annee}` : '';
-
-    const libelleDemande = serie
-      ? `Parcourir : ${niveau} ${serie} - ${matiere}${suffixeAnnee}`
-      : `Parcourir : ${niveau} - ${matiere}${suffixeAnnee}`;
-
-    ajouterMessageUtilisateur(libelleDemande);
-
-    const ligneAttente = ajouterMessageAssistant('', true);
-
-    try {
-      const params = new URLSearchParams({ niveau, matiere });
-
-      if (serie) {
-        params.set('serie', serie);
-      }
-
-      if (annee) {
-        params.set('annee', annee);
-      }
-
-      const reponseServeur = await fetch(`${window.APP_URLS.chatParcourir}?${params}`, {
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!reponseServeur.ok) {
-        throw new Error('Impossible de récupérer les épreuves.');
-      }
-
-      const donnees = await reponseServeur.json();
-      const resultats = donnees.resultats;
-      const erreur = donnees.erreur;
-
-      retirerLigneAttente(ligneAttente);
-
-      if (erreur) {
-        throw new Error(erreur);
-      }
-
-      if (!Array.isArray(resultats) || resultats.length === 0) {
-        ajouterMessageAssistant(
-          'Je n’ai encore rien d’indexé pour cette combinaison. Essaie une autre matière ou série.',
-          false
+        afficherChoixMatiere(
+          niveau,
+          null
         );
         return;
       }
 
-      ajouterCarteResultats('Voici ce que j’ai trouvé :', resultats);
+      panneau.innerHTML = '';
+
+      const texte =
+        document.createElement('p');
+
+      texte.textContent =
+        'Quelle série ?';
+
+      panneau.appendChild(
+        texte
+      );
+
+      const options =
+        document.createElement('div');
+
+      options.className =
+        'panneau-generer-options';
+
+      series.forEach(
+        (serie) => {
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.type = 'button';
+          btn.className =
+            'chip-option';
+
+          btn.textContent =
+            serie;
+
+          btn.addEventListener(
+            'click',
+            () =>
+              afficherChoixMatiere(
+                niveau,
+                serie
+              )
+          );
+
+          options.appendChild(
+            btn
+          );
+        }
+      );
+
+      panneau.appendChild(
+        options
+      );
 
     } catch (erreur) {
-      console.error('Erreur parcours :', erreur);
-      retirerLigneAttente(ligneAttente);
-      ajouterMessageAssistant(erreur.message || 'Une erreur est survenue.', false);
+      console.error(
+        'Erreur séries :',
+        erreur
+      );
+
+      panneau.innerHTML =
+        '<p>Impossible de charger les séries. Réessaie dans un instant.</p>';
     }
   }
 
-  async function lancerGeneration(params, libelleUtilisateur) {
-    if (etat.enAttente) return;
+  async function afficherChoixMatiere(
+    niveau,
+    serie
+  ) {
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
+    if (!panneau) return;
+
+    panneau.innerHTML =
+      '<p>Chargement...</p>';
+
+    try {
+      const params =
+        new URLSearchParams({
+          niveau
+        });
+
+      if (serie) {
+        params.set(
+          'serie',
+          serie
+        );
+      }
+
+      const reponse =
+        await fetch(
+          `${window.APP_URLS.chatMatieres}?${params}`,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
+
+      if (!reponse.ok) {
+        throw new Error(
+          'Impossible de charger les matières.'
+        );
+      }
+
+      const donnees =
+        await reponse.json();
+
+      const matieres =
+        Array.isArray(donnees.matieres)
+          ? donnees.matieres
+          : [];
+
+      panneau.innerHTML = '';
+
+      const texte =
+        document.createElement('p');
+
+      texte.textContent =
+        matieres.length
+          ? 'Quelle matière ?'
+          : 'Aucune matière indexée pour l’instant.';
+
+      panneau.appendChild(
+        texte
+      );
+
+      const options =
+        document.createElement('div');
+
+      options.className =
+        'panneau-generer-options';
+
+      matieres.forEach(
+        (matiere) => {
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.type = 'button';
+          btn.className =
+            'chip-option';
+
+          btn.textContent =
+            matiere;
+
+          btn.addEventListener(
+            'click',
+            () =>
+              afficherChoixAnnee(
+                niveau,
+                serie,
+                matiere
+              )
+          );
+
+          options.appendChild(
+            btn
+          );
+        }
+      );
+
+      panneau.appendChild(
+        options
+      );
+
+      if (
+        !MODE_DEMO &&
+        ELEVE.niveau &&
+        niveau === ELEVE.niveau
+      ) {
+        const btnAutre =
+          document.createElement(
+            'button'
+          );
+
+        btnAutre.type =
+          'button';
+
+        btnAutre.className =
+          'chip-option';
+
+        btnAutre.textContent =
+          'Voir un autre niveau';
+
+        btnAutre.addEventListener(
+          'click',
+          afficherChoixNiveau
+        );
+
+        panneau.appendChild(
+          document.createElement(
+            'br'
+          )
+        );
+
+        panneau.appendChild(
+          btnAutre
+        );
+      }
+
+    } catch (erreur) {
+      console.error(
+        'Erreur matières :',
+        erreur
+      );
+
+      panneau.innerHTML =
+        '<p>Impossible de charger les matières. Réessaie dans un instant.</p>';
+    }
+  }
+
+  async function afficherChoixAnnee(
+    niveau,
+    serie,
+    matiere
+  ) {
+    const panneau =
+      document.getElementById(
+        'panneau-generer'
+      );
+
+    if (!panneau) return;
+
+    panneau.innerHTML =
+      '<p>Chargement...</p>';
+
+    try {
+      const params =
+        new URLSearchParams({
+          niveau,
+          matiere
+        });
+
+      if (serie) {
+        params.set(
+          'serie',
+          serie
+        );
+      }
+
+      const reponse =
+        await fetch(
+          `${window.APP_URLS.chatAnnees}?${params}`,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
+
+      if (!reponse.ok) {
+        throw new Error(
+          'Impossible de charger les années.'
+        );
+      }
+
+      const donnees =
+        await reponse.json();
+
+      const annees =
+        Array.isArray(donnees.annees)
+          ? donnees.annees
+          : [];
+
+      if (annees.length === 0) {
+        lancerParcourir(
+          niveau,
+          serie,
+          matiere,
+          null
+        );
+
+        return;
+      }
+
+      panneau.innerHTML = '';
+
+      const texte =
+        document.createElement('p');
+
+      texte.textContent =
+        'Quelle année ?';
+
+      panneau.appendChild(
+        texte
+      );
+
+      const options =
+        document.createElement('div');
+
+      options.className =
+        'panneau-generer-options';
+
+      annees.forEach(
+        (annee) => {
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.type = 'button';
+          btn.className =
+            'chip-option';
+
+          btn.textContent =
+            String(annee);
+
+          btn.addEventListener(
+            'click',
+            () =>
+              lancerParcourir(
+                niveau,
+                serie,
+                matiere,
+                annee
+              )
+          );
+
+          options.appendChild(
+            btn
+          );
+        }
+      );
+
+      const btnToutes =
+        document.createElement(
+          'button'
+        );
+
+      btnToutes.type =
+        'button';
+
+      btnToutes.className =
+        'chip-option';
+
+      btnToutes.textContent =
+        'Toutes les années';
+
+      btnToutes.addEventListener(
+        'click',
+        () =>
+          lancerParcourir(
+            niveau,
+            serie,
+            matiere,
+            null
+          )
+      );
+
+      options.appendChild(
+        btnToutes
+      );
+
+      panneau.appendChild(
+        options
+      );
+
+    } catch (erreur) {
+      console.error(
+        'Erreur années :',
+        erreur
+      );
+
+      panneau.innerHTML =
+        '<p>Impossible de charger les années. Réessaie dans un instant.</p>';
+    }
+  }
+
+  async function lancerParcourir(
+    niveau,
+    serie,
+    matiere,
+    annee
+  ) {
+    fermerPanneauGenerer();
+    masquerAccueil();
+
+    const suffixeAnnee =
+      annee
+        ? ` ${annee}`
+        : '';
+
+    const libelleDemande =
+      serie
+        ? `Parcourir : ${niveau} ${serie} - ${matiere}${suffixeAnnee}`
+        : `Parcourir : ${niveau} - ${matiere}${suffixeAnnee}`;
+
+    ajouterMessageUtilisateur(
+      libelleDemande
+    );
+
+    const ligneAttente =
+      ajouterMessageAssistant(
+        '',
+        true
+      );
+
+    try {
+      const params =
+        new URLSearchParams({
+          niveau,
+          matiere
+        });
+
+      if (serie) {
+        params.set(
+          'serie',
+          serie
+        );
+      }
+
+      if (annee) {
+        params.set(
+          'annee',
+          annee
+        );
+      }
+
+      const reponseServeur =
+        await fetch(
+          `${window.APP_URLS.chatParcourir}?${params}`,
+          {
+            headers: {
+              'Accept':
+                'application/json'
+            }
+          }
+        );
+
+      if (!reponseServeur.ok) {
+        throw new Error(
+          'Impossible de récupérer les épreuves.'
+        );
+      }
+
+      const donnees =
+        await reponseServeur.json();
+
+      const resultats =
+        donnees.resultats;
+
+      const erreur =
+        donnees.erreur;
+
+      retirerLigneAttente(
+        ligneAttente
+      );
+
+      if (erreur) {
+        throw new Error(
+          erreur
+        );
+      }
+
+      if (
+        !Array.isArray(resultats) ||
+        resultats.length === 0
+      ) {
+        ajouterMessageAssistant(
+          'Je n’ai encore rien d’indexé pour cette combinaison. Essaie une autre matière ou série.',
+          false
+        );
+
+        return;
+      }
+
+      ajouterCarteResultats(
+        'Voici ce que j’ai trouvé :',
+        resultats
+      );
+
+    } catch (erreur) {
+      console.error(
+        'Erreur parcours :',
+        erreur
+      );
+
+      retirerLigneAttente(
+        ligneAttente
+      );
+
+      ajouterMessageAssistant(
+        erreur.message ||
+        'Une erreur est survenue.',
+        false
+      );
+    }
+  }
+
+  async function lancerGeneration(
+    params,
+    libelleUtilisateur
+  ) {
+    if (etat.enAttente) {
+      return;
+    }
 
     etat.enAttente = true;
 
@@ -1436,9 +2115,15 @@
     fermerPanneauGenerer();
     fermerPanneauAjouter();
 
-    ajouterMessageUtilisateur(libelleUtilisateur);
+    ajouterMessageUtilisateur(
+      libelleUtilisateur
+    );
 
-    const ligneAttente = ajouterMessageAssistant('', true);
+    const ligneAttente =
+      ajouterMessageAssistant(
+        '',
+        true
+      );
 
     if (!ligneAttente) {
       etat.enAttente = false;
@@ -1446,15 +2131,26 @@
       return;
     }
 
-    const corpsAttente = ligneAttente.querySelector('.msg-bot-corps');
+    const corpsAttente =
+      ligneAttente.querySelector(
+        '.msg-bot-corps'
+      );
 
     if (corpsAttente) {
-      corpsAttente.innerHTML =
-        '<div class="indicateur-reflexion">' +
-          '<div class="points-typing"><span></span><span></span><span></span></div>' +
-          '<span class="texte-progression">Construction de l’énoncé...</span>' +
-        '</div>' +
-        '<div class="barre-progression"></div>';
+      corpsAttente.innerHTML = `
+        <div class="indicateur-reflexion">
+          <div class="points-typing">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="texte-progression">
+            Construction de l’énoncé...
+          </span>
+        </div>
+
+        <div class="barre-progression"></div>
+      `;
     }
 
     const etapesGeneration = [
@@ -1466,69 +2162,136 @@
 
     let etapeIdx = 0;
 
-    const spanEtape = corpsAttente ? corpsAttente.querySelector('.texte-progression') : null;
+    const spanEtape =
+      corpsAttente
+        ? corpsAttente.querySelector(
+            '.texte-progression'
+          )
+        : null;
 
-    ligneAttente._intervalReflexion = setInterval(() => {
-      if (!spanEtape) return;
+    ligneAttente._intervalReflexion =
+      setInterval(() => {
+        if (!spanEtape) {
+          return;
+        }
 
-      etapeIdx = (etapeIdx + 1) % etapesGeneration.length;
+        etapeIdx =
+          (etapeIdx + 1) %
+          etapesGeneration.length;
 
-      spanEtape.style.animation = 'none';
-      void spanEtape.offsetHeight;
-      spanEtape.textContent = etapesGeneration[etapeIdx];
-      spanEtape.style.animation = 'fondu 0.3s ease';
+        spanEtape.style.animation =
+          'none';
 
-    }, 4000);
+        void spanEtape.offsetHeight;
+
+        spanEtape.textContent =
+          etapesGeneration[
+            etapeIdx
+          ];
+
+        spanEtape.style.animation =
+          'fondu 0.3s ease';
+
+      }, 4000);
 
     try {
-      const reponseServeur = await fetch(window.APP_URLS.generer, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/pdf, application/json'
-        },
-        body: JSON.stringify(params)
-      });
+      const reponseServeur =
+        await fetch(
+          window.APP_URLS.generer,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/json',
+              'Accept':
+                'application/pdf, application/json'
+            },
+            body: JSON.stringify(
+              params
+            )
+          }
+        );
 
-      const typeContenu = reponseServeur.headers.get('Content-Type') || '';
+      const typeContenu =
+        reponseServeur.headers
+          .get('Content-Type') || '';
 
-      if (!reponseServeur.ok || typeContenu.includes('application/json')) {
+      if (
+        !reponseServeur.ok ||
+        typeContenu.includes(
+          'application/json'
+        )
+      ) {
         let resultat = {};
 
         try {
-          resultat = await reponseServeur.json();
+          resultat =
+            await reponseServeur.json();
         } catch {
-          throw new Error('Le serveur a renvoyé une réponse invalide.');
+          throw new Error(
+            'Le serveur a renvoyé une réponse invalide.'
+          );
         }
 
-        throw new Error(resultat.erreur || 'La génération a échoué. Réessaie dans quelques minutes.');
+        throw new Error(
+          resultat.erreur ||
+          'La génération a échoué. Réessaie dans quelques minutes.'
+        );
       }
 
-      const dispo = reponseServeur.headers.get('Content-Disposition') || '';
-      const correspondance = dispo.match(/filename="?([^"]+)"?/);
-      const nomFichier = correspondance ? correspondance[1] : 'epreuve.pdf';
+      const dispo =
+        reponseServeur.headers
+          .get(
+            'Content-Disposition'
+          ) || '';
 
-      const blob = await reponseServeur.blob();
+      const correspondance =
+        dispo.match(
+          /filename="?([^"]+)"?/
+        );
+
+      const nomFichier =
+        correspondance
+          ? correspondance[1]
+          : 'epreuve.pdf';
+
+      const blob =
+        await reponseServeur.blob();
 
       if (!blob.size) {
-        throw new Error('Le PDF généré est vide.');
+        throw new Error(
+          'Le PDF généré est vide.'
+        );
       }
 
-      const url = URL.createObjectURL(blob);
+      const url =
+        URL.createObjectURL(
+          blob
+        );
 
-      const lien = document.createElement('a');
+      const lien =
+        document.createElement('a');
+
       lien.href = url;
-      lien.download = nomFichier;
+      lien.download =
+        nomFichier;
 
-      document.body.appendChild(lien);
+      document.body.appendChild(
+        lien
+      );
+
       lien.click();
       lien.remove();
 
       setTimeout(() => {
-        URL.revokeObjectURL(url);
+        URL.revokeObjectURL(
+          url
+        );
       }, 1000);
 
-      retirerLigneAttente(ligneAttente);
+      retirerLigneAttente(
+        ligneAttente
+      );
 
       ajouterMessageAssistant(
         'Voilà ton épreuve. Elle vient d’être téléchargée. Bon courage pour la révision.',
@@ -1536,10 +2299,18 @@
       );
 
     } catch (erreur) {
-      console.error('Erreur génération :', erreur);
-      retirerLigneAttente(ligneAttente);
+      console.error(
+        'Erreur génération :',
+        erreur
+      );
+
+      retirerLigneAttente(
+        ligneAttente
+      );
+
       ajouterMessageAssistant(
-        erreur.message || 'La génération a échoué. Réessaie dans quelques minutes.',
+        erreur.message ||
+        'La génération a échoué. Réessaie dans quelques minutes.',
         false
       );
 
@@ -1549,212 +2320,306 @@
     }
   }
 
-  function mettreAJourAriaSidebar(ouvert) {
-    if (btnSidebarToggleMobile) {
-      btnSidebarToggleMobile.setAttribute('aria-expanded', String(ouvert));
+  function mettreAJourAriaSidebar(
+    ouvert
+  ) {
+    if (
+      btnSidebarToggleMobile
+    ) {
+      btnSidebarToggleMobile.setAttribute(
+        'aria-expanded',
+        String(ouvert)
+      );
     }
   }
 
   function ouvrirSidebar() {
     if (!sidebar) return;
-    sidebar.classList.add('ouverte');
+
+    sidebar.classList.add(
+      'ouverte'
+    );
+
     if (backdrop) {
-      backdrop.classList.add('visible');
+      backdrop.classList.add(
+        'visible'
+      );
     }
-    mettreAJourAriaSidebar(true);
+
+    mettreAJourAriaSidebar(
+      true
+    );
   }
 
   function fermerSidebar() {
     if (!sidebar) return;
-    sidebar.classList.remove('ouverte');
+
+    sidebar.classList.remove(
+      'ouverte'
+    );
+
     if (backdrop) {
-      backdrop.classList.remove('visible');
+      backdrop.classList.remove(
+        'visible'
+      );
     }
-    mettreAJourAriaSidebar(false);
+
+    mettreAJourAriaSidebar(
+      false
+    );
   }
 
-  if (btnSidebarToggleMobile) {
-    btnSidebarToggleMobile.addEventListener('click', () => {
-      if (sidebar && sidebar.classList.contains('ouverte')) {
-        fermerSidebar();
-      } else {
-        ouvrirSidebar();
+  if (
+    btnSidebarToggleMobile
+  ) {
+    btnSidebarToggleMobile.addEventListener(
+      'click',
+      () => {
+        if (
+          sidebar &&
+          sidebar.classList.contains(
+            'ouverte'
+          )
+        ) {
+          fermerSidebar();
+        } else {
+          ouvrirSidebar();
+        }
       }
-    });
+    );
   }
 
   if (backdrop) {
-    backdrop.addEventListener('click', fermerSidebar);
+    backdrop.addEventListener(
+      'click',
+      fermerSidebar
+    );
   }
 
   if (btnNouvelleConversation) {
-    btnNouvelleConversation.addEventListener('click', async () => {
-      fermerPanneauGenerer();
-      fermerPanneauAjouter();
-      fermerSidebar();
+    btnNouvelleConversation.addEventListener(
+      'click',
+      async () => {
+        fermerPanneauGenerer();
+        fermerPanneauAjouter();
+        fermerSidebar();
 
-      if (!MODE_DEMO && etat.matiere) {
-        try {
-          await fetch(window.APP_URLS.nouvelleConversation, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({ matiere: etat.matiere })
-          });
-        } catch (erreur) {
-          console.warn('Impossible de réinitialiser l’historique côté serveur.', erreur);
+        if (
+          !MODE_DEMO &&
+          etat.matiere
+        ) {
+          try {
+            await fetch(
+              window.APP_URLS.nouvelleConversation,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type':
+                    'application/json',
+                  'Accept':
+                    'application/json'
+                },
+                body: JSON.stringify({
+                  matiere:
+                    etat.matiere
+                })
+              }
+            );
+          } catch (erreur) {
+            console.warn(
+              'Impossible de réinitialiser l’historique côté serveur.',
+              erreur
+            );
+          }
         }
+
+        if (fenetre) {
+          fenetre.innerHTML = '';
+        }
+
+        afficherAccueil();
+
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+
+        synchroniserEtatEnvoi();
       }
-
-      if (fenetre) {
-        fenetre.innerHTML = '';
-      }
-
-      afficherAccueil();
-
-      if (input) {
-        input.value = '';
-        input.focus();
-      }
-
-      synchroniserEtatEnvoi();
-    });
+    );
   }
 
   if (btnSidebarExamen) {
-    btnSidebarExamen.addEventListener('click', () => {
-      if (etat.enAttente || btnSidebarExamen.disabled) return;
+    btnSidebarExamen.addEventListener(
+      'click',
+      () => {
+        if (
+          etat.enAttente ||
+          btnSidebarExamen.disabled
+        ) {
+          return;
+        }
 
-      fermerPanneauGenerer();
-      fermerPanneauAjouter();
-      fermerSidebar();
+        fermerPanneauGenerer();
+        fermerPanneauAjouter();
+        fermerSidebar();
 
-      lancerGeneration(
-        { type_document: 'Examen', serie: SERIE_GENERATION_DISPONIBLE },
-        'Génère-moi un Examen officiel (Bac blanc)'
-      );
-    });
+        lancerGeneration(
+          {
+            type_document:
+              'Examen',
+            serie:
+              SERIE_GENERATION_DISPONIBLE
+          },
+          'Génère-moi un Examen officiel (Bac blanc)'
+        );
+      }
+    );
   }
 
   if (btnSidebarSequence) {
-    btnSidebarSequence.addEventListener('click', () => {
-      if (etat.enAttente || btnSidebarSequence.disabled) return;
+    btnSidebarSequence.addEventListener(
+      'click',
+      () => {
+        if (
+          etat.enAttente ||
+          btnSidebarSequence.disabled
+        ) {
+          return;
+        }
 
-      fermerSidebar();
-      ouvrirPanneauVide();
-      afficherChoixSequence();
-    });
+        fermerSidebar();
+        ouvrirPanneauVide();
+        afficherChoixSequence();
+      }
+    );
   }
 
   if (btnSidebarParcourir) {
-    btnSidebarParcourir.addEventListener('click', () => {
-      fermerSidebar();
-      ouvrirPanneauVide();
+    btnSidebarParcourir.addEventListener(
+      'click',
+      () => {
+        fermerSidebar();
+        ouvrirPanneauVide();
 
-      if (!MODE_DEMO && ELEVE.niveau) {
-        afficherChoixMatiere(ELEVE.niveau, ELEVE.serie || null);
-      } else {
-        afficherChoixNiveau();
+        if (
+          !MODE_DEMO &&
+          ELEVE.niveau
+        ) {
+          afficherChoixMatiere(
+            ELEVE.niveau,
+            ELEVE.serie || null
+          );
+        } else {
+          afficherChoixNiveau();
+        }
       }
-    });
+    );
   }
 
-  const conteneurMatieres = document.getElementById('sidebar-matieres');
+  const conteneurMatieres =
+    document.getElementById(
+      'sidebar-matieres'
+    );
 
   if (conteneurMatieres) {
 
     function marquerChipActive() {
-      conteneurMatieres.querySelectorAll('.chip-matiere').forEach((chip) => {
-        chip.classList.toggle('actif', chip.dataset.matiere === etat.matiere);
-      });
+      conteneurMatieres
+        .querySelectorAll(
+          '.chip-matiere'
+        )
+        .forEach((chip) => {
+          chip.classList.toggle(
+            'actif',
+            chip.dataset.matiere ===
+              etat.matiere
+          );
+        });
     }
 
-    conteneurMatieres.addEventListener('click', (e) => {
-      const chip = e.target.closest('.chip-matiere');
+    conteneurMatieres.addEventListener(
+      'click',
+      (e) => {
+        const chip =
+          e.target.closest(
+            '.chip-matiere'
+          );
 
-      if (
-        !chip ||
-        chip.dataset.matiere === etat.matiere ||
-        etat.chargementHistorique ||
-        etat.enAttente
-      ) {
-        return;
+        if (
+          !chip ||
+          chip.dataset.matiere ===
+            etat.matiere ||
+          etat.chargementHistorique ||
+          etat.enAttente
+        ) {
+          return;
+        }
+
+        etat.matiere =
+          chip.dataset.matiere;
+
+        marquerChipActive();
+
+        fermerPanneauGenerer();
+        fermerSidebar();
+
+        chargerEtAfficherHistorique();
       }
-
-      etat.matiere = chip.dataset.matiere;
-
-      marquerChipActive();
-      fermerPanneauGenerer();
-      fermerSidebar();
-      chargerEtAfficherHistorique();
-    });
+    );
 
     marquerChipActive();
   }
 
-  document.addEventListener('click', (e) => {
-    const chemin = e.composedPath();
+  document.addEventListener(
+    'click',
+    (e) => {
+      const chemin =
+        e.composedPath();
 
-    if (
-      etat.panneauOuvert &&
-      saisie &&
-      !chemin.includes(saisie) &&
-      sidebar &&
-      !chemin.includes(sidebar)
-    ) {
+      if (
+        etat.panneauOuvert &&
+        saisie &&
+        !chemin.includes(
+          saisie
+        ) &&
+        sidebar &&
+        !chemin.includes(
+          sidebar
+        )
+      ) {
+        fermerPanneauGenerer();
+      }
+
+      if (
+        panneauAjouter &&
+        !panneauAjouter.hidden &&
+        saisie &&
+        !chemin.includes(
+          saisie
+        )
+      ) {
+        fermerPanneauAjouter();
+      }
+    }
+  );
+
+  document.addEventListener(
+    'keydown',
+    (e) => {
+      if (e.key !== 'Escape') {
+        return;
+      }
+
       fermerPanneauGenerer();
-    }
-
-    if (
-      panneauAjouter &&
-      !panneauAjouter.hidden &&
-      saisie &&
-      !chemin.includes(saisie)
-    ) {
       fermerPanneauAjouter();
+      fermerSidebar();
     }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-
-    fermerPanneauGenerer();
-    fermerPanneauAjouter();
-    fermerSidebar();
-  });
-
-  if (fenetre) {
-    ['wheel', 'touchmove'].forEach((evt) => {
-      fenetre.addEventListener(
-        evt,
-        () => {
-          etat.suivreDefilement = estAncreEnBas();
-        },
-        { passive: true }
-      );
-    });
-  }
+  );
 
   chargerEtAfficherHistorique();
 
-  // CORRIGE (23/09/2026, suspect du bug "espace blanc apres clavier") :
-  // input.focus() au chargement forcait l'ouverture automatique du
-  // clavier virtuel des l'arrivee sur la page, AVANT que la mise en
-  // page (et le calcul --vh-app) ne soit stabilisee -- particulierement
-  // problematique en TWA (app installee), ou le lancement depuis
-  // l'icone compte comme un "geste utilisateur" actif pendant un court
-  // instant, ce qui autorise Chrome a honorer ce focus programmatique
-  // et donc a ouvrir le clavier tout seul. Resultat possible : premier
-  // calcul de hauteur fausse (clavier deja ouvert au moment du calcul),
-  // qui reste incorrect meme une fois le clavier referme. Sur
-  // ordinateur (pas de clavier virtuel a l'ecran) ce focus ne posait
-  // aucun probleme -- d'ou la condition ci-dessous : on ne garde
-  // l'auto-focus QUE sur les appareils sans ecran tactile (desktop), ou
-  // forcer le clavier au chargement n'a jamais ete un souci de toute
-  // facon.
-  if (input && !('ontouchstart' in window)) {
+  if (input) {
     input.focus();
   }
 

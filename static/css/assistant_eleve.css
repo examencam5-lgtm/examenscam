@@ -1,67 +1,12 @@
-/* Correction du <main> générique de base.html : par défaut il n'est
-   qu'un flex:1 simple, pensé pour du contenu qui défile normalement.
-   Sur cette page precise (plein ecran fixe), il doit devenir un vrai
-   conteneur flex avec hauteur stricte, sinon l'espace en trop
-   apparait en blanc sous le chat au lieu d'etre rempli par lui. */
-body.page-app-plein-ecran main {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-}
-
-/* CORRIGÉ (23/09/2026, bug affichage "espace blanc sous le chat") :
-   `main { height:100% }` (juste au-dessus) exige que TOUT ancêtre
-   jusqu'à <html> ait une hauteur définie pour que le pourcentage se
-   résolve de façon fiable sur tous les moteurs de rendu -- body a
-   bien une hauteur explicite (100dvh, voir règle .page-app-plein-ecran
-   plus bas), mais <html> n'en avait aucune, ce qui rendait toute la
-   chaîne "height:100%" fragile dès qu'une autre feuille de style
-   (nouvelles_pages.css) touche <html> ou <body>. Cette règle ne
-   s'applique qu'à cette page (fichier chargé uniquement ici), donc
-   aucun risque de casser autre chose sur le site. */
-html {
-  height: 100%;
-}
-
 :root {
   --tuteur-header-h: 56px;
   --tuteur-content-max: 900px;
 }
 
-/* CORRIGÉ (24/09/2026, bug "espace blanc au-dessus du clavier") :
-   L'ancienne approche (`height: calc(var(--vh-app,1vh) * 100)`, la
-   hauteur recalculée en JS à partir de visualViewport.height) se
-   battait avec le comportement natif du navigateur : à l'ouverture du
-   clavier virtuel, Chrome/Android tente AUSSI, de son propre chef, de
-   faire défiler la PAGE pour amener le champ de saisie au-dessus du
-   clavier ("scroll into view" natif du focus). Le temps que notre JS
-   recalcule --vh-app, le body se retrouvait décalé par ce scroll natif
-   ET redimensionné par notre calcul -- résultat : tout le contenu
-   (header, chat, zone de saisie) se retrouvait compressé en haut de
-   l'écran, avec une grande zone blanche entre lui et le clavier (voir
-   capture d'écran du 24/09/2026).
-
-   La solution robuste et standard pour ce cas précis : `position:fixed`
-   sur le body. Un élément fixed ne peut PAS être scrollé par le
-   navigateur (il est retiré du flux de défilement de la page), ce qui
-   supprime totalement le scroll natif concurrent -- et les moteurs
-   modernes (Chrome/Android, Safari/iOS) repositionnent automatiquement
-   les éléments fixed sur la zone visuelle réelle quand le clavier
-   s'ouvre, sans même avoir besoin du JS --vh-app. `inset:0` fixe à lui
-   seul les 4 côtés sur la fenêtre visible : on n'a donc plus besoin de
-   déclarer explicitement `height` ici (une hauteur explicite en plus
-   de top/bottom risquerait de rendre la boîte "over-constrained" et de
-   réintroduire le même genre de bug). Le calcul JS --vh-app est laissé
-   en place (voir assistant_eleve.js) comme filet de sécurité pour les
-   très vieux navigateurs qui ne suivent pas encore ce comportement --
-   il est utilisé plus bas par .assistant-layout, qui prend maintenant
-   sa taille de CE body déjà correctement calé, plutôt que de recalculer
-   sa propre hauteur indépendamment. */
 body.page-app-plein-ecran {
-  position: fixed;
-  inset: 0;
+  height: 100vh;
+  height: calc(var(--vh-app, 1vh) * 100);
+  height: 100dvh;
   overflow: hidden;
   background: var(--ec-surface, #fff);
 }
@@ -71,7 +16,9 @@ body.page-app-plein-ecran {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  height: 100%;
+  height: 100vh;
+  height: calc(var(--vh-app, 1vh) * 100);
+  height: 100dvh;
   overflow: hidden;
   box-sizing: border-box;
   background: var(--ec-surface, #fff);
@@ -80,17 +27,6 @@ body.page-app-plein-ecran {
 .assistant-sidebar {
   width: 232px;
   flex: 0 0 232px;
-  /* CORRIGÉ (23/09/2026) : hauteur explicite + min-height:0, en plus
-     du stretch flex par défaut hérité de .assistant-layout -- avant,
-     la sidebar ne comptait QUE sur align-items:stretch (implicite)
-     pour occuper toute la hauteur, ce qui est le maillon le plus
-     fragile de la chaîne (aucune propriété de hauteur écrite en dur
-     dessus). Redondant par rapport au stretch quand tout va bien,
-     mais ça évite que la sidebar retombe à la hauteur de son contenu
-     si le stretch est neutralisé pour une raison quelconque. */
-  height: 100%;
-  min-height: 0;
-  align-self: stretch;
   min-width: 0;
   background: var(--ec-line-soft, #F8FAFC);
   border-right: 1px solid var(--ec-line, #E2E8F0);
@@ -377,10 +313,6 @@ body.page-app-plein-ecran {
   min-width: 0;
   min-height: 0;
   height: 100%;
-  /* CORRIGÉ (23/09/2026) : stretch explicite en plus du height:100%
-     déjà présent -- même logique de redondance défensive que pour
-     .assistant-sidebar juste au-dessus. */
-  align-self: stretch;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -1194,7 +1126,7 @@ body.page-app-plein-ecran {
 
 @media (max-width: 760px) {
   .assistant-layout {
-    height: 100%;
+    height: 100dvh;
   }
 
   .assistant-sidebar {
@@ -1202,7 +1134,7 @@ body.page-app-plein-ecran {
     top: 0;
     left: 0;
     width: min(280px, 84vw);
-    height: 100%;
+    height: 100dvh;
     transform: translateX(-102%);
     transition: transform 0.22s ease;
     box-shadow: 5px 0 24px rgba(15,23,42,0.12);
@@ -1380,138 +1312,4 @@ body.page-app-plein-ecran {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-.btn-envoyer {
-  transition: background 0.18s ease, transform 0.15s ease;
-}
-
-.btn-envoyer svg {
-  transition: transform 0.15s ease;
-}
-
-.btn-envoyer--stop {
-  background: var(--ec-ink, #0F172A);
-  animation: pulse-stop 1.6s ease-in-out infinite;
-}
-
-.btn-envoyer--stop svg {
-  transform: scale(0.8);
-}
-
-@keyframes pulse-stop {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.18);
-  }
-  50% {
-    box-shadow: 0 0 0 6px rgba(15, 23, 42, 0);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   TOGGLE MODE RÉVISION (23/09/2026)
-   Voir chat_contexte.obtenir_bloc_pedagogique() -- persistant tant que
-   l'élève ne le désactive pas lui-même (option B), transmis à chaque
-   appel /assistant-eleve/repondre et /assistant-eleve/repondre-image.
-   ═══════════════════════════════════════════════════════ */
-.mode-revision-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex: 0 0 auto;
-  padding: 0.4rem 0.75rem;
-  border: 1px solid var(--ec-line, #E2E8F0);
-  border-radius: 999px;
-  background: var(--ec-surface, #fff);
-  color: var(--ec-ink-soft, #64748B);
-  font: 600 0.74rem/1.1 'Inter', sans-serif;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.mode-revision-toggle:hover {
-  border-color: var(--ec-accent, #2563EB);
-  color: var(--ec-accent, #2563EB);
-}
-
-.mode-revision-toggle.actif {
-  background: var(--ec-accent, #2563EB);
-  border-color: var(--ec-accent, #2563EB);
-  color: #fff;
-}
-
-.mode-revision-point {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.55;
-  flex: 0 0 6px;
-}
-
-.mode-revision-toggle.actif .mode-revision-point {
-  opacity: 1;
-}
-
-@media (max-width: 760px) {
-  .mode-revision-toggle span:not(.mode-revision-point) {
-    display: none; /* garde juste le point sur mobile, place limitée */
-  }
-  .mode-revision-toggle {
-    padding: 0.4rem 0.5rem;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   APERÇU IMAGE JOINTE AVANT ENVOI (23/09/2026)
-   Voir assistant_eleve_repondre_image dans app.py --
-   construire_contexte_systeme_image() applique le même principe
-   pédagogique de friction que le chat texte.
-   ═══════════════════════════════════════════════════════ */
-.apercu-image-attachee {
-  position: relative;
-  display: inline-flex;
-  margin: 0 auto 0.5rem 0.35rem;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--ec-line, #E2E8F0);
-  width: 76px;
-  height: 76px;
-  flex: 0 0 auto;
-}
-
-.apercu-image-attachee img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-#btn-retirer-image {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 20px;
-  height: 20px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.72);
-  color: #fff;
-  font-size: 0.85rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-/* Image dans une bulle utilisateur (chat photo) */
-.msg-user-image {
-  display: block;
-  max-width: 220px;
-  max-height: 220px;
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 0.4rem;
-  object-fit: cover;
 }
