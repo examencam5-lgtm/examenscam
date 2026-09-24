@@ -43,6 +43,60 @@
     chargementHistorique: false
   };
 
+  // ═══════════════════════════════════════════════════════
+  // AJOUT (scroll pendant le streaming) -- on ne colle au bas QUE si
+  // l'élève n'a pas remonté manuellement. Avant : scrollTop=scrollHeight
+  // à chaque morceau reçu, donc la vue finissait toujours sur la fin
+  // de la réponse au lieu du début.
+  // ═══════════════════════════════════════════════════════
+  let collerAuBas = true;
+
+  function estProcheDuBas() {
+    return (
+      fenetre.scrollHeight - fenetre.scrollTop - fenetre.clientHeight < 80
+    );
+  }
+
+  if (fenetre) {
+    fenetre.addEventListener('scroll', () => {
+      if (etat.enAttente) {
+        collerAuBas = estProcheDuBas();
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  // AJOUT (bouton Envoyer -> Stop pendant la génération)
+  // ═══════════════════════════════════════════════════════
+  let controleurAbandon = null;
+
+  function passerBoutonEnModeStop() {
+    if (!btnEnvoyer) return;
+    btnEnvoyer.disabled = false;
+    btnEnvoyer.classList.add('mode-stop');
+    btnEnvoyer.setAttribute('aria-label', 'Arrêter la génération');
+    btnEnvoyer.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2.5"/></svg>';
+  }
+
+  function remettreBoutonEnModeEnvoi() {
+    if (!btnEnvoyer) return;
+    btnEnvoyer.classList.remove('mode-stop');
+    btnEnvoyer.setAttribute('aria-label', 'Envoyer');
+    btnEnvoyer.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l16 8-16 8 3-8z"/><path d="M7 12h13"/></svg>';
+    synchroniserEtatEnvoi();
+  }
+
+  if (btnEnvoyer) {
+    btnEnvoyer.addEventListener('click', (e) => {
+      if (etat.enAttente && controleurAbandon) {
+        e.preventDefault();
+        controleurAbandon.abort();
+      }
+    });
+  }
+
   const SERIE_GENERATION_DISPONIBLE = 'C';
 
   if (
@@ -661,11 +715,9 @@
       texte
     );
 
-    etat.enAttente = true;
-
-    if (btnEnvoyer) {
-      btnEnvoyer.disabled = true;
-    }
+       etat.enAttente = true;
+    controleurAbandon = new AbortController();
+    passerBoutonEnModeStop();
 
     const ligneAttente =
       ajouterMessageAssistant(
@@ -673,12 +725,16 @@
         true
       );
 
+    let texteAccumule = '';
+    let curseur = null;
+
     try {
       const reponseServeur =
         await fetch(
           window.APP_URLS.repondre,
           {
             method: 'POST',
+            signal: controleurAbandon.signal,
             headers: {
               'Content-Type':
                 'application/json',
@@ -778,15 +834,19 @@
         );
       }
 
-      corps.innerHTML = '';
+            corps.innerHTML = '';
 
-      const curseur =
-        document.createElement('span');
-
-      curseur.className =
-        'curseur-streaming';
-
+      curseur = document.createElement('span');
+      curseur.className = 'curseur-streaming';
       corps.appendChild(curseur);
+
+      // Le haut du nouveau message reste visible pendant que le
+      // texte arrive (comme ChatGPT/Claude), pas la fin.
+      collerAuBas = true;
+      ligneAttente.scrollIntoView({ block: 'start', behavior: 'smooth' });
+
+      collerAuBas = true;
+      ligneAttente.scrollIntoView({ block: 'start', behavior: 'smooth' });
 
       const lecteur =
         reponseServeur.body.getReader();
@@ -795,9 +855,7 @@
         new TextDecoder();
 
       let tampon = '';
-      let texteAccumule = '';
       let erreurRecue = null;
-
       function traiterEvenementSSE(
         evenementBrut
       ) {
@@ -843,8 +901,9 @@
             curseur
           );
 
-          fenetre.scrollTop =
-            fenetre.scrollHeight;
+          if (collerAuBas) {
+            fenetre.scrollTop = fenetre.scrollHeight;
+          }
 
         } else if (
           evenement.type ===
@@ -931,26 +990,32 @@
         );
       }
 
-    } catch (erreur) {
-      console.error(
-        'Erreur assistant :',
-        erreur
-      );
+      } catch (erreur) {
+      if (erreur.name === 'AbortError') {
+        // Arrêt volontaire -- on garde le texte déjà streamé tel
+        // quel (comportement ChatGPT), pas de message d'erreur rouge.
+        if (curseur) curseur.remove();
 
-      retirerLigneAttente(
-        ligneAttente
-      );
-
-      ajouterMessageAssistant(
-        erreur.message ||
-        "Je n’arrive pas à répondre pour l’instant. Réessaie dans un instant.",
-        false
-      );
-
+        if (!texteAccumule) {
+          retirerLigneAttente(ligneAttente);
+        } else {
+          const corpsActuel = ligneAttente.querySelector('.msg-bot-corps');
+          if (corpsActuel) {
+            rendreReponseAssistant(corpsActuel, texteAccumule);
+          }
+        }
+      } else {
+        console.error('Erreur assistant :', erreur);
+        retirerLigneAttente(ligneAttente);
+        ajouterMessageAssistant(
+          erreur.message || "Je n'arrive pas à répondre pour l'instant. Réessaie dans un instant.",
+          false
+        );
+      }
     } finally {
       etat.enAttente = false;
-
-      synchroniserEtatEnvoi();
+      controleurAbandon = null;
+      remettreBoutonEnModeEnvoi();
     }
   }
 
@@ -1096,6 +1161,7 @@
     );
   }
 
+  const btnAjouterExercice = document.getElementById('btn-ajouter-exercice');
   if (btnAjouterEpreuve) {
     btnAjouterEpreuve.addEventListener(
       'click',
@@ -1117,6 +1183,14 @@
         }
       }
     );
+  }
+    if (btnAjouterExercice) {
+    btnAjouterExercice.addEventListener('click', () => {
+      fermerPanneauAjouter();
+      fermerSidebar();
+      ouvrirPanneauVide();
+      afficherChoixAnneeExerciceOfficiel();
+    });
   }
 
   if (btnHeaderMenu) {

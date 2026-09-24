@@ -754,33 +754,40 @@ body.page-app-plein-ecran {
 
 .points-typing {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 5px;
+  padding: 0.5rem 0.75rem;
+  background: var(--ec-accent-soft, #F1F5F9);
+  border-radius: 999px;
+  width: fit-content;
 }
 
 .points-typing span {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--ec-accent, #2563EB);
-  opacity: 0.5;
-  animation: rebond 1.1s ease-in-out infinite;
+  background: radial-gradient(circle at 30% 30%, #7EB2FF, var(--ec-accent, #2563EB) 70%);
+  box-shadow:
+    0 1px 2px rgba(37, 99, 235, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  animation: rebond-meta 1.3s ease-in-out infinite;
 }
 
 .points-typing span:nth-child(2) {
-  animation-delay: 0.15s;
+  animation-delay: 0.18s;
 }
 
 .points-typing span:nth-child(3) {
-  animation-delay: 0.3s;
+  animation-delay: 0.36s;
 }
 
-@keyframes rebond {
+@keyframes rebond-meta {
   0%, 60%, 100% {
-    transform: translateY(0);
-    opacity: 0.5;
+    transform: translateY(0) scale(0.85);
+    opacity: 0.6;
   }
   30% {
-    transform: translateY(-4px);
+    transform: translateY(-5px) scale(1);
     opacity: 1;
   }
 }
@@ -988,6 +995,14 @@ body.page-app-plein-ecran {
   opacity: 0.35;
   cursor: default;
   transform: none;
+}
+.btn-envoyer.mode-stop svg {
+  fill: currentColor;
+  stroke: none;
+}
+
+.btn-envoyer.mode-stop:hover {
+  opacity: 0.88;
 }
 
 .composer-note {
